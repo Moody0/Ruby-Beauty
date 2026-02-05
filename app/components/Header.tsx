@@ -33,7 +33,7 @@ const Header = () => {
                     {/* Navigation Links & Icons */}
                     <div className="flex items-center gap-4 md:gap-8">
                         <nav className="hidden lg:flex items-center gap-6">
-                            <Link href="/shop" className="text-sm font-medium hover:text-primary transition-colors">Shop</Link>
+                            <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors">Shop</Link>
                             <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors">About</Link>
                             <Link href="/blog" className="text-sm font-medium hover:text-primary transition-colors">Blog</Link>
                         </nav>
@@ -43,14 +43,8 @@ const Header = () => {
                                 <span className="material-symbols-outlined text-[20px]">search</span>
                             </button>
                             <button className="p-2 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main-light dark:text-text-main-dark relative group">
-                                <span className="material-symbols-outlined text-[24px]">favorite</span>
-                            </button>
-                            <button className="p-2 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main-light dark:text-text-main-dark relative group">
                                 <span className="material-symbols-outlined text-[24px]">shopping_bag</span>
                                 <span className="absolute top-1 right-0.5 size-2 bg-primary rounded-full"></span>
-                            </button>
-                            <button className="p-2 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main-light dark:text-text-main-dark">
-                                <span className="material-symbols-outlined text-[24px]">account_circle</span>
                             </button>
                             <ThemeToggle />
                         </div>
