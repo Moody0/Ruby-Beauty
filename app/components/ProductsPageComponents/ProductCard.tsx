@@ -60,10 +60,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     <span className="material-symbols-outlined text-[20px]">add_shopping_cart</span>
                     Quick Add
                 </button>
-                {/* <!-- Like Button --> */}
-                <button className="absolute right-3 top-3 flex size-8 items-center justify-center rounded-full bg-white/50 text-[#181113] backdrop-blur-sm transition-colors hover:bg-white hover:text-primary dark:bg-black/30 dark:text-white dark:hover:bg-black/60">
-                    <span className="material-symbols-outlined text-lg">favorite</span>
-                </button>
             </Link>
             <div className="flex flex-col gap-1">
                 {/* <p className="text-xs font-bold uppercase tracking-wide text-gray-400">Brand Name</p> */}

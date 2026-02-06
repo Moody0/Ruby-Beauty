@@ -9,26 +9,42 @@ import HeaderSearch from './HeaderSearch';
 const Header = () => {
     const { cartCount } = useCart();
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
 
-    // Prevent scrolling when mobile search is open
+    // Handle scroll effect
     useEffect(() => {
-        if (isMobileSearchOpen) {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    // Prevent scrolling when mobile search or menu is open
+    useEffect(() => {
+        if (isMobileSearchOpen || isMobileMenuOpen) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'unset';
         }
-    }, [isMobileSearchOpen]);
+    }, [isMobileSearchOpen, isMobileMenuOpen]);
 
     return (
-        <header className="sticky top-0 z-50 w-full bg-surface-light/95 dark:bg-surface-dark/95 backdrop-blur-md border-b border-[#f4f0f2] dark:border-[#3a1d26]">
+        <header className={`sticky top-0 z-50 w-full transition-all duration-300 border-b ${scrolled ? "bg-surface-light/95 dark:bg-surface-dark/95 backdrop-blur-md border-[#f4f0f2] dark:border-[#3a1d26]" : "bg-transparent border-transparent"}`}>
             <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-4">
                 <div className="flex items-center justify-between gap-4">
+                    {/* Mobile Menu Toggle (Left) */}
+                    <button
+                        onClick={() => setIsMobileMenuOpen(true)}
+                        className="md:hidden p-2 -ml-2 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main-light dark:text-text-main-dark"
+                    >
+                        <span className="material-symbols-outlined text-[24px]">menu</span>
+                    </button>
+
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2 md:gap-4 shrink-0">
-                        <div className="text-primary size-8">
-                            <span className="material-symbols-outlined text-3xl">spa</span>
-                        </div>
-                        <h1 className="text-xl md:text-2xl font-bold tracking-tight text-text-main-light dark:text-text-main-dark hidden sm:block">Glow & Co.</h1>
+                        <h1 className="text-xl md:text-2xl font-bold tracking-tight text-text-main-light dark:text-text-main-dark sm:block">Ruby Beauty</h1>
                     </Link>
 
                     {/* Search Bar (Desktop) */}
@@ -37,13 +53,13 @@ const Header = () => {
                     </div>
 
                     {/* Navigation Links & Icons */}
-                    <div className="flex items-center gap-4 md:gap-8">
+                    <div className="flex items-center gap-2 md:gap-8">
                         <nav className="hidden lg:flex items-center gap-6">
                             <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">Shop</Link>
                             <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">About</Link>
                             <Link href="/blog" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">Blog</Link>
                         </nav>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 md:gap-2">
                             {/* Mobile Search Toggle */}
                             <button
                                 onClick={() => setIsMobileSearchOpen(true)}
@@ -57,15 +73,80 @@ const Header = () => {
                                     <span className="absolute top-1 right-0.5 size-2 bg-primary rounded-full"></span>
                                 )}
                             </Link>
-                            <ThemeToggle />
+                            {/* Theme Toggle Visible on all screens */}
+                            <div className="block">
+                                <ThemeToggle />
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            {/* Mobile Menu Overlay */}
+            {isMobileMenuOpen && (
+                <div className="fixed inset-0 z-50 md:hidden">
+                    {/* Backdrop */}
+                    <div
+                        className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                    />
+
+                    {/* Drawer */}
+                    <div className="fixed top-0 left-0 h-full w-[300px] bg-white dark:bg-background-dark border-r border-[#f4f0f2] dark:border-white/10 shadow-2xl transform transition-transform duration-300 ease-out animate-in slide-in-from-left flex flex-col">
+                        <div className="h-24 px-6 flex items-center justify-between border-b border-[#f4f0f2] dark:border-white/5">
+                            <span className="text-2xl font-bold text-text-main-light dark:text-white">RUBY BEAUTY</span>
+                            <button
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                            >
+                                <span className="material-symbols-outlined text-text-main-light dark:text-white text-3xl">close</span>
+                            </button>
+                        </div>
+
+                        <nav className="flex flex-col gap-2 p-6">
+                            <Link
+                                href="/"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border bg-primary/10 text-primary border-primary/20"
+                            >
+                                <span className="material-symbols-outlined text-2xl opacity-70">home</span>
+                                <span className="text-xl font-medium">Home</span>
+                            </Link>
+
+                            <Link
+                                href="/products"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20"
+                            >
+                                <span className="material-symbols-outlined text-2xl opacity-70">shopping_bag</span>
+                                <span className="text-xl font-medium">Shop</span>
+                            </Link>
+
+                            <Link
+                                href="/about"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20"
+                            >
+                                <span className="material-symbols-outlined text-2xl opacity-70">info</span>
+                                <span className="text-xl font-medium">About Us</span>
+                            </Link>
+
+                            <Link
+                                href="/blog"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20"
+                            >
+                                <span className="material-symbols-outlined text-2xl opacity-70">article</span>
+                                <span className="text-xl font-medium">Blog</span>
+                            </Link>
+                        </nav>
+                    </div>
+                </div>
+            )}
+
             {/* Mobile Search Overlay */}
             {isMobileSearchOpen && (
-                <div className="fixed inset-0 z-60 bg-white dark:bg-background-dark md:hidden animate-in fade-in duration-200">
+                <div className="fixed inset-0 z-50 bg-white dark:bg-background-dark md:hidden animate-in fade-in duration-200">
                     <div className="flex flex-col h-full">
                         <div className="flex items-center justify-between p-4 border-b border-[#f4f0f2] dark:border-white/10">
                             <h2 className="text-lg font-bold">Search</h2>
@@ -84,7 +165,7 @@ const Header = () => {
                             />
                         </div>
                         <div className="flex-1 overflow-y-auto p-4">
-                            <p className="text-xs font-bold uppercase tracking-wider text-text-muted-light dark:text-white/40 mb-4">Popular Searches</p>
+                            <p className="text-xs font-bold uppercase tracking-wider text-text-muted-light dark:text-white/40 mb-4"></p>
                             <div className="flex flex-wrap gap-2">
                                 {['Serum', 'Moisturizer', 'Cleanser', 'Sunscreen'].map((tag) => (
                                     <button

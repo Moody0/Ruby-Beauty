@@ -5,6 +5,7 @@ import ProductsBreadcrumbs from '@/app/components/ProductsPageComponents/Product
 import ProductsHeader from '@/app/components/ProductsPageComponents/ProductsHeader';
 import ProductsSidebar from '@/app/components/ProductsPageComponents/ProductsSidebar';
 import ProductCard from '@/app/components/ProductsPageComponents/ProductCard';
+import ProductSkeleton from '@/app/components/ProductsPageComponents/ProductSkeleton';
 import LoadMoreButton from '@/app/components/ProductsPageComponents/LoadMoreButton';
 
 interface Category {
@@ -52,6 +53,9 @@ const ProductsPage = () => {
 
     // Fetch Products
     const fetchProducts = async (reset = false) => {
+        if (reset) {
+            setProducts([]);
+        }
         setLoading(true);
         try {
             const currentPage = reset ? 1 : page;
@@ -139,6 +143,11 @@ const ProductsPage = () => {
                         {products.map(product => (
                             <ProductCard key={product.id} product={product} />
                         ))}
+                        {loading && (
+                            [...Array(products.length > 0 ? 4 : 8)].map((_, i) => (
+                                <ProductSkeleton key={`skeleton-${i}`} />
+                            ))
+                        )}
                     </div>
 
                     <LoadMoreButton

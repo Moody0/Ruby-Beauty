@@ -52,7 +52,7 @@ const Categories = () => {
             <div className="max-w-[1200px] mx-auto">
                 <div className="flex items-center justify-between mb-8 px-2">
                     <h3 className="text-2xl font-bold text-text-main-light dark:text-text-main-dark">Shop by Category</h3>
-                    <Link className="text-primary font-medium text-sm flex items-center gap-1 " href="/categories">
+                    <Link className="text-primary font-medium text-sm flex items-center gap-1 " href="/products">
                         View all <span className="material-symbols-outlined text-sm">chevron_right</span>
                     </Link>
                 </div>
