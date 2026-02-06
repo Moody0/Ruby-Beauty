@@ -2,11 +2,10 @@ import Link from 'next/link';
 import React from 'react';
 import Categories from './Categories';
 import TrendingProducts from './TrendingProducts';
-import Newsletter from './Newsletter';
 
 const Main = () => {
     return (
-        <main className="w-full flex flex-col gap-16 pb-20">
+        <main className="w-full flex flex-col gap-16">
             {/* Hero Section */}
             <section className="px-6 pt-8 md:px-20 lg:px-32 xl:px-48 2xl:px-64">
                 <div className="w-full">
@@ -44,9 +43,6 @@ const Main = () => {
 
             {/* Trending Products Section */}
             <TrendingProducts />
-
-            {/* Newsletter Section */}
-            <Newsletter />
         </main>
     );
 };

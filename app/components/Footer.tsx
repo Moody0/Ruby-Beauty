@@ -7,15 +7,12 @@ const Footer = () => {
             className="bg-surface-light dark:bg-surface-dark border-t border-[#f4f0f2] dark:border-[#3a1d26] pt-16 pb-8 px-6 md:px-20 lg:px-32 xl:px-48 2xl:px-64"
             suppressHydrationWarning
         >
-            <div className="max-w-[1200px] mx-auto">
+            <div className="w-full mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
                     {/* Brand Column */}
                     <div className="lg:col-span-2 flex flex-col gap-4">
                         <div className="flex items-center gap-2">
-                            <div className="text-primary size-6">
-                                <span className="material-symbols-outlined text-2xl">spa</span>
-                            </div>
-                            <h4 className="text-xl font-bold text-text-main-light dark:text-text-main-dark">Glow & Co.</h4>
+                            <h4 className="text-xl font-bold text-text-main-light dark:text-text-main-dark">Ruby Beauty</h4>
                         </div>
                         <p className="text-text-muted-light dark:text-text-muted-dark max-w-xs leading-relaxed">
                             Premium botanical skincare designed to reveal your natural radiance. Cruelty-free, vegan, and sustainable.
@@ -72,7 +69,7 @@ const Footer = () => {
                 </div>
 
                 <div className="border-t border-[#f4f0f2] dark:border-[#3a1d26] pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-text-muted-light dark:text-text-muted-dark">
-                    <p>© 2023 Glow & Co. All rights reserved.</p>
+                    <p>© 2026 Ruby Beauty. All rights reserved.</p>
                     <div className="flex gap-6">
                         <Link className="hover:text-text-main-light dark:hover:text-text-main-dark transition-colors" href="#">Privacy Policy</Link>
                         <Link className="hover:text-text-main-light dark:hover:text-text-main-dark transition-colors" href="#">Terms of Service</Link>

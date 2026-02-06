@@ -41,7 +41,7 @@ const TrendingProducts = () => {
 
     if (loading) {
         return (
-            <section className="px-4 md:px-8 bg-white dark:bg-surface-dark py-16">
+            <section className="px-4 md:px-8  dark:bg-background-dark py-16">
                 <div className="max-w-[1200px] mx-auto">
                     <div className="flex flex-col items-center text-center mb-12">
                         <h3 className="text-3xl font-extrabold text-text-main-light dark:text-text-main-dark mb-3">Trending Now</h3>
@@ -62,7 +62,7 @@ const TrendingProducts = () => {
     }
 
     return (
-        <section className="px-6 md:px-20 lg:px-32 xl:px-48 2xl:px-64 bg-white dark:bg-surface-dark py-16">
+        <section className="px-6 md:px-20 lg:px-32 xl:px-48 2xl:px-64  dark:bg-background-dark py-16">
             <div className="w-full">
                 <div className="flex items-center justify-between mb-8 px-2">
                     <h3 className="text-2xl font-bold text-text-main-light dark:text-text-main-dark">Trending Now</h3>
