@@ -30,7 +30,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${plusJakartaSans.variable} antialiased`}
+        className={`${plusJakartaSans.variable} antialiased min-h-screen flex flex-col`}
         suppressHydrationWarning
       >
         <Providers>
