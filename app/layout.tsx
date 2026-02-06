@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
 import { Providers } from "./providers";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -12,7 +10,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Glow & Co. - Beauty Store",
+  title: "Ruby Beauty - Beauty Store",
   description: "Discover our new botanical collection designed to give your skin a natural, healthy glow from within.",
 };
 
@@ -30,13 +28,11 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${plusJakartaSans.variable} antialiased min-h-screen flex flex-col`}
+        className={`${plusJakartaSans.variable} antialiased`}
         suppressHydrationWarning
       >
         <Providers>
-          <Header />
           {children}
-          <Footer />
         </Providers>
       </body>
     </html>

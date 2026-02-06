@@ -7,11 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  USER
-  ADMIN
-}
-
+// Enum Role removed as we only have admin user now
+// Enum OrderStatus kept
 enum OrderStatus {
   PENDING
   PROCESSING
@@ -20,17 +17,13 @@ enum OrderStatus {
   CANCELLED
 }
 
+// User modified for Admin only
 model User {
   id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
+  username  String   @unique
   password  String
-  role      Role     @default(USER)
-  cart      Cart?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@index([email])
 }
 
 model Category {
@@ -48,6 +41,7 @@ model Product {
   name        String
   slug        String      @unique
   images      String
+  sku         String?
   isTrending  Boolean     @default(false)
   description String?
   price       Decimal     @db.Decimal(10, 2)
@@ -55,7 +49,7 @@ model Product {
   categoryId  String
   category    Category    @relation(fields: [categoryId], references: [id])
   orderItems  OrderItem[]
-  cartItems   CartItem[]
+  // cartItems removed
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
@@ -63,29 +57,7 @@ model Product {
   @@index([name])
 }
 
-model Cart {
-  id        String     @id @default(cuid())
-  userId    String     @unique
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items     CartItem[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-}
-
-model CartItem {
-  id        String   @id @default(cuid())
-  cartId    String
-  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  quantity  Int      @default(1)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([cartId, productId])
-  @@index([cartId])
-  @@index([productId])
-}
+// Cart and CartItem models removed
 
 model Order {
   id            String      @id @default(cuid())
