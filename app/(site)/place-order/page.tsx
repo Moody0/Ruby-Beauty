@@ -26,11 +26,13 @@ const PlaceOrderPage = () => {
     const tax = subtotal * taxRate;
     const total = subtotal + tax;
 
+    const [isSuccess, setIsSuccess] = useState(false);
+
     useEffect(() => {
-        if (items.length === 0 && !loading) {
+        if (items.length === 0 && !loading && !isSuccess) {
             router.push('/cart');
         }
-    }, [items, router, loading]);
+    }, [items, router, loading, isSuccess]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -69,6 +71,7 @@ const PlaceOrderPage = () => {
             if (response.ok) {
                 const data = await response.json();
                 toast.success("Order placed successfully!");
+                setIsSuccess(true);
                 clearCart();
                 router.push(`/complete-order?id=${data.id}`);
             } else {
