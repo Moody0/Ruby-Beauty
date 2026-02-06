@@ -61,7 +61,7 @@ const Categories = () => {
                         <Link
                             key={category.id}
                             className="group relative overflow-hidden rounded-xl aspect-4/5 cursor-pointer"
-                            href={`/shop/${category.name}`}
+                            href={`/products?category=${category.id}`}
                         >
                             <div
                                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"

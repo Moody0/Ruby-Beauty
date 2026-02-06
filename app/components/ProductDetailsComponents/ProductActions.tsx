@@ -55,14 +55,10 @@ const ProductActions = ({ product }: ProductActionsProps) => {
             {/* Add to Cart Button */}
             <button
                 onClick={handleAddToCart}
-                className="flex-1 h-14 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-lg shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                className="flex-1 h-14 py-4 sm:py-0 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-lg shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
             >
                 <span className="material-symbols-outlined">shopping_bag</span>
                 Add to Cart
-            </button>
-            {/* Favorite Button */}
-            <button className="h-14 w-14 border border-[#e6dbdf] dark:border-white/20 rounded-xl flex items-center justify-center text-primary hover:bg-primary/5 dark:hover:bg-white/5 transition-colors group">
-                <span className="material-symbols-outlined group-hover:scale-110 transition-transform">favorite</span>
             </button>
         </div>
     );

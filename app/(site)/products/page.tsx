@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import React, { useEffect, useState, Suspense } from 'react';
 import ProductsBreadcrumbs from '@/app/components/ProductsPageComponents/ProductsBreadcrumbs';
 import ProductsHeader from '@/app/components/ProductsPageComponents/ProductsHeader';
 import ProductsSidebar from '@/app/components/ProductsPageComponents/ProductsSidebar';
@@ -26,10 +27,15 @@ interface Product {
     isTrending: boolean;
 }
 
-const ProductsPage = () => {
+const ProductsPageContent = () => {
+    const searchParams = useSearchParams();
+    const initialCategoryId = searchParams.get('category');
+
     const [categories, setCategories] = useState<Category[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
-    const [selectedCategoryIds, setSelectedCategoryIds] = useState<Set<string>>(new Set());
+    const [selectedCategoryIds, setSelectedCategoryIds] = useState<Set<string>>(
+        initialCategoryId ? new Set([initialCategoryId]) : new Set()
+    );
     const [sort, setSort] = useState("best_sellers");
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(true);
@@ -160,5 +166,13 @@ const ProductsPage = () => {
         </div>
     )
 }
+
+const ProductsPage = () => {
+    return (
+        <Suspense fallback={<div className="flex justify-center items-center min-h-screen">Loading...</div>}>
+            <ProductsPageContent />
+        </Suspense>
+    );
+};
 
 export default ProductsPage;
