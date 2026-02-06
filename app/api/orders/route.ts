@@ -1,0 +1,73 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+export async function POST(request: Request) {
+    try {
+        const body = await request.json();
+        const {
+            firstName,
+            lastName,
+            phone,
+            email,
+            streetAddress,
+            city,
+            totalAmount,
+            items
+        } = body;
+
+        // Basic validation
+        if (!firstName || !lastName || !phone || !streetAddress || !city || !items || items.length === 0) {
+            return NextResponse.json(
+                { message: "Missing required fields" },
+                { status: 400 }
+            );
+        }
+
+        // Create order with items in a transaction
+        const order = await prisma.$transaction(async (tx) => {
+            const newOrder = await tx.order.create({
+                data: {
+                    Name: `${firstName} ${lastName}`,
+                    phone,
+                    email,
+                    streetAddress,
+                    city,
+                    totalAmount,
+                    status: 'PENDING',
+                    items: {
+                        create: items.map((item: any) => ({
+                            productId: item.productId,
+                            quantity: item.quantity,
+                            price: item.price
+                        }))
+                    }
+                },
+                include: {
+                    items: true
+                }
+            });
+
+            // Update product stock
+            for (const item of items) {
+                await tx.product.update({
+                    where: { id: item.productId },
+                    data: {
+                        stock: {
+                            decrement: item.quantity
+                        }
+                    }
+                });
+            }
+
+            return newOrder;
+        });
+
+        return NextResponse.json(order, { status: 201 });
+    } catch (error) {
+        console.error("Order creation error:", error);
+        return NextResponse.json(
+            { message: "Internal server error" },
+            { status: 500 }
+        );
+    }
+}

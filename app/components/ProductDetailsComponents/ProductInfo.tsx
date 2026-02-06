@@ -1,0 +1,31 @@
+import React from "react";
+
+interface ProductInfoProps {
+    name: string;
+    description: string | null;
+    price: string;
+}
+
+const ProductInfo = ({ name, description, price }: ProductInfoProps) => {
+    return (
+        <div className="mb-6 border-b border-[#f4f0f2] dark:border-white/10 pb-6">
+            <div className="flex items-center gap-2 mb-3">
+                <div className="flex text-yellow-400 text-sm">
+                    <span className="material-symbols-outlined text-[18px] filled" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                    <span className="material-symbols-outlined text-[18px] filled" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                    <span className="material-symbols-outlined text-[18px] filled" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                    <span className="material-symbols-outlined text-[18px] filled" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                    <span className="material-symbols-outlined text-[18px] filled" style={{ fontVariationSettings: "'FILL' 1" }}>star_half</span>
+                </div>
+                <span className="text-sm font-medium text-text-muted dark:text-white/60 underline decoration-text-muted/50 transition-colors">4.8 (342 Reviews)</span>
+            </div>
+            <h1 className="text-3xl lg:text-4xl font-extrabold text-text-main dark:text-white tracking-tight mb-2">{name}</h1>
+            <p className="text-lg font-medium text-text-muted dark:text-white/60 mb-4">{description || 'Premium beauty product'}</p>
+            <div className="flex items-baseline gap-4">
+                <span className="text-3xl font-bold text-primary">${Number(price).toFixed(2)}</span>
+            </div>
+        </div>
+    );
+};
+
+export default ProductInfo;

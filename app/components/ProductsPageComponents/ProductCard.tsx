@@ -1,5 +1,9 @@
+"use client";
+
 import Link from 'next/link';
 import React from 'react';
+import { useCart } from '@/app/context/CartContext';
+import toast from 'react-hot-toast';
 
 interface Product {
     id: string;
@@ -18,9 +22,28 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+    const { addItem } = useCart();
+
+    const handleQuickAdd = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        addItem({
+            id: product.id,
+            name: product.name,
+            price: Number(product.price),
+            image: product.images,
+            slug: product.slug,
+            quantity: 1,
+            description: product.description || undefined
+        });
+
+        toast.success(`Added ${product.name} to cart`);
+    };
+
     return (
         <div className="group relative flex flex-col gap-3">
-            <Link href={`/${product.slug}`} className="relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-gray-100 block">
+            <Link href={`/${product.slug}`} className="relative aspect-3/4 w-full overflow-hidden rounded-xl bg-gray-100 block">
                 {product.isTrending && (
                     <span className="absolute left-3 top-3 z-10 rounded-md bg-white px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-black shadow-sm">Trending</span>
                 )}
@@ -30,7 +53,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     src={product.images}
                 />
                 {/* <!-- Quick Add Overlay Button --> */}
-                <button className="absolute bottom-4 left-4 right-4 flex items-center justify-center gap-2 rounded-lg bg-white/95 py-3 text-sm font-bold text-[#181113] shadow-lg backdrop-blur-sm transition-all hover:bg-primary hover:text-white translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 dark:bg-background-dark/95 dark:text-white dark:hover:bg-primary">
+                <button
+                    onClick={handleQuickAdd}
+                    className="absolute bottom-4 left-4 right-4 flex items-center justify-center gap-2 rounded-lg bg-white/95 py-3 text-sm font-bold text-[#181113] shadow-lg backdrop-blur-sm transition-all hover:bg-primary hover:text-white opacity-100 translate-y-0 lg:opacity-0 lg:translate-y-4 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 dark:bg-background-dark/95 dark:text-white dark:hover:bg-primary"
+                >
                     <span className="material-symbols-outlined text-[20px]">add_shopping_cart</span>
                     Quick Add
                 </button>
@@ -43,7 +69,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 {/* <p className="text-xs font-bold uppercase tracking-wide text-gray-400">Brand Name</p> */}
                 <div className="flex items-start justify-between gap-2">
                     <Link href={`/${product.slug}`}>
-                        <h3 className="text-base font-medium text-[#181113] dark:text-white group-hover:text-primary transition-colors cursor-pointer line-clamp-1" title={product.name}>{product.name}</h3>
+                        <h3 className="text-base font-medium text-text-main-light dark:text-white group-hover:text-primary transition-colors cursor-pointer line-clamp-1" title={product.name}>{product.name}</h3>
                     </Link>
                 </div>
                 <div className="flex items-center gap-2">

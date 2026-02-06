@@ -10,6 +10,7 @@ export async function GET(request: Request) {
         const limit = parseInt(searchParams.get("limit") || "8");
         const sort = searchParams.get("sort");
         const categoryIdsParam = searchParams.get("categoryIds");
+        const search = searchParams.get("search");
 
         const skip = (page - 1) * limit;
 
@@ -19,6 +20,13 @@ export async function GET(request: Request) {
             if (ids.length > 0) {
                 where.categoryId = { in: ids };
             }
+        }
+
+        if (search) {
+            where.OR = [
+                { name: { contains: search, mode: "insensitive" } },
+                { description: { contains: search, mode: "insensitive" } },
+            ];
         }
 
         let orderBy: any = { createdAt: "desc" };

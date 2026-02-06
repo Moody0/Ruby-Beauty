@@ -1,4 +1,6 @@
-import React from 'react';
+"use client";
+
+import React, { useState } from 'react';
 
 interface Category {
     id: string;
@@ -13,14 +15,19 @@ interface ProductsSidebarProps {
 }
 
 const ProductsSidebar = ({ categories, selectedCategoryIds, handleCategoryToggle }: ProductsSidebarProps) => {
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
         <aside className="w-full shrink-0 lg:w-64 space-y-8">
             {/* <!-- Mobile Filter Toggle (Hidden on LG) --> */}
-            <button className="flex w-full items-center justify-between rounded-xl border border-[#e6dbdf] bg-white px-4 py-3 font-bold text-[#181113] lg:hidden">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="flex w-full items-center justify-between rounded-xl border border-[#e6dbdf] bg-white px-4 py-3 font-bold text-[#181113] lg:hidden dark:bg-surface-dark dark:border-white/10 dark:text-white"
+            >
                 <span className="flex items-center gap-2"><span className="material-symbols-outlined">filter_list</span> Filters</span>
-                <span className="material-symbols-outlined">keyboard_arrow_down</span>
+                <span className={`material-symbols-outlined transition-transform ${isOpen ? 'rotate-180' : ''}`}>keyboard_arrow_down</span>
             </button>
-            <div className="hidden lg:block space-y-8">
+            <div className={`${isOpen ? 'block' : 'hidden'} lg:block space-y-8`}>
                 {/* <!-- Categories --> */}
                 <div className="space-y-4">
                     <h3 className="text-sm font-bold uppercase tracking-wider text-[#181113] dark:text-white">Categories</h3>

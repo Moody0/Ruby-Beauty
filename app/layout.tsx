@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { Providers } from "./providers";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
@@ -14,8 +15,6 @@ export const metadata: Metadata = {
   title: "Glow & Co. - Beauty Store",
   description: "Discover our new botanical collection designed to give your skin a natural, healthy glow from within.",
 };
-
-import { Providers } from "./providers";
 
 export default function RootLayout({
   children,
