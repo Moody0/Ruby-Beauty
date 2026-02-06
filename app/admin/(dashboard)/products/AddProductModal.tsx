@@ -1,0 +1,296 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { createProduct, updateProduct } from "../../../../lib/admin-actions";
+
+interface Category {
+    id: string;
+    name: string;
+}
+
+interface Product {
+    id: string;
+    name: string;
+    description: string | null;
+    categoryId: string;
+    price: number;
+    stock: number;
+    sku: string | null;
+    images: string;
+}
+
+interface AddProductModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    categories: Category[];
+    product?: Product | null; // Optional product for editing
+}
+
+export default function AddProductModal({ isOpen, onClose, categories, product }: AddProductModalProps) {
+    const [isLoading, setIsLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        name: "",
+        description: "",
+        categoryId: "",
+        price: "",
+        stock: "",
+        sku: "",
+        images: "", // Comma separated links
+    });
+
+    const [imageLink, setImageLink] = useState("");
+
+    // Effect to pre-fill data when editing
+    useEffect(() => {
+        if (product && isOpen) {
+            setFormData({
+                name: product.name,
+                description: product.description || "",
+                categoryId: product.categoryId,
+                price: product.price.toString(),
+                stock: product.stock.toString(),
+                sku: product.sku || "",
+                images: product.images,
+            });
+        } else if (isOpen) {
+            // Reset for new product
+            setFormData({
+                name: "",
+                description: "",
+                categoryId: "",
+                price: "",
+                stock: "0",
+                sku: "",
+                images: "",
+            });
+        }
+    }, [product, isOpen]);
+
+    if (!isOpen) return null;
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!formData.name || !formData.categoryId || !formData.price || !formData.images) {
+            alert("Please fill in all required fields (Name, Category, Price, and at least one Image)");
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const formDataToSubmit = {
+                ...formData,
+                price: parseFloat(formData.price),
+                stock: parseInt(formData.stock) || 0,
+            };
+
+            const result = product
+                ? await updateProduct(product.id, formDataToSubmit)
+                : await createProduct(formDataToSubmit);
+
+            if (result.success) {
+                onClose();
+            } else {
+                alert(result.error || `Failed to ${product ? 'update' : 'create'} product`);
+            }
+        } catch (error) {
+            console.error(`Error ${product ? 'updating' : 'creating'} product:`, error);
+            alert("An error occurred. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const addImageLink = () => {
+        if (!imageLink) return;
+        const currentImages = formData.images ? formData.images.split(',').filter(Boolean) : [];
+        if (!currentImages.includes(imageLink)) {
+            const newImages = [...currentImages, imageLink].filter(Boolean).join(',');
+            setFormData({ ...formData, images: newImages });
+        }
+        setImageLink("");
+    };
+
+    const removeImage = (url: string) => {
+        const newImages = formData.images.split(',').filter(img => img !== url).join(',');
+        setFormData({ ...formData, images: newImages });
+    };
+
+    return (
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-text-main/40 dark:bg-black/60 backdrop-blur-[2px]" onClick={onClose}></div>
+            <div className="relative bg-white dark:bg-surface-dark w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+
+                {/* Header */}
+                <div className="px-8 py-6 border-b border-[#e6dbdf] dark:border-gray-700 flex items-center justify-between">
+                    <div>
+                        <h3 className="text-2xl font-extrabold text-text-main dark:text-white tracking-tight">
+                            {product ? 'Edit Product' : 'Add New Product'}
+                        </h3>
+                        <p className="text-sm text-text-sub dark:text-gray-400">
+                            {product ? 'Modify the product details below.' : 'Enter details to add a new product to your inventory.'}
+                        </p>
+                    </div>
+                    <button
+                        onClick={onClose}
+                        className="p-2 text-text-sub dark:text-gray-400 hover:text-primary hover:bg-primary/10 rounded-full transition-colors"
+                    >
+                        <span className="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                {/* Form Body */}
+                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-8 space-y-8">
+
+                    {/* Images Section */}
+                    <div className="space-y-4">
+                        <label className="text-sm font-bold text-text-main dark:text-white">Product Images</label>
+
+                        {/* Image Gallery */}
+                        {formData.images && (
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
+                                {formData.images.split(',').filter(Boolean).map((url, index) => (
+                                    <div key={index} className="relative aspect-square rounded-xl border border-[#e6dbdf] dark:border-gray-700 overflow-hidden group">
+                                        <img src={url} alt={`Preview ${index}`} className="w-full h-full object-cover" />
+                                        <button
+                                            type="button"
+                                            onClick={() => removeImage(url)}
+                                            className="absolute top-1 right-1 size-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <span className="material-symbols-outlined text-xs">close</span>
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <div className="flex flex-col gap-4">
+                            {/* Image Link Input */}
+                            <div className="flex gap-2">
+                                <input
+                                    className="flex-1 h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
+                                    placeholder="Paste image URL here..."
+                                    type="text"
+                                    value={imageLink}
+                                    onChange={(e) => setImageLink(e.target.value)}
+                                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addImageLink())}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={addImageLink}
+                                    className="px-4 h-12 rounded-xl bg-primary/10 text-primary font-bold text-sm hover:bg-primary/20 transition-colors"
+                                >
+                                    Add Link
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Product Basic Info */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="md:col-span-2 space-y-2">
+                            <label className="text-sm font-bold text-text-main dark:text-white flex items-center gap-1">
+                                Product Name <span className="text-primary">*</span>
+                            </label>
+                            <input
+                                className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
+                                placeholder="e.g. Glowing Vitamin C Face Serum"
+                                type="text"
+                                required
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            />
+                        </div>
+
+                        <div className="md:col-span-2 space-y-2">
+                            <label className="text-sm font-bold text-text-main dark:text-white">Description</label>
+                            <textarea
+                                className="w-full rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 py-3 text-sm font-medium leading-relaxed dark:text-white outline-none"
+                                placeholder="Describe the product benefits, ingredients, and usage instructions..."
+                                rows={4}
+                                value={formData.description}
+                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                            ></textarea>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-text-main dark:text-white">Category <span className="text-primary">*</span></label>
+                            <div className="relative">
+                                <select
+                                    className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white appearance-none outline-none cursor-pointer"
+                                    required
+                                    value={formData.categoryId}
+                                    onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
+                                >
+                                    <option value="">Select Category</option>
+                                    {categories.map(cat => (
+                                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                    ))}
+                                </select>
+                                <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-sub">expand_more</span>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-text-main dark:text-white">Price <span className="text-primary">*</span></label>
+                            <div className="relative">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sub font-bold text-sm">$</span>
+                                <input
+                                    className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all pl-8 pr-4 text-sm font-bold dark:text-white outline-none"
+                                    placeholder="0.00"
+                                    step="0.01"
+                                    type="number"
+                                    required
+                                    value={formData.price}
+                                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-text-main dark:text-white">Stock Quantity</label>
+                            <input
+                                className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
+                                placeholder="0"
+                                type="number"
+                                value={formData.stock}
+                                onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-text-main dark:text-white">SKU Number</label>
+                            <input
+                                className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
+                                placeholder="e.g. GLOW-001"
+                                type="text"
+                                value={formData.sku}
+                                onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
+                            />
+                        </div>
+                    </div>
+                </form>
+
+                {/* Footer */}
+                <div className="px-8 py-6 bg-background-light dark:bg-gray-800/50 border-t border-[#e6dbdf] dark:border-gray-700 flex items-center justify-end gap-4">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="px-6 h-12 rounded-xl text-sm font-bold text-text-main dark:text-white hover:bg-white dark:hover:bg-gray-800 border border-transparent hover:border-[#e6dbdf] dark:hover:border-gray-700 transition-all"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleSubmit}
+                        disabled={isLoading}
+                        className="bg-primary hover:bg-primary/90 disabled:opacity-50 text-white h-12 px-8 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">
+                            {isLoading ? 'sync' : 'check_circle'}
+                        </span>
+                        {isLoading ? (product ? 'Updating...' : 'Saving...') : (product ? 'Update Product' : 'Save Product')}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}

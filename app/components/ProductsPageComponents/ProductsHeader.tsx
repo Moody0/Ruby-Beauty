@@ -10,7 +10,7 @@ const ProductsHeader = ({ sort, setSort }: ProductsHeaderProps) => {
         <div className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end border-b border-[#f4f0f2] pb-6 dark:border-white/10">
             <div className="flex max-w-2xl flex-col gap-2">
                 <h1 className="text-4xl font-bold tracking-tight text-[#181113] dark:text-white">Our Collection</h1>
-                <p className="text-base text-gray-500 dark:text-gray-400">Discover our premium range of beauty products designed to make you glow given nature's best ingredients.</p>
+                <p className="text-base text-gray-500 dark:text-gray-400">Discover our premium range of beauty products designed to make you glow given nature&apos;s best ingredients.</p>
             </div>
             <div className="flex items-center gap-3">
                 <span className="text-sm font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap">Sort by:</span>

@@ -45,7 +45,7 @@ const TrendingProducts = () => {
                 <div className="max-w-[1200px] mx-auto">
                     <div className="flex flex-col items-center text-center mb-12">
                         <h3 className="text-3xl font-extrabold text-text-main-light dark:text-text-main-dark mb-3">Trending Now</h3>
-                        <p className="text-text-muted-light dark:text-text-muted-dark max-w-lg">Our customers' most loved picks for the season. Get them while they're still in stock.</p>
+                        <p className="text-text-muted-light dark:text-text-muted-dark max-w-lg">Our customers&apos; most loved picks for the season. Get them while they&apos;re still in stock.</p>
                     </div>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
                         {[...Array(4)].map((_, i) => (

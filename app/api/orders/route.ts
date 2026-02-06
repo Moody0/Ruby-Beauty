@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+interface OrderItemInput {
+    productId: string;
+    quantity: number;
+    price: number;
+}
+
 export async function POST(request: Request) {
     try {
         const body = await request.json();
@@ -35,7 +41,7 @@ export async function POST(request: Request) {
                     totalAmount,
                     status: 'PENDING',
                     items: {
-                        create: items.map((item: any) => ({
+                        create: items.map((item: OrderItemInput) => ({
                             productId: item.productId,
                             quantity: item.quantity,
                             price: item.price

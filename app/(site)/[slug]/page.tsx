@@ -8,11 +8,7 @@ import ProductActions from '@/app/components/ProductDetailsComponents/ProductAct
 import ProductAccordions from '@/app/components/ProductDetailsComponents/ProductAccordions';
 import RelatedProducts from '@/app/components/ProductDetailsComponents/RelatedProducts';
 
-interface ProductPageProps {
-    params: {
-        slug: string;
-    };
-}
+// ProductPageProps removed as it was unused and replaced by inline props
 
 const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     const params = await props.params;
@@ -43,7 +39,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 xl:gap-20">
                 {/* Product Gallery (Left) */}
                 <div className="lg:col-span-2">
-                    <ProductGallery images={product.images as any} isTrending={(product as any).isTrending} />
+                    <ProductGallery images={product.images} isTrending={product.isTrending} />
                 </div>
 
                 {/* Product Details (Right) */}
@@ -53,7 +49,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                     {/* Description */}
                     <div className="mb-8">
                         <p className="text-base leading-relaxed text-text-main dark:text-white/80">
-                            {product.description || 'Unlock your skin\'s natural luminosity with our concentrated Vitamin C serum.'}
+                            {product.description || 'Unlock your skin&apos;s natural luminosity with our concentrated Vitamin C serum.'}
                         </p>
                     </div>
 
@@ -61,8 +57,8 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                         id: product.id,
                         name: product.name,
                         price: Number(product.price),
-                        image: product.images as any,
-                        slug: (product as any).slug || params.slug // Fallback to params.slug if product.slug missing in type
+                        image: product.images,
+                        slug: product.slug
                     }} />
 
                     {/* Trust Badges - Could be componentized too but leaving inline for now or move to separate file if requested */}

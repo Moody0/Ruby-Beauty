@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,7 @@ export async function GET(request: Request) {
 
         const skip = (page - 1) * limit;
 
-        const where: any = {};
+        const where: Prisma.ProductWhereInput = {};
         if (categoryIdsParam) {
             const ids = categoryIdsParam.split(",").filter(Boolean);
             if (ids.length > 0) {
@@ -29,7 +30,7 @@ export async function GET(request: Request) {
             ];
         }
 
-        let orderBy: any = { createdAt: "desc" };
+        let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: "desc" };
         if (sort === "price_asc") {
             orderBy = { price: "asc" };
         } else if (sort === "price_desc") {

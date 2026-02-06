@@ -7,7 +7,7 @@ const OrderSuccessHeader = () => {
                 <span className="material-symbols-outlined text-primary text-6xl" style={{ fontVariationSettings: "'FILL' 1, 'wght' 300" }}>check_circle</span>
             </div>
             <h1 className="text-4xl font-black tracking-tight text-[#181113] dark:text-white mb-2">Thank you for your order!</h1>
-            <p className="text-[#89616f] dark:text-[#a08590] text-lg">We’ve received your order and we're getting it ready.</p>
+            <p className="text-[#89616f] dark:text-[#a08590] text-lg">We&apos;ve received your order and we&apos;re getting it ready.</p>
         </div>
     );
 };

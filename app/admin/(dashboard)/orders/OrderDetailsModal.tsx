@@ -1,0 +1,182 @@
+"use client";
+
+import { useState } from "react";
+
+interface Order {
+    id: string;
+    Name: string;
+    email: string | null;
+    phone: string;
+    streetAddress: string;
+    city: string;
+    totalAmount: number;
+    status: string;
+    createdAt: string;
+    items: {
+        id: string;
+        quantity: number;
+        price: number;
+        product: {
+            name: string;
+            images: string;
+        } | null;
+    }[];
+}
+
+interface OrderDetailsModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    order: Order | null;
+}
+
+export default function OrderDetailsModal({ isOpen, onClose, order }: OrderDetailsModalProps) {
+    if (!isOpen || !order) return null;
+
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case 'DELIVERED': return 'emerald';
+            case 'PROCESSING': return 'blue';
+            case 'PENDING': return 'amber';
+            case 'CANCELLED': return 'red';
+            case 'SHIPPED': return 'blue';
+            default: return 'gray';
+        }
+    };
+
+    const statusColor = getStatusColor(order.status);
+
+    return (
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-text-main/40 dark:bg-black/60 backdrop-blur-[2px]" onClick={onClose}></div>
+            <div className="relative bg-white dark:bg-surface-dark w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+
+                {/* Header */}
+                <div className="px-6 py-5 border-b border-[#e6dbdf] dark:border-gray-700 flex items-center justify-between bg-background-light/50 dark:bg-gray-800/50">
+                    <div>
+                        <h3 className="text-xl font-extrabold text-text-main dark:text-white tracking-tight">
+                            Order Details
+                        </h3>
+                        <p className="text-xs text-text-sub dark:text-gray-400 font-medium">
+                            #{order.id.toUpperCase()} • {new Date(order.createdAt).toLocaleDateString()}
+                        </p>
+                    </div>
+                    <button
+                        onClick={onClose}
+                        className="p-2 text-text-sub dark:text-gray-400 hover:text-primary hover:bg-primary/10 rounded-full transition-colors"
+                    >
+                        <span className="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-8">
+
+                    {/* Status & Total */}
+                    <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-background-light dark:bg-gray-800/50 border border-[#e6dbdf] dark:border-gray-700">
+                        <div className="space-y-1">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500">Current Status</p>
+                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${statusColor === "blue" ? "bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800/50" :
+                                    statusColor === "amber" ? "bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800/50" :
+                                        statusColor === "emerald" ? "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/50" :
+                                            statusColor === "red" ? "bg-red-50 text-red-600 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800/50" :
+                                                "bg-gray-50 text-gray-600 border-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700"
+                                }`}>
+                                {order.status}
+                            </span>
+                        </div>
+                        <div className="text-right space-y-1">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500">Total Amount</p>
+                            <p className="text-2xl font-black text-primary">${order.totalAmount.toFixed(2)}</p>
+                        </div>
+                    </div>
+
+                    {/* Customer Info */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-3">
+                            <h4 className="text-sm font-bold text-text-main dark:text-white flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary text-[18px]">person</span>
+                                Customer Information
+                            </h4>
+                            <div className="space-y-1 ml-6">
+                                <p className="text-sm font-bold text-text-main dark:text-white">{order.Name}</p>
+                                <p className="text-sm text-text-sub dark:text-gray-400">{order.email || 'No email provided'}</p>
+                                <p className="text-sm text-text-sub dark:text-gray-400">{order.phone}</p>
+                            </div>
+                        </div>
+                        <div className="space-y-3">
+                            <h4 className="text-sm font-bold text-text-main dark:text-white flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary text-[18px]">location_on</span>
+                                Shipping Address
+                            </h4>
+                            <div className="space-y-1 ml-6">
+                                <p className="text-sm text-text-sub dark:text-gray-400 leading-relaxed">
+                                    {order.streetAddress}<br />
+                                    {order.city}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Order Items */}
+                    <div className="space-y-4">
+                        <h4 className="text-sm font-bold text-text-main dark:text-white flex items-center gap-2">
+                            <span className="material-symbols-outlined text-primary text-[18px]">inventory_2</span>
+                            Order Items ({order.items.length})
+                        </h4>
+                        <div className="border border-[#e6dbdf] dark:border-gray-700 rounded-2xl overflow-hidden">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="bg-background-light/50 dark:bg-gray-800/50 border-b border-[#e6dbdf] dark:border-gray-700">
+                                        <th className="p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500">Product</th>
+                                        <th className="p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500 text-center">Qty</th>
+                                        <th className="p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500 text-right">Price</th>
+                                        <th className="p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500 text-right">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-[#e6dbdf] dark:divide-gray-700">
+                                    {order.items.map((item, idx) => (
+                                        <tr key={idx} className="hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors">
+                                            <td className="p-3">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="size-10 rounded-lg bg-gray-100 dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 overflow-hidden shrink-0">
+                                                        <img
+                                                            src={item.product?.images.split(',')[0] || '/placeholder.jpg'}
+                                                            alt={item.product?.name}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    </div>
+                                                    <span className="text-xs font-bold text-text-main dark:text-white line-clamp-1">
+                                                        {item.product?.name || 'Deleted Product'}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td className="p-3 text-center text-xs font-bold text-text-sub dark:text-gray-400">
+                                                {item.quantity}
+                                            </td>
+                                            <td className="p-3 text-right text-xs font-medium text-text-sub dark:text-gray-400">
+                                                ${Number(item.price).toFixed(2)}
+                                            </td>
+                                            <td className="p-3 text-right text-xs font-black text-text-main dark:text-white">
+                                                ${(Number(item.price) * item.quantity).toFixed(2)}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Footer */}
+                <div className="px-6 py-4 bg-background-light dark:bg-gray-800/50 border-t border-[#e6dbdf] dark:border-gray-700 flex items-center justify-end">
+                    <button
+                        onClick={onClose}
+                        className="bg-primary hover:bg-primary/90 text-white h-10 px-6 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 transition-all transform hover:-translate-y-0.5"
+                    >
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
