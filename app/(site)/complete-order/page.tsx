@@ -74,7 +74,7 @@ const CompleteOrderContent = () => {
     if (!order) return null;
 
     return (
-        <main className="flex-grow w-full max-w-[800px] mx-auto px-6 py-16 flex flex-col items-center">
+        <main className="flex-grow w-full mx-auto px-6 py-16 md:px-20 lg:px-32 xl:px-48 2xl:px-64 flex flex-col items-center">
             <OrderSuccessHeader />
 
             <div className="w-full bg-white dark:bg-[#2a161d] rounded-2xl border border-[#f4f0f2] dark:border-[#3a2228] shadow-sm overflow-hidden">

@@ -122,7 +122,7 @@ const ProductsPageContent = () => {
     };
 
     return (
-        <div className="flex-1 px-6 py-8 md:px-12 lg:px-16 xl:px-24">
+        <div className="flex-1 px-6 py-8 md:px-20 lg:px-32 xl:px-48 2xl:px-64">
             <ProductsBreadcrumbs />
 
             <ProductsHeader sort={sort} setSort={setSort} />
@@ -145,7 +145,7 @@ const ProductsPageContent = () => {
                         </div>
                     )}
 
-                    <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4">
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4">
                         {products.map(product => (
                             <ProductCard key={product.id} product={product} />
                         ))}

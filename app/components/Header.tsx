@@ -32,7 +32,7 @@ const Header = () => {
 
     return (
         <header className={`sticky top-0 z-50 w-full transition-all duration-300 border-b ${scrolled ? "bg-surface-light/95 dark:bg-surface-dark/95 backdrop-blur-md border-[#f4f0f2] dark:border-[#3a1d26]" : "bg-transparent border-transparent"}`}>
-            <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-4">
+            <div className="px-6 py-4 md:px-20 lg:px-32 xl:px-48 2xl:px-64">
                 <div className="flex items-center justify-between gap-4">
                     {/* Mobile Menu Toggle (Left) */}
                     <button
@@ -56,8 +56,8 @@ const Header = () => {
                     <div className="flex items-center gap-2 md:gap-8">
                         <nav className="hidden lg:flex items-center gap-6">
                             <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">Shop</Link>
-                            <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">About</Link>
-                            <Link href="/blog" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">Blog</Link>
+                            <Link href="#" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">About</Link>
+                            <Link href="#" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">Blog</Link>
                         </nav>
                         <div className="flex items-center gap-1 md:gap-2">
                             {/* Mobile Search Toggle */}
@@ -123,7 +123,7 @@ const Header = () => {
                             </Link>
 
                             <Link
-                                href="/about"
+                                href="#"
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20"
                             >
@@ -132,7 +132,7 @@ const Header = () => {
                             </Link>
 
                             <Link
-                                href="/blog"
+                                href="#"
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20"
                             >

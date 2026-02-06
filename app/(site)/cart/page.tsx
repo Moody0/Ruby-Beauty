@@ -14,7 +14,7 @@ const CartPage = () => {
     }
 
     return (
-        <main className="flex-grow w-full max-w-[1440px] mx-auto px-6 lg:px-40 py-10">
+        <main className="flex-grow w-full mx-auto px-6 py-10 md:px-20 lg:px-32 xl:px-48 2xl:px-64">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                 <CartItemsList
                     items={items}

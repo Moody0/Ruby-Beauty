@@ -8,8 +8,8 @@ const Main = () => {
     return (
         <main className="w-full flex flex-col gap-16 pb-20">
             {/* Hero Section */}
-            <section className="px-4 md:px-8 pt-8">
-                <div className="max-w-[1200px] mx-auto">
+            <section className="px-6 pt-8 md:px-20 lg:px-32 xl:px-48 2xl:px-64">
+                <div className="w-full">
                     <div className="relative overflow-hidden rounded-2xl bg-surface-light dark:bg-surface-dark shadow-sm">
                         <div className="flex flex-col-reverse md:flex-row items-center">
                             {/* Hero Content */}

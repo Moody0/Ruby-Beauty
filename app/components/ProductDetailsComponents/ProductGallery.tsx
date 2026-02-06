@@ -9,7 +9,7 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
     return (
         <div className="flex flex-col gap-4 lg:sticky lg:top-28 self-start h-fit">
             {/* Main Image */}
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-[#f0eff0] dark:bg-white/5 group">
+            <div className="relative aspect-square md:aspect-3/3 w-full overflow-hidden rounded-2xl bg-[#f0eff0] dark:bg-white/5 group">
                 <div
                     className="absolute inset-0 bg-center bg-cover transition-transform duration-700 group-hover:scale-105"
                     style={{ backgroundImage: `url('${images}')` }}

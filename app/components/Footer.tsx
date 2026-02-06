@@ -4,7 +4,7 @@ import React from 'react';
 const Footer = () => {
     return (
         <footer
-            className="bg-surface-light dark:bg-surface-dark border-t border-[#f4f0f2] dark:border-[#3a1d26] pt-16 pb-8 px-4 md:px-8"
+            className="bg-surface-light dark:bg-surface-dark border-t border-[#f4f0f2] dark:border-[#3a1d26] pt-16 pb-8 px-6 md:px-20 lg:px-32 xl:px-48 2xl:px-64"
             suppressHydrationWarning
         >
             <div className="max-w-[1200px] mx-auto">

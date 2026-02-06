@@ -37,15 +37,17 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     });
 
     return (
-        <div className="flex-grow w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 py-8 lg:py-12">
+        <div className="flex-grow w-full mx-auto px-6 py-8 md:px-20 lg:px-32 xl:px-48 2xl:px-64 lg:py-12">
             <ProductBreadcrumbs productName={product.name} />
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 xl:gap-20">
                 {/* Product Gallery (Left) */}
-                <ProductGallery images={product.images as any} isTrending={(product as any).isTrending} />
+                <div className="lg:col-span-2">
+                    <ProductGallery images={product.images as any} isTrending={(product as any).isTrending} />
+                </div>
 
                 {/* Product Details (Right) */}
-                <div className="flex flex-col">
+                <div className="flex flex-col lg:col-span-3">
                     <ProductInfo name={product.name} description={product.description} price={product.price.toString()} />
 
                     {/* Description */}
