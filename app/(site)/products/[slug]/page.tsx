@@ -33,7 +33,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     });
 
     return (
-        <div className="flex-grow w-full mx-auto px-6 py-8 md:px-20 lg:px-32 xl:px-48 2xl:px-64 lg:py-12">
+        <div className="grow w-full mx-auto px-6 py-8 md:px-20 lg:px-32 xl:px-48 2xl:px-64 lg:py-12">
             <ProductBreadcrumbs productName={product.name} />
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 xl:gap-20">

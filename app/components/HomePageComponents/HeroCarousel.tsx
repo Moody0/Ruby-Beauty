@@ -90,7 +90,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                     style={{ backgroundImage: `url("${banner.image}")` }}
                                 >
                                     {/* Dark overlay for better text readability */}
-                                    <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60"></div>
+                                    <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/40 to-black/60"></div>
                                 </div>
 
                                 {/* Content Overlay */}

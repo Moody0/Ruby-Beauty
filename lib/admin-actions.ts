@@ -854,3 +854,22 @@ export async function updateAdminCredentials(data: {
         return { success: false, error: "Failed to update credentials" };
     }
 }
+
+export async function bulkToggleTrending(ids: string[], isTrending: boolean) {
+    try {
+        await prisma.product.updateMany({
+            where: {
+                id: { in: ids }
+            },
+            data: { isTrending }
+        });
+
+        revalidatePath('/');
+        revalidatePath('/admin/products');
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to bulk toggle trending status:", error);
+        return { success: false, error: "Failed to bulk toggle trending status" };
+    }
+}
+

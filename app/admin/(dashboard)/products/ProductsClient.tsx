@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import AdminHeader from "../../components/AdminHeader";
 import AddProductModal from "./AddProductModal";
-import { deleteProduct, toggleProductTrending } from "../../../../lib/admin-actions";
+import { deleteProduct, toggleProductTrending, bulkToggleTrending } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 
 interface Product {
@@ -37,8 +37,11 @@ export default function ProductsClient({ products, categories }: { products: Pro
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All Categories");
     const [selectedStockStatus, setSelectedStockStatus] = useState("Stock Status");
+    const [showTrendingOnly, setShowTrendingOnly] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
+    const [isSubmittingBulk, setIsSubmittingBulk] = useState(false);
     const itemsPerPage = 20;
 
     // Calculate stats
@@ -58,7 +61,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
     // Reset to first page when filtering
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchQuery, selectedCategory, selectedStockStatus]);
+    }, [searchQuery, selectedCategory, selectedStockStatus, showTrendingOnly]);
 
     // Filter products
     const filteredProducts = useMemo(() => {
@@ -74,9 +77,11 @@ export default function ProductsClient({ products, categories }: { products: Pro
             else if (selectedStockStatus === "Low Stock") matchesStock = Number(p.stock) > 0 && Number(p.stock) <= 10;
             else if (selectedStockStatus === "Out of Stock") matchesStock = Number(p.stock) === 0;
 
-            return matchesSearch && matchesCategory && matchesStock;
+            const matchesTrending = !showTrendingOnly || p.isTrending;
+
+            return matchesSearch && matchesCategory && matchesStock && matchesTrending;
         });
-    }, [products, searchQuery, selectedCategory, selectedStockStatus]);
+    }, [products, searchQuery, selectedCategory, selectedStockStatus, showTrendingOnly]);
 
     // Pagination logic
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -95,6 +100,28 @@ export default function ProductsClient({ products, categories }: { products: Pro
         setIsAddModalOpen(true);
     };
 
+    const toggleSelectAll = () => {
+        const allOnPageSelected = currentItems.length > 0 && currentItems.every(p => selectedIds.has(p.id));
+        const newSelected = new Set(selectedIds);
+
+        if (allOnPageSelected) {
+            currentItems.forEach(p => newSelected.delete(p.id));
+        } else {
+            currentItems.forEach(p => newSelected.add(p.id));
+        }
+        setSelectedIds(newSelected);
+    };
+
+    const toggleSelectOne = (id: string) => {
+        const newSelected = new Set(selectedIds);
+        if (newSelected.has(id)) {
+            newSelected.delete(id);
+        } else {
+            newSelected.add(id);
+        }
+        setSelectedIds(newSelected);
+    };
+
     const handleDelete = async (id: string, name: string) => {
         if (confirm(`⚠️ Are you sure you want to permanently delete "${name}"?\n\nThis action cannot be undone and will remove the product from all future orders.`)) {
             try {
@@ -110,6 +137,27 @@ export default function ProductsClient({ products, categories }: { products: Pro
             }
         }
     }
+
+    const handleBulkRemoveTrending = async () => {
+        if (selectedIds.size === 0) return;
+
+        const ids = Array.from(selectedIds);
+        setIsSubmittingBulk(true);
+        try {
+            const result = await bulkToggleTrending(ids, false);
+            if (result.success) {
+                toast.success(`Removed trending status from ${ids.length} products`);
+                setSelectedIds(new Set());
+            } else {
+                toast.error(result.error || "Failed to update products");
+            }
+        } catch (error) {
+            console.error("Error in bulk update:", error);
+            toast.error("An unexpected error occurred");
+        } finally {
+            setIsSubmittingBulk(false);
+        }
+    };
 
     const handleToggleTrending = async (id: string, currentStatus: boolean) => {
         setLoadingMap(prev => ({ ...prev, [id]: true }));
@@ -240,8 +288,62 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                         <span className="material-symbols-outlined text-[20px]">expand_more</span>
                                     </div>
                                 </div>
+
+                                {/* Trending Filter Toggle */}
+                                <button
+                                    onClick={() => setShowTrendingOnly(!showTrendingOnly)}
+                                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${showTrendingOnly
+                                        ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20'
+                                        : 'bg-background-light dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 text-text-main dark:text-white hover:border-amber-500 hover:text-amber-500'
+                                        }`}
+                                >
+                                    <span className={`material-symbols-outlined text-[20px] ${showTrendingOnly ? 'fill-1' : ''}`}>local_fire_department</span>
+                                    <span className="hidden sm:inline">Trending Only</span>
+                                </button>
                             </div>
                         </div>
+
+                        {/* Bulk Actions Bar */}
+                        {selectedIds.size > 0 && (
+                            <div className="bg-primary/5 dark:bg-primary/10 border-b border-[#e6dbdf] dark:border-gray-700 px-5 py-4 flex items-center justify-between animate-in slide-in-from-top duration-300">
+                                <div className="flex items-center gap-3">
+                                    <span className="flex items-center justify-center size-6 bg-primary text-white text-xs font-bold rounded-full">{selectedIds.size}</span>
+                                    <span className="text-sm font-bold text-text-main dark:text-white">Items selected</span>
+                                    <button
+                                        onClick={() => setSelectedIds(new Set())}
+                                        className="text-xs text-text-sub hover:text-primary transition-colors font-medium ml-2 underline"
+                                    >
+                                        Deselect all
+                                    </button>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        onClick={handleBulkRemoveTrending}
+                                        disabled={isSubmittingBulk}
+                                        className="flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-xs font-bold rounded-lg hover:bg-amber-200 dark:hover:bg-amber-900/30 transition-all border border-amber-200 dark:border-amber-800/50 disabled:opacity-50"
+                                    >
+                                        {isSubmittingBulk ? (
+                                            <span className="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>
+                                        ) : (
+                                            <span className="material-symbols-outlined text-[18px]">trending_down</span>
+                                        )}
+                                        Remove Trending
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            if (confirm(`Are you sure you want to delete ${selectedIds.size} products?`)) {
+                                                // We would call a bulk delete action here if we had one
+                                                toast.error("Bulk delete coming soon!");
+                                            }
+                                        }}
+                                        className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-lg transition-all shadow-md shadow-red-500/20"
+                                    >
+                                        <span className="material-symbols-outlined text-[18px]">delete</span>
+                                        Delete Selected
+                                    </button>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Table */}
                         <div className="overflow-x-auto">
@@ -249,7 +351,12 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                 <thead>
                                     <tr className="bg-background-light dark:bg-gray-800/50 border-b border-[#e6dbdf] dark:border-gray-700 text-[10px] sm:text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">
                                         <th className="p-3 sm:p-5 w-10 sm:w-12 text-center text-[0px]">
-                                            <input className="rounded border-gray-300 text-primary focus:ring-primary size-3 sm:size-4 cursor-pointer" type="checkbox" />
+                                            <input
+                                                className="rounded border-gray-300 text-primary focus:ring-primary size-3 sm:size-4 cursor-pointer"
+                                                type="checkbox"
+                                                checked={currentItems.length > 0 && currentItems.every(p => selectedIds.has(p.id))}
+                                                onChange={toggleSelectAll}
+                                            />
                                         </th>
                                         <th className="p-3 sm:p-5">Product</th>
                                         <th className="p-3 sm:p-5">Category</th>
@@ -263,9 +370,14 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                 <tbody className="divide-y divide-[#e6dbdf] dark:divide-gray-700">
                                     {currentItems.length > 0 ? (
                                         currentItems.map((product) => (
-                                            <tr key={product.id} className="group hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors">
+                                            <tr key={product.id} className={`group hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors ${selectedIds.has(product.id) ? 'bg-primary/5 dark:bg-primary/10' : ''}`}>
                                                 <td className="p-3 sm:p-5 text-center px-3 sm:px-5">
-                                                    <input className="rounded border-gray-300 text-primary focus:ring-primary size-3 sm:size-4 cursor-pointer" type="checkbox" />
+                                                    <input
+                                                        className="rounded border-gray-300 text-primary focus:ring-primary size-3 sm:size-4 cursor-pointer"
+                                                        type="checkbox"
+                                                        checked={selectedIds.has(product.id)}
+                                                        onChange={() => toggleSelectOne(product.id)}
+                                                    />
                                                 </td>
                                                 <td className="p-3 sm:p-5">
                                                     <div className="flex items-center gap-3 sm:gap-4">
