@@ -75,7 +75,10 @@ const ProductsPageContent = () => {
             else if (sort === 'Price: High to Low') sortQuery = '&sort=price_desc';
             else if (sort === 'Newest Arrivals') sortQuery = '&sort=newest';
 
-            const res = await fetch(`/api/products?page=${currentPage}&limit=8${categoryQuery}${sortQuery}`);
+            // Dynamic limit based on grid columns: 10 for 5-cols (2xl), 9 for others
+            const dynamicLimit = (typeof window !== 'undefined' && window.innerWidth >= 1536) ? 10 : 9;
+
+            const res = await fetch(`/api/products?page=${currentPage}&limit=${dynamicLimit}${categoryQuery}${sortQuery}`);
             if (res.ok) {
                 const data = await res.json();
                 if (reset) {
@@ -122,7 +125,7 @@ const ProductsPageContent = () => {
     };
 
     return (
-        <div className="flex-1 px-6 py-8 md:px-20 lg:px-32 xl:px-48 2xl:px-64">
+        <div className="flex-1 px-4 py-8 md:px-20 lg:px-32 xl:px-48 2xl:px-64">
             <ProductsBreadcrumbs />
 
             <ProductsHeader sort={sort} setSort={setSort} />
@@ -145,7 +148,7 @@ const ProductsPageContent = () => {
                         </div>
                     )}
 
-                    <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                    <div className="grid grid-cols-3 gap-x-2 gap-y-6 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                         {products.map(product => (
                             <ProductCard key={product.id} product={product} />
                         ))}
