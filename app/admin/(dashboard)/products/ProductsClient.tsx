@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import AdminHeader from "../../components/AdminHeader";
 import AddProductModal from "./AddProductModal";
-import { deleteProduct, toggleProductTrending, bulkToggleTrending } from "../../../../lib/admin-actions";
+import { deleteProduct, toggleProductTrending, bulkToggleTrending, bulkCreateProducts } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 
@@ -181,6 +181,89 @@ export default function ProductsClient({ products, categories }: { products: Pro
         }
     };
 
+    const handleExportCSV = () => {
+        try {
+            // Prepare headers
+            const headers = ["Name", "SKU", "Category", "Price", "Stock", "Status", "Is Trending"];
+
+            // Prepare data rows
+            const rows = products.map((p: any) => [
+                `"${p.name.replace(/"/g, '""')}"`,
+                `"${(p.sku || '').replace(/"/g, '""')}"`,
+                `"${(p.category?.name || 'Uncategorized').replace(/"/g, '""')}"`,
+                p.price,
+                p.stock,
+                p.stock > 0 ? "In Stock" : "Out of Stock",
+                p.isTrending ? "Yes" : "No"
+            ]);
+
+            // Combine into CSV string
+            const csvContent = [
+                headers.join(","),
+                ...rows.map(r => r.join(","))
+            ].join("\n");
+
+            // Create download link
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `ruby_beauty_products_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            toast.success("Products exported successfully");
+        } catch (error) {
+            console.error("Export failed:", error);
+            toast.error("Failed to export products");
+        }
+    };
+
+    const handleImportCSV = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setIsSubmittingBulk(true);
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            try {
+                const text = event.target?.result as string;
+                const lines = text.split('\n');
+                if (lines.length < 2) {
+                    toast.error("CSV file is empty or missing headers");
+                    return;
+                }
+
+                const headers = lines[0].split(',').map(h => h.trim());
+
+                const data = lines.slice(1).filter(line => line.trim()).map(line => {
+                    const values = line.split(',').map(v => v.replace(/^"|"$/g, '').trim());
+                    const obj: any = {};
+                    headers.forEach((header, i) => {
+                        obj[header] = values[i];
+                    });
+                    return obj;
+                });
+
+                const result = await bulkCreateProducts(data);
+                if (result.success) {
+                    toast.success(`Successfully imported ${result.count} products`);
+                } else {
+                    toast.error(result.error || "Failed to import products");
+                }
+            } catch (error) {
+                console.error("Import error:", error);
+                toast.error("Failed to parse CSV file");
+            } finally {
+                setIsSubmittingBulk(false);
+                if (e.target) e.target.value = '';
+            }
+        };
+        reader.readAsText(file);
+    };
+
     return (
         <div className="flex-1 flex flex-col h-screen overflow-hidden bg-background-light dark:bg-background-dark">
             <AdminHeader title="Products" onMenuClick={openSidebar} />
@@ -200,18 +283,38 @@ export default function ProductsClient({ products, categories }: { products: Pro
                             <h2 className="text-3xl font-extrabold text-text-main dark:text-white tracking-tight">Products</h2>
                             <p className="text-text-sub dark:text-gray-400">Manage your product catalog and inventory.</p>
                         </div>
-                        {canEdit && (
+                        <div className="flex flex-wrap items-center gap-3">
                             <button
-                                onClick={() => {
-                                    setSelectedProduct(null);
-                                    setIsAddModalOpen(true);
-                                }}
-                                className="bg-primary hover:bg-primary/90 text-white h-12 px-6 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                                onClick={handleExportCSV}
+                                className="bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-text-main dark:text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm"
                             >
-                                <span className="material-symbols-outlined text-[20px]">add</span>
-                                Add New Product
+                                <span className="material-symbols-outlined text-[20px]">file_download</span>
+                                Export Data
                             </button>
-                        )}
+                            <label className="bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-text-main dark:text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm cursor-pointer">
+                                <span className="material-symbols-outlined text-[20px]">file_upload</span>
+                                Import Data
+                                <input
+                                    type="file"
+                                    accept=".csv"
+                                    className="hidden"
+                                    onChange={handleImportCSV}
+                                    disabled={isSubmittingBulk}
+                                />
+                            </label>
+                            {canEdit && (
+                                <button
+                                    onClick={() => {
+                                        setSelectedProduct(null);
+                                        setIsAddModalOpen(true);
+                                    }}
+                                    className="bg-primary hover:bg-primary/90 text-white h-12 px-6 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                                >
+                                    <span className="material-symbols-outlined text-[20px]">add</span>
+                                    Add New Product
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     <AddProductModal

@@ -486,6 +486,49 @@ export async function getTrendingProducts() {
     }
 }
 
+export async function bulkCreateProducts(products: any[]) {
+    try {
+        // Get all categories to match by name
+        const categories = await prisma.category.findMany();
+        const categoryMap = new Map(categories.map(c => [c.name.toLowerCase(), c.id]));
+
+        const results = await Promise.all(products.map(async (p) => {
+            const categoryName = (p.Category || 'Uncategorized').toLowerCase();
+            let categoryId = categoryMap.get(categoryName);
+
+            // If category doesn't exist, create it
+            if (!categoryId) {
+                const newCat = await prisma.category.create({
+                    data: { name: p.Category || 'Uncategorized' }
+                });
+                categoryMap.set(categoryName, newCat.id);
+                categoryId = newCat.id;
+            }
+
+            return prisma.product.create({
+                data: {
+                    name: p.Name,
+                    slug: p.Name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') + '-' + Math.random().toString(36).substr(2, 5),
+                    description: p.Description || "",
+                    price: parseFloat(p.Price || "0"),
+                    stock: parseInt(p.Stock || "0"),
+                    sku: p.SKU || "",
+                    images: p.Images || "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800",
+                    categoryId: categoryId,
+                    isTrending: p["Is Trending"] === "Yes"
+                }
+            });
+        }));
+
+        revalidatePath('/admin/products');
+        revalidatePath('/');
+        return { success: true, count: results.length };
+    } catch (error) {
+        console.error("Bulk import failed:", error);
+        return { success: false, error: "Failed to import products. Check CSV format." };
+    }
+}
+
 export interface BannerInput {
     title: string;
     subtitle?: string;
