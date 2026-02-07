@@ -5,7 +5,6 @@ import { useState } from "react";
 interface Order {
     id: string;
     Name: string;
-    email: string | null;
     phone: string;
     streetAddress: string;
     city: string;
@@ -76,10 +75,10 @@ export default function OrderDetailsModal({ isOpen, onClose, order }: OrderDetai
                         <div className="space-y-1">
                             <p className="text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500">Current Status</p>
                             <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${statusColor === "blue" ? "bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800/50" :
-                                    statusColor === "amber" ? "bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800/50" :
-                                        statusColor === "emerald" ? "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/50" :
-                                            statusColor === "red" ? "bg-red-50 text-red-600 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800/50" :
-                                                "bg-gray-50 text-gray-600 border-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700"
+                                statusColor === "amber" ? "bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800/50" :
+                                    statusColor === "emerald" ? "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/50" :
+                                        statusColor === "red" ? "bg-red-50 text-red-600 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800/50" :
+                                            "bg-gray-50 text-gray-600 border-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700"
                                 }`}>
                                 {order.status}
                             </span>
@@ -99,7 +98,6 @@ export default function OrderDetailsModal({ isOpen, onClose, order }: OrderDetai
                             </h4>
                             <div className="space-y-1 ml-6">
                                 <p className="text-sm font-bold text-text-main dark:text-white">{order.Name}</p>
-                                <p className="text-sm text-text-sub dark:text-gray-400">{order.email || 'No email provided'}</p>
                                 <p className="text-sm text-text-sub dark:text-gray-400">{order.phone}</p>
                             </div>
                         </div>

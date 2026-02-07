@@ -4,12 +4,37 @@ import { CartItem } from '@/app/context/CartContext';
 interface OrderSummaryProps {
     items: CartItem[];
     subtotal: number;
-    tax: number;
     total: number;
     loading: boolean;
+    discount?: number;
+    onApplyPromo?: (code: string) => Promise<{ success: boolean; message?: string }>;
 }
 
-const OrderSummary = ({ items, subtotal, tax, total, loading }: OrderSummaryProps) => {
+const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPromo }: OrderSummaryProps) => {
+    const [promoCode, setPromoCode] = React.useState("");
+    const [promoMessage, setPromoMessage] = React.useState<{ type: 'success' | 'error', text: string } | null>(null);
+    const [isApplyingPromo, setIsApplyingPromo] = React.useState(false);
+
+    const handleApplyPromo = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!promoCode.trim() || !onApplyPromo) return;
+
+        setIsApplyingPromo(true);
+        setPromoMessage(null);
+        try {
+            const result = await onApplyPromo(promoCode);
+            if (result.success) {
+                setPromoMessage({ type: 'success', text: result.message || "Promo code applied!" });
+            } else {
+                setPromoMessage({ type: 'error', text: result.message || "Invalid promo code" });
+            }
+        } catch (error) {
+            setPromoMessage({ type: 'error', text: "Failed to apply code" });
+        } finally {
+            setIsApplyingPromo(false);
+        }
+    };
+
     return (
         <div className="sticky top-28 space-y-6">
             <div className="bg-white dark:bg-[#2a161d] p-8 rounded-2xl shadow-lg border border-[#f4f0f2] dark:border-[#3a2228]">
@@ -32,18 +57,46 @@ const OrderSummary = ({ items, subtotal, tax, total, loading }: OrderSummaryProp
                     )}
                 </div>
 
+                {onApplyPromo && (
+                    <form onSubmit={handleApplyPromo} className="mb-6">
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                value={promoCode}
+                                onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                                placeholder="Promo Code"
+                                className="flex-1 px-4 py-2 rounded-lg border border-[#e6dbdf] dark:border-gray-700 bg-[#fcfafa] dark:bg-[#341a22] text-sm focus:outline-none focus:ring-1 focus:ring-primary uppercase font-medium placeholder:normal-case"
+                            />
+                            <button
+                                type="submit"
+                                disabled={isApplyingPromo || !promoCode.trim()}
+                                className="px-4 py-2 bg-gray-900 dark:bg-gray-700 text-white text-sm font-bold rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                {isApplyingPromo ? '...' : 'Apply'}
+                            </button>
+                        </div>
+                        {promoMessage && (
+                            <p className={`text-xs mt-2 ${promoMessage.type === 'success' ? 'text-green-600' : 'text-red-500'}`}>
+                                {promoMessage.text}
+                            </p>
+                        )}
+                    </form>
+                )}
+
                 <div className="flex flex-col gap-3 mb-6 border-t border-b border-[#f4f0f2] dark:border-[#3a2228] py-6">
                     <div className="flex justify-between text-[#89616f] dark:text-[#a08590]">
                         <span>Subtotal</span>
                         <span className="font-medium text-[#181113] dark:text-white">${subtotal.toFixed(2)}</span>
                     </div>
+                    {discount > 0 && (
+                        <div className="flex justify-between text-emerald-600 font-medium">
+                            <span>Discount</span>
+                            <span>-${discount.toFixed(2)}</span>
+                        </div>
+                    )}
                     <div className="flex justify-between text-[#89616f] dark:text-[#a08590]">
                         <span>Shipping</span>
                         <span className="font-medium text-green-600">Free</span>
-                    </div>
-                    <div className="flex justify-between text-[#89616f] dark:text-[#a08590]">
-                        <span>Estimated Tax (8%)</span>
-                        <span className="font-medium text-[#181113] dark:text-white">${tax.toFixed(2)}</span>
                     </div>
                 </div>
 

@@ -14,10 +14,11 @@ export async function POST(request: Request) {
             firstName,
             lastName,
             phone,
-            email,
             streetAddress,
             city,
             totalAmount,
+            promoCodeId,
+            discount,
             items
         } = body;
 
@@ -35,11 +36,12 @@ export async function POST(request: Request) {
                 data: {
                     Name: `${firstName} ${lastName}`,
                     phone,
-                    email,
                     streetAddress,
                     city,
                     totalAmount,
                     status: 'PENDING',
+                    promoCodeId: promoCodeId || null,
+                    discount: discount || 0,
                     items: {
                         create: items.map((item: OrderItemInput) => ({
                             productId: item.productId,
@@ -61,6 +63,17 @@ export async function POST(request: Request) {
                         stock: {
                             decrement: item.quantity
                         }
+                    }
+                });
+            }
+
+            // Update Promo Code stats
+            if (promoCodeId) {
+                await tx.promoCode.update({
+                    where: { id: promoCodeId },
+                    data: {
+                        usageCount: { increment: 1 },
+                        totalSales: { increment: totalAmount }
                     }
                 });
             }

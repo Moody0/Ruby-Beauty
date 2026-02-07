@@ -8,7 +8,6 @@ interface ShippingFormProps {
         phone: string;
         streetAddress: string;
         city: string;
-        email: string;
     };
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -42,7 +41,7 @@ const ShippingForm = ({ formData, handleInputChange }: ShippingFormProps) => {
                             type="text"
                         />
                     </div>
-                    <div className="col-span-1">
+                    <div className="col-span-1 md:col-span-2">
                         <label className="block text-sm font-bold mb-2 text-[#181113] dark:text-white">Phone Number *</label>
                         <input
                             name="phone"
@@ -52,17 +51,6 @@ const ShippingForm = ({ formData, handleInputChange }: ShippingFormProps) => {
                             className="w-full bg-white dark:bg-[#341a22] border-[#f4f0f2] dark:border-[#4a2e36] rounded-xl px-4 py-3.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm"
                             placeholder="+963 9xx xxx xxx"
                             type="tel"
-                        />
-                    </div>
-                    <div className="col-span-1">
-                        <label className="block text-sm font-bold mb-2 text-[#181113] dark:text-white">Email Address (Optional)</label>
-                        <input
-                            name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            className="w-full bg-white dark:bg-[#341a22] border-[#f4f0f2] dark:border-[#4a2e36] rounded-xl px-4 py-3.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm"
-                            placeholder="user@aruma-luxe.com"
-                            type="email"
                         />
                     </div>
                     <div className="col-span-1 md:col-span-2">
@@ -93,7 +81,7 @@ const ShippingForm = ({ formData, handleInputChange }: ShippingFormProps) => {
                 <div className="mt-8 pt-6 border-t border-[#f4f0f2] dark:border-[#3a2228]">
                     <div className="flex items-center gap-3 p-4 bg-soft-pink dark:bg-primary/5 rounded-xl border border-primary/10">
                         <span className="material-symbols-outlined text-primary">info</span>
-                        <p className="text-sm text-[#89616f] dark:text-[#a08590]">Standard delivery takes 3-5 business days. You will receive a tracking link via SMS/Email.</p>
+                        <p className="text-sm text-[#89616f] dark:text-[#a08590]">Standard delivery takes 3-5 business days. You will receive a tracking link via SMS.</p>
                     </div>
                 </div>
             </div>

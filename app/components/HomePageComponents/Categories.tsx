@@ -1,7 +1,5 @@
-'use client'
-
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 interface Category {
     id: string;
@@ -10,41 +8,12 @@ interface Category {
     image: string | null;
 }
 
-const Categories = () => {
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        fetch('/api/categories?limit=4')
-            .then(res => res.json())
-            .then(data => {
-                setCategories(data);
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error('Error fetching categories:', error);
-                setLoading(false);
-            });
-    }, []);
-
+const Categories = ({ categories }: { categories: Category[] }) => {
     // Fallback image if category doesn't have one
     const defaultImage = 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800';
 
-    if (loading) {
-        return (
-            <section className="px-4 md:px-8">
-                <div className="max-w-[1200px] mx-auto">
-                    <div className="flex items-center justify-between mb-8 px-2">
-                        <h3 className="text-2xl font-bold text-text-main-light dark:text-text-main-dark">Shop by Category</h3>
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                        {[1, 2, 3, 4].map((i) => (
-                            <div key={i} className="aspect-4/5 rounded-xl bg-background-light dark:bg-background-dark animate-pulse"></div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-        );
+    if (!categories || categories.length === 0) {
+        return null; // Or return a message, or keeping the skeleton is tricky without client side loading
     }
 
     return (

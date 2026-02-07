@@ -22,7 +22,6 @@ interface Order {
     id: string;
     Name: string;
     phone: string;
-    email: string | null;
     streetAddress: string;
     city: string;
     totalAmount: number;
@@ -95,7 +94,7 @@ const CompleteOrderContent = () => {
                 />
             </div>
 
-            <OrderSupportFooter email={order.email} />
+            <OrderSupportFooter />
         </main>
     );
 };

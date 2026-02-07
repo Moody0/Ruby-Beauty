@@ -10,7 +10,7 @@ interface Product {
     slug: string;
     name: string;
     description: string | null;
-    price: string;
+    price: string | number;
     images: string;
     categoryId: string;
     stock: number;
@@ -43,7 +43,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
     return (
         <div className="group relative flex flex-col gap-3">
-            <Link href={`/${product.slug}`} className="relative aspect-3/4 w-full overflow-hidden rounded-xl bg-gray-100 block">
+            <Link href={`/products/${product.slug}`} className="relative aspect-3/4 w-full overflow-hidden rounded-xl bg-gray-100 block">
                 {product.isTrending && (
                     <span className="absolute left-3 top-3 z-10 rounded-md bg-white px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-black shadow-sm">Trending</span>
                 )}
@@ -70,12 +70,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
             </Link>
             <div className="flex flex-col gap-1 p-1">
                 <div className="flex items-start justify-between gap-2">
-                    <Link href={`/${product.slug}`}>
+                    <Link href={`/products/${product.slug}`}>
                         <h3 className="text-sm md:text-base font-medium text-text-main-light dark:text-white group-hover:text-primary transition-colors cursor-pointer line-clamp-2 md:line-clamp-1 h-10 md:h-auto leading-tight" title={product.name}>{product.name}</h3>
                     </Link>
                 </div>
                 <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
-                    <p className="font-bold text-primary text-sm md:text-base">${parseFloat(product.price).toFixed(2)}</p>
+                    <p className="font-bold text-primary text-sm md:text-base">${Number(product.price).toFixed(2)}</p>
                     <div className="flex items-center gap-1">
                         <div className="flex text-yellow-400">
                             <span className="material-symbols-outlined text-[12px] md:text-[14px] fill-current">star</span>

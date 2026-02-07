@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import AdminHeader from "../../components/AdminHeader";
 import AddProductModal from "./AddProductModal";
-import { deleteProduct } from "../../../../lib/admin-actions";
+import { deleteProduct, toggleProductTrending } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 
 interface Product {
@@ -18,6 +18,7 @@ interface Product {
     price: number;
     stock: number;
     images: string;
+    isTrending: boolean;
     category: {
         id: string;
         name: string;
@@ -37,6 +38,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
     const [selectedCategory, setSelectedCategory] = useState("All Categories");
     const [selectedStockStatus, setSelectedStockStatus] = useState("Stock Status");
     const [currentPage, setCurrentPage] = useState(1);
+    const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
     const itemsPerPage = 20;
 
     // Calculate stats
@@ -107,6 +109,23 @@ export default function ProductsClient({ products, categories }: { products: Pro
                 toast.error("An unexpected error occurred");
             }
         }
+    }
+
+    const handleToggleTrending = async (id: string, currentStatus: boolean) => {
+        setLoadingMap(prev => ({ ...prev, [id]: true }));
+        try {
+            const result = await toggleProductTrending(id, !currentStatus);
+            if (result.success) {
+                toast.success(`Product ${!currentStatus ? 'marked as trending' : 'removed from trending'} successfully`);
+            } else {
+                toast.error(result.error || "Failed to update status");
+            }
+        } catch (error) {
+            console.error("Error toggling product trending status:", error);
+            toast.error("An unexpected error occurred");
+        } finally {
+            setLoadingMap(prev => ({ ...prev, [id]: false }));
+        }
     };
 
     return (
@@ -151,10 +170,14 @@ export default function ProductsClient({ products, categories }: { products: Pro
                     />
 
                     {/* Stats Cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
                         <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm flex flex-col gap-1">
                             <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Total Products</p>
                             <p className="text-2xl font-bold text-text-main dark:text-white">{stats.total.toLocaleString()}</p>
+                        </div>
+                        <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm flex flex-col gap-1">
+                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Trending</p>
+                            <p className="text-2xl font-bold text-amber-500">{products.filter(p => p.isTrending).length} / 4</p>
                         </div>
                         <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm flex flex-col gap-1">
                             <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Out of Stock</p>
@@ -232,6 +255,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                         <th className="p-3 sm:p-5">Category</th>
                                         <th className="p-3 sm:p-5">Price</th>
                                         <th className="p-3 sm:p-5">Inventory</th>
+                                        <th className="p-3 sm:p-5">Trending</th>
                                         <th className="p-3 sm:p-5">Status</th>
                                         <th className="p-3 sm:p-5 text-right">Actions</th>
                                     </tr>
@@ -280,6 +304,20 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                             )}
                                                         </div>
                                                     </div>
+                                                </td>
+                                                <td className="p-3 sm:p-5">
+                                                    <button
+                                                        onClick={() => handleToggleTrending(product.id, product.isTrending)}
+                                                        disabled={loadingMap[product.id]}
+                                                        className={`p-1.5 rounded-lg transition-colors ${product.isTrending ? 'text-amber-500 bg-amber-50 hover:bg-amber-100 dark:bg-amber-900/10 dark:hover:bg-amber-900/20' : 'text-gray-300 hover:text-amber-500 hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+                                                        title={product.isTrending ? "Remove from Trending" : "Mark as Trending"}
+                                                    >
+                                                        {loadingMap[product.id] ? (
+                                                            <span className="animate-spin material-symbols-outlined text-[20px]">progress_activity</span>
+                                                        ) : (
+                                                            <span className="material-symbols-outlined text-[20px]">{product.isTrending ? 'local_fire_department' : 'local_fire_department'}</span>
+                                                        )}
+                                                    </button>
                                                 </td>
                                                 <td className="p-3 sm:p-5">
                                                     <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium border ${Number(product.stock) > 0

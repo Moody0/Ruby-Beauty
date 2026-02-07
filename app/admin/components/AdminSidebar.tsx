@@ -8,7 +8,9 @@ const navItems = [
     { href: "/admin/dashboard", icon: "dashboard", label: "Dashboard", filled: true },
     { href: "/admin/products", icon: "shopping_bag", label: "Products" },
     { href: "/admin/categories", icon: "category", label: "Categories" },
+    { href: "/admin/banners", icon: "view_carousel", label: "Banners" },
     { href: "/admin/orders", icon: "package_2", label: "Orders" },
+    { href: "/admin/promocodes", icon: "local_offer", label: "Promo Codes" },
 ];
 
 interface AdminSidebarProps {
@@ -69,8 +71,8 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                                         href={item.href}
                                         onClick={onClose}
                                         className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive
-                                                ? "bg-primary/10 text-primary"
-                                                : "text-text-sub dark:text-gray-400 hover:bg-background-light dark:hover:bg-gray-800 hover:text-text-main dark:hover:text-white"
+                                            ? "bg-primary/10 text-primary"
+                                            : "text-text-sub dark:text-gray-400 hover:bg-background-light dark:hover:bg-gray-800 hover:text-text-main dark:hover:text-white"
                                             } group`}
                                     >
                                         <span

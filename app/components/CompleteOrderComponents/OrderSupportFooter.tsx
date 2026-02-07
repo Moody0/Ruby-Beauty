@@ -5,7 +5,7 @@ interface OrderSupportFooterProps {
     email: string | null;
 }
 
-const OrderSupportFooter = ({ email }: OrderSupportFooterProps) => {
+const OrderSupportFooter = () => {
     return (
         <>
             <div className="w-full mt-10">
@@ -18,13 +18,7 @@ const OrderSupportFooter = ({ email }: OrderSupportFooterProps) => {
                 </Link>
             </div>
             <div className="mt-12 flex flex-col items-center gap-2 text-center">
-                {email && (
-                    <p className="text-xs text-[#89616f] flex items-center gap-1">
-                        <span className="material-symbols-outlined text-xs">mail</span>
-                        A confirmation email was sent to {email}
-                    </p>
-                )}
-                <p className="text-xs text-[#89616f]">Need help? <a className="text-primary font-bold hover:underline" href="#">Contact our support</a></p>
+                <p className="text-xs text-[#89616f]">Need help? <a className="text-primary font-bold hover:underline" href="https://wa.me/963933254796" target="_blank" rel="noopener noreferrer">Contact our support</a></p>
             </div>
         </>
     );

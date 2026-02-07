@@ -1,0 +1,200 @@
+"use client";
+
+import AdminHeader from "../../components/AdminHeader";
+import { useAdminSidebar } from "../../context/AdminSidebarContext";
+import { useState } from "react";
+import BannerModal from "./BannerModal";
+import { deleteBanner, toggleBannerStatus } from "../../../../lib/admin-actions";
+import { toast } from "react-hot-toast";
+
+interface Banner {
+    id: string;
+    title: string;
+    subtitle: string | null;
+    image: string;
+    buttonText: string | null;
+    link: string | null;
+    badge: string | null;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export default function BannersClient({ banners }: { banners: Banner[] }) {
+    const { openSidebar } = useAdminSidebar();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedBanner, setSelectedBanner] = useState<Banner | null>(null);
+    const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
+
+    const handleAdd = () => {
+        setSelectedBanner(null);
+        setIsModalOpen(true);
+    };
+
+    const handleEdit = (banner: Banner) => {
+        setSelectedBanner(banner);
+        setIsModalOpen(true);
+    };
+
+    const handleDelete = async (id: string, title: string) => {
+        if (confirm(`Are you sure you want to delete the banner "${title}"?`)) {
+            try {
+                const result = await deleteBanner(id);
+                if (result.success) {
+                    toast.success("Banner deleted successfully");
+                } else {
+                    toast.error(result.error || "Failed to delete banner");
+                }
+            } catch (error) {
+                console.error("Error deleting banner:", error);
+                toast.error("An unexpected error occurred");
+            }
+        }
+    };
+
+    const handleToggleStatus = async (id: string, currentStatus: boolean) => {
+        setLoadingMap(prev => ({ ...prev, [id]: true }));
+        try {
+            const result = await toggleBannerStatus(id, !currentStatus);
+            if (result.success) {
+                toast.success(`Banner ${!currentStatus ? 'activated' : 'deactivated'} successfully`);
+            } else {
+                toast.error(result.error || "Failed to update status");
+            }
+        } catch (error) {
+            console.error("Error toggling banner status:", error);
+            toast.error("An unexpected error occurred");
+        } finally {
+            setLoadingMap(prev => ({ ...prev, [id]: false }));
+        }
+    };
+
+    return (
+        <div className="flex-1 flex flex-col overflow-hidden">
+            <AdminHeader title="Home Banners" onMenuClick={openSidebar} />
+
+            <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
+                <div className="max-w-[1200px] mx-auto">
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+                        <div>
+                            <h3 className="text-2xl font-bold text-text-main dark:text-white">
+                                Hero Banners
+                            </h3>
+                            <p className="text-text-sub dark:text-gray-400 mt-1">
+                                Control what's displayed in the homepage hero section.
+                            </p>
+                        </div>
+                        <button
+                            onClick={handleAdd}
+                            className="bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                        >
+                            <span className="material-symbols-outlined">add</span>
+                            Create New Advertisement
+                        </button>
+                    </div>
+
+                    <BannerModal
+                        isOpen={isModalOpen}
+                        onClose={() => setIsModalOpen(false)}
+                        banner={selectedBanner}
+                    />
+
+                    <div className="grid grid-cols-1 gap-8">
+                        {banners.map((banner) => (
+                            <div key={banner.id} className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-border-color/50 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all overflow-hidden flex flex-col lg:flex-row">
+                                <div className="lg:w-1/3 aspect-[21/9] lg:aspect-auto overflow-hidden bg-gray-100 dark:bg-gray-800">
+                                    <img
+                                        alt={banner.title}
+                                        className="w-full h-full object-cover"
+                                        src={banner.image}
+                                    />
+                                </div>
+                                <div className="p-6 lg:p-8 flex-1 flex flex-col justify-between">
+                                    <div className="flex flex-col gap-2">
+                                        <div className="flex items-center gap-3">
+                                            <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                                                {banner.badge || 'Banner'}
+                                            </span>
+                                            {!banner.isActive && (
+                                                <span className="bg-gray-100 dark:bg-gray-800 text-gray-500 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                                                    Hidden
+                                                </span>
+                                            )}
+                                        </div>
+                                        <h3 className="text-xl font-bold text-text-main dark:text-white mt-1">{banner.title}</h3>
+                                        <p className="text-sm text-text-sub dark:text-gray-400 line-clamp-2">
+                                            {banner.subtitle || 'No subtitle provided.'}
+                                        </p>
+                                        <div className="flex gap-4 mt-2">
+                                            <div className="flex flex-col">
+                                                <span className="text-[10px] text-text-sub/60 dark:text-gray-500 font-bold uppercase">Button</span>
+                                                <span className="text-sm font-medium dark:text-gray-300">{banner.buttonText}</span>
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-[10px] text-text-sub/60 dark:text-gray-500 font-bold uppercase">Link</span>
+                                                <span className="text-sm font-medium dark:text-gray-300">{banner.link}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center justify-between pt-6 mt-6 border-t border-border-color/30 dark:border-gray-700">
+                                        <div className="flex items-center gap-4">
+                                            <button
+                                                onClick={() => handleToggleStatus(banner.id, banner.isActive)}
+                                                disabled={loadingMap[banner.id]}
+                                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${banner.isActive
+                                                        ? 'bg-green-50 text-green-600 dark:bg-green-900/10 dark:text-green-400'
+                                                        : 'bg-gray-50 text-gray-400 dark:bg-gray-800 dark:text-gray-500'
+                                                    }`}
+                                            >
+                                                {loadingMap[banner.id] ? (
+                                                    <span className="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>
+                                                ) : (
+                                                    <span className="material-symbols-outlined text-[18px]">
+                                                        {banner.isActive ? 'visibility' : 'visibility_off'}
+                                                    </span>
+                                                )}
+                                                {banner.isActive ? 'Active' : 'Hidden'}
+                                            </button>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => handleEdit(banner)}
+                                                className="p-3 text-text-sub hover:text-primary hover:bg-primary-light dark:hover:bg-primary/10 rounded-xl transition-colors"
+                                                title="Edit"
+                                            >
+                                                <span className="material-symbols-outlined text-[22px]">edit</span>
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(banner.id, banner.title)}
+                                                className="p-3 text-text-sub hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors"
+                                                title="Delete"
+                                            >
+                                                <span className="material-symbols-outlined text-[22px]">delete</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {banners.length === 0 && (
+                        <div className="text-center py-20 bg-surface-light dark:bg-surface-dark rounded-2xl border border-dashed border-border-color dark:border-gray-700">
+                            <span className="material-symbols-outlined text-5xl text-text-sub/30 mb-4">view_carousel</span>
+                            <p className="text-text-sub italic">
+                                No advertisement banners created yet.
+                            </p>
+                            <button
+                                onClick={handleAdd}
+                                className="mt-4 text-primary font-bold hover:underline"
+                            >
+                                Let's add your first homepage banner
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}

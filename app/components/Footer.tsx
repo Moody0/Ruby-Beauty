@@ -18,17 +18,32 @@ const Footer = () => {
                             Premium botanical skincare designed to reveal your natural radiance. Cruelty-free, vegan, and sustainable.
                         </p>
                         <div className="flex gap-4 mt-2">
-                            <a className="text-text-muted-light dark:text-text-muted-dark hover:text-primary transition-colors" href="#">
+                            <a
+                                className="text-text-muted-light dark:text-text-muted-dark hover:text-primary transition-colors"
+                                href="https://www.instagram.com/ruby.beauty.sy"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
                                 <span className="sr-only">Instagram</span>
                                 <span className="material-symbols-outlined">photo_camera</span>
                             </a>
-                            <a className="text-text-muted-light dark:text-text-muted-dark hover:text-primary transition-colors" href="#">
+                            <a
+                                className="text-text-muted-light dark:text-text-muted-dark hover:text-primary transition-colors"
+                                href="https://www.facebook.com/share/1HzXdo7sLG/?mibextid=wwXIfr"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
                                 <span className="sr-only">Facebook</span>
                                 <span className="material-symbols-outlined">public</span>
                             </a>
-                            <a className="text-text-muted-light dark:text-text-muted-dark hover:text-primary transition-colors" href="#">
-                                <span className="sr-only">Twitter</span>
-                                <span className="material-symbols-outlined">alternate_email</span>
+                            <a
+                                className="text-text-muted-light dark:text-text-muted-dark hover:text-primary transition-colors"
+                                href="https://wa.me/963933254796"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <span className="sr-only">WhatsApp</span>
+                                <span className="material-symbols-outlined">chat</span>
                             </a>
                         </div>
                     </div>

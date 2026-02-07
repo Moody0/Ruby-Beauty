@@ -17,6 +17,8 @@ interface ProductInput {
 interface CategoryInput {
     name: string;
     description?: string;
+    image?: string;
+    isFeatured?: boolean;
 }
 
 export async function getDashboardStats() {
@@ -63,7 +65,6 @@ export async function getDashboardStats() {
                 id: order.id,
                 Name: order.Name,
                 customer: order.Name,
-                email: order.email,
                 phone: order.phone,
                 streetAddress: order.streetAddress,
                 city: order.city,
@@ -188,8 +189,13 @@ export async function getAdminOrders() {
 
         // Convert Decimal types and dates for serialization
         return orders.map(order => ({
-            ...order,
+            id: order.id,
+            Name: order.Name,
+            phone: order.phone,
+            streetAddress: order.streetAddress,
+            city: order.city,
             totalAmount: Number(order.totalAmount),
+            status: order.status,
             createdAt: order.createdAt.toISOString(),
             updatedAt: order.updatedAt.toISOString(),
             items: order.items.map(item => ({
@@ -328,6 +334,8 @@ export async function createCategory(data: CategoryInput) {
             data: {
                 name: data.name,
                 description: data.description,
+                image: data.image,
+                isFeatured: data.isFeatured ?? false,
             }
         });
 
@@ -355,6 +363,8 @@ export async function updateCategory(id: string, data: CategoryInput) {
             data: {
                 name: data.name,
                 description: data.description,
+                image: data.image,
+                isFeatured: data.isFeatured,
             }
         });
 
@@ -396,5 +406,386 @@ export async function deleteCategory(id: string) {
     } catch (error) {
         console.error("Failed to delete category:", error);
         return { success: false, error: "Failed to delete category" };
+    }
+}
+
+export async function toggleCategoryFeatured(id: string, isFeatured: boolean) {
+    try {
+        await prisma.category.update({
+            where: { id },
+            data: { isFeatured }
+        });
+
+        revalidatePath('/');
+        revalidatePath('/admin/categories');
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to toggle category featured status:", error);
+        return { success: false, error: "Failed to toggle category featured status" };
+    }
+}
+
+export async function getFeaturedCategories() {
+    try {
+        const categories = await prisma.category.findMany({
+            where: { isFeatured: true },
+            take: 4,
+            orderBy: { updatedAt: 'desc' }
+        });
+        return categories.map(category => ({
+            ...category,
+            createdAt: category.createdAt.toISOString(),
+            updatedAt: category.updatedAt.toISOString(),
+        }));
+    } catch (error) {
+        console.error("Failed to fetch featured categories:", error);
+        return [];
+    }
+}
+
+export async function toggleProductTrending(id: string, isTrending: boolean) {
+    try {
+        await prisma.product.update({
+            where: { id },
+            data: { isTrending }
+        });
+
+        revalidatePath('/');
+        revalidatePath('/admin/products');
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to toggle product trending status:", error);
+        return { success: false, error: "Failed to toggle product trending status" };
+    }
+}
+
+export async function getTrendingProducts() {
+    try {
+        const products = await prisma.product.findMany({
+            where: { isTrending: true },
+            take: 4,
+            include: { category: true },
+            orderBy: { updatedAt: 'desc' }
+        });
+
+        return products.map(product => ({
+            ...product,
+            price: Number(product.price),
+            stock: Number(product.stock),
+            createdAt: product.createdAt.toISOString(),
+            updatedAt: product.updatedAt.toISOString(),
+            category: product.category ? {
+                ...product.category,
+                createdAt: product.category.createdAt.toISOString(),
+                updatedAt: product.category.updatedAt.toISOString(),
+            } : null
+        }));
+    } catch (error) {
+        console.error("Failed to fetch trending products:", error);
+        return [];
+    }
+}
+
+export interface BannerInput {
+    title: string;
+    subtitle?: string;
+    image: string;
+    buttonText?: string;
+    link?: string;
+    badge?: string;
+    isActive?: boolean;
+}
+
+export async function getAdminBanners() {
+    try {
+        const banners = await prisma.banner.findMany({
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        return banners.map(banner => ({
+            ...banner,
+            createdAt: banner.createdAt.toISOString(),
+            updatedAt: banner.updatedAt.toISOString(),
+        }));
+    } catch (error) {
+        console.error("Failed to fetch banners:", error);
+        return [];
+    }
+}
+
+export async function createBanner(data: BannerInput) {
+    try {
+        const banner = await prisma.banner.create({
+            data: {
+                title: data.title,
+                subtitle: data.subtitle,
+                image: data.image,
+                buttonText: data.buttonText || "Shop Now",
+                link: data.link || "/products",
+                badge: data.badge || "New Collection",
+                isActive: data.isActive ?? true,
+            }
+        });
+
+        revalidatePath('/');
+        revalidatePath('/admin/banners');
+
+        return {
+            success: true,
+            banner: {
+                ...banner,
+                createdAt: banner.createdAt.toISOString(),
+                updatedAt: banner.updatedAt.toISOString(),
+            }
+        };
+    } catch (error) {
+        console.error("Failed to create banner:", error);
+        return { success: false, error: "Failed to create banner" };
+    }
+}
+
+export async function updateBanner(id: string, data: BannerInput) {
+    try {
+        const banner = await prisma.banner.update({
+            where: { id },
+            data: {
+                title: data.title,
+                subtitle: data.subtitle,
+                image: data.image,
+                buttonText: data.buttonText,
+                link: data.link,
+                badge: data.badge,
+                isActive: data.isActive,
+            }
+        });
+
+        revalidatePath('/');
+        revalidatePath('/admin/banners');
+
+        return {
+            success: true,
+            banner: {
+                ...banner,
+                createdAt: banner.createdAt.toISOString(),
+                updatedAt: banner.updatedAt.toISOString(),
+            }
+        };
+    } catch (error) {
+        console.error("Failed to update banner:", error);
+        return { success: false, error: "Failed to update banner" };
+    }
+}
+
+export async function deleteBanner(id: string) {
+    try {
+        await prisma.banner.delete({
+            where: { id }
+        });
+
+        revalidatePath('/');
+        revalidatePath('/admin/banners');
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to delete banner:", error);
+        return { success: false, error: "Failed to delete banner" };
+    }
+}
+
+export async function toggleBannerStatus(id: string, isActive: boolean) {
+    try {
+        await prisma.banner.update({
+            where: { id },
+            data: { isActive }
+        });
+
+        revalidatePath('/');
+        revalidatePath('/admin/banners');
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to toggle banner status:", error);
+        return { success: false, error: "Failed to toggle banner status" };
+    }
+}
+
+export async function getActiveBanners() {
+    try {
+        const banners = await prisma.banner.findMany({
+            where: {
+                isActive: true
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        return banners.map(banner => ({
+            ...banner,
+            createdAt: banner.createdAt.toISOString(),
+            updatedAt: banner.updatedAt.toISOString(),
+        }));
+    } catch (error) {
+        console.error("Failed to fetch active banners:", error);
+        return [];
+    }
+}
+
+export interface PromoCodeInput {
+    code: string;
+    discountPercentage: number;
+    delegateName?: string;
+    isActive?: boolean;
+}
+
+export async function getPromoCodes() {
+    try {
+        const startOfMonth = new Date();
+        startOfMonth.setDate(1);
+        startOfMonth.setHours(0, 0, 0, 0);
+
+        const promoCodes = await prisma.promoCode.findMany({
+            orderBy: {
+                createdAt: 'desc'
+            },
+            include: {
+                orders: {
+                    where: {
+                        createdAt: {
+                            gte: startOfMonth
+                        }
+                    },
+                    select: {
+                        totalAmount: true
+                    }
+                }
+            }
+        });
+
+        return promoCodes.map(code => ({
+            ...code,
+            totalSales: Number(code.totalSales),
+            thisMonthSales: code.orders.reduce((sum, order) => sum + Number(order.totalAmount), 0),
+            createdAt: code.createdAt.toISOString(),
+            updatedAt: code.updatedAt.toISOString(),
+        }));
+    } catch (error) {
+        console.error("Failed to fetch promo codes:", error);
+        return [];
+    }
+}
+
+export async function createPromoCode(data: PromoCodeInput) {
+    try {
+        // Check uniqueness
+        const existing = await prisma.promoCode.findUnique({
+            where: { code: data.code }
+        });
+
+        if (existing) {
+            return { success: false, error: "Promo code already exists" };
+        }
+
+        const promoCode = await prisma.promoCode.create({
+            data: {
+                code: data.code.toUpperCase(), // Store uppercase
+                discountPercentage: data.discountPercentage,
+                delegateName: data.delegateName,
+                isActive: data.isActive ?? true,
+            }
+        });
+
+        revalidatePath('/admin/promocodes');
+        return { success: true, promoCode };
+    } catch (error) {
+        console.error("Failed to create promo code:", error);
+        return { success: false, error: "Failed to create promo code" };
+    }
+}
+
+export async function updatePromoCode(id: string, data: PromoCodeInput) {
+    try {
+        // Check uniqueness if code changed
+        if (data.code) {
+            const existing = await prisma.promoCode.findUnique({
+                where: { code: data.code }
+            });
+            if (existing && existing.id !== id) {
+                return { success: false, error: "Promo code already exists" };
+            }
+        }
+
+        const promoCode = await prisma.promoCode.update({
+            where: { id },
+            data: {
+                code: data.code.toUpperCase(),
+                discountPercentage: data.discountPercentage,
+                delegateName: data.delegateName,
+                isActive: data.isActive,
+            }
+        });
+
+        revalidatePath('/admin/promocodes');
+        return { success: true, promoCode };
+    } catch (error) {
+        console.error("Failed to update promo code:", error);
+        return { success: false, error: "Failed to update promo code" };
+    }
+}
+
+export async function deletePromoCode(id: string) {
+    try {
+        await prisma.promoCode.delete({
+            where: { id }
+        });
+
+        revalidatePath('/admin/promocodes');
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to delete promo code:", error);
+        return { success: false, error: "Failed to delete promo code" };
+    }
+}
+
+export async function togglePromoCodeStatus(id: string, isActive: boolean) {
+    try {
+        await prisma.promoCode.update({
+            where: { id },
+            data: { isActive }
+        });
+
+        revalidatePath('/admin/promocodes');
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to toggle promo code status:", error);
+        return { success: false, error: "Failed to toggle promo code status" };
+    }
+}
+
+export async function validatePromoCode(code: string) {
+    try {
+        const promoCode = await prisma.promoCode.findUnique({
+            where: { code: code.toUpperCase() }
+        });
+
+        if (!promoCode) {
+            return { success: false, error: "Invalid promo code" };
+        }
+
+        if (!promoCode.isActive) {
+            return { success: false, error: "Promo code is inactive" };
+        }
+
+        return {
+            success: true,
+            promoCode: {
+                id: promoCode.id,
+                code: promoCode.code,
+                discountPercentage: promoCode.discountPercentage
+            }
+        };
+    } catch (error) {
+        console.error("Failed to validate promo code:", error);
+        return { success: false, error: "Failed to validate promo code" };
     }
 }

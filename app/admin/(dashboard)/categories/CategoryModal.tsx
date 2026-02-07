@@ -11,21 +11,29 @@ interface CategoryModalProps {
         id: string;
         name: string;
         description: string | null;
+        image: string | null;
+        isFeatured?: boolean;
     } | null;
 }
 
 export default function CategoryModal({ isOpen, onClose, category }: CategoryModalProps) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
+    const [image, setImage] = useState("");
+    const [isFeatured, setIsFeatured] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         if (category) {
             setName(category.name);
             setDescription(category.description || "");
+            setImage(category.image || "");
+            setIsFeatured(category.isFeatured ?? false);
         } else {
             setName("");
             setDescription("");
+            setImage("");
+            setIsFeatured(false);
         }
     }, [category, isOpen]);
 
@@ -36,7 +44,7 @@ export default function CategoryModal({ isOpen, onClose, category }: CategoryMod
         setIsSubmitting(true);
 
         try {
-            const data = { name, description };
+            const data = { name, description, image, isFeatured };
             let result;
 
             if (category) {
@@ -79,7 +87,7 @@ export default function CategoryModal({ isOpen, onClose, category }: CategoryMod
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-5">
+                <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-5 overflow-y-auto max-h-[80vh]">
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-bold text-text-main dark:text-white">
                             Category Name
@@ -96,13 +104,58 @@ export default function CategoryModal({ isOpen, onClose, category }: CategoryMod
 
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-bold text-text-main dark:text-white">
+                            Image URL
+                        </label>
+                        <input
+                            type="text"
+                            value={image}
+                            onChange={(e) => setImage(e.target.value)}
+                            placeholder="https://example.com/image.jpg"
+                            className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                        />
+                        {image && (
+                            <div className="mt-2 relative aspect-video w-full rounded-xl overflow-hidden border border-[#e6dbdf] dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                                <img
+                                    src={image}
+                                    alt="Preview"
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).src = "https://placehold.co/600x400?text=Invalid+Image+URL";
+                                    }}
+                                />
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label className="text-sm font-bold text-text-main dark:text-white">
+                            Featured on Homepage
+                        </label>
+                        <div className="flex items-center gap-3 h-[46px]">
+                            <button
+                                type="button"
+                                onClick={() => setIsFeatured(!isFeatured)}
+                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${isFeatured ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-700'}`}
+                            >
+                                <span
+                                    className={`${isFeatured ? 'translate-x-6' : 'translate-x-1'} inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                                />
+                            </button>
+                            <span className="text-sm text-text-sub dark:text-gray-400">
+                                {isFeatured ? 'Featured' : 'Standard'}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label className="text-sm font-bold text-text-main dark:text-white">
                             Description
                         </label>
                         <textarea
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder="Describe what products belong in this category..."
-                            rows={4}
+                            rows={3}
                             className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                         />
                     </div>

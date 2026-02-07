@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import CheckoutSteps from '@/app/components/PlaceOrderComponents/CheckoutSteps';
 import ShippingForm from '@/app/components/PlaceOrderComponents/ShippingForm';
 import OrderSummary from '@/app/components/PlaceOrderComponents/OrderSummary';
+import { validatePromoCode } from '@/lib/admin-actions';
 
 const PlaceOrderPage = () => {
     const { items, subtotal, clearCart } = useCart();
@@ -18,13 +19,22 @@ const PlaceOrderPage = () => {
         lastName: '',
         phone: '',
         streetAddress: '',
-        city: '',
-        email: '' // optional
+        city: ''
     });
 
-    const taxRate = 0.08;
-    const tax = subtotal * taxRate;
-    const total = subtotal + tax;
+    const [promoDetails, setPromoDetails] = useState<{ id: string, percentage: number } | null>(null);
+    const [discountAmount, setDiscountAmount] = useState(0);
+
+    // Recalculate discount if subtotal changes (though subtotal shouldn't change here usually)
+    useEffect(() => {
+        if (promoDetails) {
+            setDiscountAmount((subtotal * promoDetails.percentage) / 100);
+        } else {
+            setDiscountAmount(0);
+        }
+    }, [subtotal, promoDetails]);
+
+    const total = Math.max(0, subtotal - discountAmount);
 
     const [isSuccess, setIsSuccess] = useState(false);
 
@@ -37,6 +47,19 @@ const PlaceOrderPage = () => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleApplyPromo = async (code: string) => {
+        const result = await validatePromoCode(code);
+        if (result.success && result.promoCode) {
+            setPromoDetails({
+                id: result.promoCode.id,
+                percentage: result.promoCode.discountPercentage
+            });
+            return { success: true, message: `Applied ${result.promoCode.discountPercentage}% discount!` };
+        }
+        setPromoDetails(null);
+        return { success: false, message: result.error };
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -56,10 +79,11 @@ const PlaceOrderPage = () => {
                     firstName: formData.firstName,
                     lastName: formData.lastName,
                     phone: formData.phone,
-                    email: formData.email,
                     streetAddress: formData.streetAddress,
                     city: formData.city,
                     totalAmount: parseFloat(total.toFixed(2)),
+                    promoCodeId: promoDetails?.id,
+                    discount: parseFloat(discountAmount.toFixed(2)),
                     items: items.map(item => ({
                         productId: item.id,
                         quantity: item.quantity,
@@ -97,9 +121,10 @@ const PlaceOrderPage = () => {
                     <OrderSummary
                         items={items}
                         subtotal={subtotal}
-                        tax={tax}
                         total={total}
                         loading={loading}
+                        discount={discountAmount}
+                        onApplyPromo={handleApplyPromo}
                     />
                 </div>
             </form>

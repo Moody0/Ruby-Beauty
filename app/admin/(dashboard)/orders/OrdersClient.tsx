@@ -11,7 +11,6 @@ import { OrderStatus } from "@prisma/client";
 interface Order {
     id: string;
     Name: string;
-    email: string | null;
     phone: string;
     streetAddress: string;
     city: string;
@@ -212,7 +211,6 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                                     <td className="p-4">
                                                         <div className="flex flex-col gap-0.5">
                                                             <span className="text-sm font-medium text-text-main dark:text-white">{order.Name}</span>
-                                                            <span className="text-[11px] text-text-sub dark:text-gray-500">{order.email}</span>
                                                         </div>
                                                     </td>
                                                     <td className="p-4 text-sm text-text-sub dark:text-gray-400">{new Date(order.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</td>

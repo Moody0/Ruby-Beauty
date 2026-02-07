@@ -1,9 +1,16 @@
 import Main from "../components/HomePageComponents/Main";
+import { getActiveBanners, getFeaturedCategories, getTrendingProducts } from "../../lib/admin-actions";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+    const banners = await getActiveBanners();
+    const categories = await getFeaturedCategories();
+    const trendingProducts = await getTrendingProducts();
+
     return (
         <section>
-            <Main />
+            <Main banners={banners} categories={categories} trendingProducts={trendingProducts} />
         </section>
     );
 }
