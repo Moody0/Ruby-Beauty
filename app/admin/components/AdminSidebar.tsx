@@ -12,7 +12,7 @@ const navItems = [
     { href: "/admin/orders", icon: "package_2", label: "Orders", permission: "canManageOrders" },
     { href: "/admin/promocodes", icon: "local_offer", label: "Promo Codes", permission: "canManagePromoCodes" },
     { href: "/admin/users", icon: "group", label: "Users", superAdminOnly: true },
-    { href: "/admin/settings", icon: "settings", label: "Settings" },
+    { href: "/admin/settings", icon: "settings", label: "Settings", superAdminOnly: true },
 ];
 
 interface AdminSidebarProps {
