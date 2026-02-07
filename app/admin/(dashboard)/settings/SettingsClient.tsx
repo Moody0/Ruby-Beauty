@@ -1,0 +1,224 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import AdminHeader from "../../components/AdminHeader";
+import { useAdminSidebar } from "../../context/AdminSidebarContext";
+import { getAdminUser, updateAdminCredentials } from "../../../../lib/admin-actions";
+import { toast } from "react-hot-toast";
+import { signOut } from "next-auth/react";
+
+interface AdminUser {
+    id: string;
+    username: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export default function SettingsClient({ initialUser }: { initialUser: AdminUser | null }) {
+    const { openSidebar } = useAdminSidebar();
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newUsername, setNewUsername] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    useEffect(() => {
+        if (initialUser) {
+            setNewUsername(initialUser.username);
+        }
+    }, [initialUser]);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!currentPassword) {
+            toast.error("Current password is required");
+            return;
+        }
+
+        if (newPassword && newPassword !== confirmPassword) {
+            toast.error("New passwords do not match");
+            return;
+        }
+
+        if (newPassword && newPassword.length < 6) {
+            toast.error("New password must be at least 6 characters");
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            const result = await updateAdminCredentials({
+                currentPassword,
+                newUsername: newUsername !== initialUser?.username ? newUsername : undefined,
+                newPassword: newPassword || undefined,
+            });
+
+            if (result.success) {
+                toast.success(result.message || "Settings updated successfully");
+                setCurrentPassword("");
+                setNewPassword("");
+                setConfirmPassword("");
+
+                // If password was changed, sign out
+                if (newPassword) {
+                    toast.success("Password changed. Please login again.");
+                    setTimeout(() => {
+                        signOut({ callbackUrl: "/admin/login" });
+                    }, 2000);
+                }
+            } else {
+                toast.error(result.error || "Failed to update settings");
+            }
+        } catch (error) {
+            console.error("Error updating settings:", error);
+            toast.error("An unexpected error occurred");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    if (!initialUser) {
+        return (
+            <div className="flex-1 flex flex-col overflow-hidden">
+                <AdminHeader title="Settings" onMenuClick={openSidebar} />
+                <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
+                    <div className="max-w-2xl mx-auto">
+                        <p className="text-center text-text-sub">Unable to load admin user</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex-1 flex flex-col overflow-hidden">
+            <AdminHeader title="Settings" onMenuClick={openSidebar} />
+
+            <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
+                <div className="max-w-2xl mx-auto">
+                    <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#e6dbdf] dark:border-gray-700 p-8">
+                        <div className="mb-8">
+                            <h2 className="text-2xl font-bold text-text-main dark:text-white mb-2">
+                                Admin Account Settings
+                            </h2>
+                            <p className="text-text-sub dark:text-gray-400">
+                                Update your username and password
+                            </p>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            {/* Current Password */}
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-text-main dark:text-white">
+                                    Current Password *
+                                </label>
+                                <input
+                                    type="password"
+                                    value={currentPassword}
+                                    onChange={(e) => setCurrentPassword(e.target.value)}
+                                    placeholder="Enter your current password"
+                                    required
+                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                />
+                                <p className="text-xs text-text-sub dark:text-gray-400">
+                                    Required to verify your identity
+                                </p>
+                            </div>
+
+                            <div className="border-t border-[#e6dbdf] dark:border-gray-700 pt-6">
+                                <h3 className="text-lg font-bold text-text-main dark:text-white mb-4">
+                                    Change Credentials
+                                </h3>
+
+                                {/* New Username */}
+                                <div className="space-y-2 mb-6">
+                                    <label className="text-sm font-bold text-text-main dark:text-white">
+                                        Username
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={newUsername}
+                                        onChange={(e) => setNewUsername(e.target.value)}
+                                        placeholder="Enter new username"
+                                        className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                    />
+                                </div>
+
+                                {/* New Password */}
+                                <div className="space-y-2 mb-6">
+                                    <label className="text-sm font-bold text-text-main dark:text-white">
+                                        New Password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        placeholder="Leave blank to keep current password"
+                                        className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                    />
+                                    <p className="text-xs text-text-sub dark:text-gray-400">
+                                        Minimum 6 characters
+                                    </p>
+                                </div>
+
+                                {/* Confirm Password */}
+                                {newPassword && (
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-bold text-text-main dark:text-white">
+                                            Confirm New Password
+                                        </label>
+                                        <input
+                                            type="password"
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            placeholder="Re-enter new password"
+                                            className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                        />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Submit Button */}
+                            <div className="flex gap-4 pt-4">
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="flex-1 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isSubmitting ? (
+                                        <span className="flex items-center justify-center gap-2">
+                                            <span className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full" />
+                                            Updating...
+                                        </span>
+                                    ) : (
+                                        "Update Settings"
+                                    )}
+                                </button>
+                            </div>
+
+                            {newPassword && (
+                                <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
+                                    <div className="flex gap-3">
+                                        <span className="material-symbols-outlined text-amber-600 dark:text-amber-400 text-xl">
+                                            warning
+                                        </span>
+                                        <div>
+                                            <p className="text-sm font-bold text-amber-800 dark:text-amber-300">
+                                                Password Change Notice
+                                            </p>
+                                            <p className="text-xs text-amber-700 dark:text-amber-400 mt-1">
+                                                You will be logged out after changing your password and will need to login again with your new credentials.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

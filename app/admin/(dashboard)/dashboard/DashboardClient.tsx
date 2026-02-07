@@ -10,7 +10,6 @@ interface RecentOrder {
     id: string;
     Name: string;
     customer: string;
-    email: string | null;
     phone: string;
     streetAddress: string;
     city: string;

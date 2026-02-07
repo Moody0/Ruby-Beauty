@@ -11,6 +11,7 @@ const navItems = [
     { href: "/admin/banners", icon: "view_carousel", label: "Banners" },
     { href: "/admin/orders", icon: "package_2", label: "Orders" },
     { href: "/admin/promocodes", icon: "local_offer", label: "Promo Codes" },
+    { href: "/admin/settings", icon: "settings", label: "Settings" },
 ];
 
 interface AdminSidebarProps {

@@ -789,3 +789,68 @@ export async function validatePromoCode(code: string) {
         return { success: false, error: "Failed to validate promo code" };
     }
 }
+
+import bcrypt from "bcryptjs";
+
+export async function getAdminUser() {
+    try {
+        const user = await prisma.user.findFirst();
+        if (!user) {
+            return null;
+        }
+        return {
+            id: user.id,
+            username: user.username,
+            createdAt: user.createdAt.toISOString(),
+            updatedAt: user.updatedAt.toISOString(),
+        };
+    } catch (error) {
+        console.error("Failed to fetch admin user:", error);
+        return null;
+    }
+}
+
+export async function updateAdminCredentials(data: {
+    currentPassword: string;
+    newUsername?: string;
+    newPassword?: string;
+}) {
+    try {
+        const user = await prisma.user.findFirst();
+        if (!user) {
+            return { success: false, error: "Admin user not found" };
+        }
+
+        // Verify current password
+        const isPasswordValid = await bcrypt.compare(data.currentPassword, user.password);
+        if (!isPasswordValid) {
+            return { success: false, error: "Current password is incorrect" };
+        }
+
+        // Prepare update data
+        const updateData: { username?: string; password?: string } = {};
+
+        if (data.newUsername && data.newUsername !== user.username) {
+            updateData.username = data.newUsername;
+        }
+
+        if (data.newPassword) {
+            const hashedPassword = await bcrypt.hash(data.newPassword, 10);
+            updateData.password = hashedPassword;
+        }
+
+        if (Object.keys(updateData).length === 0) {
+            return { success: false, error: "No changes to update" };
+        }
+
+        await prisma.user.update({
+            where: { id: user.id },
+            data: updateData,
+        });
+
+        return { success: true, message: "Credentials updated successfully" };
+    } catch (error) {
+        console.error("Failed to update admin credentials:", error);
+        return { success: false, error: "Failed to update credentials" };
+    }
+}
