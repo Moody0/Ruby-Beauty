@@ -15,8 +15,7 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
     const [promoMessage, setPromoMessage] = React.useState<{ type: 'success' | 'error', text: string } | null>(null);
     const [isApplyingPromo, setIsApplyingPromo] = React.useState(false);
 
-    const handleApplyPromo = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleApplyPromo = async () => {
         if (!promoCode.trim() || !onApplyPromo) return;
 
         setIsApplyingPromo(true);
@@ -32,6 +31,13 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
             setPromoMessage({ type: 'error', text: "Failed to apply code" });
         } finally {
             setIsApplyingPromo(false);
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Prevent outer form submission
+            handleApplyPromo();
         }
     };
 
@@ -58,17 +64,19 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                 </div>
 
                 {onApplyPromo && (
-                    <form onSubmit={handleApplyPromo} className="mb-6">
+                    <div className="mb-6">
                         <div className="flex gap-2">
                             <input
                                 type="text"
                                 value={promoCode}
                                 onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                                onKeyDown={handleKeyDown}
                                 placeholder="Promo Code"
                                 className="flex-1 px-4 py-2 rounded-lg border border-[#e6dbdf] dark:border-gray-700 bg-[#fcfafa] dark:bg-[#341a22] text-sm focus:outline-none focus:ring-1 focus:ring-primary uppercase font-medium placeholder:normal-case"
                             />
                             <button
-                                type="submit"
+                                type="button"
+                                onClick={handleApplyPromo}
                                 disabled={isApplyingPromo || !promoCode.trim()}
                                 className="px-4 py-2 bg-gray-900 dark:bg-gray-700 text-white text-sm font-bold rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             >
@@ -76,11 +84,11 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                             </button>
                         </div>
                         {promoMessage && (
-                            <p className={`text-xs mt-2 ${promoMessage.type === 'success' ? 'text-green-600' : 'text-red-500'}`}>
+                            <p className={`text-xs mt-2 font-bold ${promoMessage.type === 'success' ? 'text-green-600' : 'text-red-500'}`}>
                                 {promoMessage.text}
                             </p>
                         )}
-                    </form>
+                    </div>
                 )}
 
                 <div className="flex flex-col gap-3 mb-6 border-t border-b border-[#f4f0f2] dark:border-[#3a2228] py-6">
