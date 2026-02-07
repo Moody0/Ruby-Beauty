@@ -107,33 +107,39 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
                         />
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-text-main dark:text-white">
-                            Discount Percentage (%)
-                        </label>
-                        <input
-                            type="number"
-                            value={discountPercentage}
-                            onChange={(e) => setDiscountPercentage(e.target.value)}
-                            placeholder="e.g. 10"
-                            min="0"
-                            max="100"
-                            required
-                            className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-text-main dark:text-white">
-                            Delegate / Advertiser Name (Optional)
-                        </label>
-                        <input
-                            type="text"
-                            value={delegateName}
-                            onChange={(e) => setDelegateName(e.target.value)}
-                            placeholder="e.g. Ahmed, Instagram Ad"
-                            className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                        />
+                    <div className="flex gap-4">
+                        <div className="flex-1">
+                            <label className="text-sm font-bold text-text-main dark:text-white mb-2 block">
+                                Discount Percentage *
+                            </label>
+                            <div className="relative">
+                                <input
+                                    type="number"
+                                    min="1"
+                                    max="100"
+                                    value={discountPercentage}
+                                    onChange={(e) => setDiscountPercentage(e.target.value)}
+                                    placeholder="e.g. 10"
+                                    required
+                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                />
+                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-text-sub dark:text-gray-400 font-bold">
+                                    %
+                                </span>
+                            </div>
+                        </div>
+                        <div className="flex-2">
+                            <label className="text-sm font-bold text-text-main dark:text-white mb-2 block">
+                                Delegate / Advertiser Name (Optional)
+                            </label>
+                            <input
+                                type="text"
+                                value={delegateName}
+                                onChange={(e) => setDelegateName(e.target.value)}
+                                placeholder="e.g. Ahmed, Instagram Ad"
+                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                            />
+                        </div>
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -167,7 +173,7 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="flex-[2] bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50"
+                            className="flex-grow-2 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50"
                         >
                             {isSubmitting ? (
                                 <>
