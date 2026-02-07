@@ -74,7 +74,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
             onMouseLeave={() => setIsPaused(false)}
         >
             <div className="w-full">
-                <div className="relative overflow-hidden rounded-2xl bg-surface-light dark:bg-surface-dark min-h-[500px] md:min-h-[550px]">
+                <div className="relative overflow-hidden rounded-2xl bg-surface-light dark:bg-surface-dark min-h-[500px] sm:min-h-[550px] md:min-h-[550px]">
                     {/* Slides */}
                     {displayBanners.map((banner, index) => (
                         <div
@@ -82,16 +82,56 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                             className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
                                 }`}
                         >
-                            <div className="flex flex-col-reverse md:flex-row items-center h-full">
+                            {/* Mobile Layout: Full background image with overlay content */}
+                            <div className="md:hidden relative w-full h-full">
+                                {/* Background Image */}
+                                <div
+                                    className="absolute inset-0 w-full h-full bg-center bg-cover bg-no-repeat"
+                                    style={{ backgroundImage: `url("${banner.image}")` }}
+                                >
+                                    {/* Dark overlay for better text readability */}
+                                    <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60"></div>
+                                </div>
+
+                                {/* Content Overlay */}
+                                <div className="relative z-10 h-full flex flex-col justify-end items-start p-6 sm:p-8 pb-8 sm:pb-10">
+                                    <div className={`transition-all duration-700 delay-300 transform ${index === currentIndex ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                                        }`}>
+                                        <span className="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-wider mb-3">
+                                            {banner.badge || "New Collection"}
+                                        </span>
+                                        <h2 className="text-3xl sm:text-4xl font-extrabold leading-[1.1] tracking-tight text-white mb-3 drop-shadow-lg">
+                                            {banner.id === 'default' ? (
+                                                <>Radiance <br /> <span className="text-primary">Redefined.</span></>
+                                            ) : (
+                                                banner.title
+                                            )}
+                                        </h2>
+                                        <p className="text-sm sm:text-base text-white/90 max-w-md mb-5 line-clamp-3 drop-shadow">
+                                            {banner.subtitle || "Discover our exclusive collection."}
+                                        </p>
+                                        <Link
+                                            href={banner.link || "/products"}
+                                            className="px-6 sm:px-8 py-3 sm:py-3.5 bg-primary hover:bg-primary/90 text-white rounded-full font-bold text-sm transition-all flex items-center gap-2 w-fit group/btn shadow-lg"
+                                        >
+                                            {banner.buttonText || "Shop Now"}
+                                            <span className="material-symbols-outlined text-lg group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Desktop Layout: Side by side */}
+                            <div className="hidden md:flex flex-row items-center h-full">
                                 {/* Hero Content */}
-                                <div className="w-full md:w-1/2 p-8 md:p-12 lg:p-20 flex flex-col items-start justify-center gap-6 z-10 h-full relative">
+                                <div className="w-full md:w-1/2 p-12 lg:p-20 flex flex-col items-start justify-center gap-6 z-10 h-full relative">
                                     {/* Content Transition Wrapper */}
                                     <div className={`transition-all duration-700 delay-300 transform ${index === currentIndex ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                                         }`}>
                                         <span className="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-4">
                                             {banner.badge || "New Collection"}
                                         </span>
-                                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-text-main-light dark:text-text-main-dark mb-4">
+                                        <h2 className="text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-text-main-light dark:text-text-main-dark mb-4">
                                             {/* Handle the specific formatting for the default banner if needed, or just display generic title */}
                                             {banner.id === 'default' ? (
                                                 <>Radiance <br className="hidden md:block" /> <span className="text-primary">Redefined.</span></>
@@ -113,7 +153,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                 </div>
 
                                 {/* Hero Image */}
-                                <div className="w-full md:w-1/2 h-[300px] md:h-full relative">
+                                <div className="w-full md:w-1/2 h-full relative">
                                     <div
                                         className="w-full h-full bg-center bg-cover bg-no-repeat transition-transform duration-10000 ease-linear transform scale-100 group-hover:scale-110"
                                         style={{ backgroundImage: `url("${banner.image}")` }}

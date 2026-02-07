@@ -1,5 +1,10 @@
 import Link from 'next/link';
 import React from 'react';
+import { FaInstagram } from "react-icons/fa";
+import { FaFacebook } from "react-icons/fa";
+import { FaWhatsapp } from "react-icons/fa";
+
+
 
 const Footer = () => {
     return (
@@ -17,7 +22,7 @@ const Footer = () => {
                         <p className="text-text-muted-light dark:text-text-muted-dark max-w-xs leading-relaxed">
                             Premium botanical skincare designed to reveal your natural radiance. Cruelty-free, vegan, and sustainable.
                         </p>
-                        <div className="flex gap-4 mt-2">
+                        <div className="flex gap-4 text-2xl mt-2">
                             <a
                                 className="text-text-muted-light dark:text-text-muted-dark hover:text-primary transition-colors"
                                 href="https://www.instagram.com/ruby.beauty.sy"
@@ -25,7 +30,7 @@ const Footer = () => {
                                 rel="noopener noreferrer"
                             >
                                 <span className="sr-only">Instagram</span>
-                                <span className="material-symbols-outlined">photo_camera</span>
+                                <FaInstagram />
                             </a>
                             <a
                                 className="text-text-muted-light dark:text-text-muted-dark hover:text-primary transition-colors"
@@ -34,7 +39,7 @@ const Footer = () => {
                                 rel="noopener noreferrer"
                             >
                                 <span className="sr-only">Facebook</span>
-                                <span className="material-symbols-outlined">public</span>
+                                <FaFacebook />
                             </a>
                             <a
                                 className="text-text-muted-light dark:text-text-muted-dark hover:text-primary transition-colors"
@@ -43,7 +48,7 @@ const Footer = () => {
                                 rel="noopener noreferrer"
                             >
                                 <span className="sr-only">WhatsApp</span>
-                                <span className="material-symbols-outlined">chat</span>
+                                <FaWhatsapp />
                             </a>
                         </div>
                     </div>
@@ -85,10 +90,7 @@ const Footer = () => {
 
                 <div className="border-t border-[#f4f0f2] dark:border-[#3a1d26] pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-text-muted-light dark:text-text-muted-dark">
                     <p>© 2026 Ruby Beauty. All rights reserved.</p>
-                    <div className="flex gap-6">
-                        <Link className="hover:text-text-main-light dark:hover:text-text-main-dark transition-colors" href="#">Privacy Policy</Link>
-                        <Link className="hover:text-text-main-light dark:hover:text-text-main-dark transition-colors" href="#">Terms of Service</Link>
-                    </div>
+
                 </div>
             </div>
         </footer>

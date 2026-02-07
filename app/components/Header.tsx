@@ -10,16 +10,6 @@ const Header = () => {
     const { cartCount } = useCart();
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
-
-    // Handle scroll effect
-    useEffect(() => {
-        const handleScroll = () => {
-            setScrolled(window.scrollY > 20);
-        };
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
 
     // Prevent scrolling when mobile search or menu is open
     useEffect(() => {
@@ -31,7 +21,7 @@ const Header = () => {
     }, [isMobileSearchOpen, isMobileMenuOpen]);
 
     return (
-        <header className={`sticky top-0 z-50 w-full transition-all duration-300 border-b ${scrolled ? "bg-surface-light/95 dark:bg-surface-dark/95 backdrop-blur-md border-[#f4f0f2] dark:border-[#3a1d26]" : "bg-transparent border-transparent"}`}>
+        <header className="sticky top-0 z-50 w-full bg-surface-light dark:bg-surface-dark border-b border-[#f4f0f2] dark:border-[#3a1d26]">
             <div className="px-6 py-4 md:px-20 lg:px-32 xl:px-48 2xl:px-64">
                 <div className="flex items-center justify-between gap-4">
                     {/* Mobile Menu Toggle (Left) */}
@@ -57,7 +47,6 @@ const Header = () => {
                         <nav className="hidden lg:flex items-center gap-6">
                             <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">Shop</Link>
                             <Link href="#" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">About</Link>
-                            <Link href="#" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">Blog</Link>
                         </nav>
                         <div className="flex items-center gap-1 md:gap-2">
                             {/* Mobile Search Toggle */}
@@ -92,7 +81,7 @@ const Header = () => {
                     />
 
                     {/* Drawer */}
-                    <div className="fixed top-0 left-0 h-full w-[300px] bg-white dark:bg-background-dark border-r border-[#f4f0f2] dark:border-white/10 shadow-2xl transform transition-transform duration-300 ease-out animate-in slide-in-from-left flex flex-col">
+                    <div className="fixed top-0 left-0 h-full w-[300px] bg-surface-light dark:bg-surface-dark border-r border-[#f4f0f2] dark:border-white/10 shadow-2xl transform transition-transform duration-300 ease-out animate-in slide-in-from-left flex flex-col">
                         <div className="h-24 px-6 flex items-center justify-between border-b border-[#f4f0f2] dark:border-white/5">
                             <span className="text-2xl font-bold text-text-main-light dark:text-white">RUBY BEAUTY</span>
                             <button

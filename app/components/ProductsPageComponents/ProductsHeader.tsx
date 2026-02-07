@@ -18,7 +18,7 @@ const ProductsHeader = ({ sort, setSort }: ProductsHeaderProps) => {
                     <select
                         value={sort}
                         onChange={(e) => setSort(e.target.value)}
-                        className="appearance-none rounded-lg border border-[#e6dbdf] bg-white px-4 py-2.5 pr-10 text-sm font-bold text-[#181113] focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:bg-white/5 dark:border-white/10 dark:text-white cursor-pointer min-w-[160px]"
+                        className="appearance-none rounded-lg border border-[#e6dbdf] bg-background-light px-4 py-2.5 pr-10 text-sm font-bold text-[#181113] focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:bg-background-dark dark:border-white/10 dark:text-white cursor-pointer min-w-[160px]"
                     >
                         <option>Best Sellers</option>
                         <option>Price: Low to High</option>

@@ -17,21 +17,14 @@ const CartSummary = ({ subtotal }: CartSummaryProps) => {
                     </div>
                     <div className="flex justify-between text-[#89616f] dark:text-[#a08590]">
                         <span>Shipping</span>
-                        <span className="text-xs italic">Calculated at checkout</span>
-                    </div>
-                    <div className="flex justify-between text-[#89616f] dark:text-[#a08590]">
-                        <span>Estimated Tax</span>
-                        <span className="text-xs italic">Calculated at checkout</span>
+                        <span className="font-bold text-emerald-600 dark:text-emerald-400">Free</span>
                     </div>
                 </div>
                 <div className="flex justify-between items-end mb-8">
                     <span className="text-lg font-bold text-[#181113] dark:text-white">Total</span>
                     <span className="text-3xl font-black text-primary">${subtotal.toFixed(2)}</span>
                 </div>
-                <div className="relative mb-6">
-                    <input className="w-full bg-[#f8f6f6] dark:bg-[#341a22] border-none rounded-lg py-3 pl-4 pr-20 text-sm focus:ring-1 focus:ring-primary/50 text-[#181113] dark:text-white" placeholder="Promo code" type="text" />
-                    <button className="absolute right-2 top-1.5 bottom-1.5 bg-white dark:bg-[#4a2e36] text-primary text-xs font-bold px-3 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-[#5a3e46] transition-colors">Apply</button>
-                </div>
+
                 <Link href="/place-order" className="w-full bg-primary hover:bg-primary/90 text-white font-bold rounded-full h-14 flex items-center justify-center gap-2 shadow-lg shadow-primary/25 transition-all transform hover:scale-[1.02]">
                     <span>Proceed to Shipping</span>
                     <span className="material-symbols-outlined text-sm">arrow_forward</span>
