@@ -25,7 +25,7 @@ const Categories = ({ categories }: { categories: Category[] }) => {
                         View all <span className="material-symbols-outlined text-sm">chevron_right</span>
                     </Link>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
                     {categories.map((category) => (
                         <Link
                             key={category.id}
@@ -36,10 +36,10 @@ const Categories = ({ categories }: { categories: Category[] }) => {
                                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
                                 style={{ backgroundImage: `url('${category.image || defaultImage}')` }}
                             ></div>
-                            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-80"></div>
-                            <div className="absolute bottom-0 left-0 p-5">
-                                <p className="text-white text-lg font-bold">{category.name}</p>
-                                <p className="text-white/80 text-xs">{category.description || 'Premium collection'}</p>
+                            <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent opacity-80"></div>
+                            <div className="absolute bottom-0 left-0 p-4">
+                                <p className="text-white text-base font-bold leading-tight">{category.name}</p>
+                                <p className="text-white/80 text-[10px] line-clamp-1">{category.description || 'Premium collection'}</p>
                             </div>
                         </Link>
                     ))}

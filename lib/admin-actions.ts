@@ -429,7 +429,7 @@ export async function getFeaturedCategories() {
     try {
         const categories = await prisma.category.findMany({
             where: { isFeatured: true },
-            take: 4,
+            take: 12,
             orderBy: { updatedAt: 'desc' }
         });
         return categories.map(category => ({
@@ -463,7 +463,7 @@ export async function getTrendingProducts() {
     try {
         const products = await prisma.product.findMany({
             where: { isTrending: true },
-            take: 4,
+            take: 12,
             include: { category: true },
             orderBy: { updatedAt: 'desc' }
         });

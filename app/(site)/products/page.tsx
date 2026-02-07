@@ -145,12 +145,12 @@ const ProductsPageContent = () => {
                         </div>
                     )}
 
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4">
+                    <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                         {products.map(product => (
                             <ProductCard key={product.id} product={product} />
                         ))}
                         {loading && (
-                            [...Array(products.length > 0 ? 4 : 8)].map((_, i) => (
+                            [...Array(products.length > 0 ? 5 : 10)].map((_, i) => (
                                 <ProductSkeleton key={`skeleton-${i}`} />
                             ))
                         )}

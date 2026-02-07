@@ -68,23 +68,23 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     <span className="material-symbols-outlined text-[18px]">add_shopping_cart</span>
                 </button>
             </Link>
-            <div className="flex flex-col gap-1 p-1">
+            <div className="flex flex-col gap-1 p-0.5">
                 <div className="flex items-start justify-between gap-2">
                     <Link href={`/products/${product.slug}`}>
-                        <h3 className="text-sm md:text-base font-medium text-text-main-light dark:text-white group-hover:text-primary transition-colors cursor-pointer line-clamp-2 md:line-clamp-1 h-10 md:h-auto leading-tight" title={product.name}>{product.name}</h3>
+                        <h3 className="text-[13px] md:text-sm font-medium text-text-main-light dark:text-white group-hover:text-primary transition-colors cursor-pointer line-clamp-2 leading-tight" title={product.name}>{product.name}</h3>
                     </Link>
                 </div>
-                <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
-                    <p className="font-bold text-primary text-sm md:text-base">${Number(product.price).toFixed(2)}</p>
+                <div className="flex flex-col md:flex-row md:items-center gap-0.5 md:gap-2">
+                    <p className="font-bold text-primary text-sm md:text-sm">${Number(product.price).toFixed(2)}</p>
                     <div className="flex items-center gap-1">
                         <div className="flex text-yellow-400">
-                            <span className="material-symbols-outlined text-[12px] md:text-[14px] fill-current">star</span>
-                            <span className="material-symbols-outlined text-[12px] md:text-[14px] fill-current">star</span>
-                            <span className="material-symbols-outlined text-[12px] md:text-[14px] fill-current">star</span>
-                            <span className="material-symbols-outlined text-[12px] md:text-[14px] fill-current">star</span>
-                            <span className="material-symbols-outlined text-[12px] md:text-[14px] fill-current">star_half</span>
+                            <span className="material-symbols-outlined text-[10px] md:text-[12px] fill-current">star</span>
+                            <span className="material-symbols-outlined text-[10px] md:text-[12px] fill-current">star</span>
+                            <span className="material-symbols-outlined text-[10px] md:text-[12px] fill-current">star</span>
+                            <span className="material-symbols-outlined text-[10px] md:text-[12px] fill-current">star</span>
+                            <span className="material-symbols-outlined text-[10px] md:text-[12px] fill-current">star_half</span>
                         </div>
-                        <span className="text-[10px] md:text-xs text-gray-400">(42)</span>
+                        <span className="text-[9px] md:text-[10px] text-gray-400">(42)</span>
                     </div>
                 </div>
             </div>
