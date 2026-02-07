@@ -1,9 +1,9 @@
-import NextAuth from "next-auth"
+import NextAuth, { AuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 
-const handler = NextAuth({
+export const authOptions: AuthOptions = {
     providers: [
         CredentialsProvider({
             name: "Credentials",
@@ -36,6 +36,17 @@ const handler = NextAuth({
                 return {
                     id: user.id,
                     name: user.username,
+                    role: user.role,
+                    canManageProducts: user.canManageProducts,
+                    canDeleteProducts: user.canDeleteProducts,
+                    canManageCategories: user.canManageCategories,
+                    canDeleteCategories: user.canDeleteCategories,
+                    canManageBanners: user.canManageBanners,
+                    canDeleteBanners: user.canDeleteBanners,
+                    canManageOrders: user.canManageOrders,
+                    canDeleteOrders: user.canDeleteOrders,
+                    canManagePromoCodes: user.canManagePromoCodes,
+                    canDeletePromoCodes: user.canDeletePromoCodes,
                 }
             }
         })
@@ -46,13 +57,35 @@ const handler = NextAuth({
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
-                token.id = user.id
+                token.id = user.id;
+                token.role = user.role;
+                token.canManageProducts = user.canManageProducts;
+                token.canDeleteProducts = user.canDeleteProducts;
+                token.canManageCategories = user.canManageCategories;
+                token.canDeleteCategories = user.canDeleteCategories;
+                token.canManageBanners = user.canManageBanners;
+                token.canDeleteBanners = user.canDeleteBanners;
+                token.canManageOrders = user.canManageOrders;
+                token.canDeleteOrders = user.canDeleteOrders;
+                token.canManagePromoCodes = user.canManagePromoCodes;
+                token.canDeletePromoCodes = user.canDeletePromoCodes;
             }
             return token
         },
         async session({ session, token }) {
             if (session.user) {
-                session.user.id = token.id as string
+                session.user.id = token.id as string;
+                session.user.role = token.role as string;
+                session.user.canManageProducts = token.canManageProducts as boolean;
+                session.user.canDeleteProducts = token.canDeleteProducts as boolean;
+                session.user.canManageCategories = token.canManageCategories as boolean;
+                session.user.canDeleteCategories = token.canDeleteCategories as boolean;
+                session.user.canManageBanners = token.canManageBanners as boolean;
+                session.user.canDeleteBanners = token.canDeleteBanners as boolean;
+                session.user.canManageOrders = token.canManageOrders as boolean;
+                session.user.canDeleteOrders = token.canDeleteOrders as boolean;
+                session.user.canManagePromoCodes = token.canManagePromoCodes as boolean;
+                session.user.canDeletePromoCodes = token.canDeletePromoCodes as boolean;
             }
             return session
         }
@@ -61,6 +94,8 @@ const handler = NextAuth({
         strategy: "jwt",
     },
     secret: process.env.NEXTAUTH_SECRET,
-})
+}
+
+const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST }

@@ -1,0 +1,268 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { createUser, updateUser } from "@/lib/user-actions";
+import { toast } from "react-hot-toast";
+
+interface User {
+    id: string;
+    username: string;
+    role: string;
+    canManageProducts: boolean;
+    canDeleteProducts: boolean;
+    canManageCategories: boolean;
+    canDeleteCategories: boolean;
+    canManageBanners: boolean;
+    canDeleteBanners: boolean;
+    canManageOrders: boolean;
+    canDeleteOrders: boolean;
+    canManagePromoCodes: boolean;
+    canDeletePromoCodes: boolean;
+}
+
+interface UserModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    user: User | null;
+}
+
+export default function UserModal({ isOpen, onClose, user }: UserModalProps) {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [formData, setFormData] = useState({
+        username: "",
+        password: "",
+        role: "ADMIN",
+        canManageProducts: true,
+        canDeleteProducts: true,
+        canManageCategories: true,
+        canDeleteCategories: true,
+        canManageBanners: true,
+        canDeleteBanners: true,
+        canManageOrders: true,
+        canDeleteOrders: true,
+        canManagePromoCodes: true,
+        canDeletePromoCodes: true,
+    });
+
+    useEffect(() => {
+        if (user) {
+            setFormData({
+                username: user.username,
+                password: "", // Don't show password
+                role: user.role,
+                canManageProducts: user.canManageProducts,
+                canDeleteProducts: user.canDeleteProducts,
+                canManageCategories: user.canManageCategories,
+                canDeleteCategories: user.canDeleteCategories,
+                canManageBanners: user.canManageBanners,
+                canDeleteBanners: user.canDeleteBanners,
+                canManageOrders: user.canManageOrders,
+                canDeleteOrders: user.canDeleteOrders,
+                canManagePromoCodes: user.canManagePromoCodes,
+                canDeletePromoCodes: user.canDeletePromoCodes,
+            });
+        } else {
+            setFormData({
+                username: "",
+                password: "",
+                role: "ADMIN",
+                canManageProducts: true,
+                canDeleteProducts: true,
+                canManageCategories: true,
+                canDeleteCategories: true,
+                canManageBanners: true,
+                canDeleteBanners: true,
+                canManageOrders: true,
+                canDeleteOrders: true,
+                canManagePromoCodes: true,
+                canDeletePromoCodes: true,
+            });
+        }
+    }, [user, isOpen]);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!user && !formData.password) {
+            toast.error("Password is required for new users");
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            let result;
+            if (user) {
+                result = await updateUser(user.id, formData);
+            } else {
+                result = await createUser(formData);
+            }
+
+            if (result.success) {
+                toast.success(user ? "User updated successfully" : "User created successfully");
+                onClose();
+            } else {
+                toast.error(result.error || "Something went wrong");
+            }
+        } catch (error) {
+            toast.error("An unexpected error occurred");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    if (!isOpen) return null;
+
+    const PermissionCheckbox = ({ name, label, dependsOn }: { name: string, label: string, dependsOn?: string }) => {
+        const isChecked = (formData as any)[name];
+        const isParentChecked = dependsOn ? (formData as any)[dependsOn] : true;
+
+        return (
+            <label className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer ${!isParentChecked ? 'opacity-40 cursor-not-allowed bg-gray-50 dark:bg-gray-800/20 border-transparent' :
+                isChecked ? 'bg-primary/5 border-primary/20 text-primary' : 'bg-background-light dark:bg-gray-800/50 border-[#e6dbdf] dark:border-gray-700 text-text-sub dark:text-gray-400'
+                }`}>
+                <input
+                    type="checkbox"
+                    checked={isChecked}
+                    disabled={!isParentChecked}
+                    onChange={(e) => setFormData({ ...formData, [name]: e.target.checked })}
+                    className="rounded border-gray-300 text-primary focus:ring-primary size-4"
+                />
+                <span className="text-sm font-medium">{label}</span>
+            </label>
+        );
+    };
+
+    return (
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+            <div className="relative w-full max-w-2xl bg-surface-light dark:bg-surface-dark rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+                <div className="p-8 max-h-[90vh] overflow-y-auto">
+                    <div className="flex items-center justify-between mb-8">
+                        <div>
+                            <h2 className="text-2xl font-bold text-text-main dark:text-white">
+                                {user ? "Edit User Permissions" : "Add New Sub-Admin"}
+                            </h2>
+                            <p className="text-text-sub dark:text-gray-400 text-sm mt-1">
+                                {user ? `Updating access for ${user.username}` : "Create a new account with limited access"}
+                            </p>
+                        </div>
+                        <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full text-text-sub">
+                            <span className="material-symbols-outlined">close</span>
+                        </button>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-8">
+                        {/* Basic Info */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider ml-1">Username</label>
+                                <input
+                                    required
+                                    type="text"
+                                    value={formData.username}
+                                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                                    className="w-full px-4 py-3 bg-background-light dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-text-main dark:text-white"
+                                    placeholder="e.g. jessica_editor"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider ml-1">
+                                    {user ? "New Password (optional)" : "Password"}
+                                </label>
+                                <input
+                                    type="password"
+                                    value={formData.password}
+                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                    className="w-full px-4 py-3 bg-background-light dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-text-main dark:text-white"
+                                    placeholder="••••••••"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Role Selection */}
+                        <div className="space-y-4">
+                            <label className="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider ml-1">Account Role</label>
+                            <div className="grid grid-cols-2 gap-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, role: 'ADMIN' })}
+                                    className={`p-4 rounded-2xl border text-left transition-all ${formData.role === 'ADMIN' ? 'border-primary bg-primary/5' : 'border-[#e6dbdf] dark:border-gray-700 hover:border-primary/50'}`}
+                                >
+                                    <p className={`font-bold ${formData.role === 'ADMIN' ? 'text-primary' : 'text-text-main dark:text-white'}`}>Sub-Admin (Default)</p>
+                                    <p className="text-xs text-text-sub dark:text-gray-400 mt-1">Limited access based on permissions below.</p>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, role: 'SUPER_ADMIN' })}
+                                    className={`p-4 rounded-2xl border text-left transition-all ${formData.role === 'SUPER_ADMIN' ? 'border-amber-500 bg-amber-50' : 'border-[#e6dbdf] dark:border-gray-700 hover:border-amber-500/50'}`}
+                                >
+                                    <p className={`font-bold ${formData.role === 'SUPER_ADMIN' ? 'text-amber-600' : 'text-text-main dark:text-white'}`}>Super Admin</p>
+                                    <p className="text-xs text-text-sub dark:text-gray-400 mt-1">Full, unrestricted access to everything.</p>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Granular Permissions */}
+                        {formData.role !== 'SUPER_ADMIN' && (
+                            <div className="space-y-6 bg-background-light/50 dark:bg-gray-800/30 p-6 rounded-3xl border border-[#e6dbdf] dark:border-gray-700">
+                                <div>
+                                    <h3 className="text-sm font-bold text-text-main dark:text-white uppercase tracking-widest mb-4">Permissions Checklist</h3>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div className="space-y-3">
+                                            <p className="text-[10px] font-bold text-text-sub dark:text-gray-500 uppercase tracking-widest ml-1">Products</p>
+                                            <PermissionCheckbox name="canManageProducts" label="Can Create & Edit Products" />
+                                            <PermissionCheckbox name="canDeleteProducts" label="Can Delete Products" dependsOn="canManageProducts" />
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <p className="text-[10px] font-bold text-text-sub dark:text-gray-500 uppercase tracking-widest ml-1">Categories</p>
+                                            <PermissionCheckbox name="canManageCategories" label="Can Create & Edit Categories" />
+                                            <PermissionCheckbox name="canDeleteCategories" label="Can Delete Categories" dependsOn="canManageCategories" />
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <p className="text-[10px] font-bold text-text-sub dark:text-gray-500 uppercase tracking-widest ml-1">Banners (Ads)</p>
+                                            <PermissionCheckbox name="canManageBanners" label="Can Manage Banners" />
+                                            <PermissionCheckbox name="canDeleteBanners" label="Can Delete Banners" dependsOn="canManageBanners" />
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <p className="text-[10px] font-bold text-text-sub dark:text-gray-500 uppercase tracking-widest ml-1">Orders & Sales</p>
+                                            <PermissionCheckbox name="canManageOrders" label="Can View & Process Orders" />
+                                            <PermissionCheckbox name="canDeleteOrders" label="Can Delete Orders" dependsOn="canManageOrders" />
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <p className="text-[10px] font-bold text-text-sub dark:text-gray-500 uppercase tracking-widest ml-1">Promo Codes</p>
+                                            <PermissionCheckbox name="canManagePromoCodes" label="Can Manage Promo Codes" />
+                                            <PermissionCheckbox name="canDeletePromoCodes" label="Can Delete Promo Codes" dependsOn="canManagePromoCodes" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="flex gap-4 pt-4">
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="flex-1 px-8 py-4 bg-background-light dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 text-text-main dark:text-white rounded-2xl font-bold hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="flex-1 px-8 py-4 bg-primary text-white rounded-2xl font-bold hover:bg-primary-dark transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            >
+                                {isSubmitting && <span className="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>}
+                                {user ? "Update User" : "Create User"}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    );
+}

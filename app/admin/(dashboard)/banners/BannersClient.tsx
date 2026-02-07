@@ -6,6 +6,7 @@ import { useState } from "react";
 import BannerModal from "./BannerModal";
 import { deleteBanner, toggleBannerStatus } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 interface Banner {
     id: string;
@@ -21,6 +22,10 @@ interface Banner {
 }
 
 export default function BannersClient({ banners }: { banners: Banner[] }) {
+    const { data: session } = useSession();
+    const canManage = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canManageBanners;
+    const canDelete = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canDeleteBanners;
+
     const { openSidebar } = useAdminSidebar();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBanner, setSelectedBanner] = useState<Banner | null>(null);
@@ -84,13 +89,15 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                 Control what's displayed in the homepage hero section.
                             </p>
                         </div>
-                        <button
-                            onClick={handleAdd}
-                            className="bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
-                        >
-                            <span className="material-symbols-outlined">add</span>
-                            Create New Advertisement
-                        </button>
+                        {canManage && (
+                            <button
+                                onClick={handleAdd}
+                                className="bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                            >
+                                <span className="material-symbols-outlined">add</span>
+                                Create New Advertisement
+                            </button>
+                        )}
                     </div>
 
                     <BannerModal
@@ -141,10 +148,10 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                         <div className="flex items-center gap-4">
                                             <button
                                                 onClick={() => handleToggleStatus(banner.id, banner.isActive)}
-                                                disabled={loadingMap[banner.id]}
+                                                disabled={loadingMap[banner.id] || !canManage}
                                                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${banner.isActive
-                                                        ? 'bg-green-50 text-green-600 dark:bg-green-900/10 dark:text-green-400'
-                                                        : 'bg-gray-50 text-gray-400 dark:bg-gray-800 dark:text-gray-500'
+                                                    ? 'bg-green-50 text-green-600 dark:bg-green-900/10 dark:text-green-400'
+                                                    : 'bg-gray-50 text-gray-400 dark:bg-gray-800 dark:text-gray-500'
                                                     }`}
                                             >
                                                 {loadingMap[banner.id] ? (
@@ -158,20 +165,24 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                             </button>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <button
-                                                onClick={() => handleEdit(banner)}
-                                                className="p-3 text-text-sub hover:text-primary hover:bg-primary-light dark:hover:bg-primary/10 rounded-xl transition-colors"
-                                                title="Edit"
-                                            >
-                                                <span className="material-symbols-outlined text-[22px]">edit</span>
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(banner.id, banner.title)}
-                                                className="p-3 text-text-sub hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors"
-                                                title="Delete"
-                                            >
-                                                <span className="material-symbols-outlined text-[22px]">delete</span>
-                                            </button>
+                                            {canManage && (
+                                                <button
+                                                    onClick={() => handleEdit(banner)}
+                                                    className="p-3 text-text-sub hover:text-primary hover:bg-primary-light dark:hover:bg-primary/10 rounded-xl transition-colors"
+                                                    title="Edit"
+                                                >
+                                                    <span className="material-symbols-outlined text-[22px]">edit</span>
+                                                </button>
+                                            )}
+                                            {canDelete && (
+                                                <button
+                                                    onClick={() => handleDelete(banner.id, banner.title)}
+                                                    className="p-3 text-text-sub hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors"
+                                                    title="Delete"
+                                                >
+                                                    <span className="material-symbols-outlined text-[22px]">delete</span>
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

@@ -1,5 +1,6 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import DashboardLayoutClient from "./DashboardLayoutClient";
 
 export default async function AdminLayout({
@@ -7,7 +8,7 @@ export default async function AdminLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
 
     // Don't check auth for login page - it's handled by route group
     // This layout only applies to protected routes

@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 const navItems = [
     { href: "/admin/dashboard", icon: "dashboard", label: "Dashboard", filled: true },
-    { href: "/admin/products", icon: "shopping_bag", label: "Products" },
-    { href: "/admin/categories", icon: "category", label: "Categories" },
-    { href: "/admin/banners", icon: "view_carousel", label: "Banners" },
-    { href: "/admin/orders", icon: "package_2", label: "Orders" },
-    { href: "/admin/promocodes", icon: "local_offer", label: "Promo Codes" },
+    { href: "/admin/products", icon: "shopping_bag", label: "Products", permission: "canManageProducts" },
+    { href: "/admin/categories", icon: "category", label: "Categories", permission: "canManageCategories" },
+    { href: "/admin/banners", icon: "view_carousel", label: "Banners", permission: "canManageBanners" },
+    { href: "/admin/orders", icon: "package_2", label: "Orders", permission: "canManageOrders" },
+    { href: "/admin/promocodes", icon: "local_offer", label: "Promo Codes", permission: "canManagePromoCodes" },
+    { href: "/admin/users", icon: "group", label: "Users", superAdminOnly: true },
     { href: "/admin/settings", icon: "settings", label: "Settings" },
 ];
 
@@ -21,6 +22,8 @@ interface AdminSidebarProps {
 
 export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
     const pathname = usePathname();
+    const { data: session } = useSession();
+    const isSuperAdmin = session?.user?.role === 'SUPER_ADMIN';
 
     const handleSignOut = () => {
         signOut({ callbackUrl: "/admin/login" });
@@ -64,7 +67,15 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 
                         {/* Navigation */}
                         <nav className="flex flex-col gap-2">
-                            {navItems.map((item) => {
+                            {navItems.map((item: any) => {
+                                // Filter based on superAdminOnly flag
+                                if (item.superAdminOnly && !isSuperAdmin) return null;
+
+                                // Filter based on granular permissions if not super admin
+                                if (item.permission && !isSuperAdmin && !(session?.user as any)?.[item.permission]) {
+                                    return null;
+                                }
+
                                 const isActive = pathname === item.href;
                                 return (
                                     <Link
@@ -109,10 +120,10 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                         <div className="flex items-center gap-3 px-3 py-2 mt-2">
                             <div className="flex flex-col">
                                 <p className="text-text-main dark:text-white text-sm font-medium leading-tight">
-                                    Admin
+                                    {session?.user?.name || "Admin"}
                                 </p>
                                 <p className="text-text-sub dark:text-gray-500 text-xs font-normal">
-                                    Super Admin
+                                    {isSuperAdmin ? "Super Admin" : "Editor Account"}
                                 </p>
                             </div>
                         </div>

@@ -7,6 +7,7 @@ import { updateOrderStatus } from "../../../../lib/admin-actions";
 import { useState } from "react";
 import OrderDetailsModal from "./OrderDetailsModal";
 import { OrderStatus } from "@prisma/client";
+import { useSession } from "next-auth/react";
 
 interface Order {
     id: string;
@@ -29,6 +30,9 @@ interface Order {
 }
 
 export default function OrdersClient({ orders }: { orders: Order[] }) {
+    const { data: session } = useSession();
+    const canManage = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canManageOrders;
+
     const { openSidebar } = useAdminSidebar();
     const [updatingId, setUpdatingId] = useState<string | null>(null);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -223,7 +227,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                                     <td className="p-4">
                                                         <div className="relative group/status w-fit">
                                                             <select
-                                                                disabled={updatingId === order.id}
+                                                                disabled={updatingId === order.id || !canManage}
                                                                 value={order.status}
                                                                 onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
                                                                 className={`appearance-none pl-8 pr-10 py-1.5 rounded-full text-xs font-bold cursor-pointer transition-all outline-none border bg-white dark:bg-surface-dark focus:ring-2 focus:ring-primary/20 ${statusColor === "blue" ? "text-blue-600 border-blue-100 dark:text-blue-300 dark:border-blue-900/50" :

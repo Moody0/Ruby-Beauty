@@ -6,6 +6,7 @@ import { useState } from "react";
 import PromoCodeModal from "./PromoCodeModal";
 import { deletePromoCode, togglePromoCodeStatus } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 interface PromoCode {
     id: string;
@@ -20,6 +21,10 @@ interface PromoCode {
 }
 
 export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode[] }) {
+    const { data: session } = useSession();
+    const canManage = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canManagePromoCodes;
+    const canDelete = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canDeletePromoCodes;
+
     const { openSidebar } = useAdminSidebar();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedPromoCode, setSelectedPromoCode] = useState<PromoCode | null>(null);
@@ -100,13 +105,15 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                             </div>
-                            <button
-                                onClick={handleAdd}
-                                className="w-full md:w-auto bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
-                            >
-                                <span className="material-symbols-outlined">add</span>
-                                Add Promo Code
-                            </button>
+                            {canManage && (
+                                <button
+                                    onClick={handleAdd}
+                                    className="w-full md:w-auto bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                                >
+                                    <span className="material-symbols-outlined">add</span>
+                                    Add Promo Code
+                                </button>
+                            )}
                         </div>
                     </div>
 
@@ -180,32 +187,38 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
                                             </td>
                                             <td className="p-5">
                                                 <div className="flex justify-end gap-2">
-                                                    <button
-                                                        onClick={() => handleToggleStatus(pc.id, pc.isActive)}
-                                                        disabled={loadingMap[pc.id]}
-                                                        className={`p-2 rounded-lg transition-colors ${pc.isActive ? 'text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/10' : 'text-gray-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/10'}`}
-                                                        title={pc.isActive ? "Deactivate" : "Activate"}
-                                                    >
-                                                        {loadingMap[pc.id] ? (
-                                                            <span className="animate-spin material-symbols-outlined text-[20px]">progress_activity</span>
-                                                        ) : (
-                                                            <span className="material-symbols-outlined text-[20px]">{pc.isActive ? 'toggle_on' : 'toggle_off'}</span>
-                                                        )}
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleEdit(pc)}
-                                                        className="p-2 text-text-sub hover:text-primary hover:bg-primary-light dark:hover:bg-primary/10 rounded-lg transition-colors"
-                                                        title="Edit"
-                                                    >
-                                                        <span className="material-symbols-outlined text-[20px]">edit</span>
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDelete(pc.id, pc.code)}
-                                                        className="p-2 text-text-sub hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors"
-                                                        title="Delete"
-                                                    >
-                                                        <span className="material-symbols-outlined text-[20px]">delete</span>
-                                                    </button>
+                                                    {canManage && (
+                                                        <button
+                                                            onClick={() => handleToggleStatus(pc.id, pc.isActive)}
+                                                            disabled={loadingMap[pc.id]}
+                                                            className={`p-2 rounded-lg transition-colors ${pc.isActive ? 'text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/10' : 'text-gray-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/10'}`}
+                                                            title={pc.isActive ? "Deactivate" : "Activate"}
+                                                        >
+                                                            {loadingMap[pc.id] ? (
+                                                                <span className="animate-spin material-symbols-outlined text-[20px]">progress_activity</span>
+                                                            ) : (
+                                                                <span className="material-symbols-outlined text-[20px]">{pc.isActive ? 'toggle_on' : 'toggle_off'}</span>
+                                                            )}
+                                                        </button>
+                                                    )}
+                                                    {canManage && (
+                                                        <button
+                                                            onClick={() => handleEdit(pc)}
+                                                            className="p-2 text-text-sub hover:text-primary hover:bg-primary-light dark:hover:bg-primary/10 rounded-lg transition-colors"
+                                                            title="Edit"
+                                                        >
+                                                            <span className="material-symbols-outlined text-[20px]">edit</span>
+                                                        </button>
+                                                    )}
+                                                    {canDelete && (
+                                                        <button
+                                                            onClick={() => handleDelete(pc.id, pc.code)}
+                                                            className="p-2 text-text-sub hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors"
+                                                            title="Delete"
+                                                        >
+                                                            <span className="material-symbols-outlined text-[20px]">delete</span>
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>

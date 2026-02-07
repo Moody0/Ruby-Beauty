@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/route";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
@@ -14,11 +16,13 @@ export const metadata: Metadata = {
   description: "Discover our new botanical collection designed to give your skin a natural, healthy glow from within.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerSession(authOptions);
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -31,7 +35,7 @@ export default function RootLayout({
         className={`${plusJakartaSans.variable} antialiased`}
         suppressHydrationWarning
       >
-        <Providers>
+        <Providers session={session}>
           {children}
         </Providers>
       </body>

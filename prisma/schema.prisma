@@ -17,11 +17,30 @@ enum OrderStatus {
   CANCELLED
 }
 
-// User modified for Admin only
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+}
+
+// User modified for Admin and Sub-admins
 model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  password  String
+  id       String @id @default(cuid())
+  username String @unique
+  password String
+  role     Role   @default(ADMIN)
+
+  // Granular Permissions
+  canManageProducts   Boolean @default(true)
+  canDeleteProducts   Boolean @default(true)
+  canManageCategories Boolean @default(true)
+  canDeleteCategories Boolean @default(true)
+  canManageBanners    Boolean @default(true)
+  canDeleteBanners    Boolean @default(true)
+  canManageOrders     Boolean @default(true)
+  canDeleteOrders     Boolean @default(true)
+  canManagePromoCodes Boolean @default(true)
+  canDeletePromoCodes Boolean @default(true)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

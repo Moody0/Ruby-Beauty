@@ -662,10 +662,10 @@ export async function getPromoCodes() {
             }
         });
 
-        return promoCodes.map(code => ({
+        return promoCodes.map(({ orders, ...code }) => ({
             ...code,
             totalSales: Number(code.totalSales),
-            thisMonthSales: code.orders.reduce((sum, order) => sum + Number(order.totalAmount), 0),
+            thisMonthSales: orders.reduce((sum, order) => sum + Number(order.totalAmount), 0),
             createdAt: code.createdAt.toISOString(),
             updatedAt: code.updatedAt.toISOString(),
         }));

@@ -6,6 +6,7 @@ import { useState } from "react";
 import CategoryModal from "./CategoryModal";
 import { deleteCategory, toggleCategoryFeatured } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 interface Category {
     id: string;
@@ -19,6 +20,10 @@ interface Category {
 }
 
 export default function CategoriesClient({ categories }: { categories: Category[] }) {
+    const { data: session } = useSession();
+    const canManage = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canManageCategories;
+    const canDelete = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canDeleteCategories;
+
     const { openSidebar } = useAdminSidebar();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -107,13 +112,15 @@ export default function CategoriesClient({ categories }: { categories: Category[
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                             </div>
-                            <button
-                                onClick={handleAdd}
-                                className="w-full md:w-auto bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
-                            >
-                                <span className="material-symbols-outlined">add</span>
-                                Add Category
-                            </button>
+                            {canManage && (
+                                <button
+                                    onClick={handleAdd}
+                                    className="w-full md:w-auto bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                                >
+                                    <span className="material-symbols-outlined">add</span>
+                                    Add Category
+                                </button>
+                            )}
                         </div>
                     </div>
 
@@ -147,32 +154,38 @@ export default function CategoriesClient({ categories }: { categories: Category[
                                             {category._count.products} Products
                                         </span>
                                         <div className="flex items-center gap-2">
-                                            <button
-                                                onClick={() => handleToggleFeatured(category.id, category.isFeatured)}
-                                                disabled={loadingMap[category.id]}
-                                                className={`p-2 rounded-lg transition-colors ${category.isFeatured ? 'text-amber-500 bg-amber-50 hover:bg-amber-100 dark:bg-amber-900/10 dark:hover:bg-amber-900/20' : 'text-gray-400 hover:text-amber-500 hover:bg-gray-50 dark:hover:bg-gray-800'}`}
-                                                title={category.isFeatured ? "Remove from Home" : "Feature on Home"}
-                                            >
-                                                {loadingMap[category.id] ? (
-                                                    <span className="animate-spin material-symbols-outlined text-[20px]">progress_activity</span>
-                                                ) : (
-                                                    <span className="material-symbols-outlined text-[20px]">{category.isFeatured ? 'star' : 'star_border'}</span>
-                                                )}
-                                            </button>
-                                            <button
-                                                onClick={() => handleEdit(category)}
-                                                className="p-2 text-text-sub hover:text-primary hover:bg-primary-light dark:hover:bg-primary/10 rounded-lg transition-colors"
-                                                title="Edit"
-                                            >
-                                                <span className="material-symbols-outlined text-[20px]">edit</span>
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(category.id, category.name)}
-                                                className="p-2 text-text-sub hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors"
-                                                title="Delete"
-                                            >
-                                                <span className="material-symbols-outlined text-[20px]">delete</span>
-                                            </button>
+                                            {canManage && (
+                                                <button
+                                                    onClick={() => handleToggleFeatured(category.id, category.isFeatured)}
+                                                    disabled={loadingMap[category.id]}
+                                                    className={`p-2 rounded-lg transition-colors ${category.isFeatured ? 'text-amber-500 bg-amber-50 hover:bg-amber-100 dark:bg-amber-900/10 dark:hover:bg-amber-900/20' : 'text-gray-400 hover:text-amber-500 hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+                                                    title={category.isFeatured ? "Remove from Home" : "Feature on Home"}
+                                                >
+                                                    {loadingMap[category.id] ? (
+                                                        <span className="animate-spin material-symbols-outlined text-[20px]">progress_activity</span>
+                                                    ) : (
+                                                        <span className="material-symbols-outlined text-[20px]">{category.isFeatured ? 'star' : 'star_border'}</span>
+                                                    )}
+                                                </button>
+                                            )}
+                                            {canManage && (
+                                                <button
+                                                    onClick={() => handleEdit(category)}
+                                                    className="p-2 text-text-sub hover:text-primary hover:bg-primary-light dark:hover:bg-primary/10 rounded-lg transition-colors"
+                                                    title="Edit"
+                                                >
+                                                    <span className="material-symbols-outlined text-[20px]">edit</span>
+                                                </button>
+                                            )}
+                                            {canDelete && (
+                                                <button
+                                                    onClick={() => handleDelete(category.id, category.name)}
+                                                    className="p-2 text-text-sub hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors"
+                                                    title="Delete"
+                                                >
+                                                    <span className="material-symbols-outlined text-[20px]">delete</span>
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

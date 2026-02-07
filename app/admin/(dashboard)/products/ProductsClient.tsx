@@ -8,6 +8,7 @@ import AdminHeader from "../../components/AdminHeader";
 import AddProductModal from "./AddProductModal";
 import { deleteProduct, toggleProductTrending, bulkToggleTrending } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 interface Product {
     id: string;
@@ -31,6 +32,10 @@ interface Category {
 }
 
 export default function ProductsClient({ products, categories }: { products: Product[], categories: Category[] }) {
+    const { data: session } = useSession();
+    const canDelete = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canDeleteProducts;
+    const canEdit = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canManageProducts;
+
     const { openSidebar } = useAdminSidebar();
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -195,16 +200,18 @@ export default function ProductsClient({ products, categories }: { products: Pro
                             <h2 className="text-3xl font-extrabold text-text-main dark:text-white tracking-tight">Products</h2>
                             <p className="text-text-sub dark:text-gray-400">Manage your product catalog and inventory.</p>
                         </div>
-                        <button
-                            onClick={() => {
-                                setSelectedProduct(null);
-                                setIsAddModalOpen(true);
-                            }}
-                            className="bg-primary hover:bg-primary/90 text-white h-12 px-6 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
-                        >
-                            <span className="material-symbols-outlined text-[20px]">add</span>
-                            Add New Product
-                        </button>
+                        {canEdit && (
+                            <button
+                                onClick={() => {
+                                    setSelectedProduct(null);
+                                    setIsAddModalOpen(true);
+                                }}
+                                className="bg-primary hover:bg-primary/90 text-white h-12 px-6 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                            >
+                                <span className="material-symbols-outlined text-[20px]">add</span>
+                                Add New Product
+                            </button>
+                        )}
                     </div>
 
                     <AddProductModal
@@ -317,30 +324,34 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                     </button>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <button
-                                        onClick={handleBulkRemoveTrending}
-                                        disabled={isSubmittingBulk}
-                                        className="flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-xs font-bold rounded-lg hover:bg-amber-200 dark:hover:bg-amber-900/30 transition-all border border-amber-200 dark:border-amber-800/50 disabled:opacity-50"
-                                    >
-                                        {isSubmittingBulk ? (
-                                            <span className="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>
-                                        ) : (
-                                            <span className="material-symbols-outlined text-[18px]">trending_down</span>
-                                        )}
-                                        Remove Trending
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            if (confirm(`Are you sure you want to delete ${selectedIds.size} products?`)) {
-                                                // We would call a bulk delete action here if we had one
-                                                toast.error("Bulk delete coming soon!");
-                                            }
-                                        }}
-                                        className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-lg transition-all shadow-md shadow-red-500/20"
-                                    >
-                                        <span className="material-symbols-outlined text-[18px]">delete</span>
-                                        Delete Selected
-                                    </button>
+                                    {canEdit && (
+                                        <button
+                                            onClick={handleBulkRemoveTrending}
+                                            disabled={isSubmittingBulk}
+                                            className="flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-xs font-bold rounded-lg hover:bg-amber-200 dark:hover:bg-amber-900/30 transition-all border border-amber-200 dark:border-amber-800/50 disabled:opacity-50"
+                                        >
+                                            {isSubmittingBulk ? (
+                                                <span className="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>
+                                            ) : (
+                                                <span className="material-symbols-outlined text-[18px]">trending_down</span>
+                                            )}
+                                            Remove Trending
+                                        </button>
+                                    )}
+                                    {canDelete && (
+                                        <button
+                                            onClick={() => {
+                                                if (confirm(`Are you sure you want to delete ${selectedIds.size} products?`)) {
+                                                    // We would call a bulk delete action here if we had one
+                                                    toast.error("Bulk delete coming soon!");
+                                                }
+                                            }}
+                                            className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-lg transition-all shadow-md shadow-red-500/20"
+                                        >
+                                            <span className="material-symbols-outlined text-[18px]">delete</span>
+                                            Delete Selected
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         )}
@@ -442,18 +453,22 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                 </td>
                                                 <td className="p-3 sm:p-5 text-right">
                                                     <div className="flex items-center justify-end gap-1 sm:gap-2 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
-                                                        <button
-                                                            onClick={() => handleEdit(product)}
-                                                            className="p-1.5 sm:p-2 text-text-sub dark:text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title="Edit"
-                                                        >
-                                                            <span className="material-symbols-outlined text-[18px] sm:text-[20px]">edit</span>
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleDelete(product.id, product.name)}
-                                                            className="p-1.5 sm:p-2 text-text-sub dark:text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors" title="Delete"
-                                                        >
-                                                            <span className="material-symbols-outlined text-[18px] sm:text-[20px]">delete</span>
-                                                        </button>
+                                                        {canEdit && (
+                                                            <button
+                                                                onClick={() => handleEdit(product)}
+                                                                className="p-1.5 sm:p-2 text-text-sub dark:text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title="Edit"
+                                                            >
+                                                                <span className="material-symbols-outlined text-[18px] sm:text-[20px]">edit</span>
+                                                            </button>
+                                                        )}
+                                                        {canDelete && (
+                                                            <button
+                                                                onClick={() => handleDelete(product.id, product.name)}
+                                                                className="p-1.5 sm:p-2 text-text-sub dark:text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors" title="Delete"
+                                                            >
+                                                                <span className="material-symbols-outlined text-[18px] sm:text-[20px]">delete</span>
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 </td>
                                             </tr>
