@@ -111,7 +111,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                         </p>
                                         <Link
                                             href={banner.link || "/products"}
-                                            className="px-6 sm:px-8 py-3 sm:py-3.5 bg-primary hover:bg-primary/90 text-white rounded-full font-bold text-sm transition-all flex items-center gap-2 w-fit group/btn shadow-lg"
+                                            className="px-6 sm:px-8 py-3 sm:py-3.5  bg-primary hover:bg-primary/90 text-white rounded-full font-bold text-sm transition-all flex items-center gap-2 w-fit group/btn shadow-lg "
                                         >
                                             {dir === 'rtl' && (
                                                 <span className="material-symbols-outlined text-lg group-hover/btn:-translate-x-1 transition-transform">arrow_forward</span>
@@ -125,34 +125,34 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                 </div>
                             </div>
 
-                            {/* Desktop Layout: Side by side */}
-                            <div className={`hidden md:flex ${dir === 'rtl' ? 'flex-row-reverse' : 'flex-row'} items-center h-full`}>
-                                {/* Hero Content */}
-                                <div className={`w-full md:w-1/2 p-12 lg:p-20 flex flex-col ${dir === 'rtl' ? 'items-end' : 'items-start'} justify-center gap-6 z-10 h-full relative`}>
-                                    {/* Content Transition Wrapper */}
+                            {/* Desktop Layout: dir="ltr" so flex order is physical (left/right) in both LTR and RTL docs */}
+                            <div className="hidden md:flex flex-row items-center h-full" dir="ltr">
+                                {/* Hero Content — in RTL: order-2 = right; in LTR: order-1 = left */}
+                                <div className={`w-full md:w-1/2 p-12 lg:p-20 flex flex-col justify-center gap-6 z-10 h-full relative ${dir === 'rtl' ? 'order-2 items-end text-right' : 'order-1 items-start text-left'}`}>
+                                    {/* Content Transition Wrapper — in RTL full width so button can sit at end */}
                                     <div className={`transition-all duration-700 delay-300 transform ${index === currentIndex ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                                        }`}>
+                                        } ${dir === 'rtl' ? 'w-full flex flex-col items-end' : ''}`}>
                                         <span className="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-4">
                                             {banner.badge || t('home.newArrival')}
                                         </span>
-                                        <h2 className={`text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-text-main-light dark:text-text-main-dark mb-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                        <h2 className="text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-text-main-light dark:text-text-main-dark mb-4">
                                             {banner.title}
                                         </h2>
-                                        <p className={`text-lg text-text-muted-light dark:text-text-muted-dark max-w-md mb-6 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                        <p className="text-lg text-text-muted-light dark:text-text-muted-dark max-w-md mb-6">
                                             {banner.subtitle || t('footer.brandDescription')}
                                         </p>
                                         <Link
                                             href={banner.link || "/products"}
-                                            className="px-8 py-3.5 bg-primary hover:bg-primary/90 text-white rounded-full font-bold text-sm transition-all flex items-center gap-2 w-fit group/btn"
+                                            className={`px-8 py-3.5 bg-primary hover:bg-primary/90 text-white rounded-full font-bold text-sm transition-all flex items-center gap-2 w-fit group/btn ${dir === 'rtl' ? 'self-end' : ''}`}
                                         >
                                             {banner.buttonText || t('home.shopNow')}
-                                            <span className={`material-symbols-outlined text-lg group-hover/btn:translate-x-1 transition-transform ${dir === 'rtl' ? 'rotate-180 group-hover/btn:-translate-x-1' : ''}`}>arrow_forward</span>
+                                            <span className={`material-symbols-outlined text-lg group-hover/btn:translate-x-1 transition-transform ${dir === 'rtl' ? ' group-hover/btn:-translate-x-1' : ''}`}>arrow_forward</span>
                                         </Link>
                                     </div>
                                 </div>
 
-                                {/* Hero Image */}
-                                <div className="w-full md:w-1/2 h-full relative">
+                                {/* Hero Image — order-1 in RTL so it appears on the left */}
+                                <div className={`w-full md:w-1/2 h-full relative ${dir === 'rtl' ? 'order-1' : 'order-2'}`}>
                                     <div
                                         className="w-full h-full bg-center bg-cover bg-no-repeat transition-transform duration-10000 ease-linear transform scale-100 group-hover:scale-110"
                                         style={{ backgroundImage: `url("${banner.image}")` }}
@@ -168,14 +168,14 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                             {/* Arrows */}
                             <button
                                 onClick={prevSlide}
-                                className={`absolute ${dir === 'rtl' ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100`}
+                                className={`absolute ${dir === 'rtl' ? 'right-4 rotate-180' : 'left-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100`}
                                 aria-label="Previous slide"
                             >
                                 <span className={`material-symbols-outlined ${dir === 'rtl' ? '' : ''}`}>chevron_left</span>
                             </button>
                             <button
                                 onClick={nextSlide}
-                                className={`absolute ${dir === 'rtl' ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100`}
+                                className={`absolute ${dir === 'rtl' ? 'left-4 rotate-180' : 'right-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100`}
                                 aria-label="Next slide"
                             >
                                 <span className="material-symbols-outlined">chevron_right</span>

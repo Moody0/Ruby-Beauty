@@ -60,11 +60,10 @@ const Footer = () => {
                     <div className="flex flex-col gap-4">
                         <h5 className="font-bold text-text-main-light dark:text-text-main-dark">{t('footer.shop')}</h5>
                         <ul className="flex flex-col gap-2.5 text-sm text-text-muted-light dark:text-text-muted-dark">
-                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.skincare')}</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.makeup')}</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.fragrance')}</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.toolsAccessories')}</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.giftSets')}</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="/products">{t('footer.skincare')}</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="/products">{t('footer.makeup')}</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="/products">{t('footer.fragrance')}</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="/products">{t('footer.toolsAccessories')}</Link></li>
                         </ul>
                     </div>
 
@@ -72,10 +71,10 @@ const Footer = () => {
                     <div className="flex flex-col gap-4">
                         <h5 className="font-bold text-text-main-light dark:text-text-main-dark">{t('footer.support')}</h5>
                         <ul className="flex flex-col gap-2.5 text-sm text-text-muted-light dark:text-text-muted-dark">
-                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.helpCenter')}</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.shippingReturns')}</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.orderStatus')}</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.contactUs')}</Link></li>
+                            <li><a className="hover:text-primary transition-colors" href="https://wa.me/963933254796" target="_blank" rel="noopener noreferrer">{t('footer.helpCenter')}</a></li>
+                            <li><Link className="hover:text-primary transition-colors" href="/about-us">{t('footer.shippingReturns')}</Link></li>
+                            <li><a className="hover:text-primary transition-colors" href="https://wa.me/963933254796" target="_blank" rel="noopener noreferrer">{t('footer.orderStatus')}</a></li>
+                            <li><a className="hover:text-primary transition-colors" href="https://wa.me/963933254796" target="_blank" rel="noopener noreferrer">{t('footer.contactUs')}</a></li>
                         </ul>
                     </div>
 
@@ -83,10 +82,7 @@ const Footer = () => {
                     <div className="flex flex-col gap-4">
                         <h5 className="font-bold text-text-main-light dark:text-text-main-dark">{t('footer.company')}</h5>
                         <ul className="flex flex-col gap-2.5 text-sm text-text-muted-light dark:text-text-muted-dark">
-                            <li><Link className="hover:text-primary transition-colors" href="#">{t('common.aboutUs')}</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.careers')}</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.sustainability')}</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.press')}</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="/about-us">{t('common.aboutUs')}</Link></li>
                         </ul>
                     </div>
                 </div>

@@ -7,6 +7,7 @@
         "blog": "Blog",
         "search": "Search",
         "searchProducts": "Search products...",
+        "suggestions": "Suggestions",
         "cart": "Cart",
         "viewAll": "View all",
         "loading": "Loading...",
@@ -358,5 +359,35 @@
         "loadMoreCategories": "Load More Categories",
         "premiumCollection": "Premium collection",
         "allCategories": "All Categories"
+    },
+    "aboutUsPage": {
+        "hero": {
+            "title": "Our Story",
+            "subtitle": "Redefining beauty with clean, conscious care that honors your skin and the earth.",
+            "cta": "Shop Our Collection"
+        },
+        "narrative": {
+            "founded": "Founded in 2024",
+            "title": "Our Mission for Clean Beauty",
+            "para1": "We believe that beauty should be kind—to your skin, your spirit, and the planet. Our journey started in a sun-drenched studio with a simple, radical goal: to create high-performance skincare without compromising on ethics or transparency.",
+            "para2": "For too long, the industry was clouded by hidden ingredients and unsustainable practices. Ruby Beauty was born to bring light back to your ritual. Every formula is meticulously crafted with botanical extracts and clean science, ensuring that what you put on your body is as pure as the results it delivers.",
+            "quote": "Naturally inspired, scientifically proven."
+        },
+        "values": {
+            "title": "Our Core Values",
+            "description": "At Ruby Beauty, our principles are as clean as our formulas. We commit to a higher standard of care in everything we produce.",
+            "crueltyFree": {
+                "title": "Cruelty-Free",
+                "description": "We love our furry friends. None of our products or ingredients are ever tested on animals, at any stage of production."
+            },
+            "vegan": {
+                "title": "100% Vegan",
+                "description": "Harnessing the power of nature. Our formulas are entirely plant-based, free from all animal-derived ingredients."
+            },
+            "sustainable": {
+                "title": "Sustainable",
+                "description": "Respecting our earth through glass packaging, recycled materials, and ethical sourcing practices that give back."
+            }
+        }
     }
 }

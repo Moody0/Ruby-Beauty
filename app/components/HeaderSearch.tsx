@@ -8,10 +8,12 @@ interface HeaderSearchProps {
     onSearchSelect?: () => void;
     placeholder?: string;
     autoFocus?: boolean;
+    locale?: 'en' | 'ar';
 }
 
-const HeaderSearch = ({ onSearchSelect, placeholder, autoFocus = false }: HeaderSearchProps) => {
-    const { t, dir } = useLanguage();
+const HeaderSearch = ({ onSearchSelect, placeholder, autoFocus = false, locale }: HeaderSearchProps) => {
+    const { t, dir, language } = useLanguage();
+    const currentLocale = locale ?? language;
     const [query, setQuery] = useState("");
     const [results, setResults] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
@@ -38,7 +40,7 @@ const HeaderSearch = ({ onSearchSelect, placeholder, autoFocus = false }: Header
             if (query.trim().length > 1) {
                 setLoading(true);
                 try {
-                    const res = await fetch(`/api/products?search=${encodeURIComponent(query)}&limit=5`);
+                    const res = await fetch(`/api/products?search=${encodeURIComponent(query)}&limit=5&lang=${currentLocale}`);
                     if (res.ok) {
                         const data = await res.json();
                         setResults(data.products);
@@ -56,7 +58,7 @@ const HeaderSearch = ({ onSearchSelect, placeholder, autoFocus = false }: Header
         }, 300);
 
         return () => clearTimeout(timeoutId);
-    }, [query]);
+    }, [query, currentLocale]);
 
     const handleProductClick = () => {
         setShowResults(false);

@@ -10,7 +10,7 @@ import LanguageToggle from './LanguageToggle';
 
 const Header = () => {
     const { cartCount } = useCart();
-    const { t, dir } = useLanguage();
+    const { t, dir, language } = useLanguage();
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -49,7 +49,7 @@ const Header = () => {
                     <div className="flex items-center gap-2 md:gap-8">
                         <nav className="hidden lg:flex items-center gap-6">
                             <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('common.shop')}</Link>
-                            <Link href="#" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('common.about')}</Link>
+                            <Link href="/about-us" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('common.about')}</Link>
                         </nav>
                         <div className="flex items-center gap-1 md:gap-2">
                             {/* Mobile Search Toggle */}
@@ -117,21 +117,12 @@ const Header = () => {
                             </Link>
 
                             <Link
-                                href="#"
+                                href="/about-us"
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20"
                             >
                                 <span className="material-symbols-outlined text-2xl opacity-70">info</span>
                                 <span className="text-xl font-medium">{t('common.aboutUs')}</span>
-                            </Link>
-
-                            <Link
-                                href="#"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20"
-                            >
-                                <span className="material-symbols-outlined text-2xl opacity-70">article</span>
-                                <span className="text-xl font-medium">{t('common.blog')}</span>
                             </Link>
                         </nav>
                     </div>
@@ -153,19 +144,22 @@ const Header = () => {
                         </div>
                         <div className="p-4">
                             <HeaderSearch
+                                locale={language}
                                 autoFocus
                                 onSearchSelect={() => setIsMobileSearchOpen(false)}
                                 placeholder={t('common.searchProducts')}
                             />
                         </div>
-                        <div className="flex-1 overflow-y-auto p-4">
-                            <p className="text-xs font-bold uppercase tracking-wider text-text-muted-light dark:text-white/40 mb-4"></p>
+                        <div className="flex-1 overflow-y-auto p-4" key={language}>
+                            <p className="text-xs font-bold uppercase tracking-wider text-text-muted-light dark:text-white/40 mb-4">
+                                {t('common.suggestions')}
+                            </p>
                             <div className="flex flex-wrap gap-2">
                                 {[
-                                    { key: 'serum', label: t('searchTags.serum') },
-                                    { key: 'moisturizer', label: t('searchTags.moisturizer') },
-                                    { key: 'cleanser', label: t('searchTags.cleanser') },
-                                    { key: 'sunscreen', label: t('searchTags.sunscreen') }
+                                    { key: 'serum', labelKey: 'searchTags.serum' },
+                                    { key: 'moisturizer', labelKey: 'searchTags.moisturizer' },
+                                    { key: 'cleanser', labelKey: 'searchTags.cleanser' },
+                                    { key: 'sunscreen', labelKey: 'searchTags.sunscreen' }
                                 ].map((tag) => (
                                     <button
                                         key={tag.key}
@@ -174,7 +168,7 @@ const Header = () => {
                                         }}
                                         className="px-4 py-2 bg-background-light dark:bg-white/5 rounded-full text-sm font-medium hover:text-primary transition-colors"
                                     >
-                                        {tag.label}
+                                        {t(tag.labelKey)}
                                     </button>
                                 ))}
                             </div>
