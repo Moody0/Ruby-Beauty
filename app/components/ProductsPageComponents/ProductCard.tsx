@@ -47,7 +47,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div className="group relative flex flex-col gap-3">
             <Link href={`/products/${product.slug}`} className="relative aspect-3/4 w-full overflow-hidden rounded-xl bg-gray-100 block">
                 {product.isTrending && (
-                    <span className="absolute ltr:left-3 rtl:right-3 top-3 z-10 rounded-md bg-white px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-black shadow-sm">{t('home.trendingNow')}</span>
+                    <span className="absolute ltr:left-2 rtl:right-2 top-2 sm:ltr:left-3 sm:rtl:right-3 sm:top-3 z-10 rounded bg-white px-1.5 py-0.5 sm:px-2 sm:py-1 text-[8px] sm:text-[10px] font-bold uppercase tracking-wider text-black shadow-sm">{t('home.trendingNow')}</span>
                 )}
                 <img
                     alt={product.name}
