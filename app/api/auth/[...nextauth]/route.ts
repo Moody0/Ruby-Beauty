@@ -9,7 +9,8 @@ export const authOptions: AuthOptions = {
             name: "Credentials",
             credentials: {
                 username: { label: "Username", type: "text" },
-                password: { label: "Password", type: "password" }
+                password: { label: "Password", type: "password" },
+                rememberMe: { label: "Remember me", type: "text" }
             },
             async authorize(credentials) {
                 if (!credentials?.username || !credentials?.password) {
@@ -33,10 +34,13 @@ export const authOptions: AuthOptions = {
                     return null
                 }
 
+                const rememberMe = credentials.rememberMe === "true" || credentials.rememberMe === true
+
                 return {
                     id: user.id,
                     name: user.username,
                     role: user.role,
+                    rememberMe,
                     canManageProducts: user.canManageProducts,
                     canDeleteProducts: user.canDeleteProducts,
                     canManageCategories: user.canManageCategories,
@@ -59,6 +63,7 @@ export const authOptions: AuthOptions = {
             if (user) {
                 token.id = user.id;
                 token.role = user.role;
+                token.rememberMe = (user as { rememberMe?: boolean }).rememberMe;
                 token.canManageProducts = user.canManageProducts;
                 token.canDeleteProducts = user.canDeleteProducts;
                 token.canManageCategories = user.canManageCategories;
@@ -69,6 +74,11 @@ export const authOptions: AuthOptions = {
                 token.canDeleteOrders = user.canDeleteOrders;
                 token.canManagePromoCodes = user.canManagePromoCodes;
                 token.canDeletePromoCodes = user.canDeletePromoCodes;
+                // Session length: 30 days if "Remember me", else 24 hours
+                const maxAge = (user as { rememberMe?: boolean }).rememberMe
+                    ? 30 * 24 * 60 * 60   // 30 days
+                    : 24 * 60 * 60;       // 24 hours
+                token.exp = Math.floor(Date.now() / 1000) + maxAge;
             }
             return token
         },

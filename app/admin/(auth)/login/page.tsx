@@ -24,6 +24,7 @@ export default function AdminLoginPage() {
             const result = await signIn("credentials", {
                 username,
                 password,
+                rememberMe: rememberMe ? "true" : "false",
                 redirect: false,
             });
 
