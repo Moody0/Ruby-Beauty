@@ -8,6 +8,9 @@ interface ProductInput {
     name: string;
     description?: string;
     price: string | number;
+    discountPrice?: string | number | null;
+    discountType?: string | null;
+    discountValue?: string | number | null;
     stock: string | number;
     sku?: string;
     images: string;
@@ -130,10 +133,12 @@ export async function getAdminProducts() {
             }
         });
 
-        // Convert Decimal types to plain numbers and ensure serializable dates
         return products.map(product => ({
             ...product,
             price: Number(product.price),
+            discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
+            discountType: product.discountType,
+            discountValue: product.discountValue ? Number(product.discountValue) : null,
             stock: Number(product.stock),
             createdAt: product.createdAt.toISOString(),
             updatedAt: product.updatedAt.toISOString(),
@@ -187,7 +192,6 @@ export async function getAdminOrders() {
             }
         });
 
-        // Convert Decimal types and dates for serialization
         return orders.map(order => ({
             id: order.id,
             Name: order.Name,
@@ -204,6 +208,9 @@ export async function getAdminOrders() {
                 product: item.product ? {
                     ...item.product,
                     price: Number(item.product.price),
+                    discountPrice: item.product.discountPrice ? Number(item.product.discountPrice) : null,
+                    discountType: item.product.discountType,
+                    discountValue: item.product.discountValue ? Number(item.product.discountValue) : null,
                     stock: Number(item.product.stock),
                     createdAt: item.product.createdAt.toISOString(),
                     updatedAt: item.product.updatedAt.toISOString(),
@@ -224,6 +231,9 @@ export async function createProduct(data: ProductInput) {
                 slug: data.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''),
                 description: data.description,
                 price: parseFloat(data.price as string),
+                discountPrice: data.discountPrice ? parseFloat(data.discountPrice as string) : null,
+                discountType: data.discountType,
+                discountValue: data.discountValue ? parseFloat(data.discountValue as string) : null,
                 stock: parseInt(data.stock as string),
                 sku: data.sku,
                 images: data.images,
@@ -233,7 +243,6 @@ export async function createProduct(data: ProductInput) {
 
         revalidatePath('/admin/products');
 
-        // Convert Decimal types and dates for serialization
         return {
             success: true,
             product: {
@@ -245,6 +254,9 @@ export async function createProduct(data: ProductInput) {
                 isTrending: product.isTrending,
                 description: product.description,
                 price: Number(product.price),
+                discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
+                discountType: product.discountType,
+                discountValue: product.discountValue ? Number(product.discountValue) : null,
                 stock: Number(product.stock),
                 categoryId: product.categoryId,
                 createdAt: product.createdAt.toISOString(),
@@ -266,6 +278,9 @@ export async function updateProduct(id: string, data: ProductInput) {
                 slug: data.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''),
                 description: data.description,
                 price: parseFloat(data.price as string),
+                discountPrice: data.discountPrice ? parseFloat(data.discountPrice as string) : null,
+                discountType: data.discountType,
+                discountValue: data.discountValue ? parseFloat(data.discountValue as string) : null,
                 stock: parseInt(data.stock as string),
                 sku: data.sku,
                 images: data.images,
@@ -286,6 +301,9 @@ export async function updateProduct(id: string, data: ProductInput) {
                 isTrending: product.isTrending,
                 description: product.description,
                 price: Number(product.price),
+                discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
+                discountType: product.discountType,
+                discountValue: product.discountValue ? Number(product.discountValue) : null,
                 stock: Number(product.stock),
                 categoryId: product.categoryId,
                 createdAt: product.createdAt.toISOString(),
@@ -401,7 +419,6 @@ export async function updateCategory(id: string, data: CategoryInput) {
 
 export async function deleteCategory(id: string) {
     try {
-        // Check if category has products
         const productsCount = await prisma.product.count({
             where: { categoryId: id }
         });
@@ -485,6 +502,9 @@ export async function getTrendingProducts() {
         return products.map(product => ({
             ...product,
             price: Number(product.price),
+            discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
+            discountType: product.discountType,
+            discountValue: product.discountValue ? Number(product.discountValue) : null,
             stock: Number(product.stock),
             createdAt: product.createdAt.toISOString(),
             updatedAt: product.updatedAt.toISOString(),
@@ -502,7 +522,6 @@ export async function getTrendingProducts() {
 
 export async function bulkCreateProducts(products: any[]) {
     try {
-        // Get all categories to match by name
         const categories = await prisma.category.findMany();
         const categoryMap = new Map(categories.map(c => [c.name.toLowerCase(), c.id]));
 
@@ -510,7 +529,6 @@ export async function bulkCreateProducts(products: any[]) {
             const categoryName = (p.Category || 'Uncategorized').toLowerCase();
             let categoryId = categoryMap.get(categoryName);
 
-            // If category doesn't exist, create it
             if (!categoryId) {
                 const newCat = await prisma.category.create({
                     data: { name: p.Category || 'Uncategorized' }
@@ -734,7 +752,6 @@ export async function getPromoCodes() {
 
 export async function createPromoCode(data: PromoCodeInput) {
     try {
-        // Check uniqueness
         const existing = await prisma.promoCode.findUnique({
             where: { code: data.code }
         });
@@ -762,7 +779,6 @@ export async function createPromoCode(data: PromoCodeInput) {
 
 export async function updatePromoCode(id: string, data: PromoCodeInput) {
     try {
-        // Check uniqueness if code changed
         if (data.code) {
             const existing = await prisma.promoCode.findUnique({
                 where: { code: data.code }

@@ -17,7 +17,10 @@ export async function GET() {
 
         return NextResponse.json(trendingProducts.map(p => ({
             ...p,
-            price: p.price.toString()
+            price: p.price.toString(),
+            discountPrice: p.discountPrice ? p.discountPrice.toString() : null,
+            discountType: p.discountType,
+            discountValue: p.discountValue ? p.discountValue.toString() : null
         })));
     } catch (error) {
         console.error("Error fetching trending products:", error);

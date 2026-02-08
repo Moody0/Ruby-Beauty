@@ -16,6 +16,9 @@ interface Product {
     description: string | null;
     categoryId: string;
     price: number;
+    discountPrice: number | null;
+    discountType: string | null;
+    discountValue: number | null;
     stock: number;
     sku: string | null;
     images: string;
@@ -36,6 +39,8 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
         description: "",
         categoryId: "",
         price: "",
+        discountType: "NONE", // NONE, PERCENTAGE, FIXED
+        discountValue: "",
         stock: "",
         sku: "",
         images: "", // Comma separated links
@@ -51,6 +56,8 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                 description: product.description || "",
                 categoryId: product.categoryId,
                 price: product.price.toString(),
+                discountType: product.discountType || "NONE",
+                discountValue: product.discountValue?.toString() || "",
                 stock: product.stock.toString(),
                 sku: product.sku || "",
                 images: product.images,
@@ -62,6 +69,8 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                 description: "",
                 categoryId: "",
                 price: "",
+                discountType: "NONE",
+                discountValue: "",
                 stock: "0",
                 sku: "",
                 images: "",
@@ -80,9 +89,20 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
 
         setIsLoading(true);
         try {
+            let calculatedDiscountPrice = null;
+            if (formData.discountType === "FIXED") {
+                calculatedDiscountPrice = parseFloat(formData.discountValue);
+            } else if (formData.discountType === "PERCENTAGE") {
+                const price = parseFloat(formData.price);
+                const percent = parseFloat(formData.discountValue);
+                calculatedDiscountPrice = price - (price * percent / 100);
+            }
+
             const formDataToSubmit = {
                 ...formData,
                 price: parseFloat(formData.price),
+                discountPrice: calculatedDiscountPrice,
+                discountValue: formData.discountType === "NONE" ? null : parseFloat(formData.discountValue),
                 stock: parseInt(formData.stock) || 0,
             };
 
@@ -248,6 +268,55 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                                 />
                             </div>
+                        </div>
+
+                        <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 p-6 rounded-2xl bg-primary/5 dark:bg-primary/10 border border-primary/10">
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.discountType")}</label>
+                                <div className="flex bg-white dark:bg-gray-800 p-1 rounded-xl border border-[#e6dbdf] dark:border-gray-700">
+                                    {(["NONE", "PERCENTAGE", "FIXED"] as const).map((type) => (
+                                        <button
+                                            key={type}
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, discountType: type, discountValue: type === "NONE" ? "" : formData.discountValue })}
+                                            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${formData.discountType === type
+                                                ? "bg-primary text-white shadow-soft shadow-primary/25"
+                                                : "text-text-sub hover:bg-gray-50 dark:hover:bg-gray-900"
+                                                }`}
+                                        >
+                                            {type === "NONE" ? t("admin.addProductModal.noDiscount") :
+                                                type === "PERCENTAGE" ? t("admin.addProductModal.percentageDiscount") :
+                                                    t("admin.addProductModal.fixedDiscount")}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {formData.discountType !== "NONE" && (
+                                <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+                                    <label className="text-sm font-bold text-text-main dark:text-white">
+                                        {formData.discountType === "PERCENTAGE" ? t("admin.addProductModal.percentageDiscount") : t("admin.addProductModal.discountPrice")}
+                                    </label>
+                                    <div className="relative">
+                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sub font-bold text-sm">
+                                            {formData.discountType === "PERCENTAGE" ? "%" : "$"}
+                                        </span>
+                                        <input
+                                            className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all pl-8 pr-4 text-sm font-bold dark:text-white outline-none"
+                                            placeholder={formData.discountType === "PERCENTAGE" ? t("admin.addProductModal.percentagePlaceholder") : t("admin.addProductModal.discountPricePlaceholder")}
+                                            step="0.01"
+                                            type="number"
+                                            value={formData.discountValue}
+                                            onChange={(e) => setFormData({ ...formData, discountValue: e.target.value })}
+                                        />
+                                    </div>
+                                    {formData.discountType === "PERCENTAGE" && formData.price && formData.discountValue && (
+                                        <p className="text-[10px] font-bold text-primary mt-1">
+                                            {t("admin.addProductModal.discountPrice")}: ${(parseFloat(formData.price) - (parseFloat(formData.price) * parseFloat(formData.discountValue) / 100)).toFixed(2)}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
                         </div>
 
                         <div className="space-y-2">

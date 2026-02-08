@@ -12,8 +12,34 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Ruby Beauty - Beauty Store",
-  description: "Discover our new botanical collection designed to give your skin a natural, healthy glow from within.",
+  title: {
+    default: "Ruby Beauty - Premium Botanical Skincare Store",
+    template: "%s | Ruby Beauty"
+  },
+  description: "Discover Ruby Beauty's premium botanical skincare collection. Natural, healthy glow from within with our cruelty-free and vegan products.",
+  keywords: ["skincare", "beauty", "botanical", "natural beauty", "ruby beauty", "serum", "moisturizer", "vegan skincare"],
+  authors: [{ name: "Ruby Beauty" }],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "Ruby Beauty",
+    title: "Ruby Beauty - Premium Botanical Skincare Store",
+    description: "Discover our new botanical collection designed for a natural, healthy glow.",
+    images: [
+      {
+        url: "/Ruby-Beauty-Logo.jpeg",
+        width: 1200,
+        height: 630,
+        alt: "Ruby Beauty Logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ruby Beauty - Premium Botanical Skincare Store",
+    description: "Discover our new botanical collection designed for a natural, healthy glow.",
+    images: ["/Ruby-Beauty-Logo.jpeg"],
+  },
 };
 
 export default async function RootLayout({

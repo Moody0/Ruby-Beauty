@@ -18,6 +18,9 @@ interface Product {
     categoryId: string;
     sku: string | null;
     price: number;
+    discountPrice: number | null;
+    discountType: string | null;
+    discountValue: number | null;
     stock: number;
     images: string;
     isTrending: boolean;
@@ -519,7 +522,16 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                         {product.category?.name || 'Uncategorized'}
                                                     </span>
                                                 </td>
-                                                <td className="p-3 sm:p-5 text-xs sm:text-sm font-bold text-text-main dark:text-white">${product.price.toFixed(2)}</td>
+                                                <td className="p-3 sm:p-5 text-xs sm:text-sm font-bold text-text-main dark:text-white">
+                                                    {product.discountPrice ? (
+                                                        <div className="flex flex-col">
+                                                            <span className="text-primary">${product.discountPrice.toFixed(2)}</span>
+                                                            <span className="text-[10px] text-text-sub line-through decoration-red-400/50">${product.price.toFixed(2)}</span>
+                                                        </div>
+                                                    ) : (
+                                                        <span>${product.price.toFixed(2)}</span>
+                                                    )}
+                                                </td>
                                                 <td className="p-3 sm:p-5">
                                                     <div className="flex flex-col gap-1 w-full max-w-[140px]">
                                                         <div className="flex flex-wrap items-center text-[10px] sm:text-xs">

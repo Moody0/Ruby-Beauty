@@ -14,11 +14,10 @@ interface Category {
 const Categories = ({ categories }: { categories: Category[] }) => {
     const { t, dir } = useLanguage();
 
-    // Fallback image if category doesn't have one
     const defaultImage = 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800';
 
     if (!categories || categories.length === 0) {
-        return null; // Or return a message, or keeping the skeleton is tricky without client side loading
+        return null;
     }
 
     return (

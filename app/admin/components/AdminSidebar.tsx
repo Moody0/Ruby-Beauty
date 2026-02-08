@@ -50,13 +50,20 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                     <div className="flex flex-col gap-6">
                         {/* Logo & Brand */}
                         <div className="flex items-center justify-between px-2 py-2">
-                            <div className="flex flex-col">
-                                <h1 className="text-text-main dark:text-white text-lg font-bold leading-tight">
-                                    {t('header.brandName')}
-                                </h1>
-                                <p className="text-text-sub dark:text-gray-400 text-xs font-normal">
-                                    {t('admin.adminPanel')}
-                                </p>
+                            <div className="flex items-center gap-3">
+                                <img
+                                    src="/Ruby-Beauty-Logo.jpeg"
+                                    alt="Ruby Beauty"
+                                    className="h-10 w-auto object-contain rounded-lg"
+                                />
+                                <div className="flex flex-col">
+                                    <h1 className="text-text-main dark:text-white text-lg font-bold leading-tight">
+                                        {t('header.brandName')}
+                                    </h1>
+                                    <p className="text-text-sub dark:text-gray-400 text-xs font-normal">
+                                        {t('admin.adminPanel')}
+                                    </p>
+                                </div>
                             </div>
                             {/* Close button for mobile */}
                             <button

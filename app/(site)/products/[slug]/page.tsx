@@ -44,7 +44,12 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
 
                 {/* Product Details (Right) */}
                 <div className="flex flex-col lg:col-span-3">
-                    <ProductInfo name={product.name} description={product.description} price={product.price.toString()} />
+                    <ProductInfo
+                        name={product.name}
+                        description={product.description}
+                        price={product.price.toString()}
+                        discountPrice={product.discountPrice?.toString()}
+                    />
 
                     {/* Description */}
                     <div className="mb-8">
@@ -56,12 +61,11 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                     <ProductActions product={{
                         id: product.id,
                         name: product.name,
-                        price: Number(product.price),
-                        image: product.images,
+                        price: Number(product.discountPrice || product.price),
+                        image: product.images.split(',')[0],
                         slug: product.slug
                     }} />
 
-                    {/* Trust Badges - Could be componentized too but leaving inline for now or move to separate file if requested */}
                     <div className="flex flex-wrap justify-center gap-6 mb-10 border-t border-[#f4f0f2] dark:border-white/10">
                     </div>
 
@@ -71,7 +75,12 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
 
             <RelatedProducts products={relatedProducts.map(p => ({
                 ...p,
-                price: p.price.toString()
+                price: Number(p.price),
+                discountPrice: p.discountPrice ? Number(p.discountPrice) : null,
+                discountType: p.discountType,
+                discountValue: p.discountValue ? Number(p.discountValue) : null,
+                createdAt: p.createdAt.toISOString(),
+                updatedAt: p.updatedAt.toISOString(),
             }))} />
         </div>
     );

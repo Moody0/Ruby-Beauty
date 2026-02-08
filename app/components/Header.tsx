@@ -14,7 +14,6 @@ const Header = () => {
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    // Prevent scrolling when mobile search or menu is open
     useEffect(() => {
         if (isMobileSearchOpen || isMobileMenuOpen) {
             document.body.style.overflow = 'hidden';
@@ -27,7 +26,6 @@ const Header = () => {
         <header className="sticky top-0 z-50 w-full bg-surface-light dark:bg-surface-dark border-b border-[#f4f0f2] dark:border-[#3a1d26]">
             <div className="px-6 py-4 md:px-20 lg:px-32 xl:px-48 2xl:px-64">
                 <div className="flex items-center justify-between gap-4">
-                    {/* Mobile Menu Toggle (Left/Right based on direction) */}
                     <button
                         onClick={() => setIsMobileMenuOpen(true)}
                         className="md:hidden p-2 -ml-2 rtl:-mr-2 rtl:ml-0 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main-light dark:text-text-main-dark"
@@ -35,9 +33,10 @@ const Header = () => {
                         <span className="material-symbols-outlined text-[24px]">menu</span>
                     </button>
 
-                    {/* Logo */}
                     <Link href="/" className="flex items-center gap-2 md:gap-4 shrink-0">
-                        <h1 className="text-xl md:text-2xl font-bold tracking-tight text-text-main-light dark:text-text-main-dark sm:block">{t('header.brandName')}</h1>
+                        <h1 className="text-xl md:text-2xl font-bold tracking-tight text-text-main-light dark:text-text-main-dark hidden sm:block">
+                            {t('header.brandName')}
+                        </h1>
                     </Link>
 
                     {/* Search Bar (Desktop) */}

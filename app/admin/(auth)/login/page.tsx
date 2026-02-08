@@ -56,6 +56,11 @@ export default function AdminLoginPage() {
                 <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#e6dbdf] dark:border-white/10 p-10 md:p-12">
                     {/* Header */}
                     <div className="flex flex-col items-center mb-10">
+                        <img
+                            src="/Ruby-Beauty-Logo.jpeg"
+                            alt="Ruby Beauty"
+                            className="h-16 w-auto object-contain mb-4"
+                        />
                         <h1 className="text-text-main dark:text-white text-2xl font-extrabold tracking-tight">
                             {t("admin.login.title")}
                         </h1>

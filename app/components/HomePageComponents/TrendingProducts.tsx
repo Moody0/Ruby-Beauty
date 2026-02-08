@@ -11,6 +11,7 @@ interface Product {
     name: string;
     description: string | null;
     price: number;
+    discountPrice?: number | null;
     images: string;
     categoryId: string;
     isTrending: boolean;
@@ -21,7 +22,7 @@ const TrendingProducts = ({ products }: { products: Product[] }) => {
     const { t, dir } = useLanguage();
 
     if (!products || products.length === 0) {
-        return null; // Or show message
+        return null;
     }
 
     return (
@@ -33,7 +34,7 @@ const TrendingProducts = ({ products }: { products: Product[] }) => {
                         {t('common.viewAll')} <span className={`material-symbols-outlined text-sm ${dir === 'rtl' ? 'rotate-180' : ''}`}>chevron_right</span>
                     </Link>
                 </div>
-                <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-4">
                     {products.map((product) => (
                         <ProductCard key={product.id} product={product} />
                     ))}

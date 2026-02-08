@@ -109,7 +109,14 @@ const HeaderSearch = ({ onSearchSelect, placeholder, autoFocus = false, locale }
                                             {product.name}
                                         </h4>
                                         <div className="flex items-center gap-2 mt-0.5">
-                                            <span className="text-xs font-bold text-primary">${product.price}</span>
+                                            {product.discountPrice ? (
+                                                <>
+                                                    <span className="text-xs font-bold text-primary">${product.discountPrice}</span>
+                                                    <span className="text-[10px] text-text-sub line-through decoration-red-400/50">${product.price}</span>
+                                                </>
+                                            ) : (
+                                                <span className="text-xs font-bold text-primary">${product.price}</span>
+                                            )}
                                         </div>
                                     </div>
                                     <span className={`material-symbols-outlined text-gray-300 group-hover/item:text-primary ${dir === 'rtl' ? 'translate-x-2 group-hover/item:translate-x-0 rotate-180' : '-translate-x-2 group-hover/item:translate-x-0'} opacity-0 group-hover/item:opacity-100 transition-all text-xl`}>

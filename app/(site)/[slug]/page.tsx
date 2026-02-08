@@ -33,7 +33,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     });
 
     return (
-        <div className="flex-grow w-full mx-auto px-6 py-8 md:px-20 lg:px-32 xl:px-48 2xl:px-64 lg:py-12">
+        <div className="grow w-full mx-auto px-6 py-8 md:px-20 lg:px-32 xl:px-48 2xl:px-64 lg:py-12">
             <ProductBreadcrumbs productName={product.name} />
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 xl:gap-20">
@@ -44,7 +44,12 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
 
                 {/* Product Details (Right) */}
                 <div className="flex flex-col lg:col-span-3">
-                    <ProductInfo name={product.name} description={product.description} price={product.price.toString()} />
+                    <ProductInfo
+                        name={product.name}
+                        description={product.description}
+                        price={product.price.toString()}
+                        discountPrice={product.discountPrice?.toString()}
+                    />
 
                     {/* Description */}
                     <div className="mb-8">
@@ -57,7 +62,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                         id: product.id,
                         name: product.name,
                         price: Number(product.price),
-                        image: product.images,
+                        image: product.images.split(',')[0],
                         slug: product.slug
                     }} />
 
@@ -71,7 +76,12 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
 
             <RelatedProducts products={relatedProducts.map(p => ({
                 ...p,
-                price: p.price.toString()
+                price: Number(p.price),
+                discountPrice: p.discountPrice ? Number(p.discountPrice) : null,
+                discountType: p.discountType,
+                discountValue: p.discountValue ? Number(p.discountValue) : null,
+                createdAt: p.createdAt.toISOString(),
+                updatedAt: p.updatedAt.toISOString(),
             }))} />
         </div>
     );

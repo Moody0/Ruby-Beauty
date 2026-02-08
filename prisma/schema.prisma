@@ -38,20 +38,23 @@ model Category {
 }
 
 model Product {
-  id          String      @id @default(cuid())
-  name        String
-  slug        String      @unique
-  images      String
-  isTrending  Boolean     @default(false)
-  description String?
-  price       Decimal     @db.Decimal(10, 2)
-  stock       Int         @default(0)
-  categoryId  String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  sku         String?
-  orderItems  OrderItem[]
-  category    Category    @relation(fields: [categoryId], references: [id])
+  id            String      @id @default(cuid())
+  name          String
+  slug          String      @unique
+  images        String
+  isTrending    Boolean     @default(false)
+  description   String?
+  price         Decimal     @db.Decimal(10, 2)
+  discountPrice Decimal?    @db.Decimal(10, 2)
+  discountType  String? // "PERCENTAGE" | "FIXED"
+  discountValue Decimal?    @db.Decimal(10, 2)
+  stock         Int         @default(0)
+  categoryId    String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  sku           String?
+  orderItems    OrderItem[]
+  category      Category    @relation(fields: [categoryId], references: [id])
 
   @@index([categoryId])
   @@index([name])

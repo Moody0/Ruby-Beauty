@@ -38,7 +38,6 @@ export async function GET(request: Request) {
         } else if (sort === "newest") {
             orderBy = { createdAt: "desc" };
         }
-        // 'best_selling' isn't easily possible without order history logic, defaulting to newest for now or we could add a popularity field later.
 
         const [products, total] = await Promise.all([
             prisma.product.findMany({
@@ -53,7 +52,10 @@ export async function GET(request: Request) {
         return NextResponse.json({
             products: products.map(p => ({
                 ...p,
-                price: p.price.toString(), // Decimal to string for JSON
+                price: p.price.toString(),
+                discountPrice: p.discountPrice ? p.discountPrice.toString() : null,
+                discountType: p.discountType,
+                discountValue: p.discountValue ? p.discountValue.toString() : null,
             })),
             pagination: {
                 total,
