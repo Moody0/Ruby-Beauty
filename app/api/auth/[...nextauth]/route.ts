@@ -34,7 +34,7 @@ export const authOptions: AuthOptions = {
                     return null
                 }
 
-                const rememberMe = credentials.rememberMe === "true" || credentials.rememberMe === true
+                const rememberMe = credentials.rememberMe === "true"
 
                 return {
                     id: user.id,
