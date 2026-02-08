@@ -80,14 +80,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 <div className="flex flex-col md:flex-row md:items-center gap-0.5 md:gap-2">
                     <p className="font-bold text-primary text-sm md:text-sm">${Number(product.price).toFixed(2)}</p>
                     <div className="flex items-center gap-1">
-                        <div className="flex text-yellow-400">
-                            <span className="material-symbols-outlined text-[10px] md:text-[12px] fill-current">star</span>
-                            <span className="material-symbols-outlined text-[10px] md:text-[12px] fill-current">star</span>
-                            <span className="material-symbols-outlined text-[10px] md:text-[12px] fill-current">star</span>
-                            <span className="material-symbols-outlined text-[10px] md:text-[12px] fill-current">star</span>
-                            <span className="material-symbols-outlined text-[10px] md:text-[12px] fill-current">star_half</span>
-                        </div>
-                        <span className="text-[9px] md:text-[10px] text-gray-400">(42)</span>
                     </div>
                 </div>
             </div>
