@@ -1,0 +1,64 @@
+"use client";
+
+import React from "react";
+import Link from "next/link";
+import { useLanguage } from "@/app/context/LanguageContext";
+import CategoriesGrid from "./CategoriesGrid";
+
+interface Category {
+    id: string;
+    name: string;
+    description: string | null;
+    image: string | null;
+}
+
+interface CategoriesContentProps {
+    categories: Category[];
+}
+
+export default function CategoriesContent({ categories }: CategoriesContentProps) {
+    const { t } = useLanguage();
+
+    return (
+        <main className="w-full pb-20">
+            <nav className="max-w-[1200px] mx-auto px-4 md:px-8 pt-8 pb-4">
+                <ul className="flex items-center gap-2 text-xs font-medium text-text-muted-light dark:text-text-muted-dark uppercase tracking-widest">
+                    <li><Link className="hover:text-primary transition-colors" href="/">{t('common.home')}</Link></li>
+                    <li><span className="material-symbols-outlined text-[14px] rtl:rotate-180">chevron_right</span></li>
+                    <li className="text-text-main-light dark:text-text-main-dark">{t('categoriesPage.allCategories')}</li>
+                </ul>
+            </nav>
+
+            <section className="max-w-[1200px] mx-auto px-4 md:px-8 mb-12">
+                <div className="border-l-4 border-primary pl-6 rtl:border-l-0 rtl:border-r-4 rtl:pl-0 rtl:pr-6">
+                    <h2 className="text-4xl md:text-5xl font-extrabold text-text-main-light dark:text-text-main-dark tracking-tight">{t('categoriesPage.title')}</h2>
+                    <p className="mt-3 text-lg text-text-muted-light dark:text-text-muted-dark max-w-2xl">
+                        {t('categoriesPage.description')}
+                    </p>
+                </div>
+            </section>
+
+            <CategoriesGrid categories={categories} />
+
+
+            <section className="max-w-[1200px] mx-auto px-4 md:px-8 mt-24">
+                <div className="rounded-3xl bg-primary/5 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 border border-primary/10">
+                    <div className="flex flex-col gap-4 text-center md:text-left rtl:md:text-right">
+                        <h4 className="text-3xl font-extrabold text-text-main-light dark:text-text-main-dark">{t('categoriesPage.cantDecide')}</h4>
+                        <p className="text-text-muted-light dark:text-text-muted-dark max-w-md">{t('categoriesPage.skinQuizDescription')}</p>
+                        <div className="flex flex-wrap gap-4 mt-2 justify-center md:justify-start rtl:md:justify-end">
+                            <Link href="/products" className="px-8 py-3 bg-transparent border border-primary text-primary rounded-full font-bold text-sm hover:bg-primary/5 transition-all">{t('categoriesPage.viewAllProducts')}</Link>
+                        </div>
+                    </div>
+                    <div className="hidden lg:block w-1/3">
+                        <img
+                            alt="Product selection"
+                            className="rounded-2xl shadow-2xl rotate-3 scale-110 rtl:-rotate-3"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-S_GMsoebb73JIEWcxtvH2G-vVgkfypE8ysWpGMNiiiwyTno8rIbMCpHR-fsa76ZQL49aYswb7bGZh-kgwc6z9lv0VwUSUrStxNWz2qU3RuIb75ShOMAKZMRyrOXZHZjEBgtxfW7r97FEEshOkEd2MqgE6FpGYrmKa8msLtMOQxXBsmhr3ZGGEtL7jpzgMYbgrAXhiHcMfCspdvD5FRNuSbgFY9_xGqcJM9KbgG0MoC4Ie4WkkmCR4FsuavfglcnY13G2ADZxlK8F"
+                        />
+                    </div>
+                </div>
+            </section>
+        </main>
+    );
+}

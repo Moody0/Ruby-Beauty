@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface Category {
     id: string;
@@ -15,6 +16,7 @@ interface CategoriesGridProps {
 }
 
 const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
+    const { t } = useLanguage();
     const [displayLimit, setDisplayLimit] = useState(6);
     const defaultImage = 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800';
 
@@ -42,7 +44,7 @@ const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
                         </div>
                         <div className="px-4 pb-4">
                             <h3 className="text-2xl font-bold text-text-main-light dark:text-text-main-dark group-hover:text-primary transition-colors">{category.name}</h3>
-                            <p className="text-sm text-text-muted-light dark:text-text-muted-dark mt-1 italic font-medium">{category.description || 'Premium collection'}</p>
+                            <p className="text-sm text-text-muted-light dark:text-text-muted-dark mt-1 italic font-medium">{category.description || t('categoriesPage.premiumCollection')}</p>
                         </div>
                     </Link>
                 ))}
@@ -54,7 +56,7 @@ const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
                         onClick={handleLoadMore}
                         className="group relative px-10 py-4 bg-surface-light dark:bg-surface-dark border border-[#e6dbdf] dark:border-gray-700 rounded-full font-bold text-sm text-text-main-light dark:text-white hover:border-primary hover:text-primary transition-all duration-300 shadow-sm hover:shadow-md flex items-center gap-2"
                     >
-                        Load More Categories
+                        {t('categoriesPage.loadMoreCategories')}
                         <span className="material-symbols-outlined text-[18px] group-hover:translate-y-1 transition-transform">expand_more</span>
                     </button>
                 </div>
