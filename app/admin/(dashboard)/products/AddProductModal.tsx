@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { createProduct, updateProduct } from "../../../../lib/admin-actions";
+import { useLanguage } from "@/app/context/LanguageContext";
+import { toast } from "react-hot-toast";
 
 interface Category {
     id: string;
@@ -27,6 +29,7 @@ interface AddProductModalProps {
 }
 
 export default function AddProductModal({ isOpen, onClose, categories, product }: AddProductModalProps) {
+    const { t } = useLanguage();
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
@@ -71,7 +74,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!formData.name || !formData.categoryId || !formData.price || !formData.images) {
-            alert("Please fill in all required fields (Name, Category, Price, and at least one Image)");
+            toast.error(t("admin.addProductModal.fillRequiredFields"));
             return;
         }
 
@@ -88,13 +91,14 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                 : await createProduct(formDataToSubmit);
 
             if (result.success) {
+                toast.success(product ? t("admin.productUpdated") : t("admin.productCreated"));
                 onClose();
             } else {
-                alert(result.error || `Failed to ${product ? 'update' : 'create'} product`);
+                toast.error(result.error || (product ? t("admin.addProductModal.failedToUpdate") : t("admin.addProductModal.failedToCreate")));
             }
-        } catch (error) {
-            console.error(`Error ${product ? 'updating' : 'creating'} product:`, error);
-            alert("An error occurred. Please try again.");
+        } catch (err) {
+            console.error(product ? "Error updating product:" : "Error creating product:", err);
+            toast.error(t("admin.addProductModal.errorGeneric"));
         } finally {
             setIsLoading(false);
         }
@@ -124,10 +128,10 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                 <div className="px-8 py-6 border-b border-[#e6dbdf] dark:border-gray-700 flex items-center justify-between">
                     <div>
                         <h3 className="text-2xl font-extrabold text-text-main dark:text-white tracking-tight">
-                            {product ? 'Edit Product' : 'Add New Product'}
+                            {product ? t("admin.addProductModal.titleEdit") : t("admin.addProductModal.titleAdd")}
                         </h3>
                         <p className="text-sm text-text-sub dark:text-gray-400">
-                            {product ? 'Modify the product details below.' : 'Enter details to add a new product to your inventory.'}
+                            {product ? t("admin.addProductModal.subtitleEdit") : t("admin.addProductModal.subtitleAdd")}
                         </p>
                     </div>
                     <button
@@ -143,14 +147,14 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
 
                     {/* Images Section */}
                     <div className="space-y-4">
-                        <label className="text-sm font-bold text-text-main dark:text-white">Product Images</label>
+                        <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.productImages")}</label>
 
                         {/* Image Gallery */}
                         {formData.images && (
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
                                 {formData.images.split(',').filter(Boolean).map((url, index) => (
                                     <div key={index} className="relative aspect-square rounded-xl border border-[#e6dbdf] dark:border-gray-700 overflow-hidden group">
-                                        <img src={url} alt={`Preview ${index}`} className="w-full h-full object-cover" />
+                                        <img src={url} alt={`${t("admin.addProductModal.imagePreviewAlt")} ${index}`} className="w-full h-full object-cover" />
                                         <button
                                             type="button"
                                             onClick={() => removeImage(url)}
@@ -168,7 +172,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                             <div className="flex gap-2">
                                 <input
                                     className="flex-1 h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
-                                    placeholder="Paste image URL here..."
+                                    placeholder={t("admin.addProductModal.pasteImageUrlPlaceholder")}
                                     type="text"
                                     value={imageLink}
                                     onChange={(e) => setImageLink(e.target.value)}
@@ -179,7 +183,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                                     onClick={addImageLink}
                                     className="px-4 h-12 rounded-xl bg-primary/10 text-primary font-bold text-sm hover:bg-primary/20 transition-colors"
                                 >
-                                    Add Link
+                                    {t("admin.addProductModal.addLink")}
                                 </button>
                             </div>
                         </div>
@@ -189,11 +193,11 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="md:col-span-2 space-y-2">
                             <label className="text-sm font-bold text-text-main dark:text-white flex items-center gap-1">
-                                Product Name <span className="text-primary">*</span>
+                                {t("admin.addProductModal.productName")} <span className="text-primary">*</span>
                             </label>
                             <input
                                 className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
-                                placeholder="e.g. Glowing Vitamin C Face Serum"
+                                placeholder={t("admin.addProductModal.productNamePlaceholder")}
                                 type="text"
                                 required
                                 value={formData.name}
@@ -202,10 +206,10 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
-                            <label className="text-sm font-bold text-text-main dark:text-white">Description</label>
+                            <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.description")}</label>
                             <textarea
                                 className="w-full rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 py-3 text-sm font-medium leading-relaxed dark:text-white outline-none"
-                                placeholder="Describe the product benefits, ingredients, and usage instructions..."
+                                placeholder={t("admin.addProductModal.descriptionPlaceholder")}
                                 rows={4}
                                 value={formData.description}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -213,7 +217,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-text-main dark:text-white">Category <span className="text-primary">*</span></label>
+                            <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.category")} <span className="text-primary">*</span></label>
                             <div className="relative">
                                 <select
                                     className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white appearance-none outline-none cursor-pointer"
@@ -221,7 +225,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                                     value={formData.categoryId}
                                     onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
                                 >
-                                    <option value="">Select Category</option>
+                                    <option value="">{t("admin.addProductModal.selectCategory")}</option>
                                     {categories.map(cat => (
                                         <option key={cat.id} value={cat.id}>{cat.name}</option>
                                     ))}
@@ -231,12 +235,12 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-text-main dark:text-white">Price <span className="text-primary">*</span></label>
+                            <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.price")} <span className="text-primary">*</span></label>
                             <div className="relative">
                                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sub font-bold text-sm">$</span>
                                 <input
                                     className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all pl-8 pr-4 text-sm font-bold dark:text-white outline-none"
-                                    placeholder="0.00"
+                                    placeholder={t("admin.addProductModal.pricePlaceholder")}
                                     step="0.01"
                                     type="number"
                                     required
@@ -247,10 +251,10 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-text-main dark:text-white">Stock Quantity</label>
+                            <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.stockQuantity")}</label>
                             <input
                                 className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
-                                placeholder="0"
+                                placeholder={t("admin.addProductModal.stockPlaceholder")}
                                 type="number"
                                 value={formData.stock}
                                 onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
@@ -258,10 +262,10 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-text-main dark:text-white">SKU Number</label>
+                            <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.skuNumber")}</label>
                             <input
                                 className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
-                                placeholder="e.g. GLOW-001"
+                                placeholder={t("admin.addProductModal.skuPlaceholder")}
                                 type="text"
                                 value={formData.sku}
                                 onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
@@ -277,7 +281,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                         onClick={onClose}
                         className="px-6 h-12 rounded-xl text-sm font-bold text-text-main dark:text-white hover:bg-white dark:hover:bg-gray-800 border border-transparent hover:border-[#e6dbdf] dark:hover:border-gray-700 transition-all"
                     >
-                        Cancel
+                        {t("admin.addProductModal.cancel")}
                     </button>
                     <button
                         onClick={handleSubmit}
@@ -287,7 +291,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                         <span className="material-symbols-outlined text-[20px]">
                             {isLoading ? 'sync' : 'check_circle'}
                         </span>
-                        {isLoading ? (product ? 'Updating...' : 'Saving...') : (product ? 'Update Product' : 'Save Product')}
+                        {isLoading ? (product ? t("admin.addProductModal.updating") : t("admin.addProductModal.saving")) : (product ? t("admin.addProductModal.updateProduct") : t("admin.addProductModal.saveProduct"))}
                     </button>
                 </div>
             </div>

@@ -328,6 +328,20 @@ export async function updateOrderStatus(id: string, status: OrderStatus) {
     }
 }
 
+export async function deleteOrder(id: string) {
+    try {
+        await prisma.order.delete({
+            where: { id }
+        });
+        revalidatePath('/admin/orders');
+        revalidatePath('/admin/dashboard');
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to delete order:", error);
+        return { success: false, error: "Failed to delete order" };
+    }
+}
+
 export async function createCategory(data: CategoryInput) {
     try {
         const category = await prisma.category.create({
@@ -429,7 +443,7 @@ export async function getFeaturedCategories() {
     try {
         const categories = await prisma.category.findMany({
             where: { isFeatured: true },
-            take: 12,
+            take: 6,
             orderBy: { updatedAt: 'desc' }
         });
         return categories.map(category => ({
@@ -463,7 +477,7 @@ export async function getTrendingProducts() {
     try {
         const products = await prisma.product.findMany({
             where: { isTrending: true },
-            take: 12,
+            take: 6,
             include: { category: true },
             orderBy: { updatedAt: 'desc' }
         });

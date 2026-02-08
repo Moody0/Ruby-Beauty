@@ -26,9 +26,12 @@ interface OrderDetailsModalProps {
     isOpen: boolean;
     onClose: () => void;
     order: Order | null;
+    canDelete?: boolean;
+    onDelete?: () => void;
+    isDeleting?: boolean;
 }
 
-export default function OrderDetailsModal({ isOpen, onClose, order }: OrderDetailsModalProps) {
+export default function OrderDetailsModal({ isOpen, onClose, order, canDelete, onDelete, isDeleting }: OrderDetailsModalProps) {
     const { t, dir } = useLanguage();
     if (!isOpen || !order) return null;
 
@@ -167,7 +170,22 @@ export default function OrderDetailsModal({ isOpen, onClose, order }: OrderDetai
                 </div>
 
                 {/* Footer */}
-                <div className={`px-6 py-4 bg-background-light dark:bg-gray-800/50 border-t border-[#e6dbdf] dark:border-gray-700 flex items-center ${dir === 'rtl' ? 'justify-start' : 'justify-end'}`}>
+                <div className={`px-6 py-4 bg-background-light dark:bg-gray-800/50 border-t border-[#e6dbdf] dark:border-gray-700 flex items-center gap-3 ${dir === 'rtl' ? 'justify-start' : 'justify-end'}`}>
+                    {canDelete && onDelete && (
+                        <button
+                            type="button"
+                            onClick={onDelete}
+                            disabled={isDeleting}
+                            className="h-10 px-5 rounded-xl font-bold text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all disabled:opacity-50 flex items-center gap-2"
+                        >
+                            {isDeleting ? (
+                                <span className="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+                            ) : (
+                                <span className="material-symbols-outlined text-[18px]">delete</span>
+                            )}
+                            {t('admin.deleteOrder')}
+                        </button>
+                    )}
                     <button
                         onClick={onClose}
                         className="bg-primary hover:bg-primary/90 text-white h-10 px-6 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 transition-all transform hover:-translate-y-0.5"

@@ -9,7 +9,7 @@ export async function GET() {
             where: {
                 isTrending: true,
             },
-            take: 4,
+            take: 6,
             include: {
                 category: true,
             },

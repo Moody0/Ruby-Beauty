@@ -3,9 +3,12 @@
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useLanguage } from "@/app/context/LanguageContext";
+import LanguageToggle from "@/app/components/LanguageToggle";
 
 export default function AdminLoginPage() {
     const router = useRouter();
+    const { t, dir } = useLanguage();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
@@ -25,26 +28,35 @@ export default function AdminLoginPage() {
             });
 
             if (result?.error) {
-                setError("Invalid username or password");
+                setError(t("admin.login.invalidCredentials"));
             } else {
                 router.push("/admin/dashboard");
             }
-        } catch (error) {
-            setError("An error occurred. Please try again.");
-            console.error(error);
+        } catch (err) {
+            setError(t("admin.login.errorGeneric"));
+            console.error(err);
         } finally {
             setLoading(false);
         }
     };
 
+    const isRtl = dir === "rtl";
+    const inputPadding = isRtl ? "pr-11 pl-4" : "pl-11 pr-4";
+
     return (
-        <div className="bg-background-light dark:bg-background-dark min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+        <div
+            className="bg-background-light dark:bg-background-dark min-h-screen flex items-center justify-center p-6 relative overflow-hidden"
+            dir={dir}
+        >
+            <div className="absolute top-6 right-6 z-20">
+                <LanguageToggle />
+            </div>
             <div className="w-full max-w-[440px] z-10">
                 <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#e6dbdf] dark:border-white/10 p-10 md:p-12">
                     {/* Header */}
                     <div className="flex flex-col items-center mb-10">
                         <h1 className="text-text-main dark:text-white text-2xl font-extrabold tracking-tight">
-                            Admin Dashboard
+                            {t("admin.login.title")}
                         </h1>
                     </div>
 
@@ -59,21 +71,21 @@ export default function AdminLoginPage() {
                         {/* Username Field */}
                         <div className="space-y-2">
                             <label
-                                className="text-xs font-bold uppercase tracking-widest text-text-sub dark:text-white/60 ml-1"
+                                className={`text-xs font-bold uppercase tracking-widest text-text-sub dark:text-white/60 ${isRtl ? "mr-1" : "ml-1"}`}
                                 htmlFor="username"
                             >
-                                Username
+                                {t("admin.login.username")}
                             </label>
                             <div className="relative">
-                                <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-text-sub/60 dark:text-white/40">
+                                <span className={`absolute inset-y-0 ${isRtl ? "right-0" : "left-0"} flex items-center ${isRtl ? "pr-4" : "pl-4"} text-text-sub/60 dark:text-white/40`}>
                                     <span className="material-symbols-outlined text-[20px]">
                                         person
                                     </span>
                                 </span>
                                 <input
-                                    className="w-full pl-11 pr-4 py-3.5 bg-background-light dark:bg-background-dark border border-[#e6dbdf] dark:border-white/10 rounded-xl focus:ring-4 focus:ring-primary/10 focus:border-primary text-text-main dark:text-white placeholder:text-text-sub/40 dark:placeholder:text-white/30 transition-all outline-none"
+                                    className={`w-full ${inputPadding} py-3.5 bg-background-light dark:bg-background-dark border border-[#e6dbdf] dark:border-white/10 rounded-xl focus:ring-4 focus:ring-primary/10 focus:border-primary text-text-main dark:text-white placeholder:text-text-sub/40 dark:placeholder:text-white/30 transition-all outline-none`}
                                     id="username"
-                                    placeholder="admin"
+                                    placeholder={t("admin.login.usernamePlaceholder")}
                                     type="text"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
@@ -89,19 +101,19 @@ export default function AdminLoginPage() {
                                     className="text-xs font-bold uppercase tracking-widest text-text-sub dark:text-white/60"
                                     htmlFor="password"
                                 >
-                                    Password
+                                    {t("admin.login.password")}
                                 </label>
                             </div>
                             <div className="relative">
-                                <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-text-sub/60 dark:text-white/40">
+                                <span className={`absolute inset-y-0 ${isRtl ? "right-0" : "left-0"} flex items-center ${isRtl ? "pr-4" : "pl-4"} text-text-sub/60 dark:text-white/40`}>
                                     <span className="material-symbols-outlined text-[20px]">
                                         lock
                                     </span>
                                 </span>
                                 <input
-                                    className="w-full pl-11 pr-4 py-3.5 bg-background-light dark:bg-background-dark border border-[#e6dbdf] dark:border-white/10 rounded-xl focus:ring-4 focus:ring-primary/10 focus:border-primary text-text-main dark:text-white placeholder:text-text-sub/40 dark:placeholder:text-white/30 transition-all outline-none"
+                                    className={`w-full ${inputPadding} py-3.5 bg-background-light dark:bg-background-dark border border-[#e6dbdf] dark:border-white/10 rounded-xl focus:ring-4 focus:ring-primary/10 focus:border-primary text-text-main dark:text-white placeholder:text-text-sub/40 dark:placeholder:text-white/30 transition-all outline-none`}
                                     id="password"
-                                    placeholder="••••••••"
+                                    placeholder={t("admin.login.passwordPlaceholder")}
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
@@ -120,7 +132,7 @@ export default function AdminLoginPage() {
                                     onChange={(e) => setRememberMe(e.target.checked)}
                                 />
                                 <span className="text-sm text-text-sub dark:text-white/60 group-hover:text-text-main dark:group-hover:text-white transition-colors">
-                                    Remember me
+                                    {t("admin.login.rememberMe")}
                                 </span>
                             </label>
                         </div>
@@ -131,16 +143,9 @@ export default function AdminLoginPage() {
                             type="submit"
                             disabled={loading}
                         >
-                            {loading ? "Signing in..." : "Sign In to Dashboard"}
+                            {loading ? t("admin.login.signingIn") : t("admin.login.submitButton")}
                         </button>
                     </form>
-
-                    {/* Footer */}
-                    <div className="mt-10 text-center">
-                        <p className="text-xs text-text-sub/60 dark:text-white/40 font-medium tracking-wide">
-                            © 2026 RUBY BEAUTY ENTERPRISE
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>

@@ -339,7 +339,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                         </div>
                         <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm flex flex-col gap-1">
                             <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{t('admin.trending')}</p>
-                            <p className="text-2xl font-bold text-amber-500">{products.filter(p => p.isTrending).length} / 4</p>
+                            <p className="text-2xl font-bold text-amber-500">{products.filter(p => p.isTrending).length} / 6</p>
                         </div>
                         <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm flex flex-col gap-1">
                             <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{t('admin.outOfStock')}</p>

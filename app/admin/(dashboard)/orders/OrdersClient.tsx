@@ -3,12 +3,14 @@
 import AdminHeader from "../../components/AdminHeader";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import Link from "next/link";
-import { updateOrderStatus } from "../../../../lib/admin-actions";
+import { updateOrderStatus, deleteOrder } from "../../../../lib/admin-actions";
 import { useState } from "react";
 import OrderDetailsModal from "./OrderDetailsModal";
 import { OrderStatus } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 interface Order {
     id: string;
@@ -32,11 +34,14 @@ interface Order {
 
 export default function OrdersClient({ orders }: { orders: Order[] }) {
     const { data: session } = useSession();
+    const router = useRouter();
     const canManage = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canManageOrders;
+    const canDelete = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canDeleteOrders;
     const { t, dir } = useLanguage();
 
     const { openSidebar } = useAdminSidebar();
     const [updatingId, setUpdatingId] = useState<string | null>(null);
+    const [deletingId, setDeletingId] = useState<string | null>(null);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
     const [filter, setFilter] = useState<string>("ALL");
@@ -98,6 +103,28 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
     const handleViewDetails = (order: Order) => {
         setSelectedOrder(order);
         setIsDetailsModalOpen(true);
+    };
+
+    const handleDeleteOrder = async (id: string) => {
+        const orderLabel = id.slice(-6).toUpperCase();
+        if (!confirm(t('admin.confirmDeleteOrder').replace('{id}', orderLabel))) return;
+        setDeletingId(id);
+        try {
+            const result = await deleteOrder(id);
+            if (result.success) {
+                toast.success(t('admin.orderDeleted'));
+                setSelectedOrder(null);
+                setIsDetailsModalOpen(false);
+                router.refresh();
+            } else {
+                toast.error(result.error || "Failed to delete order");
+            }
+        } catch (error) {
+            console.error("Error deleting order:", error);
+            toast.error("An error occurred");
+        } finally {
+            setDeletingId(null);
+        }
     };
 
     return (
@@ -192,6 +219,9 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                 setSelectedOrder(null);
                             }}
                             order={selectedOrder}
+                            canDelete={canDelete}
+                            onDelete={selectedOrder ? () => handleDeleteOrder(selectedOrder.id) : undefined}
+                            isDeleting={selectedOrder ? deletingId === selectedOrder.id : false}
                         />
 
                         <div className="bg-surface-light dark:bg-surface-dark rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm overflow-hidden">
@@ -258,12 +288,28 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                                         </div>
                                                     </td>
                                                     <td className={`p-4 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
-                                                        <button
-                                                            onClick={() => handleViewDetails(order)}
-                                                            className="text-primary hover:text-primary-hover text-xs font-bold transition-colors"
-                                                        >
-                                                            {t('admin.viewDetails')}
-                                                        </button>
+                                                        <div className="flex items-center gap-2 justify-end">
+                                                            <button
+                                                                onClick={() => handleViewDetails(order)}
+                                                                className="text-primary hover:text-primary-hover text-xs font-bold transition-colors"
+                                                            >
+                                                                {t('admin.viewDetails')}
+                                                            </button>
+                                                            {canDelete && (
+                                                                <button
+                                                                    onClick={() => handleDeleteOrder(order.id)}
+                                                                    disabled={deletingId === order.id}
+                                                                    className="p-1.5 text-text-sub dark:text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors disabled:opacity-50"
+                                                                    title={t('admin.deleteOrder')}
+                                                                >
+                                                                    {deletingId === order.id ? (
+                                                                        <span className="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+                                                                    ) : (
+                                                                        <span className="material-symbols-outlined text-[18px]">delete</span>
+                                                                    )}
+                                                                </button>
+                                                            )}
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             );
