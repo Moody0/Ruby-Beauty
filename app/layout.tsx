@@ -40,6 +40,11 @@ export const metadata: Metadata = {
     description: "Discover our new botanical collection designed for a natural, healthy glow.",
     images: ["/Ruby-Beauty-Logo.jpeg"],
   },
+  icons: {
+    icon: "/Ruby-Beauty-Logo.jpeg",
+    shortcut: "/Ruby-Beauty-Logo.jpeg",
+    apple: "/Ruby-Beauty-Logo.jpeg",
+  },
 };
 
 export default async function RootLayout({
