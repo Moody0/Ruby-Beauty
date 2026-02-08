@@ -6,6 +6,7 @@ import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import { getAdminUser, updateAdminCredentials } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { signOut } from "next-auth/react";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface AdminUser {
     id: string;
@@ -15,6 +16,7 @@ interface AdminUser {
 }
 
 export default function SettingsClient({ initialUser }: { initialUser: AdminUser | null }) {
+    const { t } = useLanguage();
     const { openSidebar } = useAdminSidebar();
     const [currentPassword, setCurrentPassword] = useState("");
     const [newUsername, setNewUsername] = useState("");
@@ -32,17 +34,17 @@ export default function SettingsClient({ initialUser }: { initialUser: AdminUser
         e.preventDefault();
 
         if (!currentPassword) {
-            toast.error("Current password is required");
+            toast.error(t('admin.currentPasswordRequired'));
             return;
         }
 
         if (newPassword && newPassword !== confirmPassword) {
-            toast.error("New passwords do not match");
+            toast.error(t('admin.passwordsDoNotMatch'));
             return;
         }
 
         if (newPassword && newPassword.length < 6) {
-            toast.error("New password must be at least 6 characters");
+            toast.error(t('admin.passwordTooShort'));
             return;
         }
 
@@ -56,24 +58,24 @@ export default function SettingsClient({ initialUser }: { initialUser: AdminUser
             });
 
             if (result.success) {
-                toast.success(result.message || "Settings updated successfully");
+                toast.success(result.message || t('admin.settingsUpdated'));
                 setCurrentPassword("");
                 setNewPassword("");
                 setConfirmPassword("");
 
                 // If password was changed, sign out
                 if (newPassword) {
-                    toast.success("Password changed. Please login again.");
+                    toast.success(t('admin.passwordChangedLogout'));
                     setTimeout(() => {
                         signOut({ callbackUrl: "/admin/login" });
                     }, 2000);
                 }
             } else {
-                toast.error(result.error || "Failed to update settings");
+                toast.error(result.error || t('admin.failedToUpdate'));
             }
         } catch (error) {
             console.error("Error updating settings:", error);
-            toast.error("An unexpected error occurred");
+            toast.error(t('admin.failedToUpdate'));
         } finally {
             setIsSubmitting(false);
         }
@@ -82,10 +84,10 @@ export default function SettingsClient({ initialUser }: { initialUser: AdminUser
     if (!initialUser) {
         return (
             <div className="flex-1 flex flex-col overflow-hidden">
-                <AdminHeader title="Settings" onMenuClick={openSidebar} />
+                <AdminHeader title={t('admin.settings')} onMenuClick={openSidebar} />
                 <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
                     <div className="max-w-2xl mx-auto">
-                        <p className="text-center text-text-sub">Unable to load admin user</p>
+                        <p className="text-center text-text-sub">{t('admin.unableToLoadUser')}</p>
                     </div>
                 </div>
             </div>
@@ -94,17 +96,17 @@ export default function SettingsClient({ initialUser }: { initialUser: AdminUser
 
     return (
         <div className="flex-1 flex flex-col overflow-hidden">
-            <AdminHeader title="Settings" onMenuClick={openSidebar} />
+            <AdminHeader title={t('admin.settings')} onMenuClick={openSidebar} />
 
             <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
                 <div className="max-w-2xl mx-auto">
                     <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#e6dbdf] dark:border-gray-700 p-8">
                         <div className="mb-8">
                             <h2 className="text-2xl font-bold text-text-main dark:text-white mb-2">
-                                Admin Account Settings
+                                {t('admin.adminAccountSettings')}
                             </h2>
                             <p className="text-text-sub dark:text-gray-400">
-                                Update your username and password
+                                {t('admin.updateCredentials')}
                             </p>
                         </div>
 
@@ -112,36 +114,36 @@ export default function SettingsClient({ initialUser }: { initialUser: AdminUser
                             {/* Current Password */}
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-text-main dark:text-white">
-                                    Current Password *
+                                    {t('admin.currentPassword')} *
                                 </label>
                                 <input
                                     type="password"
                                     value={currentPassword}
                                     onChange={(e) => setCurrentPassword(e.target.value)}
-                                    placeholder="Enter your current password"
+                                    placeholder={t('admin.enterCurrentPassword')}
                                     required
                                     className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                 />
                                 <p className="text-xs text-text-sub dark:text-gray-400">
-                                    Required to verify your identity
+                                    {t('admin.requiredToVerify')}
                                 </p>
                             </div>
 
                             <div className="border-t border-[#e6dbdf] dark:border-gray-700 pt-6">
                                 <h3 className="text-lg font-bold text-text-main dark:text-white mb-4">
-                                    Change Credentials
+                                    {t('admin.changeCredentials')}
                                 </h3>
 
                                 {/* New Username */}
                                 <div className="space-y-2 mb-6">
                                     <label className="text-sm font-bold text-text-main dark:text-white">
-                                        Username
+                                        {t('admin.username')}
                                     </label>
                                     <input
                                         type="text"
                                         value={newUsername}
                                         onChange={(e) => setNewUsername(e.target.value)}
-                                        placeholder="Enter new username"
+                                        placeholder={t('admin.enterNewUsername')}
                                         className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                     />
                                 </div>
@@ -149,17 +151,17 @@ export default function SettingsClient({ initialUser }: { initialUser: AdminUser
                                 {/* New Password */}
                                 <div className="space-y-2 mb-6">
                                     <label className="text-sm font-bold text-text-main dark:text-white">
-                                        New Password
+                                        {t('admin.newPassword')}
                                     </label>
                                     <input
                                         type="password"
                                         value={newPassword}
                                         onChange={(e) => setNewPassword(e.target.value)}
-                                        placeholder="Leave blank to keep current password"
+                                        placeholder={t('admin.leaveBlank')}
                                         className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                     />
                                     <p className="text-xs text-text-sub dark:text-gray-400">
-                                        Minimum 6 characters
+                                        {t('admin.minChars')}
                                     </p>
                                 </div>
 
@@ -167,13 +169,13 @@ export default function SettingsClient({ initialUser }: { initialUser: AdminUser
                                 {newPassword && (
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-text-main dark:text-white">
-                                            Confirm New Password
+                                            {t('admin.confirmNewPassword')}
                                         </label>
                                         <input
                                             type="password"
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
-                                            placeholder="Re-enter new password"
+                                            placeholder={t('admin.reEnterNewPassword')}
                                             className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                         />
                                     </div>
@@ -190,10 +192,10 @@ export default function SettingsClient({ initialUser }: { initialUser: AdminUser
                                     {isSubmitting ? (
                                         <span className="flex items-center justify-center gap-2">
                                             <span className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full" />
-                                            Updating...
+                                            {t('admin.updating')}
                                         </span>
                                     ) : (
-                                        "Update Settings"
+                                        t('admin.updateSettings')
                                     )}
                                 </button>
                             </div>
@@ -206,10 +208,10 @@ export default function SettingsClient({ initialUser }: { initialUser: AdminUser
                                         </span>
                                         <div>
                                             <p className="text-sm font-bold text-amber-800 dark:text-amber-300">
-                                                Password Change Notice
+                                                {t('admin.passwordChangeNotice')}
                                             </p>
                                             <p className="text-xs text-amber-700 dark:text-amber-400 mt-1">
-                                                You will be logged out after changing your password and will need to login again with your new credentials.
+                                                {t('admin.logoutNotice')}
                                             </p>
                                         </div>
                                     </div>

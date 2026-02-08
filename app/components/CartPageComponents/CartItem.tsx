@@ -1,6 +1,9 @@
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
 import { CartItem as CartItemType } from '@/app/context/CartContext';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 interface CartItemProps {
     item: CartItemType;
@@ -9,6 +12,8 @@ interface CartItemProps {
 }
 
 const CartItem = ({ item, removeItem, updateQuantity }: CartItemProps) => {
+    const { t } = useLanguage();
+
     return (
         <div className="flex flex-col sm:flex-row gap-6 bg-white dark:bg-[#2a161d] p-5 rounded-xl shadow-sm border border-transparent hover:border-[#f4f0f2] dark:hover:border-[#3a2228] transition-all">
             <div className="shrink-0">
@@ -51,7 +56,7 @@ const CartItem = ({ item, removeItem, updateQuantity }: CartItemProps) => {
                         className="text-[#89616f] hover:text-primary transition-colors flex items-center gap-1 text-sm font-medium"
                     >
                         <span className="material-symbols-outlined text-[18px]">delete</span>
-                        <span className="hidden sm:inline">Remove</span>
+                        <span className="hidden sm:inline">{t('cart.remove')}</span>
                     </button>
                 </div>
             </div>

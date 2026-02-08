@@ -1,12 +1,15 @@
+"use client";
+
 import Link from 'next/link';
 import React from 'react';
 import { FaInstagram } from "react-icons/fa";
 import { FaFacebook } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa";
-
-
+import { useLanguage } from '@/app/context/LanguageContext';
 
 const Footer = () => {
+    const { t } = useLanguage();
+
     return (
         <footer
             className="bg-surface-light dark:bg-surface-dark border-t border-[#f4f0f2] dark:border-[#3a1d26] pt-16 pb-8 px-6 md:px-20 lg:px-32 xl:px-48 2xl:px-64"
@@ -17,10 +20,10 @@ const Footer = () => {
                     {/* Brand Column */}
                     <div className="lg:col-span-2 flex flex-col gap-4">
                         <div className="flex items-center gap-2">
-                            <h4 className="text-xl font-bold text-text-main-light dark:text-text-main-dark">Ruby Beauty</h4>
+                            <h4 className="text-xl font-bold text-text-main-light dark:text-text-main-dark">{t('header.brandName')}</h4>
                         </div>
                         <p className="text-text-muted-light dark:text-text-muted-dark max-w-xs leading-relaxed">
-                            Premium botanical skincare designed to reveal your natural radiance. Cruelty-free, vegan, and sustainable.
+                            {t('footer.brandDescription')}
                         </p>
                         <div className="flex gap-4 text-2xl mt-2">
                             <a
@@ -55,41 +58,41 @@ const Footer = () => {
 
                     {/* Link Column 1 */}
                     <div className="flex flex-col gap-4">
-                        <h5 className="font-bold text-text-main-light dark:text-text-main-dark">Shop</h5>
+                        <h5 className="font-bold text-text-main-light dark:text-text-main-dark">{t('footer.shop')}</h5>
                         <ul className="flex flex-col gap-2.5 text-sm text-text-muted-light dark:text-text-muted-dark">
-                            <li><Link className="hover:text-primary transition-colors" href="#">Skincare</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">Makeup</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">Fragrance</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">Tools & Accessories</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">Gift Sets</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.skincare')}</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.makeup')}</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.fragrance')}</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.toolsAccessories')}</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.giftSets')}</Link></li>
                         </ul>
                     </div>
 
                     {/* Link Column 2 */}
                     <div className="flex flex-col gap-4">
-                        <h5 className="font-bold text-text-main-light dark:text-text-main-dark">Support</h5>
+                        <h5 className="font-bold text-text-main-light dark:text-text-main-dark">{t('footer.support')}</h5>
                         <ul className="flex flex-col gap-2.5 text-sm text-text-muted-light dark:text-text-muted-dark">
-                            <li><Link className="hover:text-primary transition-colors" href="#">Help Center</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">Shipping & Returns</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">Order Status</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">Contact Us</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.helpCenter')}</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.shippingReturns')}</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.orderStatus')}</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.contactUs')}</Link></li>
                         </ul>
                     </div>
 
                     {/* Link Column 3 */}
                     <div className="flex flex-col gap-4">
-                        <h5 className="font-bold text-text-main-light dark:text-text-main-dark">Company</h5>
+                        <h5 className="font-bold text-text-main-light dark:text-text-main-dark">{t('footer.company')}</h5>
                         <ul className="flex flex-col gap-2.5 text-sm text-text-muted-light dark:text-text-muted-dark">
-                            <li><Link className="hover:text-primary transition-colors" href="#">About Us</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">Careers</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">Sustainability</Link></li>
-                            <li><Link className="hover:text-primary transition-colors" href="#">Press</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="#">{t('common.aboutUs')}</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.careers')}</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.sustainability')}</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="#">{t('footer.press')}</Link></li>
                         </ul>
                     </div>
                 </div>
 
                 <div className="border-t border-[#f4f0f2] dark:border-[#3a1d26] pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-text-muted-light dark:text-text-muted-dark">
-                    <p>© 2026 Ruby Beauty. All rights reserved.</p>
+                    <p>{t('footer.copyright')}</p>
 
                 </div>
             </div>

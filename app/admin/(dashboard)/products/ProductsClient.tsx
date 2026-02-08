@@ -9,6 +9,7 @@ import AddProductModal from "./AddProductModal";
 import { deleteProduct, toggleProductTrending, bulkToggleTrending, bulkCreateProducts } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface Product {
     id: string;
@@ -33,6 +34,7 @@ interface Category {
 
 export default function ProductsClient({ products, categories }: { products: Product[], categories: Category[] }) {
     const { data: session } = useSession();
+    const { t, dir } = useLanguage();
     const canDelete = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canDeleteProducts;
     const canEdit = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canManageProducts;
 
@@ -75,18 +77,20 @@ export default function ProductsClient({ products, categories }: { products: Pro
                 (p.sku?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
                 (p.category?.name?.toLowerCase() || "").includes(searchQuery.toLowerCase());
 
-            const matchesCategory = selectedCategory === "All Categories" || p.category?.name === selectedCategory;
+            // Handle "All Categories" for translations (this check might need to be robust)
+            // Ideally we check against the translation key or value? For now let's assume "All Categories" is the default state value.
+            const matchesCategory = selectedCategory === "All Categories" || selectedCategory === t('admin.allCategories') || p.category?.name === selectedCategory;
 
             let matchesStock = true;
-            if (selectedStockStatus === "In Stock") matchesStock = Number(p.stock) > 10;
-            else if (selectedStockStatus === "Low Stock") matchesStock = Number(p.stock) > 0 && Number(p.stock) <= 10;
-            else if (selectedStockStatus === "Out of Stock") matchesStock = Number(p.stock) === 0;
+            if (selectedStockStatus === "In Stock" || selectedStockStatus === t('admin.inStock')) matchesStock = Number(p.stock) > 10;
+            else if (selectedStockStatus === "Low Stock" || selectedStockStatus === t('admin.lowStock')) matchesStock = Number(p.stock) > 0 && Number(p.stock) <= 10;
+            else if (selectedStockStatus === "Out of Stock" || selectedStockStatus === t('admin.outOfStock')) matchesStock = Number(p.stock) === 0;
 
             const matchesTrending = !showTrendingOnly || p.isTrending;
 
             return matchesSearch && matchesCategory && matchesStock && matchesTrending;
         });
-    }, [products, searchQuery, selectedCategory, selectedStockStatus, showTrendingOnly]);
+    }, [products, searchQuery, selectedCategory, selectedStockStatus, showTrendingOnly, t]);
 
     // Pagination logic
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -266,7 +270,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
 
     return (
         <div className="flex-1 flex flex-col h-screen overflow-hidden bg-background-light dark:bg-background-dark">
-            <AdminHeader title="Products" onMenuClick={openSidebar} />
+            <AdminHeader title={t('admin.products')} onMenuClick={openSidebar} />
 
             <div className="flex-1 overflow-y-auto p-3 sm:p-5 md:p-8">
                 <div className="max-w-[1200px] mx-auto flex flex-col gap-6 md:gap-8 pb-10">
@@ -276,12 +280,12 @@ export default function ProductsClient({ products, categories }: { products: Pro
                         <div className="flex flex-col gap-1">
                             {/* Breadcrumbs */}
                             <div className="flex items-center gap-2 text-sm text-text-sub dark:text-gray-400 mb-1">
-                                <Link href="/admin/dashboard" className="hover:text-primary cursor-pointer transition-colors">Dashboard</Link>
-                                <span className="material-symbols-outlined text-[12px]">chevron_right</span>
-                                <span className="text-text-main dark:text-white font-medium">Products</span>
+                                <Link href="/admin/dashboard" className="hover:text-primary cursor-pointer transition-colors">{t('admin.dashboard')}</Link>
+                                <span className={`material-symbols-outlined text-[12px] ${dir === 'rtl' ? 'rotate-180' : ''}`}>chevron_right</span>
+                                <span className="text-text-main dark:text-white font-medium">{t('admin.products')}</span>
                             </div>
-                            <h2 className="text-3xl font-extrabold text-text-main dark:text-white tracking-tight">Products</h2>
-                            <p className="text-text-sub dark:text-gray-400">Manage your product catalog and inventory.</p>
+                            <h2 className="text-3xl font-extrabold text-text-main dark:text-white tracking-tight">{t('admin.products')}</h2>
+                            <p className="text-text-sub dark:text-gray-400">{t('admin.manageCatalog')}</p>
                         </div>
                         <div className="flex flex-wrap items-center gap-3">
                             <button
@@ -289,11 +293,11 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                 className="bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-text-main dark:text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm"
                             >
                                 <span className="material-symbols-outlined text-[20px]">file_download</span>
-                                Export Data
+                                {t('admin.exportData')}
                             </button>
                             <label className="bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-text-main dark:text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm cursor-pointer">
                                 <span className="material-symbols-outlined text-[20px]">file_upload</span>
-                                Import Data
+                                {t('admin.importData')}
                                 <input
                                     type="file"
                                     accept=".csv"
@@ -311,7 +315,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                     className="bg-primary hover:bg-primary/90 text-white h-12 px-6 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
                                 >
                                     <span className="material-symbols-outlined text-[20px]">add</span>
-                                    Add New Product
+                                    {t('admin.addNewProduct')}
                                 </button>
                             )}
                         </div>
@@ -330,23 +334,23 @@ export default function ProductsClient({ products, categories }: { products: Pro
                     {/* Stats Cards */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
                         <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Total Products</p>
+                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{t('admin.totalProducts')}</p>
                             <p className="text-2xl font-bold text-text-main dark:text-white">{stats.total.toLocaleString()}</p>
                         </div>
                         <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Trending</p>
+                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{t('admin.trending')}</p>
                             <p className="text-2xl font-bold text-amber-500">{products.filter(p => p.isTrending).length} / 4</p>
                         </div>
                         <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Out of Stock</p>
+                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{t('admin.outOfStock')}</p>
                             <p className="text-2xl font-bold text-red-500">{stats.outOfStock.toLocaleString()}</p>
                         </div>
                         <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Low Inventory</p>
+                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{t('admin.lowInventory')}</p>
                             <p className="text-2xl font-bold text-orange-500">{stats.lowStock.toLocaleString()}</p>
                         </div>
                         <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Categories</p>
+                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{t('admin.categories')}</p>
                             <p className="text-2xl font-bold text-text-main dark:text-white">{stats.categories.toLocaleString()}</p>
                         </div>
                     </div>
@@ -356,12 +360,12 @@ export default function ProductsClient({ products, categories }: { products: Pro
                         {/* Toolbar */}
                         <div className="p-5 border-b border-[#e6dbdf] dark:border-gray-700 flex flex-col lg:flex-row gap-4 lg:items-center justify-between">
                             <div className="relative w-full lg:w-80">
-                                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span className={`absolute inset-y-0 ${dir === 'rtl' ? 'right-0 pr-3' : 'left-0 pl-3'} flex items-center pointer-events-none`}>
                                     <span className="material-symbols-outlined text-text-sub dark:text-gray-400 text-[20px]">search</span>
                                 </span>
                                 <input
-                                    className="block w-full pl-10 pr-3 py-2.5 border border-[#e6dbdf] dark:border-gray-700 rounded-xl bg-background-light dark:bg-gray-800 text-sm text-text-main dark:text-white placeholder-text-sub dark:placeholder-gray-500 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none"
-                                    placeholder="Search by name, SKU, category..."
+                                    className={`block w-full ${dir === 'rtl' ? 'pr-10 pl-3' : 'pl-10 pr-3'} py-2.5 border border-[#e6dbdf] dark:border-gray-700 rounded-xl bg-background-light dark:bg-gray-800 text-sm text-text-main dark:text-white placeholder-text-sub dark:placeholder-gray-500 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none`}
+                                    placeholder={t('admin.searchPlaceholder')}
                                     type="text"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -371,30 +375,30 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                 {/* Category Filter */}
                                 <div className="relative flex-1 sm:flex-initial">
                                     <select
-                                        className="appearance-none w-full pl-3 pr-10 py-2.5 bg-background-light dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 rounded-xl text-sm font-medium text-text-main dark:text-white focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer min-w-[140px] outline-none"
+                                        className={`appearance-none w-full ${dir === 'rtl' ? 'pr-3 pl-10' : 'pl-3 pr-10'} py-2.5 bg-background-light dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 rounded-xl text-sm font-medium text-text-main dark:text-white focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer min-w-[140px] outline-none`}
                                         value={selectedCategory}
                                         onChange={(e) => setSelectedCategory(e.target.value)}
                                     >
-                                        <option>All Categories</option>
+                                        <option>{t('admin.allCategories')}</option>
                                         {uniqueCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                                     </select>
-                                    <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-text-sub dark:text-gray-400">
+                                    <div className={`absolute inset-y-0 ${dir === 'rtl' ? 'left-0 pl-2' : 'right-0 pr-2'} flex items-center pointer-events-none text-text-sub dark:text-gray-400`}>
                                         <span className="material-symbols-outlined text-[20px]">expand_more</span>
                                     </div>
                                 </div>
                                 {/* Stock Filter */}
                                 <div className="relative flex-1 sm:flex-initial">
                                     <select
-                                        className="appearance-none w-full pl-3 pr-10 py-2.5 bg-background-light dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 rounded-xl text-sm font-medium text-text-main dark:text-white focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer min-w-[140px] outline-none"
+                                        className={`appearance-none w-full ${dir === 'rtl' ? 'pr-3 pl-10' : 'pl-3 pr-10'} py-2.5 bg-background-light dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 rounded-xl text-sm font-medium text-text-main dark:text-white focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer min-w-[140px] outline-none`}
                                         value={selectedStockStatus}
                                         onChange={(e) => setSelectedStockStatus(e.target.value)}
                                     >
-                                        <option>Stock Status</option>
-                                        <option>In Stock</option>
-                                        <option>Low Stock</option>
-                                        <option>Out of Stock</option>
+                                        <option>{t('admin.stockStatus')}</option>
+                                        <option>{t('admin.inStock')}</option>
+                                        <option>{t('admin.lowStock')}</option>
+                                        <option>{t('admin.outOfStock')}</option>
                                     </select>
-                                    <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-text-sub dark:text-gray-400">
+                                    <div className={`absolute inset-y-0 ${dir === 'rtl' ? 'left-0 pl-2' : 'right-0 pr-2'} flex items-center pointer-events-none text-text-sub dark:text-gray-400`}>
                                         <span className="material-symbols-outlined text-[20px]">expand_more</span>
                                     </div>
                                 </div>
@@ -408,7 +412,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                         }`}
                                 >
                                     <span className={`material-symbols-outlined text-[20px] ${showTrendingOnly ? 'fill-1' : ''}`}>local_fire_department</span>
-                                    <span className="hidden sm:inline">Trending Only</span>
+                                    <span className="hidden sm:inline">{t('admin.trendingOnly')}</span>
                                 </button>
                             </div>
                         </div>
@@ -418,12 +422,12 @@ export default function ProductsClient({ products, categories }: { products: Pro
                             <div className="bg-primary/5 dark:bg-primary/10 border-b border-[#e6dbdf] dark:border-gray-700 px-5 py-4 flex items-center justify-between animate-in slide-in-from-top duration-300">
                                 <div className="flex items-center gap-3">
                                     <span className="flex items-center justify-center size-6 bg-primary text-white text-xs font-bold rounded-full">{selectedIds.size}</span>
-                                    <span className="text-sm font-bold text-text-main dark:text-white">Items selected</span>
+                                    <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.itemsSelected')}</span>
                                     <button
                                         onClick={() => setSelectedIds(new Set())}
                                         className="text-xs text-text-sub hover:text-primary transition-colors font-medium ml-2 underline"
                                     >
-                                        Deselect all
+                                        {t('admin.deselectAll')}
                                     </button>
                                 </div>
                                 <div className="flex items-center gap-3">
@@ -438,7 +442,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                             ) : (
                                                 <span className="material-symbols-outlined text-[18px]">trending_down</span>
                                             )}
-                                            Remove Trending
+                                            {t('admin.removeTrending')}
                                         </button>
                                     )}
                                     {canDelete && (
@@ -452,7 +456,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                             className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-lg transition-all shadow-md shadow-red-500/20"
                                         >
                                             <span className="material-symbols-outlined text-[18px]">delete</span>
-                                            Delete Selected
+                                            {t('admin.deleteSelected')}
                                         </button>
                                     )}
                                 </div>
@@ -472,13 +476,13 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                 onChange={toggleSelectAll}
                                             />
                                         </th>
-                                        <th className="p-3 sm:p-5">Product</th>
-                                        <th className="p-3 sm:p-5">Category</th>
-                                        <th className="p-3 sm:p-5">Price</th>
-                                        <th className="p-3 sm:p-5">Inventory</th>
-                                        <th className="p-3 sm:p-5">Trending</th>
-                                        <th className="p-3 sm:p-5">Status</th>
-                                        <th className="p-3 sm:p-5 text-right">Actions</th>
+                                        <th className={`p-3 sm:p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.productName')}</th>
+                                        <th className={`p-3 sm:p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.categoryName')}</th>
+                                        <th className={`p-3 sm:p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.priceValue')}</th>
+                                        <th className={`p-3 sm:p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.inventory')}</th>
+                                        <th className={`p-3 sm:p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.trending')}</th>
+                                        <th className={`p-3 sm:p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.statusValue')}</th>
+                                        <th className={`p-3 sm:p-5 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>{t('admin.actions')}</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-[#e6dbdf] dark:divide-gray-700">
@@ -506,7 +510,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                         </div>
                                                         <div className="flex flex-col min-w-0">
                                                             <span className="font-bold text-text-main dark:text-white text-xs sm:text-sm line-clamp-1">{product.name}</span>
-                                                            <span className="text-[10px] sm:text-xs text-text-sub dark:text-gray-500">SKU: {product.sku || 'N/A'}</span>
+                                                            <span className="text-[10px] sm:text-xs text-text-sub dark:text-gray-500">{t('admin.sku')}: {product.sku || 'N/A'}</span>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -523,7 +527,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                                 Number(product.stock) <= 10 ? 'text-orange-500' :
                                                                     'text-emerald-500'
                                                                 }`}>
-                                                                {Number(product.stock) === 0 ? 'Out of Stock' : `${product.stock} in stock`}
+                                                                {Number(product.stock) === 0 ? t('admin.outOfStock') : `${product.stock} ${t('admin.inStock')}`}
                                                             </span>
                                                             {Number(product.stock) > 0 && Number(product.stock) <= 10 && (
                                                                 <span className="text-orange-500 text-[10px] font-bold uppercase ml-1 sm:ml-2">Low</span>
@@ -551,15 +555,15 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                         : 'bg-gray-50 text-gray-700 border-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700'
                                                         }`}>
                                                         <span className={`size-1 sm:size-1.5 rounded-full ${Number(product.stock) > 0 ? 'bg-emerald-500' : 'bg-gray-400'}`}></span>
-                                                        {Number(product.stock) > 0 ? 'Active' : 'Draft'}
+                                                        {Number(product.stock) > 0 ? t('admin.active') : t('admin.draft')}
                                                     </span>
                                                 </td>
-                                                <td className="p-3 sm:p-5 text-right">
-                                                    <div className="flex items-center justify-end gap-1 sm:gap-2 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
+                                                <td className={`p-3 sm:p-5 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
+                                                    <div className={`flex items-center ${dir === 'rtl' ? 'justify-start' : 'justify-end'} gap-1 sm:gap-2 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity`}>
                                                         {canEdit && (
                                                             <button
                                                                 onClick={() => handleEdit(product)}
-                                                                className="p-1.5 sm:p-2 text-text-sub dark:text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title="Edit"
+                                                                className="p-1.5 sm:p-2 text-text-sub dark:text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title={t('admin.editProduct')}
                                                             >
                                                                 <span className="material-symbols-outlined text-[18px] sm:text-[20px]">edit</span>
                                                             </button>
@@ -567,7 +571,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                         {canDelete && (
                                                             <button
                                                                 onClick={() => handleDelete(product.id, product.name)}
-                                                                className="p-1.5 sm:p-2 text-text-sub dark:text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors" title="Delete"
+                                                                className="p-1.5 sm:p-2 text-text-sub dark:text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors" title={t('admin.deleteProduct')}
                                                             >
                                                                 <span className="material-symbols-outlined text-[18px] sm:text-[20px]">delete</span>
                                                             </button>
@@ -579,7 +583,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                     ) : (
                                         <tr>
                                             <td colSpan={7} className="p-10 text-center text-text-sub dark:text-gray-500 italic">
-                                                No products found matching your criteria.
+                                                {t('admin.noProductsMatch')}
                                             </td>
                                         </tr>
                                     )}
@@ -590,7 +594,10 @@ export default function ProductsClient({ products, categories }: { products: Pro
                         {/* Pagination */}
                         <div className="p-3 sm:p-5 border-t border-[#e6dbdf] dark:border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-4">
                             <span className="text-xs sm:text-sm text-text-sub dark:text-gray-400 order-2 sm:order-1">
-                                Showing <span className="font-bold text-text-main dark:text-white">{startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredProducts.length)}</span> of <span className="font-bold text-text-main dark:text-white">{filteredProducts.length}</span> <span className="hidden xs:inline">products</span>
+                                {t('admin.showingProducts')
+                                    .replace('{start}', (startIndex + 1).toString())
+                                    .replace('{end}', Math.min(startIndex + itemsPerPage, filteredProducts.length).toString())
+                                    .replace('{total}', filteredProducts.length.toString())}
                             </span>
                             <div className="flex items-center gap-1.5 sm:gap-2 order-1 sm:order-2">
                                 <button
@@ -598,7 +605,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                     disabled={currentPage === 1}
                                     className="p-1.5 sm:p-2 border border-[#e6dbdf] dark:border-gray-700 rounded-lg text-text-sub dark:text-gray-400 hover:bg-background-light dark:hover:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                 >
-                                    <span className="material-symbols-outlined text-[18px] sm:text-[20px]">chevron_left</span>
+                                    <span className={`material-symbols-outlined text-[18px] sm:text-[20px] ${dir === 'rtl' ? 'rotate-180' : ''}`}>chevron_left</span>
                                 </button>
 
                                 <div className="flex items-center gap-1">
@@ -638,7 +645,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                     disabled={currentPage === totalPages || totalPages === 0}
                                     className="p-1.5 sm:p-2 border border-[#e6dbdf] dark:border-gray-700 rounded-lg text-text-sub dark:text-gray-400 hover:bg-background-light dark:hover:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                 >
-                                    <span className="material-symbols-outlined text-[18px] sm:text-[20px]">chevron_right</span>
+                                    <span className={`material-symbols-outlined text-[18px] sm:text-[20px] ${dir === 'rtl' ? 'rotate-180' : ''}`}>chevron_right</span>
                                 </button>
                             </div>
                         </div>

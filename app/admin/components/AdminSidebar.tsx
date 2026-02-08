@@ -3,17 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-
-const navItems = [
-    { href: "/admin/dashboard", icon: "dashboard", label: "Dashboard", filled: true },
-    { href: "/admin/products", icon: "shopping_bag", label: "Products", permission: "canManageProducts" },
-    { href: "/admin/categories", icon: "category", label: "Categories", permission: "canManageCategories" },
-    { href: "/admin/banners", icon: "view_carousel", label: "Banners", permission: "canManageBanners" },
-    { href: "/admin/orders", icon: "package_2", label: "Orders", permission: "canManageOrders" },
-    { href: "/admin/promocodes", icon: "local_offer", label: "Promo Codes", permission: "canManagePromoCodes" },
-    { href: "/admin/users", icon: "group", label: "Users", superAdminOnly: true },
-    { href: "/admin/settings", icon: "settings", label: "Settings", superAdminOnly: true },
-];
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface AdminSidebarProps {
     isOpen: boolean;
@@ -23,7 +13,19 @@ interface AdminSidebarProps {
 export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
     const pathname = usePathname();
     const { data: session } = useSession();
+    const { t, dir } = useLanguage();
     const isSuperAdmin = session?.user?.role === 'SUPER_ADMIN';
+
+    const navItems = [
+        { href: "/admin/dashboard", icon: "dashboard", label: t('admin.dashboard'), filled: true },
+        { href: "/admin/products", icon: "shopping_bag", label: t('admin.products'), permission: "canManageProducts" },
+        { href: "/admin/categories", icon: "category", label: t('admin.categories'), permission: "canManageCategories" },
+        { href: "/admin/banners", icon: "view_carousel", label: t('admin.banners'), permission: "canManageBanners" },
+        { href: "/admin/orders", icon: "package_2", label: t('admin.orders'), permission: "canManageOrders" },
+        { href: "/admin/promocodes", icon: "local_offer", label: t('admin.promoCodes'), permission: "canManagePromoCodes" },
+        { href: "/admin/users", icon: "group", label: t('admin.users'), superAdminOnly: true },
+        { href: "/admin/settings", icon: "settings", label: t('admin.settings'), superAdminOnly: true },
+    ];
 
     const handleSignOut = () => {
         signOut({ callbackUrl: "/admin/login" });
@@ -41,7 +43,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 
             {/* Sidebar */}
             <aside
-                className={`fixed lg:static inset-y-0 left-0 z-50 w-64 shrink-0 border-r border-[#e6dbdf] dark:border-gray-700 bg-surface-light dark:bg-surface-dark flex flex-col transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+                className={`fixed lg:static inset-y-0 ${dir === 'rtl' ? 'right-0 border-l' : 'left-0 border-r'} z-50 w-64 shrink-0 border-[#e6dbdf] dark:border-gray-700 bg-surface-light dark:bg-surface-dark flex flex-col transition-transform duration-300 ${isOpen ? "translate-x-0" : (dir === 'rtl' ? "translate-x-full lg:translate-x-0" : "-translate-x-full lg:translate-x-0")
                     }`}
             >
                 <div className="h-full flex flex-col justify-between p-4">
@@ -50,10 +52,10 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                         <div className="flex items-center justify-between px-2 py-2">
                             <div className="flex flex-col">
                                 <h1 className="text-text-main dark:text-white text-lg font-bold leading-tight">
-                                    Ruby Beauty
+                                    {t('header.brandName')}
                                 </h1>
                                 <p className="text-text-sub dark:text-gray-400 text-xs font-normal">
-                                    Admin Panel
+                                    {t('admin.adminPanel')}
                                 </p>
                             </div>
                             {/* Close button for mobile */}
@@ -111,10 +113,10 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                             onClick={handleSignOut}
                             className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-text-sub dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-colors group"
                         >
-                            <span className="material-symbols-outlined group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                            <span className={`material-symbols-outlined group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors ${dir === 'rtl' ? 'rotate-180' : ''}`}>
                                 logout
                             </span>
-                            <p className="text-sm font-medium leading-normal">Sign Out</p>
+                            <p className="text-sm font-medium leading-normal">{t('admin.signOut')}</p>
                         </button>
 
                         <div className="flex items-center gap-3 px-3 py-2 mt-2">
@@ -123,7 +125,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                                     {session?.user?.name || "Admin"}
                                 </p>
                                 <p className="text-text-sub dark:text-gray-500 text-xs font-normal">
-                                    {isSuperAdmin ? "Super Admin" : "Editor Account"}
+                                    {isSuperAdmin ? t('admin.superAdmin') : t('admin.editor')}
                                 </p>
                             </div>
                         </div>

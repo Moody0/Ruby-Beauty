@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import { useState } from "react";
 import OrderDetailsModal from "../orders/OrderDetailsModal";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface RecentOrder {
     id: string;
@@ -41,6 +42,7 @@ interface DashboardStats {
 
 export default function DashboardClient({ stats }: { stats: DashboardStats }) {
     const { openSidebar } = useAdminSidebar();
+    const { t, dir } = useLanguage();
     const [selectedOrder, setSelectedOrder] = useState<RecentOrder | null>(null);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
@@ -51,7 +53,7 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
 
     return (
         <div className="flex-1 flex flex-col overflow-hidden">
-            <AdminHeader title="Overview" onMenuClick={openSidebar} />
+            <AdminHeader title={t('admin.overview')} onMenuClick={openSidebar} />
 
             {/* Scrollable Dashboard Content */}
             <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-4 md:p-8">
@@ -67,7 +69,7 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                             </div>
                             <div>
                                 <p className="text-text-sub dark:text-gray-400 text-sm font-medium">
-                                    Total Revenue
+                                    {t('admin.totalRevenue')}
                                 </p>
                                 <h3 className="text-text-main dark:text-white text-xl md:text-2xl font-bold mt-1">
                                     ${stats.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -84,7 +86,7 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                             </div>
                             <div>
                                 <p className="text-text-sub dark:text-gray-400 text-sm font-medium">
-                                    Total Orders
+                                    {t('admin.totalOrders')}
                                 </p>
                                 <h3 className="text-text-main dark:text-white text-xl md:text-2xl font-bold mt-1">
                                     {stats.totalOrders}
@@ -101,7 +103,7 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                             </div>
                             <div>
                                 <p className="text-text-sub dark:text-gray-400 text-sm font-medium">
-                                    Active Products
+                                    {t('admin.activeProducts')}
                                 </p>
                                 <h3 className="text-text-main dark:text-white text-xl md:text-2xl font-bold mt-1">
                                     {stats.totalProducts}
@@ -118,7 +120,7 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                             </div>
                             <div>
                                 <p className="text-text-sub dark:text-gray-400 text-sm font-medium">
-                                    Categories
+                                    {t('admin.categories')}
                                 </p>
                                 <h3 className="text-text-main dark:text-white text-xl md:text-2xl font-bold mt-1">
                                     {stats.totalCategories}
@@ -131,13 +133,13 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center justify-between">
                             <h3 className="text-text-main dark:text-white text-base md:text-lg font-bold leading-tight tracking-tight">
-                                Recent Orders
+                                {t('admin.recentOrders')}
                             </h3>
                             <Link
                                 href="/admin/orders"
                                 className="text-primary hover:text-primary-hover text-sm font-bold transition-colors"
                             >
-                                View All
+                                {t('admin.viewAll')}
                             </Link>
                         </div>
 
@@ -155,25 +157,25 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                                 <table className="w-full text-left border-collapse min-w-[640px]">
                                     <thead>
                                         <tr className="border-b border-[#e6dbdf] dark:border-gray-700 bg-background-light/50 dark:bg-gray-800/50">
-                                            <th className="p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400">
-                                                Order ID
+                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                                {t('admin.orderId')}
                                             </th>
-                                            <th className="p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400">
-                                                Customer
+                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                                {t('admin.customer')}
                                             </th>
-                                            <th className="p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400">
-                                                Product
+                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                                {t('admin.product')}
                                             </th>
-                                            <th className="p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400">
-                                                Date
+                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                                {t('admin.date')}
                                             </th>
-                                            <th className="p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400">
-                                                Amount
+                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                                {t('admin.amount')}
                                             </th>
-                                            <th className="p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400">
-                                                Status
+                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                                {t('admin.status')}
                                             </th>
-                                            <th className="p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400"></th>
+                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}></th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-[#e6dbdf] dark:divide-gray-700">
@@ -190,10 +192,12 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                                                         {order.customer}
                                                     </td>
                                                     <td className="p-3 md:p-4 text-sm text-text-sub dark:text-gray-400">
-                                                        {order.product}
+                                                        {order.items.length > 0
+                                                            ? (order.items[0]?.product?.name || t('admin.unknown')) + (order.items.length > 1 ? ` + ${order.items.length - 1} ${t('common.more')}` : '')
+                                                            : t('admin.unknown')}
                                                     </td>
                                                     <td className="p-3 md:p-4 text-sm text-text-sub dark:text-gray-400">
-                                                        {order.date}
+                                                        {new Date(order.createdAt).toLocaleDateString(dir === 'rtl' ? 'ar-EG' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                                     </td>
                                                     <td className="p-3 md:p-4 text-sm font-bold text-text-main dark:text-white">
                                                         {order.amount}
@@ -223,7 +227,7 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                                                                                 : "bg-gray-500"
                                                                     }`}
                                                             ></span>
-                                                            {order.status}
+                                                            {t(`admin.${order.status.toLowerCase()}`)}
                                                         </span>
                                                     </td>
                                                     <td className="p-3 md:p-4 text-right">
@@ -241,7 +245,7 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                                         ) : (
                                             <tr>
                                                 <td colSpan={7} className="p-8 text-center text-text-sub dark:text-gray-500 italic">
-                                                    No recent orders found.
+                                                    {t('admin.noRecentOrders')}
                                                 </td>
                                             </tr>
                                         )}

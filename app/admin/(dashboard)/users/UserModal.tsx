@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { createUser, updateUser } from "@/lib/user-actions";
 import { toast } from "react-hot-toast";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface User {
     id: string;
@@ -27,6 +28,7 @@ interface UserModalProps {
 }
 
 export default function UserModal({ isOpen, onClose, user }: UserModalProps) {
+    const { t, dir } = useLanguage();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         username: "",
@@ -140,10 +142,10 @@ export default function UserModal({ isOpen, onClose, user }: UserModalProps) {
                     <div className="flex items-center justify-between mb-8">
                         <div>
                             <h2 className="text-2xl font-bold text-text-main dark:text-white">
-                                {user ? "Edit User Permissions" : "Add New Sub-Admin"}
+                                {user ? t('admin.editUserPermissions') : t('admin.addNewSubAdmin')}
                             </h2>
                             <p className="text-text-sub dark:text-gray-400 text-sm mt-1">
-                                {user ? `Updating access for ${user.username}` : "Create a new account with limited access"}
+                                {user ? t('admin.updatingAccess').replace('{username}', user.username) : t('admin.createAccount')}
                             </p>
                         </div>
                         <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full text-text-sub">
@@ -155,25 +157,25 @@ export default function UserModal({ isOpen, onClose, user }: UserModalProps) {
                         {/* Basic Info */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider ml-1">Username</label>
+                                <label className={`text-sm font-bold text-text-main dark:text-white uppercase tracking-wider ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>{t('admin.username')}</label>
                                 <input
                                     required
                                     type="text"
                                     value={formData.username}
                                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                                    className="w-full px-4 py-3 bg-background-light dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-text-main dark:text-white"
+                                    className={`w-full px-4 py-3 bg-background-light dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-text-main dark:text-white`}
                                     placeholder="e.g. jessica_editor"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider ml-1">
-                                    {user ? "New Password (optional)" : "Password"}
+                                <label className={`text-sm font-bold text-text-main dark:text-white uppercase tracking-wider ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                                    {user ? t('admin.newPasswordOptional') : t('admin.password')}
                                 </label>
                                 <input
                                     type="password"
                                     value={formData.password}
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    className="w-full px-4 py-3 bg-background-light dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-text-main dark:text-white"
+                                    className={`w-full px-4 py-3 bg-background-light dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-text-main dark:text-white`}
                                     placeholder="••••••••"
                                 />
                             </div>
@@ -181,23 +183,23 @@ export default function UserModal({ isOpen, onClose, user }: UserModalProps) {
 
                         {/* Role Selection */}
                         <div className="space-y-4">
-                            <label className="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider ml-1">Account Role</label>
+                            <label className={`text-sm font-bold text-text-main dark:text-white uppercase tracking-wider ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>{t('admin.accountRole')}</label>
                             <div className="grid grid-cols-2 gap-4">
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, role: 'ADMIN' })}
-                                    className={`p-4 rounded-2xl border text-left transition-all ${formData.role === 'ADMIN' ? 'border-primary bg-primary/5' : 'border-[#e6dbdf] dark:border-gray-700 hover:border-primary/50'}`}
+                                    className={`p-4 rounded-2xl border ${dir === 'rtl' ? 'text-right' : 'text-left'} transition-all ${formData.role === 'ADMIN' ? 'border-primary bg-primary/5' : 'border-[#e6dbdf] dark:border-gray-700 hover:border-primary/50'}`}
                                 >
-                                    <p className={`font-bold ${formData.role === 'ADMIN' ? 'text-primary' : 'text-text-main dark:text-white'}`}>Sub-Admin (Default)</p>
-                                    <p className="text-xs text-text-sub dark:text-gray-400 mt-1">Limited access based on permissions below.</p>
+                                    <p className={`font-bold ${formData.role === 'ADMIN' ? 'text-primary' : 'text-text-main dark:text-white'}`}>{t('admin.subAdminDefault')}</p>
+                                    <p className="text-xs text-text-sub dark:text-gray-400 mt-1">{t('admin.limitedAccess')}</p>
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, role: 'SUPER_ADMIN' })}
-                                    className={`p-4 rounded-2xl border text-left transition-all ${formData.role === 'SUPER_ADMIN' ? 'border-amber-500 bg-amber-50' : 'border-[#e6dbdf] dark:border-gray-700 hover:border-amber-500/50'}`}
+                                    className={`p-4 rounded-2xl border ${dir === 'rtl' ? 'text-right' : 'text-left'} transition-all ${formData.role === 'SUPER_ADMIN' ? 'border-amber-500 bg-amber-50' : 'border-[#e6dbdf] dark:border-gray-700 hover:border-amber-500/50'}`}
                                 >
-                                    <p className={`font-bold ${formData.role === 'SUPER_ADMIN' ? 'text-amber-600' : 'text-text-main dark:text-white'}`}>Super Admin</p>
-                                    <p className="text-xs text-text-sub dark:text-gray-400 mt-1">Full, unrestricted access to everything.</p>
+                                    <p className={`font-bold ${formData.role === 'SUPER_ADMIN' ? 'text-amber-600' : 'text-text-main dark:text-white'}`}>{t('admin.superAdminRole')}</p>
+                                    <p className="text-xs text-text-sub dark:text-gray-400 mt-1">{t('admin.fullAccess')}</p>
                                 </button>
                             </div>
                         </div>
@@ -206,37 +208,37 @@ export default function UserModal({ isOpen, onClose, user }: UserModalProps) {
                         {formData.role !== 'SUPER_ADMIN' && (
                             <div className="space-y-6 bg-background-light/50 dark:bg-gray-800/30 p-6 rounded-3xl border border-[#e6dbdf] dark:border-gray-700">
                                 <div>
-                                    <h3 className="text-sm font-bold text-text-main dark:text-white uppercase tracking-widest mb-4">Permissions Checklist</h3>
+                                    <h3 className="text-sm font-bold text-text-main dark:text-white uppercase tracking-widest mb-4">{t('admin.permissionsChecklist')}</h3>
 
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div className="space-y-3">
-                                            <p className="text-[10px] font-bold text-text-sub dark:text-gray-500 uppercase tracking-widest ml-1">Products</p>
-                                            <PermissionCheckbox name="canManageProducts" label="Can Create & Edit Products" />
-                                            <PermissionCheckbox name="canDeleteProducts" label="Can Delete Products" dependsOn="canManageProducts" />
+                                            <p className={`text-[10px] font-bold text-text-sub dark:text-gray-500 uppercase tracking-widest ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>{t('admin.products')}</p>
+                                            <PermissionCheckbox name="canManageProducts" label={t('admin.canCreateEdit').replace('{resource}', t('admin.products'))} />
+                                            <PermissionCheckbox name="canDeleteProducts" label={t('admin.canDelete').replace('{resource}', t('admin.products'))} dependsOn="canManageProducts" />
                                         </div>
 
                                         <div className="space-y-3">
-                                            <p className="text-[10px] font-bold text-text-sub dark:text-gray-500 uppercase tracking-widest ml-1">Categories</p>
-                                            <PermissionCheckbox name="canManageCategories" label="Can Create & Edit Categories" />
-                                            <PermissionCheckbox name="canDeleteCategories" label="Can Delete Categories" dependsOn="canManageCategories" />
+                                            <p className={`text-[10px] font-bold text-text-sub dark:text-gray-500 uppercase tracking-widest ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>{t('admin.categories')}</p>
+                                            <PermissionCheckbox name="canManageCategories" label={t('admin.canCreateEdit').replace('{resource}', t('admin.categories'))} />
+                                            <PermissionCheckbox name="canDeleteCategories" label={t('admin.canDelete').replace('{resource}', t('admin.categories'))} dependsOn="canManageCategories" />
                                         </div>
 
                                         <div className="space-y-3">
-                                            <p className="text-[10px] font-bold text-text-sub dark:text-gray-500 uppercase tracking-widest ml-1">Banners (Ads)</p>
-                                            <PermissionCheckbox name="canManageBanners" label="Can Manage Banners" />
-                                            <PermissionCheckbox name="canDeleteBanners" label="Can Delete Banners" dependsOn="canManageBanners" />
+                                            <p className={`text-[10px] font-bold text-text-sub dark:text-gray-500 uppercase tracking-widest ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>{t('admin.banners')}</p>
+                                            <PermissionCheckbox name="canManageBanners" label={t('admin.canManage').replace('{resource}', t('admin.banners'))} />
+                                            <PermissionCheckbox name="canDeleteBanners" label={t('admin.canDelete').replace('{resource}', t('admin.banners'))} dependsOn="canManageBanners" />
                                         </div>
 
                                         <div className="space-y-3">
-                                            <p className="text-[10px] font-bold text-text-sub dark:text-gray-500 uppercase tracking-widest ml-1">Orders & Sales</p>
-                                            <PermissionCheckbox name="canManageOrders" label="Can View & Process Orders" />
-                                            <PermissionCheckbox name="canDeleteOrders" label="Can Delete Orders" dependsOn="canManageOrders" />
+                                            <p className={`text-[10px] font-bold text-text-sub dark:text-gray-500 uppercase tracking-widest ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>{t('admin.orders')}</p>
+                                            <PermissionCheckbox name="canManageOrders" label={t('admin.canViewProcess').replace('{resource}', t('admin.orders'))} />
+                                            <PermissionCheckbox name="canDeleteOrders" label={t('admin.canDelete').replace('{resource}', t('admin.orders'))} dependsOn="canManageOrders" />
                                         </div>
 
                                         <div className="space-y-3">
-                                            <p className="text-[10px] font-bold text-text-sub dark:text-gray-500 uppercase tracking-widest ml-1">Promo Codes</p>
-                                            <PermissionCheckbox name="canManagePromoCodes" label="Can Manage Promo Codes" />
-                                            <PermissionCheckbox name="canDeletePromoCodes" label="Can Delete Promo Codes" dependsOn="canManagePromoCodes" />
+                                            <p className={`text-[10px] font-bold text-text-sub dark:text-gray-500 uppercase tracking-widest ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>{t('admin.promoCodes')}</p>
+                                            <PermissionCheckbox name="canManagePromoCodes" label={t('admin.canManage').replace('{resource}', t('admin.promoCodes'))} />
+                                            <PermissionCheckbox name="canDeletePromoCodes" label={t('admin.canDelete').replace('{resource}', t('admin.promoCodes'))} dependsOn="canManagePromoCodes" />
                                         </div>
                                     </div>
                                 </div>
@@ -249,7 +251,7 @@ export default function UserModal({ isOpen, onClose, user }: UserModalProps) {
                                 onClick={onClose}
                                 className="flex-1 px-8 py-4 bg-background-light dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 text-text-main dark:text-white rounded-2xl font-bold hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
                             >
-                                Cancel
+                                {t('admin.cancel')}
                             </button>
                             <button
                                 type="submit"
@@ -257,7 +259,7 @@ export default function UserModal({ isOpen, onClose, user }: UserModalProps) {
                                 className="flex-1 px-8 py-4 bg-primary text-white rounded-2xl font-bold hover:bg-primary-dark transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
                                 {isSubmitting && <span className="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>}
-                                {user ? "Update User" : "Create User"}
+                                {user ? t('admin.updateUser') : t('admin.createUser')}
                             </button>
                         </div>
                     </form>

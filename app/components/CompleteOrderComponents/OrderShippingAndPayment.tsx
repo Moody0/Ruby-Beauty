@@ -1,4 +1,7 @@
+"use client";
+
 import React from 'react';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 interface OrderShippingAndPaymentProps {
     name: string;
@@ -8,28 +11,30 @@ interface OrderShippingAndPaymentProps {
 }
 
 const OrderShippingAndPayment = ({ name, streetAddress, city, phone }: OrderShippingAndPaymentProps) => {
+    const { t, language } = useLanguage();
+
     return (
         <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="flex flex-col gap-4">
                 <h3 className="text-sm font-bold flex items-center gap-2">
                     <span className="material-symbols-outlined text-primary text-lg">local_shipping</span>
-                    Shipping Address
+                    {t('orderComplete.shippingAddress')}
                 </h3>
                 <div className="text-[#5a424a] dark:text-[#b49ba4] text-sm leading-relaxed">
                     <p className="font-semibold text-[#181113] dark:text-white">{name}</p>
                     <p>{streetAddress}</p>
                     <p>{city}</p>
-                    <p>{phone}</p>
+                    <p dir="ltr">{phone}</p>
                 </div>
             </div>
             <div className="flex flex-col gap-4">
                 <h3 className="text-sm font-bold flex items-center gap-2">
                     <span className="material-symbols-outlined text-primary text-lg">payments</span>
-                    Payment Method
+                    {t('checkout.paymentMethod')}
                 </h3>
                 <div className="flex flex-col gap-1">
-                    <p className="text-sm font-semibold text-[#181113] dark:text-white">Cash on Delivery</p>
-                    <p className="text-xs text-[#89616f]">Pay at the time of delivery</p>
+                    <p className="text-sm font-semibold text-[#181113] dark:text-white">{t('checkout.cashOnDelivery')}</p>
+                    <p className="text-xs text-[#89616f]">{language === 'ar' ? 'الدفع عند الاستلام' : 'Pay at the time of delivery'}</p>
                 </div>
             </div>
         </div>

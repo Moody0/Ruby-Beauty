@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface AdminHeaderProps {
     title: string;
@@ -8,6 +9,7 @@ interface AdminHeaderProps {
 }
 
 export default function AdminHeader({ title, onMenuClick }: AdminHeaderProps) {
+    const { language, setLanguage } = useLanguage();
     const [searchQuery, setSearchQuery] = useState("");
 
     return (
@@ -23,6 +25,14 @@ export default function AdminHeader({ title, onMenuClick }: AdminHeaderProps) {
                 <h2 className="text-lg md:text-xl font-bold leading-tight tracking-tight">{title}</h2>
             </div>
             <div className="flex flex-1 justify-end gap-3 md:gap-6 items-center">
+                <button
+                    onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')}
+                    className="flex items-center gap-2 px-3 py-2 text-sm font-bold text-text-sub hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                    title={language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
+                >
+                    <span className="material-symbols-outlined text-[20px]">language</span>
+                    <span className="hidden sm:inline">{language === 'en' ? 'العربية' : 'English'}</span>
+                </button>
             </div>
         </header>
     );

@@ -7,6 +7,7 @@ import BannerModal from "./BannerModal";
 import { deleteBanner, toggleBannerStatus } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface Banner {
     id: string;
@@ -23,6 +24,7 @@ interface Banner {
 
 export default function BannersClient({ banners }: { banners: Banner[] }) {
     const { data: session } = useSession();
+    const { t, dir } = useLanguage();
     const canManage = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canManageBanners;
     const canDelete = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canDeleteBanners;
 
@@ -42,11 +44,11 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
     };
 
     const handleDelete = async (id: string, title: string) => {
-        if (confirm(`Are you sure you want to delete the banner "${title}"?`)) {
+        if (confirm(t('admin.confirmDeleteBanner').replace('{title}', title))) {
             try {
                 const result = await deleteBanner(id);
                 if (result.success) {
-                    toast.success("Banner deleted successfully");
+                    toast.success(t('admin.bannerDeleted'));
                 } else {
                     toast.error(result.error || "Failed to delete banner");
                 }
@@ -62,7 +64,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
         try {
             const result = await toggleBannerStatus(id, !currentStatus);
             if (result.success) {
-                toast.success(`Banner ${!currentStatus ? 'activated' : 'deactivated'} successfully`);
+                toast.success(t('admin.bannerStatusUpdated').replace('{status}', !currentStatus ? t('admin.activated') : t('admin.deactivated')));
             } else {
                 toast.error(result.error || "Failed to update status");
             }
@@ -76,17 +78,17 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
 
     return (
         <div className="flex-1 flex flex-col overflow-hidden">
-            <AdminHeader title="Home Banners" onMenuClick={openSidebar} />
+            <AdminHeader title={t('admin.homeBanners')} onMenuClick={openSidebar} />
 
             <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
                 <div className="max-w-[1200px] mx-auto">
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
                         <div>
                             <h3 className="text-2xl font-bold text-text-main dark:text-white">
-                                Hero Banners
+                                {t('admin.heroBanners')}
                             </h3>
                             <p className="text-text-sub dark:text-gray-400 mt-1">
-                                Control what's displayed in the homepage hero section.
+                                {t('admin.controlHero')}
                             </p>
                         </div>
                         {canManage && (
@@ -95,7 +97,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                 className="bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
                             >
                                 <span className="material-symbols-outlined">add</span>
-                                Create New Advertisement
+                                {t('admin.createNewAd')}
                             </button>
                         )}
                     </div>
@@ -109,7 +111,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                     <div className="grid grid-cols-1 gap-8">
                         {banners.map((banner) => (
                             <div key={banner.id} className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-border-color/50 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all overflow-hidden flex flex-col lg:flex-row">
-                                <div className="lg:w-1/3 aspect-[21/9] lg:aspect-auto overflow-hidden bg-gray-100 dark:bg-gray-800">
+                                <div className="lg:w-1/3 aspect-21/9 lg:aspect-auto overflow-hidden bg-gray-100 dark:bg-gray-800">
                                     <img
                                         alt={banner.title}
                                         className="w-full h-full object-cover"
@@ -120,25 +122,25 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                     <div className="flex flex-col gap-2">
                                         <div className="flex items-center gap-3">
                                             <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                                                {banner.badge || 'Banner'}
+                                                {banner.badge || t('admin.banner')}
                                             </span>
                                             {!banner.isActive && (
                                                 <span className="bg-gray-100 dark:bg-gray-800 text-gray-500 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                                                    Hidden
+                                                    {t('admin.hidden')}
                                                 </span>
                                             )}
                                         </div>
                                         <h3 className="text-xl font-bold text-text-main dark:text-white mt-1">{banner.title}</h3>
                                         <p className="text-sm text-text-sub dark:text-gray-400 line-clamp-2">
-                                            {banner.subtitle || 'No subtitle provided.'}
+                                            {banner.subtitle || t('admin.noSubtitle')}
                                         </p>
                                         <div className="flex gap-4 mt-2">
                                             <div className="flex flex-col">
-                                                <span className="text-[10px] text-text-sub/60 dark:text-gray-500 font-bold uppercase">Button</span>
+                                                <span className="text-[10px] text-text-sub/60 dark:text-gray-500 font-bold uppercase">{t('admin.button')}</span>
                                                 <span className="text-sm font-medium dark:text-gray-300">{banner.buttonText}</span>
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="text-[10px] text-text-sub/60 dark:text-gray-500 font-bold uppercase">Link</span>
+                                                <span className="text-[10px] text-text-sub/60 dark:text-gray-500 font-bold uppercase">{t('admin.link')}</span>
                                                 <span className="text-sm font-medium dark:text-gray-300">{banner.link}</span>
                                             </div>
                                         </div>
@@ -161,7 +163,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                                         {banner.isActive ? 'visibility' : 'visibility_off'}
                                                     </span>
                                                 )}
-                                                {banner.isActive ? 'Active' : 'Hidden'}
+                                                {banner.isActive ? t('admin.active') : t('admin.hidden')}
                                             </button>
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -169,7 +171,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                                 <button
                                                     onClick={() => handleEdit(banner)}
                                                     className="p-3 text-text-sub hover:text-primary hover:bg-primary-light dark:hover:bg-primary/10 rounded-xl transition-colors"
-                                                    title="Edit"
+                                                    title={t('admin.editBanner')}
                                                 >
                                                     <span className="material-symbols-outlined text-[22px]">edit</span>
                                                 </button>
@@ -178,7 +180,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                                 <button
                                                     onClick={() => handleDelete(banner.id, banner.title)}
                                                     className="p-3 text-text-sub hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors"
-                                                    title="Delete"
+                                                    title={t('admin.deleteBanner')}
                                                 >
                                                     <span className="material-symbols-outlined text-[22px]">delete</span>
                                                 </button>
@@ -194,13 +196,13 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                         <div className="text-center py-20 bg-surface-light dark:bg-surface-dark rounded-2xl border border-dashed border-border-color dark:border-gray-700">
                             <span className="material-symbols-outlined text-5xl text-text-sub/30 mb-4">view_carousel</span>
                             <p className="text-text-sub italic">
-                                No advertisement banners created yet.
+                                {t('admin.noBanners')}
                             </p>
                             <button
                                 onClick={handleAdd}
                                 className="mt-4 text-primary font-bold hover:underline"
                             >
-                                Let's add your first homepage banner
+                                {t('admin.addFirstBanner')}
                             </button>
                         </div>
                     )}

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { createCategory, updateCategory } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface CategoryModalProps {
     isOpen: boolean;
@@ -17,6 +18,7 @@ interface CategoryModalProps {
 }
 
 export default function CategoryModal({ isOpen, onClose, category }: CategoryModalProps) {
+    const { t, dir } = useLanguage();
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [image, setImage] = useState("");
@@ -54,7 +56,7 @@ export default function CategoryModal({ isOpen, onClose, category }: CategoryMod
             }
 
             if (result.success) {
-                toast.success(`Category ${category ? "updated" : "created"} successfully!`);
+                toast.success(category ? t('admin.categoryUpdated') : t('admin.categoryCreated'));
                 onClose();
             } else {
                 toast.error(result.error || `Failed to ${category ? "update" : "create"} category`);
@@ -77,7 +79,7 @@ export default function CategoryModal({ isOpen, onClose, category }: CategoryMod
             <div className="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-2xl shadow-2xl overflow-hidden border border-[#e6dbdf] dark:border-gray-700">
                 <div className="p-6 border-b border-[#e6dbdf] dark:border-gray-700 flex items-center justify-between">
                     <h2 className="text-xl font-bold text-text-main dark:text-white">
-                        {category ? "Edit Category" : "Add New Category"}
+                        {category ? t('admin.editCategory') : t('admin.addNewCategory')}
                     </h2>
                     <button
                         onClick={onClose}
@@ -89,8 +91,8 @@ export default function CategoryModal({ isOpen, onClose, category }: CategoryMod
 
                 <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-5 overflow-y-auto max-h-[80vh]">
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-text-main dark:text-white">
-                            Category Name
+                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                            {t('admin.categoryName')}
                         </label>
                         <input
                             type="text"
@@ -103,8 +105,8 @@ export default function CategoryModal({ isOpen, onClose, category }: CategoryMod
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-text-main dark:text-white">
-                            Image URL
+                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                            {t('admin.imageUrl')}
                         </label>
                         <input
                             type="text"
@@ -117,7 +119,7 @@ export default function CategoryModal({ isOpen, onClose, category }: CategoryMod
                             <div className="mt-2 relative aspect-video w-full rounded-xl overflow-hidden border border-[#e6dbdf] dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
                                 <img
                                     src={image}
-                                    alt="Preview"
+                                    alt={t('admin.preview')}
                                     className="w-full h-full object-cover"
                                     onError={(e) => {
                                         (e.target as HTMLImageElement).src = "https://placehold.co/600x400?text=Invalid+Image+URL";
@@ -128,8 +130,8 @@ export default function CategoryModal({ isOpen, onClose, category }: CategoryMod
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-text-main dark:text-white">
-                            Featured on Homepage
+                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                            {t('admin.featuredOnHomepage')}
                         </label>
                         <div className="flex items-center gap-3 h-[46px]">
                             <button
@@ -138,23 +140,23 @@ export default function CategoryModal({ isOpen, onClose, category }: CategoryMod
                                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${isFeatured ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-700'}`}
                             >
                                 <span
-                                    className={`${isFeatured ? 'translate-x-6' : 'translate-x-1'} inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                                    className={`${isFeatured ? (dir === 'rtl' ? '-translate-x-6' : 'translate-x-6') : (dir === 'rtl' ? '-translate-x-1' : 'translate-x-1')} inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
                                 />
                             </button>
                             <span className="text-sm text-text-sub dark:text-gray-400">
-                                {isFeatured ? 'Featured' : 'Standard'}
+                                {isFeatured ? t('admin.featured') : t('admin.standard')}
                             </span>
                         </div>
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-text-main dark:text-white">
-                            Description
+                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                            {t('admin.description')}
                         </label>
                         <textarea
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            placeholder="Describe what products belong in this category..."
+                            placeholder={t('admin.describeCategory')}
                             rows={3}
                             className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                         />
@@ -166,7 +168,7 @@ export default function CategoryModal({ isOpen, onClose, category }: CategoryMod
                             onClick={onClose}
                             className="flex-1 px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 text-text-main dark:text-white font-bold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                         >
-                            Cancel
+                            {t('admin.cancel')}
                         </button>
                         <button
                             type="submit"
@@ -176,10 +178,10 @@ export default function CategoryModal({ isOpen, onClose, category }: CategoryMod
                             {isSubmitting ? (
                                 <>
                                     <span className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full" />
-                                    Saving...
+                                    {t('admin.saving')}
                                 </>
                             ) : (
-                                category ? "Update Category" : "Create Category"
+                                category ? t('admin.updateCategory') : t('admin.createCategory')
                             )}
                         </button>
                     </div>

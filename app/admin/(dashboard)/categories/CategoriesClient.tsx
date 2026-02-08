@@ -7,6 +7,7 @@ import CategoryModal from "./CategoryModal";
 import { deleteCategory, toggleCategoryFeatured } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface Category {
     id: string;
@@ -21,6 +22,7 @@ interface Category {
 
 export default function CategoriesClient({ categories }: { categories: Category[] }) {
     const { data: session } = useSession();
+    const { t, dir } = useLanguage();
     const canManage = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canManageCategories;
     const canDelete = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canDeleteCategories;
 
@@ -46,11 +48,11 @@ export default function CategoriesClient({ categories }: { categories: Category[
     };
 
     const handleDelete = async (id: string, name: string) => {
-        if (confirm(`Are you sure you want to delete the category "${name}"?`)) {
+        if (confirm(t('admin.confirmDeleteCategory').replace('{name}', name))) {
             try {
                 const result = await deleteCategory(id);
                 if (result.success) {
-                    toast.success("Category deleted successfully");
+                    toast.success(t('admin.categoryDeleted'));
                 } else {
                     toast.error(result.error || "Failed to delete category");
                 }
@@ -66,7 +68,7 @@ export default function CategoriesClient({ categories }: { categories: Category[
         try {
             const result = await toggleCategoryFeatured(id, !currentStatus);
             if (result.success) {
-                toast.success(`Category ${!currentStatus ? 'featured' : 'unfeatured'} successfully`);
+                toast.success(!currentStatus ? t('admin.categoryFeatured') : t('admin.categoryUnfeatured'));
             } else {
                 toast.error(result.error || "Failed to update status");
             }
@@ -80,34 +82,34 @@ export default function CategoriesClient({ categories }: { categories: Category[
 
     return (
         <div className="flex-1 flex flex-col overflow-hidden">
-            <AdminHeader title="Categories" onMenuClick={openSidebar} />
+            <AdminHeader title={t('admin.categories')} onMenuClick={openSidebar} />
 
             <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
                 <div className="max-w-[1200px] mx-auto">
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
                         <div className="">
                             <h3 className="text-2xl font-bold text-text-main dark:text-white">
-                                Product Categories
+                                {t('admin.productCategories')}
                             </h3>
                             <p className="text-text-sub dark:text-gray-400 mt-1">
-                                Manage your product categories and their display.
+                                {t('admin.manageCategories')}
                             </p>
                         </div>
                         <div className="w-full md:w-auto flex flex-col md:flex-row gap-4 items-center">
                             {/* Featured Count Indicator */}
-                            <div className="hidden md:flex flex-col items-end mr-2">
-                                <span className="text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400">Featured</span>
+                            <div className={`hidden md:flex flex-col items-end ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`}>
+                                <span className="text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400">{t('admin.featured')}</span>
                                 <span className="text-sm font-bold text-primary">
-                                    {categories.filter(c => c.isFeatured).length} / 4 Active
+                                    {categories.filter(c => c.isFeatured).length} / 4 {t('admin.active')}
                                 </span>
                             </div>
 
                             <div className="relative w-full md:w-72">
-                                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-sub/50 dark:text-gray-400/50 text-xl">search</span>
+                                <span className={`material-symbols-outlined absolute ${dir === 'rtl' ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 text-text-sub/50 dark:text-gray-400/50 text-xl`}>search</span>
                                 <input
                                     type="text"
-                                    placeholder="Search categories..."
-                                    className="w-full pl-10 pr-4 py-3 bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-text-main dark:text-white"
+                                    placeholder={t('admin.searchCategories')}
+                                    className={`w-full ${dir === 'rtl' ? 'pr-10 pl-4' : 'pl-10 pr-4'} py-3 bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-text-main dark:text-white`}
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
@@ -118,7 +120,7 @@ export default function CategoriesClient({ categories }: { categories: Category[
                                     className="w-full md:w-auto bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
                                 >
                                     <span className="material-symbols-outlined">add</span>
-                                    Add Category
+                                    {t('admin.addCategory')}
                                 </button>
                             )}
                         </div>
@@ -147,11 +149,11 @@ export default function CategoriesClient({ categories }: { categories: Category[
                                 <div className="p-6">
                                     <h3 className="text-lg font-bold text-text-main dark:text-white mb-2">{category.name}</h3>
                                     <p className="text-sm text-text-sub dark:text-gray-400 line-clamp-2 mb-4">
-                                        {category.description || 'No description provided for this category.'}
+                                        {category.description || t('admin.noDescription')}
                                     </p>
                                     <div className="w-full flex items-center justify-between pt-4 border-t border-border-color/30 dark:border-gray-700">
                                         <span className="bg-primary-light dark:bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold">
-                                            {category._count.products} Products
+                                            {category._count.products} {t('admin.products')}
                                         </span>
                                         <div className="flex items-center gap-2">
                                             {canManage && (
@@ -159,7 +161,7 @@ export default function CategoriesClient({ categories }: { categories: Category[
                                                     onClick={() => handleToggleFeatured(category.id, category.isFeatured)}
                                                     disabled={loadingMap[category.id]}
                                                     className={`p-2 rounded-lg transition-colors ${category.isFeatured ? 'text-amber-500 bg-amber-50 hover:bg-amber-100 dark:bg-amber-900/10 dark:hover:bg-amber-900/20' : 'text-gray-400 hover:text-amber-500 hover:bg-gray-50 dark:hover:bg-gray-800'}`}
-                                                    title={category.isFeatured ? "Remove from Home" : "Feature on Home"}
+                                                    title={category.isFeatured ? t('admin.removeFromHome') : t('admin.featureOnHome')}
                                                 >
                                                     {loadingMap[category.id] ? (
                                                         <span className="animate-spin material-symbols-outlined text-[20px]">progress_activity</span>
@@ -172,7 +174,7 @@ export default function CategoriesClient({ categories }: { categories: Category[
                                                 <button
                                                     onClick={() => handleEdit(category)}
                                                     className="p-2 text-text-sub hover:text-primary hover:bg-primary-light dark:hover:bg-primary/10 rounded-lg transition-colors"
-                                                    title="Edit"
+                                                    title={t('admin.editCategory')}
                                                 >
                                                     <span className="material-symbols-outlined text-[20px]">edit</span>
                                                 </button>
@@ -181,7 +183,7 @@ export default function CategoriesClient({ categories }: { categories: Category[
                                                 <button
                                                     onClick={() => handleDelete(category.id, category.name)}
                                                     className="p-2 text-text-sub hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors"
-                                                    title="Delete"
+                                                    title={t('admin.deleteCategory')}
                                                 >
                                                     <span className="material-symbols-outlined text-[20px]">delete</span>
                                                 </button>
@@ -197,14 +199,14 @@ export default function CategoriesClient({ categories }: { categories: Category[
                         <div className="text-center py-20 bg-surface-light dark:bg-surface-dark rounded-2xl border border-dashed border-border-color dark:border-gray-700">
                             <span className="material-symbols-outlined text-5xl text-text-sub/30 mb-4">search_off</span>
                             <p className="text-text-sub italic">
-                                {searchQuery ? "No categories found matching your search." : "No categories created yet."}
+                                {searchQuery ? t('admin.noCategoriesFound') : t('admin.noCategoriesCreated')}
                             </p>
                             {!searchQuery && (
                                 <button
                                     onClick={handleAdd}
                                     className="mt-4 text-primary font-bold hover:underline"
                                 >
-                                    Create your first category
+                                    {t('admin.createFirstCategory')}
                                 </button>
                             )}
                         </div>

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 interface Banner {
     id: string;
@@ -18,18 +19,20 @@ interface HeroCarouselProps {
     banners: Banner[];
 }
 
-const DEFAULT_BANNER = {
-    id: 'default',
-    title: "Radiance Redefined.",
-    subtitle: "Discover our new botanical collection designed to give your skin a natural, healthy glow from within.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB8pRgU38opDPgidWmDRVHh18-R0XsEouLP3xdxsGLZz4BX3nQjc-9PXhgFNDVECMvP80S7ZtFmpA-QwwrnKgOR8B7WY0FlM3qJCAf1J8cxpwvyt6V15oxTZz-uhtroLEp-87KWQzsp-6-2mVURrFG_Q6mWjJ5YGqT0gqwmcLOPMK6pDk77rqmdXEvvM82qGkXdLNmSeXBPXY9j9zwnT_PjJ5YAOzWa2PqrFvo1SOjMCtz71ZHQraBSPlt7TKx00ccpwm4TTWoB6b0y",
-    buttonText: "Shop New Arrivals",
-    link: "/products",
-    badge: "New Collection",
-    isActive: true
-};
-
 const HeroCarousel = ({ banners }: HeroCarouselProps) => {
+    const { t, dir } = useLanguage();
+
+    const DEFAULT_BANNER = {
+        id: 'default',
+        title: t('home.trendingNow'),
+        subtitle: t('footer.brandDescription'),
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB8pRgU38opDPgidWmDRVHh18-R0XsEouLP3xdxsGLZz4BX3nQjc-9PXhgFNDVECMvP80S7ZtFmpA-QwwrnKgOR8B7WY0FlM3qJCAf1J8cxpwvyt6V15oxTZz-uhtroLEp-87KWQzsp-6-2mVURrFG_Q6mWjJ5YGqT0gqwmcLOPMK6pDk77rqmdXEvvM82qGkXdLNmSeXBPXY9j9zwnT_PjJ5YAOzWa2PqrFvo1SOjMCtz71ZHQraBSPlt7TKx00ccpwm4TTWoB6b0y",
+        buttonText: t('home.shopNow'),
+        link: "/products",
+        badge: t('home.newArrival'),
+        isActive: true
+    };
+
     // If no banners are provided or the list is empty, use the default banner as a single-item array
     const displayBanners = banners && banners.length > 0 ? banners : [DEFAULT_BANNER];
 
@@ -94,60 +97,56 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                 </div>
 
                                 {/* Content Overlay */}
-                                <div className="relative z-10 h-full flex flex-col justify-end items-start p-6 sm:p-8 pb-8 sm:pb-10">
+                                <div className={`relative z-10 h-full flex flex-col justify-end items-start p-6 sm:p-8 pb-8 sm:pb-10`}>
                                     <div className={`transition-all duration-700 delay-300 transform ${index === currentIndex ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                                         }`}>
                                         <span className="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-wider mb-3">
-                                            {banner.badge || "New Collection"}
+                                            {banner.badge || t('home.newArrival')}
                                         </span>
                                         <h2 className="text-3xl sm:text-4xl font-extrabold leading-[1.1] tracking-tight text-white mb-3 drop-shadow-lg">
-                                            {banner.id === 'default' ? (
-                                                <>Radiance <br /> <span className="text-primary">Redefined.</span></>
-                                            ) : (
-                                                banner.title
-                                            )}
+                                            {banner.title}
                                         </h2>
                                         <p className="text-sm sm:text-base text-white/90 max-w-md mb-5 line-clamp-3 drop-shadow">
-                                            {banner.subtitle || "Discover our exclusive collection."}
+                                            {banner.subtitle || t('footer.brandDescription')}
                                         </p>
                                         <Link
                                             href={banner.link || "/products"}
                                             className="px-6 sm:px-8 py-3 sm:py-3.5 bg-primary hover:bg-primary/90 text-white rounded-full font-bold text-sm transition-all flex items-center gap-2 w-fit group/btn shadow-lg"
                                         >
-                                            {banner.buttonText || "Shop Now"}
-                                            <span className="material-symbols-outlined text-lg group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+                                            {dir === 'rtl' && (
+                                                <span className="material-symbols-outlined text-lg group-hover/btn:-translate-x-1 transition-transform">arrow_forward</span>
+                                            )}
+                                            {banner.buttonText || t('home.shopNow')}
+                                            {dir !== 'rtl' && (
+                                                <span className="material-symbols-outlined text-lg group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+                                            )}
                                         </Link>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Desktop Layout: Side by side */}
-                            <div className="hidden md:flex flex-row items-center h-full">
+                            <div className={`hidden md:flex ${dir === 'rtl' ? 'flex-row-reverse' : 'flex-row'} items-center h-full`}>
                                 {/* Hero Content */}
-                                <div className="w-full md:w-1/2 p-12 lg:p-20 flex flex-col items-start justify-center gap-6 z-10 h-full relative">
+                                <div className={`w-full md:w-1/2 p-12 lg:p-20 flex flex-col ${dir === 'rtl' ? 'items-end' : 'items-start'} justify-center gap-6 z-10 h-full relative`}>
                                     {/* Content Transition Wrapper */}
                                     <div className={`transition-all duration-700 delay-300 transform ${index === currentIndex ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                                         }`}>
                                         <span className="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-4">
-                                            {banner.badge || "New Collection"}
+                                            {banner.badge || t('home.newArrival')}
                                         </span>
-                                        <h2 className="text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-text-main-light dark:text-text-main-dark mb-4">
-                                            {/* Handle the specific formatting for the default banner if needed, or just display generic title */}
-                                            {banner.id === 'default' ? (
-                                                <>Radiance <br className="hidden md:block" /> <span className="text-primary">Redefined.</span></>
-                                            ) : (
-                                                banner.title
-                                            )}
+                                        <h2 className={`text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-text-main-light dark:text-text-main-dark mb-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                            {banner.title}
                                         </h2>
-                                        <p className="text-lg text-text-muted-light dark:text-text-muted-dark max-w-md mb-6">
-                                            {banner.subtitle || "Discover our exclusive collection."}
+                                        <p className={`text-lg text-text-muted-light dark:text-text-muted-dark max-w-md mb-6 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                            {banner.subtitle || t('footer.brandDescription')}
                                         </p>
                                         <Link
                                             href={banner.link || "/products"}
                                             className="px-8 py-3.5 bg-primary hover:bg-primary/90 text-white rounded-full font-bold text-sm transition-all flex items-center gap-2 w-fit group/btn"
                                         >
-                                            {banner.buttonText || "Shop Now"}
-                                            <span className="material-symbols-outlined text-lg group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+                                            {banner.buttonText || t('home.shopNow')}
+                                            <span className={`material-symbols-outlined text-lg group-hover/btn:translate-x-1 transition-transform ${dir === 'rtl' ? 'rotate-180 group-hover/btn:-translate-x-1' : ''}`}>arrow_forward</span>
                                         </Link>
                                     </div>
                                 </div>
@@ -169,14 +168,14 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                             {/* Arrows */}
                             <button
                                 onClick={prevSlide}
-                                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100"
+                                className={`absolute ${dir === 'rtl' ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100`}
                                 aria-label="Previous slide"
                             >
-                                <span className="material-symbols-outlined">chevron_left</span>
+                                <span className={`material-symbols-outlined ${dir === 'rtl' ? '' : ''}`}>chevron_left</span>
                             </button>
                             <button
                                 onClick={nextSlide}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100"
+                                className={`absolute ${dir === 'rtl' ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100`}
                                 aria-label="Next slide"
                             >
                                 <span className="material-symbols-outlined">chevron_right</span>

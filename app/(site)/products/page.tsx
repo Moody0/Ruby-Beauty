@@ -8,6 +8,7 @@ import ProductsSidebar from '@/app/components/ProductsPageComponents/ProductsSid
 import ProductCard from '@/app/components/ProductsPageComponents/ProductCard';
 import ProductSkeleton from '@/app/components/ProductsPageComponents/ProductSkeleton';
 import LoadMoreButton from '@/app/components/ProductsPageComponents/LoadMoreButton';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 interface Category {
     id: string;
@@ -30,6 +31,7 @@ interface Product {
 const ProductsPageContent = () => {
     const searchParams = useSearchParams();
     const initialCategoryId = searchParams.get('category');
+    const { t } = useLanguage();
 
     const [categories, setCategories] = useState<Category[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
@@ -139,12 +141,14 @@ const ProductsPageContent = () => {
 
                 {/* <!-- Product Grid --> */}
                 <div className="flex-1">
-                    <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">Showing {products.length} of {totalProducts} results</p>
+                    <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">
+                        {t('products.showing')} {products.length} {t('products.of')} {totalProducts} {t('products.results')}
+                    </p>
 
                     {products.length === 0 && !loading && (
                         <div className="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-xl dark:bg-white/5">
                             <span className="material-symbols-outlined text-4xl text-gray-400 mb-2">search_off</span>
-                            <p className="text-gray-500 font-medium">No products found matching your criteria.</p>
+                            <p className="text-gray-500 font-medium">{t('products.noProducts')}</p>
                         </div>
                     )}
 
@@ -171,8 +175,10 @@ const ProductsPageContent = () => {
 }
 
 const ProductsPage = () => {
+    const { t } = useLanguage();
+
     return (
-        <Suspense fallback={<div className="flex justify-center items-center min-h-screen">Loading...</div>}>
+        <Suspense fallback={<div className="flex justify-center items-center min-h-screen">{t('common.loading')}</div>}>
             <ProductsPageContent />
         </Suspense>
     );

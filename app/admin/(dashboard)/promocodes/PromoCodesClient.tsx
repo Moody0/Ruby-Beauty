@@ -7,6 +7,7 @@ import PromoCodeModal from "./PromoCodeModal";
 import { deletePromoCode, togglePromoCodeStatus } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface PromoCode {
     id: string;
@@ -22,6 +23,7 @@ interface PromoCode {
 
 export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode[] }) {
     const { data: session } = useSession();
+    const { t, dir } = useLanguage();
     const canManage = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canManagePromoCodes;
     const canDelete = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canDeletePromoCodes;
 
@@ -47,11 +49,11 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
     };
 
     const handleDelete = async (id: string, code: string) => {
-        if (confirm(`Are you sure you want to delete the promo code "${code}"?`)) {
+        if (confirm(t('admin.confirmDeleteCode').replace('{code}', code))) {
             try {
                 const result = await deletePromoCode(id);
                 if (result.success) {
-                    toast.success("Promo code deleted successfully");
+                    toast.success(t('admin.codeDeleted'));
                 } else {
                     toast.error(result.error || "Failed to delete promo code");
                 }
@@ -67,7 +69,7 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
         try {
             const result = await togglePromoCodeStatus(id, !currentStatus);
             if (result.success) {
-                toast.success(`Promo code ${!currentStatus ? 'activated' : 'deactivated'} successfully`);
+                toast.success(t('admin.codeStatusUpdated').replace('{status}', !currentStatus ? t('admin.activated') : t('admin.deactivated')));
             } else {
                 toast.error(result.error || "Failed to update status");
             }
@@ -81,26 +83,26 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
 
     return (
         <div className="flex-1 flex flex-col overflow-hidden">
-            <AdminHeader title="Promo Codes" onMenuClick={openSidebar} />
+            <AdminHeader title={t('admin.promoCodes')} onMenuClick={openSidebar} />
 
             <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
                 <div className="max-w-[1200px] mx-auto">
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
                         <div className="">
                             <h3 className="text-2xl font-bold text-text-main dark:text-white">
-                                Promo Codes & Delegates
+                                {t('admin.codesAndDelegates')}
                             </h3>
                             <p className="text-text-sub dark:text-gray-400 mt-1">
-                                Manage discount codes and track delegate sales performance.
+                                {t('admin.manageCodes')}
                             </p>
                         </div>
                         <div className="w-full md:w-auto flex flex-col md:flex-row gap-4 items-center">
                             <div className="relative w-full md:w-72">
-                                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-sub/50 dark:text-gray-400/50 text-xl">search</span>
+                                <span className={`material-symbols-outlined absolute top-1/2 -translate-y-1/2 text-text-sub/50 dark:text-gray-400/50 text-xl ${dir === 'rtl' ? 'right-3' : 'left-3'}`}>search</span>
                                 <input
                                     type="text"
-                                    placeholder="Search codes or delegates..."
-                                    className="w-full pl-10 pr-4 py-3 bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-text-main dark:text-white"
+                                    placeholder={t('admin.searchCodes')}
+                                    className={`w-full py-3 bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-text-main dark:text-white ${dir === 'rtl' ? 'pr-10 pl-4' : 'pl-10 pr-4'}`}
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
@@ -111,7 +113,7 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
                                     className="w-full md:w-auto bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
                                 >
                                     <span className="material-symbols-outlined">add</span>
-                                    Add Promo Code
+                                    {t('admin.addPromoCode')}
                                 </button>
                             )}
                         </div>
@@ -126,13 +128,13 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
                     {/* Stats Summary */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
                         <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Total Sales</p>
+                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{t('admin.totalSales')}</p>
                             <p className="text-2xl font-bold text-text-main dark:text-white">
                                 ${promoCodes.reduce((sum, pc) => sum + pc.totalSales, 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                             </p>
                         </div>
                         <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Active Codes</p>
+                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{t('admin.activeCodes')}</p>
                             <p className="text-2xl font-bold text-emerald-500">
                                 {promoCodes.filter(pc => pc.isActive).length}
                             </p>
@@ -141,17 +143,17 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
 
                     <div className="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-color/50 dark:border-gray-700 shadow-sm overflow-hidden">
                         <div className="overflow-x-auto">
-                            <table className="w-full text-left border-collapse">
+                            <table className={`w-full text-left border-collapse ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                 <thead>
                                     <tr className="border-b border-border-color/50 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
-                                        <th className="p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">Code</th>
-                                        <th className="p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">Discount</th>
-                                        <th className="p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">Delegate</th>
-                                        <th className="p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">Total Sales</th>
-                                        <th className="p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">This Month</th>
-                                        <th className="p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">Usage</th>
-                                        <th className="p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">Status</th>
-                                        <th className="p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider text-right">Actions</th>
+                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.code')}</th>
+                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.discount')}</th>
+                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.delegate')}</th>
+                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.totalSales')}</th>
+                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.thisMonth')}</th>
+                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.usage')}</th>
+                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.status')}</th>
+                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>{t('admin.actions')}</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-border-color/50 dark:divide-gray-700">
@@ -166,7 +168,7 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
                                                 {pc.discountPercentage}%
                                             </td>
                                             <td className="p-5 text-text-main dark:text-white font-medium">
-                                                {pc.delegateName || <span className="text-text-sub dark:text-gray-500 italic">None</span>}
+                                                {pc.delegateName || <span className="text-text-sub dark:text-gray-500 italic">{t('admin.none')}</span>}
                                             </td>
                                             <td className="p-5 font-bold text-text-main dark:text-white">
                                                 ${pc.totalSales.toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -182,17 +184,17 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
                                                     ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400"
                                                     : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400"
                                                     }`}>
-                                                    {pc.isActive ? "Active" : "Inactive"}
+                                                    {pc.isActive ? t('admin.active') : t('admin.inactive')}
                                                 </span>
                                             </td>
                                             <td className="p-5">
-                                                <div className="flex justify-end gap-2">
+                                                <div className={`flex gap-2 ${dir === 'rtl' ? 'justify-end' : 'justify-end'}`}>
                                                     {canManage && (
                                                         <button
                                                             onClick={() => handleToggleStatus(pc.id, pc.isActive)}
                                                             disabled={loadingMap[pc.id]}
                                                             className={`p-2 rounded-lg transition-colors ${pc.isActive ? 'text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/10' : 'text-gray-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/10'}`}
-                                                            title={pc.isActive ? "Deactivate" : "Activate"}
+                                                            title={pc.isActive ? t('admin.deactivate') : t('admin.activate')}
                                                         >
                                                             {loadingMap[pc.id] ? (
                                                                 <span className="animate-spin material-symbols-outlined text-[20px]">progress_activity</span>
@@ -205,7 +207,7 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
                                                         <button
                                                             onClick={() => handleEdit(pc)}
                                                             className="p-2 text-text-sub hover:text-primary hover:bg-primary-light dark:hover:bg-primary/10 rounded-lg transition-colors"
-                                                            title="Edit"
+                                                            title={t('admin.editPromoCode')}
                                                         >
                                                             <span className="material-symbols-outlined text-[20px]">edit</span>
                                                         </button>
@@ -214,7 +216,7 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
                                                         <button
                                                             onClick={() => handleDelete(pc.id, pc.code)}
                                                             className="p-2 text-text-sub hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors"
-                                                            title="Delete"
+                                                            title={t('admin.deletePromoCode')}
                                                         >
                                                             <span className="material-symbols-outlined text-[20px]">delete</span>
                                                         </button>
@@ -225,8 +227,8 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
                                     ))}
                                     {filteredPromoCodes.length === 0 && (
                                         <tr>
-                                            <td colSpan={7} className="text-center py-12 text-text-sub/50">
-                                                {searchQuery ? "No promo codes match your search." : "No promo codes created yet."}
+                                            <td colSpan={8} className="text-center py-12 text-text-sub/50">
+                                                {searchQuery ? t('admin.noCodesFound') : t('admin.noCodesCreated')}
                                             </td>
                                         </tr>
                                     )}

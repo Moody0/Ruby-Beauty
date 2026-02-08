@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { createPromoCode, updatePromoCode } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface PromoCodeModalProps {
     isOpen: boolean;
@@ -17,6 +18,7 @@ interface PromoCodeModalProps {
 }
 
 export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCodeModalProps) {
+    const { t, dir } = useLanguage();
     const [code, setCode] = useState("");
     const [discountPercentage, setDiscountPercentage] = useState<number | string>("");
     const [delegateName, setDelegateName] = useState("");
@@ -59,7 +61,7 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
             }
 
             if (result.success) {
-                toast.success(`Promo code ${promoCode ? "updated" : "created"} successfully!`);
+                toast.success(promoCode ? t('admin.codeUpdated') : t('admin.codeCreated'));
                 onClose();
             } else {
                 toast.error(result.error || `Failed to ${promoCode ? "update" : "create"} promo code`);
@@ -82,7 +84,7 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
             <div className="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-2xl shadow-2xl overflow-hidden border border-[#e6dbdf] dark:border-gray-700">
                 <div className="p-6 border-b border-[#e6dbdf] dark:border-gray-700 flex items-center justify-between">
                     <h2 className="text-xl font-bold text-text-main dark:text-white">
-                        {promoCode ? "Edit Promo Code" : "Add New Promo Code"}
+                        {promoCode ? t('admin.editPromoCode') : t('admin.addNewPromoCode')}
                     </h2>
                     <button
                         onClick={onClose}
@@ -94,8 +96,8 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
 
                 <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-5 overflow-y-auto max-h-[80vh]">
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-text-main dark:text-white">
-                            Code
+                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                            {t('admin.code')}
                         </label>
                         <input
                             type="text"
@@ -108,9 +110,9 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
                     </div>
 
                     <div className="flex gap-4">
-                        <div className="flex-1">
-                            <label className="text-sm font-bold text-text-main dark:text-white mb-2 block">
-                                Discount Percentage *
+                        <div className="flex-2">
+                            <label className={`text-sm font-bold text-text-main dark:text-white mb-2 block ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                                {t('admin.discountPercentage')}
                             </label>
                             <div className="relative">
                                 <input
@@ -121,30 +123,31 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
                                     onChange={(e) => setDiscountPercentage(e.target.value)}
                                     placeholder="e.g. 10"
                                     required
-                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                    className={`w-full py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none ${dir === 'rtl' ? 'pr-4 pl-8' : 'pl-4 pr-8'}`}
                                 />
-                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-text-sub dark:text-gray-400 font-bold">
+                                <span className={`absolute top-1/2 -translate-y-1/2 text-text-sub dark:text-gray-400 font-bold ${dir === 'rtl' ? 'left-4' : 'right-4'}`}>
                                     %
                                 </span>
                             </div>
                         </div>
-                        <div className="flex-2">
-                            <label className="text-sm font-bold text-text-main dark:text-white mb-2 block">
-                                Delegate / Advertiser Name (Optional)
-                            </label>
-                            <input
-                                type="text"
-                                value={delegateName}
-                                onChange={(e) => setDelegateName(e.target.value)}
-                                placeholder="e.g. Ahmed, Instagram Ad"
-                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                            />
-                        </div>
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-text-main dark:text-white">
-                            Status
+                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                            {t('admin.delegateName')}
+                        </label>
+                        <input
+                            type="text"
+                            value={delegateName}
+                            onChange={(e) => setDelegateName(e.target.value)}
+                            placeholder="e.g. Ahmed, Instagram Ad"
+                            className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                            {t('admin.status')}
                         </label>
                         <button
                             type="button"
@@ -152,11 +155,11 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
                             className={`flex items-center justify-between w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 transition-all ${isActive ? 'ring-2 ring-primary/20 border-primary' : ''}`}
                         >
                             <span className="text-sm text-text-main dark:text-white font-medium">
-                                {isActive ? "Active" : "Inactive"}
+                                {isActive ? t('admin.active') : t('admin.inactive')}
                             </span>
                             <div className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${isActive ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-700'}`}>
                                 <span
-                                    className={`${isActive ? 'translate-x-6' : 'translate-x-1'} inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                                    className={`${isActive ? (dir === 'rtl' ? '-translate-x-6' : 'translate-x-6') : (dir === 'rtl' ? '-translate-x-1' : 'translate-x-1')} inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
                                 />
                             </div>
                         </button>
@@ -168,20 +171,20 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
                             onClick={onClose}
                             className="flex-1 px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 text-text-main dark:text-white font-bold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                         >
-                            Cancel
+                            {t('admin.cancel')}
                         </button>
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="flex-grow-2 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50"
+                            className="flex-2 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50"
                         >
                             {isSubmitting ? (
                                 <>
                                     <span className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full" />
-                                    Saving...
+                                    {t('admin.saving')}
                                 </>
                             ) : (
-                                promoCode ? "Update Code" : "Create Code"
+                                promoCode ? t('admin.updateCode') : t('admin.createCode')
                             )}
                         </button>
                     </div>

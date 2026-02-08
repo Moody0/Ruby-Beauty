@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface Order {
     id: string;
@@ -29,6 +29,7 @@ interface OrderDetailsModalProps {
 }
 
 export default function OrderDetailsModal({ isOpen, onClose, order }: OrderDetailsModalProps) {
+    const { t, dir } = useLanguage();
     if (!isOpen || !order) return null;
 
     const getStatusColor = (status: string) => {
@@ -53,7 +54,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order }: OrderDetai
                 <div className="px-6 py-5 border-b border-[#e6dbdf] dark:border-gray-700 flex items-center justify-between bg-background-light/50 dark:bg-gray-800/50">
                     <div>
                         <h3 className="text-xl font-extrabold text-text-main dark:text-white tracking-tight">
-                            Order Details
+                            {t('admin.orderDetails')}
                         </h3>
                         <p className="text-xs text-text-sub dark:text-gray-400 font-medium">
                             #{order.id.toUpperCase()} • {new Date(order.createdAt).toLocaleDateString()}
@@ -73,7 +74,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order }: OrderDetai
                     {/* Status & Total */}
                     <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-background-light dark:bg-gray-800/50 border border-[#e6dbdf] dark:border-gray-700">
                         <div className="space-y-1">
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500">Current Status</p>
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500">{t('admin.currentStatus')}</p>
                             <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${statusColor === "blue" ? "bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800/50" :
                                 statusColor === "amber" ? "bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800/50" :
                                     statusColor === "emerald" ? "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/50" :
@@ -83,9 +84,9 @@ export default function OrderDetailsModal({ isOpen, onClose, order }: OrderDetai
                                 {order.status}
                             </span>
                         </div>
-                        <div className="text-right space-y-1">
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500">Total Amount</p>
-                            <p className="text-2xl font-black text-primary">${order.totalAmount.toFixed(2)}</p>
+                        <div className={`space-y-1 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500">{t('admin.totalAmount')}</p>
+                            <p className="text-2xl font-black text-primary" dir="ltr">${order.totalAmount.toFixed(2)}</p>
                         </div>
                     </div>
 
@@ -94,19 +95,19 @@ export default function OrderDetailsModal({ isOpen, onClose, order }: OrderDetai
                         <div className="space-y-3">
                             <h4 className="text-sm font-bold text-text-main dark:text-white flex items-center gap-2">
                                 <span className="material-symbols-outlined text-primary text-[18px]">person</span>
-                                Customer Information
+                                {t('admin.customerInformation')}
                             </h4>
-                            <div className="space-y-1 ml-6">
+                            <div className={`space-y-1 ${dir === 'rtl' ? 'mr-6' : 'ml-6'}`}>
                                 <p className="text-sm font-bold text-text-main dark:text-white">{order.Name}</p>
-                                <p className="text-sm text-text-sub dark:text-gray-400">{order.phone}</p>
+                                <p className="text-sm text-text-sub dark:text-gray-400" dir="ltr">{order.phone}</p>
                             </div>
                         </div>
                         <div className="space-y-3">
                             <h4 className="text-sm font-bold text-text-main dark:text-white flex items-center gap-2">
                                 <span className="material-symbols-outlined text-primary text-[18px]">location_on</span>
-                                Shipping Address
+                                {t('admin.shippingAddress')}
                             </h4>
-                            <div className="space-y-1 ml-6">
+                            <div className={`space-y-1 ${dir === 'rtl' ? 'mr-6' : 'ml-6'}`}>
                                 <p className="text-sm text-text-sub dark:text-gray-400 leading-relaxed">
                                     {order.streetAddress}<br />
                                     {order.city}
@@ -119,16 +120,16 @@ export default function OrderDetailsModal({ isOpen, onClose, order }: OrderDetai
                     <div className="space-y-4">
                         <h4 className="text-sm font-bold text-text-main dark:text-white flex items-center gap-2">
                             <span className="material-symbols-outlined text-primary text-[18px]">inventory_2</span>
-                            Order Items ({order.items.length})
+                            {t('admin.itemsCount').replace('{count}', order.items.length.toString())}
                         </h4>
                         <div className="border border-[#e6dbdf] dark:border-gray-700 rounded-2xl overflow-hidden">
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="bg-background-light/50 dark:bg-gray-800/50 border-b border-[#e6dbdf] dark:border-gray-700">
-                                        <th className="p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500">Product</th>
-                                        <th className="p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500 text-center">Qty</th>
-                                        <th className="p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500 text-right">Price</th>
-                                        <th className="p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500 text-right">Total</th>
+                                        <th className={`p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.product')}</th>
+                                        <th className="p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500 text-center">{t('admin.qty')}</th>
+                                        <th className={`p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>{t('admin.price')}</th>
+                                        <th className={`p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>{t('admin.total')}</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-[#e6dbdf] dark:divide-gray-700">
@@ -151,10 +152,10 @@ export default function OrderDetailsModal({ isOpen, onClose, order }: OrderDetai
                                             <td className="p-3 text-center text-xs font-bold text-text-sub dark:text-gray-400">
                                                 {item.quantity}
                                             </td>
-                                            <td className="p-3 text-right text-xs font-medium text-text-sub dark:text-gray-400">
+                                            <td className={`p-3 text-xs font-medium text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
                                                 ${Number(item.price).toFixed(2)}
                                             </td>
-                                            <td className="p-3 text-right text-xs font-black text-text-main dark:text-white">
+                                            <td className={`p-3 text-xs font-black text-text-main dark:text-white ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
                                                 ${(Number(item.price) * item.quantity).toFixed(2)}
                                             </td>
                                         </tr>
@@ -166,12 +167,12 @@ export default function OrderDetailsModal({ isOpen, onClose, order }: OrderDetai
                 </div>
 
                 {/* Footer */}
-                <div className="px-6 py-4 bg-background-light dark:bg-gray-800/50 border-t border-[#e6dbdf] dark:border-gray-700 flex items-center justify-end">
+                <div className={`px-6 py-4 bg-background-light dark:bg-gray-800/50 border-t border-[#e6dbdf] dark:border-gray-700 flex items-center ${dir === 'rtl' ? 'justify-start' : 'justify-end'}`}>
                     <button
                         onClick={onClose}
                         className="bg-primary hover:bg-primary/90 text-white h-10 px-6 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 transition-all transform hover:-translate-y-0.5"
                     >
-                        Close
+                        {t('admin.close')}
                     </button>
                 </div>
             </div>

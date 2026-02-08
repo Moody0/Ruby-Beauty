@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useCart } from "@/app/context/CartContext";
+import { useLanguage } from "@/app/context/LanguageContext";
 import toast from "react-hot-toast";
 
 interface ProductActionsProps {
@@ -16,6 +17,7 @@ interface ProductActionsProps {
 
 const ProductActions = ({ product }: ProductActionsProps) => {
     const { addItem } = useCart();
+    const { t, language } = useLanguage();
     const [quantity, setQuantity] = useState(1);
 
     const handleIncrement = () => setQuantity(prev => prev + 1);
@@ -30,7 +32,10 @@ const ProductActions = ({ product }: ProductActionsProps) => {
             slug: product.slug,
             quantity: quantity,
         });
-        toast.success(`Added ${quantity} ${product.name} to cart`);
+        toast.success(language === 'ar'
+            ? `تمت إضافة ${quantity} ${product.name} إلى السلة`
+            : `Added ${quantity} ${product.name} to cart`
+        );
     };
 
     return (
@@ -57,7 +62,7 @@ const ProductActions = ({ product }: ProductActionsProps) => {
                 className="flex-1 h-14 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-lg shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-all transform active:scale-95 hover:-translate-y-0.5 active:translate-y-0"
             >
                 <span className="material-symbols-outlined text-[24px]">shopping_bag</span>
-                Add to Cart
+                {t('products.addToCart')}
             </button>
         </div>
     );

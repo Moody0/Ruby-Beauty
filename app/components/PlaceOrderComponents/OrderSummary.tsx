@@ -1,5 +1,8 @@
+"use client";
+
 import React from 'react';
 import { CartItem } from '@/app/context/CartContext';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 interface OrderSummaryProps {
     items: CartItem[];
@@ -11,6 +14,7 @@ interface OrderSummaryProps {
 }
 
 const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPromo }: OrderSummaryProps) => {
+    const { t } = useLanguage();
     const [promoCode, setPromoCode] = React.useState("");
     const [promoMessage, setPromoMessage] = React.useState<{ type: 'success' | 'error', text: string } | null>(null);
     const [isApplyingPromo, setIsApplyingPromo] = React.useState(false);
@@ -44,8 +48,8 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
     return (
         <div className="sticky top-28 space-y-6">
             <div className="bg-white dark:bg-[#2a161d] p-8 rounded-2xl shadow-lg border border-[#f4f0f2] dark:border-[#3a2228]">
-                <h2 className="text-xl font-bold mb-6">Order Summary</h2>
-                <div className="space-y-4 mb-6 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
+                <h2 className="text-xl font-bold mb-6">{t('cart.orderSummary')}</h2>
+                <div className="space-y-4 mb-6 max-h-[40vh] overflow-y-auto ltr:pr-2 rtl:pl-2 custom-scrollbar">
                     {items.map((item) => (
                         <div key={item.id} className="flex items-center gap-4">
                             <div
@@ -54,12 +58,12 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                             ></div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm font-bold truncate dark:text-white" title={item.name}>{item.name}</p>
-                                <p className="text-xs text-[#89616f] dark:text-[#a08590]">Qty: {item.quantity} • ${item.price.toFixed(2)}</p>
+                                <p className="text-xs text-[#89616f] dark:text-[#a08590]">{t('cart.quantity')}: {item.quantity} • ${item.price.toFixed(2)}</p>
                             </div>
                         </div>
                     ))}
                     {items.length === 0 && (
-                        <p className="text-sm text-center py-4 text-[#89616f]">Your cart is empty</p>
+                        <p className="text-sm text-center py-4 text-[#89616f]">{t('cart.emptyCart')}</p>
                     )}
                 </div>
 
@@ -71,7 +75,7 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                                 value={promoCode}
                                 onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                                 onKeyDown={handleKeyDown}
-                                placeholder="Promo Code"
+                                placeholder={t('checkout.promoCode')}
                                 className="flex-1 px-4 py-2 rounded-lg border border-[#e6dbdf] dark:border-gray-700 bg-[#fcfafa] dark:bg-[#341a22] text-sm focus:outline-none focus:ring-1 focus:ring-primary uppercase font-medium placeholder:normal-case"
                             />
                             <button
@@ -80,7 +84,7 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                                 disabled={isApplyingPromo || !promoCode.trim()}
                                 className="px-4 py-2 bg-gray-900 dark:bg-gray-700 text-white text-sm font-bold rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             >
-                                {isApplyingPromo ? '...' : 'Apply'}
+                                {isApplyingPromo ? '...' : t('common.apply')}
                             </button>
                         </div>
                         {promoMessage && (
@@ -93,31 +97,31 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
 
                 <div className="flex flex-col gap-3 mb-6 border-t border-b border-[#f4f0f2] dark:border-[#3a2228] py-6">
                     <div className="flex justify-between text-[#89616f] dark:text-[#a08590]">
-                        <span>Subtotal</span>
+                        <span>{t('cart.subtotal')}</span>
                         <span className="font-medium text-[#181113] dark:text-white">${subtotal.toFixed(2)}</span>
                     </div>
                     {discount > 0 && (
                         <div className="flex justify-between text-emerald-600 font-medium">
-                            <span>Discount</span>
+                            <span>{t('checkout.discount')}</span>
                             <span>-${discount.toFixed(2)}</span>
                         </div>
                     )}
                     <div className="flex justify-between text-[#89616f] dark:text-[#a08590]">
-                        <span>Shipping</span>
-                        <span className="font-medium text-green-600">Free</span>
+                        <span>{t('cart.shipping')}</span>
+                        <span className="font-medium text-green-600">{t('cart.freeShipping')}</span>
                     </div>
                 </div>
 
                 <div className="bg-[#f8f6f6] dark:bg-[#341a22] rounded-xl p-4 mb-8">
                     <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-bold text-[#89616f] dark:text-[#a08590] uppercase tracking-wider">Payment Method</span>
+                        <span className="text-xs font-bold text-[#89616f] dark:text-[#a08590] uppercase tracking-wider">{t('checkout.paymentMethod')}</span>
                         <span className="material-symbols-outlined text-primary text-sm">payments</span>
                     </div>
-                    <p className="text-sm font-bold text-[#181113] dark:text-white">Cash on Delivery</p>
+                    <p className="text-sm font-bold text-[#181113] dark:text-white">{t('checkout.cashOnDelivery')}</p>
                 </div>
 
                 <div className="flex justify-between items-end mb-8">
-                    <span className="text-lg font-bold dark:text-white">Total</span>
+                    <span className="text-lg font-bold dark:text-white">{t('cart.total')}</span>
                     <span className="text-3xl font-black text-primary">${total.toFixed(2)}</span>
                 </div>
 
@@ -130,12 +134,12 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                         <span className="animate-spin material-symbols-outlined">progress_activity</span>
                     ) : (
                         <>
-                            <span>Place Order</span>
+                            <span>{t('checkout.placeOrder')}</span>
                             <span className="material-symbols-outlined text-sm">check_circle</span>
                         </>
                     )}
                 </button>
-                <p className="text-[10px] text-center text-[#89616f] dark:text-[#a08590] mt-4 uppercase tracking-widest font-bold">Secure Checkout Guaranteed</p>
+                <p className="text-[10px] text-center text-[#89616f] dark:text-[#a08590] mt-4 uppercase tracking-widest font-bold">{t('checkout.secureCheckout')}</p>
             </div>
 
             <div className="bg-[#fcfafa] dark:bg-[#2a161d]/50 p-5 rounded-xl border border-dashed border-[#f4f0f2] dark:border-[#3a2228] flex items-center gap-4">
@@ -143,8 +147,8 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                     <span className="material-symbols-outlined text-primary text-xl">support_agent</span>
                 </div>
                 <div>
-                    <p className="text-sm font-bold dark:text-white">Need assistance?</p>
-                    <a className="text-xs text-[#89616f] hover:text-primary underline" href="#">Speak with a beauty expert</a>
+                    <p className="text-sm font-bold dark:text-white">{t('checkout.needAssistance')}</p>
+                    <a className="text-xs text-[#89616f] hover:text-primary underline" href="#">{t('checkout.speakWithExpert')}</a>
                 </div>
             </div>
         </div>

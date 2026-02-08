@@ -8,6 +8,7 @@ import { useState } from "react";
 import OrderDetailsModal from "./OrderDetailsModal";
 import { OrderStatus } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface Order {
     id: string;
@@ -32,6 +33,7 @@ interface Order {
 export default function OrdersClient({ orders }: { orders: Order[] }) {
     const { data: session } = useSession();
     const canManage = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canManageOrders;
+    const { t, dir } = useLanguage();
 
     const { openSidebar } = useAdminSidebar();
     const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -100,7 +102,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
 
     return (
         <div className="flex-1 flex flex-col overflow-hidden">
-            <AdminHeader title="Orders" onMenuClick={openSidebar} />
+            <AdminHeader title={t('admin.orders')} onMenuClick={openSidebar} />
 
             <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-4 md:p-8">
                 <div className="max-w-[1400px] mx-auto flex flex-col gap-8">
@@ -113,7 +115,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                     <span className="material-symbols-outlined filled">pending_actions</span>
                                 </div>
                             </div>
-                            <p className="text-text-sub dark:text-gray-400 text-sm font-medium">Pending Orders</p>
+                            <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.pendingOrders')}</p>
                             <h3 className="text-text-main dark:text-white text-2xl font-bold mt-1">{stats.pending}</h3>
                         </div>
 
@@ -123,7 +125,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                     <span className="material-symbols-outlined filled">local_shipping</span>
                                 </div>
                             </div>
-                            <p className="text-text-sub dark:text-gray-400 text-sm font-medium">Shipped Today</p>
+                            <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.shippedToday')}</p>
                             <h3 className="text-text-main dark:text-white text-2xl font-bold mt-1">{stats.shippedToday}</h3>
                         </div>
 
@@ -133,7 +135,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                     <span className="material-symbols-outlined filled">task_alt</span>
                                 </div>
                             </div>
-                            <p className="text-text-sub dark:text-gray-400 text-sm font-medium">Delivered (MTD)</p>
+                            <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.deliveredMtd')}</p>
                             <h3 className="text-text-main dark:text-white text-2xl font-bold mt-1">{stats.deliveredMTD}</h3>
                         </div>
 
@@ -143,7 +145,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                     <span className="material-symbols-outlined filled">payments</span>
                                 </div>
                             </div>
-                            <p className="text-text-sub dark:text-gray-400 text-sm font-medium">Total Revenue</p>
+                            <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.totalRevenue')}</p>
                             <h3 className="text-text-main dark:text-white text-2xl font-bold mt-1">
                                 ${stats.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                             </h3>
@@ -153,31 +155,31 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div className="flex items-center gap-4">
-                                <h3 className="text-text-main dark:text-white text-lg font-bold">All Orders ({filteredOrders.length})</h3>
+                                <h3 className="text-text-main dark:text-white text-lg font-bold">{t('admin.allOrders')} ({filteredOrders.length})</h3>
                                 <div className="flex bg-white dark:bg-surface-dark rounded-lg p-1 border border-[#e6dbdf] dark:border-gray-700">
                                     <button
                                         onClick={() => setFilter("ALL")}
                                         className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${filter === "ALL" ? "bg-primary text-white shadow-sm" : "text-text-sub hover:text-text-main"}`}
                                     >
-                                        All
+                                        {t('admin.viewAll')}
                                     </button>
                                     <button
                                         onClick={() => setFilter("PENDING")}
                                         className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${filter === "PENDING" ? "bg-amber-500 text-white shadow-sm" : "text-text-sub hover:text-amber-600"}`}
                                     >
-                                        Pending
+                                        {t('admin.pending')}
                                     </button>
                                     <button
                                         onClick={() => setFilter("SHIPPED")}
                                         className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${filter === "SHIPPED" ? "bg-purple-500 text-white shadow-sm" : "text-text-sub hover:text-purple-600"}`}
                                     >
-                                        Shipped
+                                        {t('admin.shipped')}
                                     </button>
                                     <button
                                         onClick={() => setFilter("DELIVERED")}
                                         className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${filter === "DELIVERED" ? "bg-emerald-500 text-white shadow-sm" : "text-text-sub hover:text-emerald-600"}`}
                                     >
-                                        Delivered
+                                        {t('admin.delivered')}
                                     </button>
                                 </div>
                             </div>
@@ -197,13 +199,13 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                 <table className="w-full text-left border-collapse">
                                     <thead>
                                         <tr className="border-b border-[#e6dbdf] dark:border-gray-700 bg-background-light/50 dark:bg-gray-800/50">
-                                            <th className="p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400">Order ID</th>
-                                            <th className="p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400">Customer Name</th>
-                                            <th className="p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400">Date</th>
-                                            <th className="p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400">Total Amount</th>
-                                            <th className="p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400">Products</th>
-                                            <th className="p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400">Order Status</th>
-                                            <th className="p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 text-right">Actions</th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.orderId')}</th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.customerName')}</th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.date')}</th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.totalAmount')}</th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.products')}</th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.orderStatus')}</th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>{t('admin.actions')}</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-[#e6dbdf] dark:divide-gray-700">
@@ -221,7 +223,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                                     <td className="p-4 text-sm font-bold text-text-main dark:text-white">${Number(order.totalAmount).toFixed(2)}</td>
                                                     <td className="p-4">
                                                         <span className="text-xs font-medium text-text-sub bg-background-light dark:bg-gray-800 px-2.5 py-1 rounded-lg border border-[#e6dbdf] dark:border-gray-700 max-w-[150px] truncate block">
-                                                            {order.items.map(i => i.product?.name).join(', ') || 'Unknown'}
+                                                            {order.items.map(i => i.product?.name).join(', ') || t('admin.unknown')}
                                                         </span>
                                                     </td>
                                                     <td className="p-4">
@@ -230,7 +232,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                                                 disabled={updatingId === order.id || !canManage}
                                                                 value={order.status}
                                                                 onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
-                                                                className={`appearance-none pl-8 pr-10 py-1.5 rounded-full text-xs font-bold cursor-pointer transition-all outline-none border bg-white dark:bg-surface-dark focus:ring-2 focus:ring-primary/20 ${statusColor === "blue" ? "text-blue-600 border-blue-100 dark:text-blue-300 dark:border-blue-900/50" :
+                                                                className={`appearance-none ${dir === 'rtl' ? 'pr-8 pl-10' : 'pl-8 pr-10'} py-1.5 rounded-full text-xs font-bold cursor-pointer transition-all outline-none border bg-white dark:bg-surface-dark focus:ring-2 focus:ring-primary/20 ${statusColor === "blue" ? "text-blue-600 border-blue-100 dark:text-blue-300 dark:border-blue-900/50" :
                                                                     statusColor === "amber" ? "text-amber-600 border-amber-100 dark:text-amber-300 dark:border-amber-900/50" :
                                                                         statusColor === "emerald" ? "text-emerald-600 border-emerald-100 dark:text-emerald-300 dark:border-emerald-900/50" :
                                                                             statusColor === "red" ? "text-red-600 border-red-100 dark:text-red-300 dark:border-red-900/50" :
@@ -238,29 +240,29 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                                                                     "text-gray-600 border-gray-100 dark:text-gray-300 dark:border-gray-800"
                                                                     }`}
                                                             >
-                                                                <option value="PENDING">PENDING</option>
-                                                                <option value="PROCESSING">PROCESSING</option>
-                                                                <option value="SHIPPED">SHIPPED</option>
-                                                                <option value="DELIVERED">DELIVERED</option>
-                                                                <option value="CANCELLED">CANCELLED</option>
+                                                                <option value="PENDING">{t('admin.pending')}</option>
+                                                                <option value="PROCESSING">{t('admin.processing')}</option>
+                                                                <option value="SHIPPED">{t('admin.shipped')}</option>
+                                                                <option value="DELIVERED">{t('admin.delivered')}</option>
+                                                                <option value="CANCELLED">{t('admin.cancelled')}</option>
                                                             </select>
-                                                            <span className={`absolute left-3 top-1/2 -translate-y-1/2 size-2 rounded-full ${statusColor === "blue" ? "bg-blue-500" :
+                                                            <span className={`absolute ${dir === 'rtl' ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 size-2 rounded-full ${statusColor === "blue" ? "bg-blue-500" :
                                                                 statusColor === "amber" ? "bg-amber-500" :
                                                                     statusColor === "emerald" ? "bg-emerald-500" :
                                                                         statusColor === "red" ? "bg-red-500" :
                                                                             statusColor === "purple" ? "bg-purple-500" : "bg-gray-500"
                                                                 }`}></span>
-                                                            <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[16px] pointer-events-none text-text-sub dark:text-gray-500">
+                                                            <span className={`material-symbols-outlined absolute ${dir === 'rtl' ? 'left-3' : 'right-3'} top-1/2 -translate-y-1/2 text-[16px] pointer-events-none text-text-sub dark:text-gray-500`}>
                                                                 {updatingId === order.id ? 'sync' : 'expand_more'}
                                                             </span>
                                                         </div>
                                                     </td>
-                                                    <td className="p-4 text-right">
+                                                    <td className={`p-4 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
                                                         <button
                                                             onClick={() => handleViewDetails(order)}
                                                             className="text-primary hover:text-primary-hover text-xs font-bold transition-colors"
                                                         >
-                                                            View Details
+                                                            {t('admin.viewDetails')}
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -269,7 +271,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                         {filteredOrders.length === 0 && (
                                             <tr>
                                                 <td colSpan={7} className="p-12 text-center text-text-sub italic">
-                                                    No orders found for this filter.
+                                                    {t('admin.noOrdersFound')}
                                                 </td>
                                             </tr>
                                         )}
@@ -278,15 +280,15 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                             </div>
                             <div className="p-4 border-t border-[#e6dbdf] dark:border-gray-700 bg-background-light/30 dark:bg-gray-800/30 flex items-center justify-between">
                                 <p className="text-xs text-text-sub dark:text-gray-400 font-medium">
-                                    Showing {filteredOrders.length} of {orders.length} entries
+                                    {t('admin.showingEntries').replace('{count}', filteredOrders.length.toString()).replace('{total}', orders.length.toString())}
                                 </p>
                                 <div className="flex items-center gap-2">
                                     <button className="size-8 flex items-center justify-center rounded-lg border border-[#e6dbdf] dark:border-gray-700 text-text-sub hover:bg-white dark:hover:bg-gray-800 transition-colors">
-                                        <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+                                        <span className={`material-symbols-outlined text-[18px] ${dir === 'rtl' ? 'rotate-180' : ''}`}>chevron_left</span>
                                     </button>
                                     <button className="size-8 flex items-center justify-center rounded-lg bg-primary text-white text-xs font-bold shadow-sm shadow-primary/20">1</button>
                                     <button className="size-8 flex items-center justify-center rounded-lg border border-[#e6dbdf] dark:border-gray-700 text-text-sub hover:bg-white dark:hover:bg-gray-800 transition-colors">
-                                        <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                                        <span className={`material-symbols-outlined text-[18px] ${dir === 'rtl' ? 'rotate-180' : ''}`}>chevron_right</span>
                                     </button>
                                 </div>
                             </div>

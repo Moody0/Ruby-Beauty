@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import React from 'react';
 import { useCart } from '@/app/context/CartContext';
+import { useLanguage } from '@/app/context/LanguageContext';
 import toast from 'react-hot-toast';
 
 interface Product {
@@ -23,6 +24,7 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
     const { addItem } = useCart();
+    const { t, language } = useLanguage();
 
     const handleQuickAdd = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -38,14 +40,14 @@ const ProductCard = ({ product }: ProductCardProps) => {
             description: product.description || undefined
         });
 
-        toast.success(`Added ${product.name} to cart`);
+        toast.success(language === 'ar' ? `تمت إضافة ${product.name} إلى السلة` : `Added ${product.name} to cart`);
     };
 
     return (
         <div className="group relative flex flex-col gap-3">
             <Link href={`/products/${product.slug}`} className="relative aspect-3/4 w-full overflow-hidden rounded-xl bg-gray-100 block">
                 {product.isTrending && (
-                    <span className="absolute left-3 top-3 z-10 rounded-md bg-white px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-black shadow-sm">Trending</span>
+                    <span className="absolute ltr:left-3 rtl:right-3 top-3 z-10 rounded-md bg-white px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-black shadow-sm">{t('home.trendingNow')}</span>
                 )}
                 <img
                     alt={product.name}
@@ -58,12 +60,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     className="hidden lg:flex absolute bottom-4 left-4 right-4 items-center justify-center gap-2 rounded-lg bg-white/95 py-3 text-sm font-bold text-[#181113] shadow-lg backdrop-blur-sm transition-all hover:bg-primary hover:text-white opacity-0 translate-y-4 group-hover:translate-y-0 group-hover:opacity-100 dark:bg-background-dark/95 dark:text-white dark:hover:bg-primary"
                 >
                     <span className="material-symbols-outlined text-[20px]">add_shopping_cart</span>
-                    Quick Add
+                    {t('products.addToCart')}
                 </button>
                 {/* <!-- Mobile Quick Add Button (Visible on image) --> */}
                 <button
                     onClick={handleQuickAdd}
-                    className="lg:hidden absolute bottom-2 right-2 p-2 rounded-full bg-white/90 text-black shadow-md backdrop-blur-sm"
+                    className="lg:hidden absolute bottom-2 ltr:right-2 rtl:left-2 p-2 rounded-full bg-white/90 text-black shadow-md backdrop-blur-sm"
+                    aria-label={t('products.addToCart')}
                 >
                     <span className="material-symbols-outlined text-[18px]">add_shopping_cart</span>
                 </button>
