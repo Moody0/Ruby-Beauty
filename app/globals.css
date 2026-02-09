@@ -19,6 +19,31 @@
   --radius-lg: 1rem;
   --radius-xl: 1.5rem;
   --radius-full: 9999px;
+
+  /* Custom Container Widths */
+  --max-width-container: 1400px;
+
+  /* Advanced Shadows */
+  --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  --shadow-premium-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.15), 0 8px 12px -6px rgba(0, 0, 0, 0.08);
+}
+
+@layer utilities {
+  .container-custom {
+    @apply w-full max-w-container mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .glass {
+    @apply bg-white/70 dark:bg-black/40 backdrop-blur-md border border-white/20 dark:border-white/10;
+  }
+
+  .premium-shadow {
+    box-shadow: var(--shadow-premium);
+  }
+
+  .premium-shadow-hover:hover {
+    box-shadow: var(--shadow-premium-hover);
+  }
 }
 
 @layer base {

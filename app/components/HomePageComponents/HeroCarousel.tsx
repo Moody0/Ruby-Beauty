@@ -72,7 +72,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
     if (displayBanners.length === 0) return null;
 
     return (
-        <section className="px-6 pt-8 md:px-20 lg:px-32 xl:px-48 2xl:px-64 group"
+        <section className="container-custom pt-4 md:pt-8 group"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
         >

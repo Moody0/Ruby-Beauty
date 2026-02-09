@@ -10,7 +10,7 @@ export default function AboutUsPage() {
     return (
         <main className="flex-1 bg-white dark:bg-[#1a0d11]" dir={dir}>
             {/* Hero Section */}
-            <section className="px-6 md:px-20 py-10">
+            <section className="container-custom py-10">
                 <div className="relative h-[500px] w-full overflow-hidden rounded-3xl flex items-center justify-center text-center">
                     <div
                         className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
@@ -38,7 +38,7 @@ export default function AboutUsPage() {
             </section>
 
             {/* Brand Narrative Section */}
-            <section className="px-6 md:px-20 py-20 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <section className="container-custom py-20 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                 <div className="order-2 lg:order-1">
                     <div className="relative group">
                         <div className="absolute -inset-4 bg-primary/10 rounded-3xl transition-all group-hover:bg-primary/15 blur-2xl"></div>
@@ -76,7 +76,7 @@ export default function AboutUsPage() {
             </section>
 
             {/* Core Values Section */}
-            <section className="bg-[#fdf9fa] dark:bg-[#150a0d] px-6 md:px-20 py-24 rounded-[3rem] mx-6 mb-20">
+            <section className="bg-[#fdf9fa] dark:bg-[#150a0d] container-custom py-24 rounded-[3rem] mb-20 px-6 sm:px-10 lg:px-20">
                 <div className="max-w-4xl mx-auto text-center mb-20">
                     <h2 className="text-4xl md:text-5xl font-black mb-6 text-text-main-light dark:text-white">
                         {t('aboutUsPage.values.title')}

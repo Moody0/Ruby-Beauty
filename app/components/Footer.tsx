@@ -12,10 +12,10 @@ const Footer = () => {
 
     return (
         <footer
-            className="bg-surface-light dark:bg-surface-dark border-t border-[#f4f0f2] dark:border-[#3a1d26] pt-16 pb-8 px-6 md:px-20 lg:px-32 xl:px-48 2xl:px-64"
+            className="bg-surface-light dark:bg-surface-dark border-t border-[#f4f0f2] dark:border-[#3a1d26] pt-16 pb-8"
             suppressHydrationWarning
         >
-            <div className="w-full mx-auto">
+            <div className="container-custom">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
                     {/* Brand Column */}
                     <div className="lg:col-span-2 flex flex-col gap-4">

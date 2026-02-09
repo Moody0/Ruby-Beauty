@@ -128,7 +128,7 @@ const ProductsPageContent = () => {
     };
 
     return (
-        <div className="flex-1 px-4 py-8 md:px-20 lg:px-32 xl:px-48 2xl:px-64">
+        <div className="flex-1 container-custom py-8">
             <ProductsBreadcrumbs />
 
             <ProductsHeader sort={sort} setSort={setSort} />
