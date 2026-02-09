@@ -23,7 +23,7 @@ const Header = () => {
     }, [isMobileSearchOpen, isMobileMenuOpen]);
 
     return (
-        <header className="sticky top-0 z-50 w-full glass border-b border-[#f4f0f2] dark:border-white/10 transition-all duration-300">
+        <header className="sticky top-0 z-50 w-full bg-surface-light dark:bg-surface-dark border-b border-[#f4f0f2] dark:border-white/10 transition-all duration-300">
             <div className="container-custom py-4">
                 <div className="flex items-center justify-between gap-4">
                     <button
