@@ -87,13 +87,15 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                         >
                             {/* Mobile Layout: Full background image with overlay content */}
                             <div className="md:hidden relative w-full h-full">
-                                {/* Background Image */}
-                                <div
-                                    className="absolute inset-0 w-full h-full bg-center bg-cover bg-no-repeat"
-                                    style={{ backgroundImage: `url("${banner.image}")` }}
-                                >
-                                    {/* Dark overlay for better text readability */}
-                                    <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/40 to-black/60"></div>
+                                {/* Image Container */}
+                                <div className="absolute inset-0 w-full h-full bg-gray-50 dark:bg-white/5">
+                                    <img
+                                        src={banner.image}
+                                        alt={banner.title}
+                                        className="w-full h-full object-cover"
+                                    />
+                                    {/* Subtle overlay for text readability on mobile */}
+                                    <div className="absolute inset-0 bg-black/20"></div>
                                 </div>
 
                                 {/* Content Overlay */}
@@ -153,10 +155,13 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
 
                                 {/* Hero Image — order-1 in RTL so it appears on the left */}
                                 <div className={`w-full md:w-1/2 h-full relative ${dir === 'rtl' ? 'order-1' : 'order-2'}`}>
-                                    <div
-                                        className="w-full h-full bg-center bg-cover bg-no-repeat transition-transform duration-10000 ease-linear transform scale-100 group-hover:scale-110"
-                                        style={{ backgroundImage: `url("${banner.image}")` }}
-                                    ></div>
+                                    <div className="w-full h-full bg-gray-50 dark:bg-white/5 relative">
+                                        <img
+                                            src={banner.image}
+                                            alt={banner.title}
+                                            className="w-full h-full object-cover transition-transform duration-1000 ease-in-out group-hover:scale-105"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>

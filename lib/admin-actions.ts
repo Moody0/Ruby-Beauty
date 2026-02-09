@@ -460,7 +460,7 @@ export async function getFeaturedCategories() {
     try {
         const categories = await prisma.category.findMany({
             where: { isFeatured: true },
-            take: 6,
+            take: 8,
             orderBy: { updatedAt: 'desc' }
         });
         return categories.map(category => ({
@@ -494,7 +494,7 @@ export async function getTrendingProducts() {
     try {
         const products = await prisma.product.findMany({
             where: { isTrending: true },
-            take: 6,
+            take: 8,
             include: { category: true },
             orderBy: { updatedAt: 'desc' }
         });
@@ -516,6 +516,40 @@ export async function getTrendingProducts() {
         }));
     } catch (error) {
         console.error("Failed to fetch trending products:", error);
+        return [];
+    }
+}
+
+export async function getOnSaleProducts() {
+    try {
+        const products = await prisma.product.findMany({
+            where: {
+                discountPrice: {
+                    not: null
+                }
+            },
+            take: 10,
+            include: { category: true },
+            orderBy: { updatedAt: 'desc' }
+        });
+
+        return products.map(product => ({
+            ...product,
+            price: Number(product.price),
+            discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
+            discountType: product.discountType,
+            discountValue: product.discountValue ? Number(product.discountValue) : null,
+            stock: Number(product.stock),
+            createdAt: product.createdAt.toISOString(),
+            updatedAt: product.updatedAt.toISOString(),
+            category: product.category ? {
+                ...product.category,
+                createdAt: product.category.createdAt.toISOString(),
+                updatedAt: product.category.updatedAt.toISOString(),
+            } : null
+        }));
+    } catch (error) {
+        console.error("Failed to fetch on sale products:", error);
         return [];
     }
 }

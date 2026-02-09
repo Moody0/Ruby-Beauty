@@ -43,7 +43,9 @@
         "categories": "الفئات",
         "shopNow": "تسوق الآن",
         "newArrival": "وصل حديثاً",
-        "bestSeller": "الأكثر مبيعاً"
+        "bestSeller": "الأكثر مبيعاً",
+        "onSale": "المنتجات المخفضة",
+        "specialOffers": "عروض خاصة"
     },
     "products": {
         "allProducts": "جميع المنتجات",

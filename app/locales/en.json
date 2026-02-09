@@ -43,7 +43,9 @@
         "categories": "Categories",
         "shopNow": "Shop Now",
         "newArrival": "New Arrival",
-        "bestSeller": "Best Seller"
+        "bestSeller": "Best Seller",
+        "onSale": "On Sale Now",
+        "specialOffers": "Special Offers"
     },
     "products": {
         "allProducts": "All Products",

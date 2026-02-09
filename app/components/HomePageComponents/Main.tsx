@@ -3,6 +3,7 @@ import React from 'react';
 import Categories from './Categories';
 import TrendingProducts from './TrendingProducts';
 import HeroCarousel from './HeroCarousel';
+import OnSaleProducts from './OnSaleProducts';
 
 interface Banner {
     id: string;
@@ -28,6 +29,7 @@ interface Product {
     name: string;
     description: string | null;
     price: number;
+    discountPrice?: number | null;
     images: string;
     categoryId: string;
     stock: number;
@@ -41,13 +43,17 @@ interface MainProps {
     banners: Banner[];
     categories: Category[];
     trendingProducts: Product[];
+    onSaleProducts: Product[];
 }
 
-const Main = ({ banners, categories, trendingProducts }: MainProps) => {
+const Main = ({ banners, categories, trendingProducts, onSaleProducts }: MainProps) => {
     return (
         <main className="w-full flex flex-col gap-16">
             {/* Hero Carousel Section */}
             <HeroCarousel banners={banners} />
+
+            {/* On Sale Section */}
+            <OnSaleProducts products={onSaleProducts} />
 
             {/* Categories Section */}
             <Categories categories={categories} />

@@ -1,0 +1,4 @@
+=== STARTING ROBUST EXCEL IMPORT ===
+Cleaning up database...
+Γ£à Database cleared
+Found 1019 total rows in Excel file.
