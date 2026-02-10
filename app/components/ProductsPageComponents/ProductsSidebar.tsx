@@ -17,11 +17,16 @@ interface ProductsSidebarProps {
 
 const ProductsSidebar = ({ categories, selectedCategoryIds, handleCategoryToggle }: ProductsSidebarProps) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [search, setSearch] = useState('');
+    const [expanded, setExpanded] = useState(false);
     const { t } = useLanguage();
+
+    const VISIBLE_COUNT = 12;
+    const filtered = categories.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
+    const visibleCategories = expanded ? filtered : filtered.slice(0, VISIBLE_COUNT);
 
     return (
         <aside className="w-full shrink-0 lg:w-64 space-y-8">
-            {/* <!-- Mobile Filter Toggle (Hidden on LG) --> */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex w-full items-center justify-between rounded-xl border border-[#e6dbdf] bg-white px-4 py-3 font-bold text-[#181113] lg:hidden dark:bg-surface-dark dark:border-white/10 dark:text-white"
@@ -30,11 +35,18 @@ const ProductsSidebar = ({ categories, selectedCategoryIds, handleCategoryToggle
                 <span className={`material-symbols-outlined transition-transform ${isOpen ? 'rotate-180' : ''}`}>keyboard_arrow_down</span>
             </button>
             <div className={`${isOpen ? 'block' : 'hidden'} lg:block space-y-8`}>
-                {/* <!-- Categories --> */}
                 <div className="space-y-4">
                     <h3 className="text-sm font-bold uppercase tracking-wider text-[#181113] dark:text-white">{t('products.categories')}</h3>
                     <div className="space-y-3">
-                        {categories.map(cat => (
+                        <input
+                            type="search"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder={t('common.search') || 'Search'}
+                            className="w-full mb-2 px-3 py-2 rounded-lg border border-[#e6dbdf] dark:border-white/10 bg-white dark:bg-surface-dark"
+                        />
+
+                        {visibleCategories.map(cat => (
                             <label key={cat.id} className="flex items-center gap-3 group cursor-pointer">
                                 <input
                                     checked={selectedCategoryIds.has(cat.id)}
@@ -45,6 +57,15 @@ const ProductsSidebar = ({ categories, selectedCategoryIds, handleCategoryToggle
                                 <span className="text-sm font-medium text-gray-600 group-hover:text-primary dark:text-gray-400 transition-colors">{cat.name}</span>
                             </label>
                         ))}
+
+                        {filtered.length > VISIBLE_COUNT && (
+                            <button
+                                onClick={() => setExpanded(!expanded)}
+                                className="mt-2 text-sm text-primary font-medium"
+                            >
+                                {expanded ? (t('common.showLess') || 'Show less') : (t('common.showMore') || 'Show more')}
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

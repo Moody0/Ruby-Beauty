@@ -17,7 +17,6 @@ const Footer = () => {
         >
             <div className="container-custom">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
-                    {/* Brand Column */}
                     <div className="lg:col-span-2 flex flex-col gap-4">
                         <div className="flex items-center gap-3">
                             <h4 className="text-xl font-bold text-text-main-light dark:text-text-main-dark">{t('header.brandName')}</h4>
@@ -56,7 +55,6 @@ const Footer = () => {
                         </div>
                     </div>
 
-                    {/* Link Column 1 */}
                     <div className="flex flex-col gap-4">
                         <h5 className="font-bold text-text-main-light dark:text-text-main-dark">{t('footer.shop')}</h5>
                         <ul className="flex flex-col gap-2.5 text-sm text-text-muted-light dark:text-text-muted-dark">
@@ -67,7 +65,6 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    {/* Link Column 2 */}
                     <div className="flex flex-col gap-4">
                         <h5 className="font-bold text-text-main-light dark:text-text-main-dark">{t('footer.support')}</h5>
                         <ul className="flex flex-col gap-2.5 text-sm text-text-muted-light dark:text-text-muted-dark">
@@ -78,7 +75,6 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    {/* Link Column 3 */}
                     <div className="flex flex-col gap-4">
                         <h5 className="font-bold text-text-main-light dark:text-text-main-dark">{t('footer.company')}</h5>
                         <ul className="flex flex-col gap-2.5 text-sm text-text-muted-light dark:text-text-muted-dark">

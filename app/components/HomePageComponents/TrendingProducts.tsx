@@ -26,7 +26,7 @@ const TrendingProducts = ({ products }: { products: Product[] }) => {
     }
 
     return (
-        <section className="container-custom py-16 transition-all duration-300">
+        <section className="container-custom py-8 md:py-10 transition-all duration-300">
             <div className="w-full">
                 <div className="flex items-center justify-between mb-8 px-2">
                     <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-text-main-light dark:text-text-main-dark">{t('home.trendingNow')}</h3>

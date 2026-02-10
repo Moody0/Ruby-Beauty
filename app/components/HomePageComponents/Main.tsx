@@ -50,7 +50,7 @@ interface MainProps {
 
 const Main = ({ banners, categories, trendingProducts, onSaleProducts }: MainProps) => {
     return (
-        <main className="w-full flex flex-col gap-16">
+        <main className="w-full flex flex-col gap-8">
             {/* Hero Carousel Section */}
             <HeroCarousel banners={banners} />
 

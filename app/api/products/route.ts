@@ -8,7 +8,8 @@ export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
         const page = parseInt(searchParams.get("page") || "1");
-        const limit = parseInt(searchParams.get("limit") || "8");
+        const requestedLimit = parseInt(searchParams.get("limit") || "12");
+        const limit = Math.max(1, Math.min(requestedLimit || 12, 12)); // default/cap at 12
         const sort = searchParams.get("sort");
         const categoryIdsParam = searchParams.get("categoryIds");
         const search = searchParams.get("search");

@@ -40,7 +40,6 @@ const ProductActions = ({ product }: ProductActionsProps) => {
 
     return (
         <div className="flex gap-4 max-w-[1200px] mb-8">
-            {/* Quantity Selector */}
             <div className="flex items-center justify-between border border-[#e6dbdf] dark:border-white/20 rounded-xl h-14 w-32 md:w-40 px-2 bg-white dark:bg-surface-dark shrink-0">
                 <button
                     onClick={handleDecrement}
@@ -56,7 +55,6 @@ const ProductActions = ({ product }: ProductActionsProps) => {
                     <span className="material-symbols-outlined text-[20px]">add</span>
                 </button>
             </div>
-            {/* Add to Cart Button */}
             <button
                 onClick={handleAddToCart}
                 className="flex-1 h-14 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-lg shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-all transform active:scale-95 hover:-translate-y-0.5 active:translate-y-0"

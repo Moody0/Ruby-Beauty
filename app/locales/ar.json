@@ -10,11 +10,14 @@
         "suggestions": "اقتراحات",
         "cart": "السلة",
         "viewAll": "عرض الكل",
+        "viewAllCategories": "عرض جميع الفئات",
         "loading": "جاري التحميل...",
         "close": "إغلاق",
         "returnToCart": "العودة للسلة",
         "apply": "تطبيق",
         "more": "المزيد",
+        "showMore": "المزيد",
+        "showLess": "عرض أقل",
         "categories": "الاقسام"
     },
     "header": {
@@ -212,6 +215,8 @@
         "inStock": "متوفر",
         "lowStock": "مخزون منخفض",
         "trendingOnly": "الرائج فقط",
+        "onSale": "للبيع",
+        "onSaleOnly": "خصومات فقط",
         "itemsSelected": "عناصر محددة",
         "deselectAll": "إلغاء تحديد الكل",
         "removeTrending": "إزالة من الرائج",

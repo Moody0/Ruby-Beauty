@@ -38,7 +38,7 @@ const OnSaleProducts = ({ products }: { products: Product[] }) => {
     };
 
     return (
-        <section className="container-custom py-12">
+        <section className="container-custom py-8">
             <div className="w-full">
                 <div className="flex items-center justify-between mb-8 px-2">
                     <div className="flex flex-col gap-1">

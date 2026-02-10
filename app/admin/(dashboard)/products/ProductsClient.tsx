@@ -48,6 +48,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
     const [selectedCategory, setSelectedCategory] = useState("All Categories");
     const [selectedStockStatus, setSelectedStockStatus] = useState("Stock Status");
     const [showTrendingOnly, setShowTrendingOnly] = useState(false);
+    const [showOnSaleOnly, setShowOnSaleOnly] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
@@ -60,7 +61,8 @@ export default function ProductsClient({ products, categories }: { products: Pro
         const outOfStock = products.filter(p => Number(p.stock) === 0).length;
         const lowStock = products.filter(p => Number(p.stock) > 0 && Number(p.stock) <= 10).length;
         const categories = new Set(products.map(p => p.category?.name).filter(Boolean)).size;
-        return { total, outOfStock, lowStock, categories };
+        const onSale = products.filter(p => p.discountPrice !== null).length;
+        return { total, outOfStock, lowStock, categories, onSale };
     }, [products]);
 
     // Get unique categories for filter
@@ -71,7 +73,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
     // Reset to first page when filtering
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchQuery, selectedCategory, selectedStockStatus, showTrendingOnly]);
+    }, [searchQuery, selectedCategory, selectedStockStatus, showTrendingOnly, showOnSaleOnly]);
 
     // Filter products
     const filteredProducts = useMemo(() => {
@@ -90,10 +92,11 @@ export default function ProductsClient({ products, categories }: { products: Pro
             else if (selectedStockStatus === "Out of Stock" || selectedStockStatus === t('admin.outOfStock')) matchesStock = Number(p.stock) === 0;
 
             const matchesTrending = !showTrendingOnly || p.isTrending;
+            const matchesOnSale = !showOnSaleOnly || p.discountPrice !== null;
 
-            return matchesSearch && matchesCategory && matchesStock && matchesTrending;
+            return matchesSearch && matchesCategory && matchesStock && matchesTrending && matchesOnSale;
         });
-    }, [products, searchQuery, selectedCategory, selectedStockStatus, showTrendingOnly, t]);
+    }, [products, searchQuery, selectedCategory, selectedStockStatus, showTrendingOnly, showOnSaleOnly, t]);
 
     // Pagination logic
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -356,6 +359,10 @@ export default function ProductsClient({ products, categories }: { products: Pro
                             <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{t('admin.categories')}</p>
                             <p className="text-2xl font-bold text-text-main dark:text-white">{stats.categories.toLocaleString()}</p>
                         </div>
+                        <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm flex flex-col gap-1">
+                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{t('admin.onSale')}</p>
+                            <p className="text-2xl font-bold text-emerald-500">{stats.onSale.toLocaleString()}</p>
+                        </div>
                     </div>
 
                     {/* Filters & Table Container */}
@@ -416,6 +423,18 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                 >
                                     <span className={`material-symbols-outlined text-[20px] ${showTrendingOnly ? 'fill-1' : ''}`}>local_fire_department</span>
                                     <span className="hidden sm:inline">{t('admin.trendingOnly')}</span>
+                                </button>
+
+                                {/* On Sale Filter Toggle */}
+                                <button
+                                    onClick={() => setShowOnSaleOnly(!showOnSaleOnly)}
+                                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${showOnSaleOnly
+                                        ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
+                                        : 'bg-background-light dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 text-text-main dark:text-white hover:border-emerald-500 hover:text-emerald-500'
+                                        }`}
+                                >
+                                    <span className={`material-symbols-outlined text-[20px] ${showOnSaleOnly ? 'fill-1' : ''}`}>sell</span>
+                                    <span className="hidden sm:inline">{t('admin.onSaleOnly')}</span>
                                 </button>
                             </div>
                         </div>

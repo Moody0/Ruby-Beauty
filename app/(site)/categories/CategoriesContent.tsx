@@ -21,7 +21,7 @@ export default function CategoriesContent({ categories }: CategoriesContentProps
 
     return (
         <main className="w-full pb-20">
-            <nav className="max-w-[1200px] mx-auto px-4 md:px-8 pt-8 pb-4">
+            <nav className="container-custom pt-8 pb-4">
                 <ul className="flex items-center gap-2 text-xs font-medium text-text-muted-light dark:text-text-muted-dark uppercase tracking-widest">
                     <li><Link className="hover:text-primary transition-colors" href="/">{t('common.home')}</Link></li>
                     <li><span className="material-symbols-outlined text-[14px] rtl:rotate-180">chevron_right</span></li>
@@ -29,7 +29,7 @@ export default function CategoriesContent({ categories }: CategoriesContentProps
                 </ul>
             </nav>
 
-            <section className="max-w-[1200px] mx-auto px-4 md:px-8 mb-12">
+            <section className="container-custom mb-12">
                 <div className="border-l-4 border-primary pl-6 rtl:border-l-0 rtl:border-r-4 rtl:pl-0 rtl:pr-6">
                     <h2 className="text-4xl md:text-5xl font-extrabold text-text-main-light dark:text-text-main-dark tracking-tight">{t('categoriesPage.title')}</h2>
                     <p className="mt-3 text-lg text-text-muted-light dark:text-text-muted-dark max-w-2xl">
@@ -38,10 +38,12 @@ export default function CategoriesContent({ categories }: CategoriesContentProps
                 </div>
             </section>
 
-            <CategoriesGrid categories={categories} />
+            <div className="container-custom">
+                <CategoriesGrid categories={categories} />
+            </div>
 
 
-            <section className="max-w-[1200px] mx-auto px-4 md:px-8 mt-24">
+            <section className="container-custom mt-24">
                 <div className="rounded-3xl bg-primary/5 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 border border-primary/10">
                     <div className="flex flex-col gap-4 text-center md:text-left rtl:md:text-right">
                         <h4 className="text-3xl font-extrabold text-text-main-light dark:text-text-main-dark">{t('categoriesPage.cantDecide')}</h4>

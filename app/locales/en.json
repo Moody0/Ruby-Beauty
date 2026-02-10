@@ -10,11 +10,14 @@
         "suggestions": "Suggestions",
         "cart": "Cart",
         "viewAll": "View all",
+        "viewAllCategories": "View all categories",
         "loading": "Loading...",
         "close": "Close",
         "returnToCart": "Return to Cart",
         "apply": "Apply",
         "more": "more",
+        "showMore": "Show more",
+        "showLess": "Show less",
         "categories": "Categories"
 
     },
@@ -214,6 +217,8 @@
         "inStock": "In Stock",
         "lowStock": "Low Stock",
         "trendingOnly": "Trending Only",
+        "onSale": "On Sale",
+        "onSaleOnly": "On Sale Only",
         "itemsSelected": "Items selected",
         "deselectAll": "Deselect all",
         "removeTrending": "Remove Trending",

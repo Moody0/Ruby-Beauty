@@ -8,7 +8,6 @@ const ProductAccordions = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            {/* Rating section removed */}
         </div>
     );
 };

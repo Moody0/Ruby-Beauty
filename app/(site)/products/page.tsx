@@ -42,16 +42,14 @@ const ProductsPageContent = () => {
     const [loading, setLoading] = useState(true);
     const [totalProducts, setTotalProducts] = useState(0);
 
-    // Fetch Categories
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await fetch('/api/categories?limit=100'); // Fetch all
+                const res = await fetch('/api/categories?limit=100');
                 if (res.ok) {
                     const data = await res.json();
                     setCategories(data);
                     
-                    // If a category name is in the query params, find its ID and select it
                     if (initialCategoryId) {
                         const matchedCategory = data.find(
                             (cat: Category) => cat.name.toLowerCase() === initialCategoryId.toLowerCase()
@@ -68,7 +66,6 @@ const ProductsPageContent = () => {
         fetchCategories();
     }, [initialCategoryId]);
 
-    // Fetch Products
     const fetchProducts = async (reset = false) => {
         if (reset) {
             setProducts([]);
@@ -86,8 +83,8 @@ const ProductsPageContent = () => {
             else if (sort === 'Price: High to Low') sortQuery = '&sort=price_desc';
             else if (sort === 'Newest Arrivals') sortQuery = '&sort=newest';
 
-            // Dynamic limit based on grid columns: 10 for 5-cols (2xl), 9 for others
-            const dynamicLimit = (typeof window !== 'undefined' && window.innerWidth >= 1536) ? 10 : 9;
+            // Use fixed page size of 12 products
+            const dynamicLimit = 12;
 
             const res = await fetch(`/api/products?page=${currentPage}&limit=${dynamicLimit}${categoryQuery}${sortQuery}`);
             if (res.ok) {
@@ -106,14 +103,12 @@ const ProductsPageContent = () => {
         }
     };
 
-    // Initial Fetch & Filter/Sort Changes
     useEffect(() => {
         setPage(1);
         fetchProducts(true);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCategoryIds, sort]);
 
-    // Load More Fetch
     useEffect(() => {
         if (page > 1) {
             fetchProducts(false);
@@ -161,12 +156,12 @@ const ProductsPageContent = () => {
                         </div>
                     )}
 
-                    <div className="grid grid-cols-2 gap-x-2 gap-y-6 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                    <div className="grid grid-cols-2 gap-x-2 gap-y-6 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
                         {products.map(product => (
                             <ProductCard key={product.id} product={product} />
                         ))}
                         {loading && (
-                            [...Array(products.length > 0 ? 5 : 10)].map((_, i) => (
+                            [...Array(products.length > 0 ? 5 : 12)].map((_, i) => (
                                 <ProductSkeleton key={`skeleton-${i}`} />
                             ))
                         )}

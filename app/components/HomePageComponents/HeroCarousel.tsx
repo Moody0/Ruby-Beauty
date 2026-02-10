@@ -37,17 +37,14 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
         isActive: true
     };
 
-    // Helper function to get title based on language
     const getBannerTitle = (banner: Banner): string => {
         return language === 'ar' ? (banner.titleAr || banner.title || '') : (banner.title || banner.titleAr || '');
     };
 
-    // Helper function to get subtitle based on language
     const getBannerSubtitle = (banner: Banner): string => {
         return language === 'ar' ? (banner.subtitleAr || banner.subtitle || '') : (banner.subtitle || banner.subtitleAr || '');
     };
 
-    // If no banners are provided or the list is empty, use the default banner as a single-item array
     const displayBanners = banners && banners.length > 0 ? banners : [DEFAULT_BANNER];
 
     const [currentIndex, setCurrentIndex] = useState(0);

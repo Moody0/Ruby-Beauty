@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import ThemeToggle from './ThemeToggle';
 import { useCart } from '@/app/context/CartContext';
@@ -9,11 +10,18 @@ import HeaderSearch from './HeaderSearch';
 import LanguageToggle from './LanguageToggle';
 
 const Header = () => {
+    const pathname = usePathname();
     const { cartCount } = useCart();
     const { t, dir, language } = useLanguage();
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    const isActive = (path: string) => {
+        if (path === '/') return pathname === '/';
+        return pathname.startsWith(path);
+    };
     const [categories, setCategories] = useState<any[]>([]);
+    const [categorySearch, setCategorySearch] = useState('');
     const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
 
     useEffect(() => {
@@ -27,7 +35,8 @@ const Header = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await fetch('/api/categories');
+                // Limit to 20 categories for mobile menu to avoid loading hundreds
+                const res = await fetch('/api/categories?limit=20');
                 const data = await res.json();
                 setCategories(data);
             } catch (error) {
@@ -36,6 +45,11 @@ const Header = () => {
         };
         fetchCategories();
     }, []);
+
+    const filteredCategories = categories.filter((c: any) => {
+        if (!categorySearch) return true;
+        return c.name.toLowerCase().includes(categorySearch.toLowerCase());
+    });
 
     return (
         <header className="sticky top-0 z-50 w-full bg-surface-light dark:bg-surface-dark border-b border-[#f4f0f2] dark:border-white/10 transition-all duration-300">
@@ -71,6 +85,7 @@ const Header = () => {
                         
                         <nav className="hidden lg:flex items-center gap-6">
                             <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('common.shop')}</Link>
+                            <Link href="/categories" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('common.categories')}</Link>
                             <Link href="/about-us" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('common.about')}</Link>
                         </nav>
                         <div className="flex items-center gap-1 md:gap-2">
@@ -87,9 +102,7 @@ const Header = () => {
                                     <span className="absolute top-1 right-0.5 rtl:right-auto rtl:left-0.5 size-2 bg-primary rounded-full"></span>
                                 )}
                             </Link>
-                            {/* Language Toggle */}
                             <LanguageToggle />
-                            {/* Theme Toggle Visible on all screens */}
                             <div className="block">
                                 <ThemeToggle />
                             </div>
@@ -101,13 +114,11 @@ const Header = () => {
             {/* Mobile Menu Overlay */}
             {isMobileMenuOpen && (
                 <div className="fixed inset-0 z-50 md:hidden">
-                    {/* Backdrop */}
                     <div
                         className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
                         onClick={() => setIsMobileMenuOpen(false)}
                     />
 
-                    {/* Drawer */}
                     <div className={`fixed top-0 ${dir === 'rtl' ? 'right-0' : 'left-0'} h-full w-[300px] bg-surface-light dark:bg-surface-dark border-${dir === 'rtl' ? 'l' : 'r'} border-[#f4f0f2] dark:border-white/10 shadow-2xl transform transition-transform duration-300 ease-out ${dir === 'rtl' ? 'animate-in slide-in-from-right' : 'animate-in slide-in-from-left'} flex flex-col`}>
                         <div className="h-24 px-6 flex items-center justify-between border-b border-[#f4f0f2] dark:border-white/5">
                             <span className="text-2xl font-bold text-text-main-light dark:text-white">{t('header.brandName').toUpperCase()}</span>
@@ -123,23 +134,21 @@ const Header = () => {
                             <Link
                                 href="/"
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border bg-primary/10 text-primary border-primary/20"
+                                className={`flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border ${isActive('/') ? 'bg-primary/10 text-primary border-primary/20' : 'border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20'}`}
                             >
                                 <span className="material-symbols-outlined text-2xl opacity-70">home</span>
                                 <span className="text-xl font-medium">{t('common.home')}</span>
                             </Link>
-
-                            {/* Categories Button with Expand/Collapse */}
-                            
-
                             <Link
                                 href="/products"
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20"
+                                className={`flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border ${isActive('/products') ? 'bg-primary/10 text-primary border-primary/20' : 'border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20'}`}
                             >
-                                <span className="material-symbols-outlined text-2xl opacity-70">shopping_bag</span>
+                                <span className="material-symbols-outlined text-2xl opacity-70">shopping_cart</span>
                                 <span className="text-xl font-medium">{t('common.shop')}</span>
                             </Link>
+
+                            {/* Categories Button with Expand/Collapse */}
                             <button
                                 onClick={() => setIsCategoriesExpanded(!isCategoriesExpanded)}
                                 className="flex items-center justify-between gap-4 py-4 px-6 rounded-2xl transition-all border border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20"
@@ -150,11 +159,19 @@ const Header = () => {
                                 </div>
                                 <span className={`material-symbols-outlined transition-transform ${isCategoriesExpanded ? 'rotate-180' : ''}`}>expand_more</span>
                             </button>
+                            
 
                             {/* Expandable Categories List */}
                             {isCategoriesExpanded && (
                                 <div className="flex flex-col gap-2 pl-6">
-                                    {categories.map((category: any) => (
+                                    <input
+                                        type="search"
+                                        value={categorySearch}
+                                        onChange={(e) => setCategorySearch(e.target.value)}
+                                        placeholder={t('common.search')}
+                                        className="w-full mb-2 px-3 py-2 rounded-lg border border-[#eae6e8] dark:border-white/10 bg-white dark:bg-surface-dark"
+                                    />
+                                    {filteredCategories.map((category: any) => (
                                         <Link
                                             key={category.id}
                                             href={`/products?category=${category.name}`}
@@ -164,16 +181,28 @@ const Header = () => {
                                             }}
                                             className="py-3 px-4 rounded-xl transition-all border border-transparent text-text-main-light dark:text-white/80 hover:bg-primary/5 hover:text-primary hover:border-primary/20"
                                         >
-                                            {language === 'ar' && category.name_ar ? category.name_ar : category.name}
+                                            {category.name}
                                         </Link>
                                     ))}
+
+                                    <Link
+                                        href="/categories"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="mt-2 text-sm text-primary font-medium"
+                                    >
+                                        {t('common.viewAllCategories') || 'View all categories'}
+                                    </Link>
                                 </div>
                             )}
 
                             <Link
                                 href="/about-us"
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20"
+                                className={`flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border text-text-main-light dark:text-white/90 ${
+                                    isActive('/about-us')
+                                        ? 'bg-primary/10 text-primary border-primary/20'
+                                        : 'border-transparent hover:bg-primary/5 hover:text-primary hover:border-primary/20'
+                                }`}
                             >
                                 <span className="material-symbols-outlined text-2xl opacity-70">info</span>
                                 <span className="text-xl font-medium">{t('common.aboutUs')}</span>
