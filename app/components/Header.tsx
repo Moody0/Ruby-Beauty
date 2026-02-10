@@ -13,6 +13,8 @@ const Header = () => {
     const { t, dir, language } = useLanguage();
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [categories, setCategories] = useState<any[]>([]);
+    const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
 
     useEffect(() => {
         if (isMobileSearchOpen || isMobileMenuOpen) {
@@ -22,22 +24,41 @@ const Header = () => {
         }
     }, [isMobileSearchOpen, isMobileMenuOpen]);
 
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await fetch('/api/categories');
+                const data = await res.json();
+                setCategories(data);
+            } catch (error) {
+                console.error('Failed to fetch categories:', error);
+            }
+        };
+        fetchCategories();
+    }, []);
+
     return (
         <header className="sticky top-0 z-50 w-full bg-surface-light dark:bg-surface-dark border-b border-[#f4f0f2] dark:border-white/10 transition-all duration-300">
             <div className="container-custom py-4">
                 <div className="flex items-center justify-between gap-4">
-                    <button
-                        onClick={() => setIsMobileMenuOpen(true)}
-                        className="md:hidden p-2 -ml-2 rtl:-mr-2 rtl:ml-0 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main-light dark:text-text-main-dark"
-                    >
-                        <span className="material-symbols-outlined text-[24px]">menu</span>
-                    </button>
+                    {/* Menu Button & Logo (same line, centered) */}
+                    <div className="flex items-center gap-4 h-10">
+                        <button
+                            onClick={() => setIsMobileMenuOpen(true)}
+                            className="md:hidden p-0 flex items-center justify-center w-10 h-10 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main-light dark:text-text-main-dark"
+                        >
+                            <span className="material-symbols-outlined text-[24px]">menu</span>
 
-                    <Link href="/" className="flex items-center gap-2 md:gap-4 shrink-0">
-                        <h1 className="text-xl md:text-2xl font-bold tracking-tight text-text-main-light dark:text-text-main-dark hidden sm:block">
-                            {t('header.brandName')}
-                        </h1>
-                    </Link>
+                        </button>
+
+                        <Link href="/" className="flex items-center gap-2 md:gap-4 shrink-0 h-full">
+                            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-text-main-light dark:text-text-main-dark sm:block leading-none">
+                                {t('header.brandName')}
+                            </h1>
+                        </Link>
+                    </div>  
+                    
+                    
 
                     {/* Search Bar (Desktop) */}
                     <div className="hidden md:flex max-w-md w-full mx-8">
@@ -46,6 +67,8 @@ const Header = () => {
 
                     {/* Navigation Links & Icons */}
                     <div className="flex items-center gap-2 md:gap-8">
+                        
+                        
                         <nav className="hidden lg:flex items-center gap-6">
                             <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('common.shop')}</Link>
                             <Link href="/about-us" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('common.about')}</Link>
@@ -96,7 +119,7 @@ const Header = () => {
                             </button>
                         </div>
 
-                        <nav className="flex flex-col gap-2 p-6">
+                        <nav className="flex flex-col gap-2 p-6 flex-1 overflow-y-auto">
                             <Link
                                 href="/"
                                 onClick={() => setIsMobileMenuOpen(false)}
@@ -106,6 +129,9 @@ const Header = () => {
                                 <span className="text-xl font-medium">{t('common.home')}</span>
                             </Link>
 
+                            {/* Categories Button with Expand/Collapse */}
+                            
+
                             <Link
                                 href="/products"
                                 onClick={() => setIsMobileMenuOpen(false)}
@@ -114,6 +140,35 @@ const Header = () => {
                                 <span className="material-symbols-outlined text-2xl opacity-70">shopping_bag</span>
                                 <span className="text-xl font-medium">{t('common.shop')}</span>
                             </Link>
+                            <button
+                                onClick={() => setIsCategoriesExpanded(!isCategoriesExpanded)}
+                                className="flex items-center justify-between gap-4 py-4 px-6 rounded-2xl transition-all border border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <span className="material-symbols-outlined text-2xl opacity-70">category</span>
+                                    <span className="text-xl font-medium">{t('common.categories')}</span>
+                                </div>
+                                <span className={`material-symbols-outlined transition-transform ${isCategoriesExpanded ? 'rotate-180' : ''}`}>expand_more</span>
+                            </button>
+
+                            {/* Expandable Categories List */}
+                            {isCategoriesExpanded && (
+                                <div className="flex flex-col gap-2 pl-6">
+                                    {categories.map((category: any) => (
+                                        <Link
+                                            key={category.id}
+                                            href={`/products?category=${category.name}`}
+                                            onClick={() => {
+                                                setIsMobileMenuOpen(false);
+                                                setIsCategoriesExpanded(false);
+                                            }}
+                                            className="py-3 px-4 rounded-xl transition-all border border-transparent text-text-main-light dark:text-white/80 hover:bg-primary/5 hover:text-primary hover:border-primary/20"
+                                        >
+                                            {language === 'ar' && category.name_ar ? category.name_ar : category.name}
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
 
                             <Link
                                 href="/about-us"

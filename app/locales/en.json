@@ -14,10 +14,13 @@
         "close": "Close",
         "returnToCart": "Return to Cart",
         "apply": "Apply",
-        "more": "more"
+        "more": "more",
+        "categories": "Categories"
+
     },
     "header": {
         "brandName": "Ruby Beauty"
+        
     },
     "footer": {
         "brandDescription": "Premium botanical skincare designed to reveal your natural radiance. Cruelty-free, vegan, and sustainable.",

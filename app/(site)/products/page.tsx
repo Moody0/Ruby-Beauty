@@ -36,9 +36,7 @@ const ProductsPageContent = () => {
 
     const [categories, setCategories] = useState<Category[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
-    const [selectedCategoryIds, setSelectedCategoryIds] = useState<Set<string>>(
-        initialCategoryId ? new Set([initialCategoryId]) : new Set()
-    );
+    const [selectedCategoryIds, setSelectedCategoryIds] = useState<Set<string>>(new Set());
     const [sort, setSort] = useState("best_sellers");
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(true);
@@ -52,13 +50,23 @@ const ProductsPageContent = () => {
                 if (res.ok) {
                     const data = await res.json();
                     setCategories(data);
+                    
+                    // If a category name is in the query params, find its ID and select it
+                    if (initialCategoryId) {
+                        const matchedCategory = data.find(
+                            (cat: Category) => cat.name.toLowerCase() === initialCategoryId.toLowerCase()
+                        );
+                        if (matchedCategory) {
+                            setSelectedCategoryIds(new Set([matchedCategory.id]));
+                        }
+                    }
                 }
             } catch (error) {
                 console.error("Failed to fetch categories", error);
             }
         };
         fetchCategories();
-    }, []);
+    }, [initialCategoryId]);
 
     // Fetch Products
     const fetchProducts = async (reset = false) => {
