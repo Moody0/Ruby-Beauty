@@ -128,6 +128,13 @@
         "cleanser": "cleanser",
         "sunscreen": "sunscreen"
     },
+    "notFound": {
+        "title": "404",
+        "heading": "عذراً — لم نتمكن من العثور على هذه الصفحة.",
+        "description": "الصفحة التي تبحث عنها ربما تم نقلها أو حذفها.",
+        "homeCta": "الرئيسية",
+        "shopCta": "تسوق المنتجات"
+    },
     "language": {
         "english": "English",
         "arabic": "العربية",

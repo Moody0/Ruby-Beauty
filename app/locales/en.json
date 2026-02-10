@@ -130,6 +130,13 @@
         "cleanser": "Cleanser",
         "sunscreen": "Sunscreen"
     },
+    "notFound": {
+        "title": "404",
+        "heading": "Sorry — we couldn't find that page.",
+        "description": "The page you are looking for may have been moved or deleted.",
+        "homeCta": "Home",
+        "shopCta": "Shop Products"
+    },
     "language": {
         "english": "English",
         "arabic": "العربية",
