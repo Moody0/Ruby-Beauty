@@ -1,13 +1,13 @@
 import { getAdminProducts, getAdminCategories } from "../../../../lib/admin-actions";
 import ProductsClient from "./ProductsClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60; // Revalidate every minute for admin
 
 export default async function AdminProductsPage() {
-    const [products, categories] = await Promise.all([
-        getAdminProducts(),
-        getAdminCategories()
+    const [productsData, categoriesData] = await Promise.all([
+        getAdminProducts(1, 50),
+        getAdminCategories(1, 100)
     ]);
 
-    return <ProductsClient products={products} categories={categories} />;
+    return <ProductsClient products={productsData.products} categories={categoriesData.categories} />;
 }

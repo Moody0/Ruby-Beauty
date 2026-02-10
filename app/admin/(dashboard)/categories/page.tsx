@@ -1,10 +1,10 @@
 import { getAdminCategories } from "../../../../lib/admin-actions";
 import CategoriesClient from "./CategoriesClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60; // Revalidate every minute for admin
 
 export default async function AdminCategoriesPage() {
-    const categories = await getAdminCategories();
+    const data = await getAdminCategories();
 
-    return <CategoriesClient categories={categories} />;
+    return <CategoriesClient categories={data.categories} />;
 }

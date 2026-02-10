@@ -122,104 +122,181 @@ function getStatusColor(status: string) {
     }
 }
 
-export async function getAdminProducts() {
+export async function getAdminProducts(page = 1, limit = 50) {
     try {
-        const products = await prisma.product.findMany({
-            include: {
-                category: true
-            },
-            orderBy: {
-                createdAt: 'desc'
-            }
-        });
+        const skip = (page - 1) * limit;
+        const [products, total] = await Promise.all([
+            prisma.product.findMany({
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    images: true,
+                    description: true,
+                    sku: true,
+                    price: true,
+                    discountPrice: true,
+                    discountType: true,
+                    discountValue: true,
+                    stock: true,
+                    isTrending: true,
+                    categoryId: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    category: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    }
+                },
+                skip,
+                take: limit,
+                orderBy: {
+                    createdAt: 'desc'
+                }
+            }),
+            prisma.product.count()
+        ]);
 
-        return products.map(product => ({
-            ...product,
-            price: Number(product.price),
-            discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
-            discountType: product.discountType,
-            discountValue: product.discountValue ? Number(product.discountValue) : null,
-            stock: Number(product.stock),
-            createdAt: product.createdAt.toISOString(),
-            updatedAt: product.updatedAt.toISOString(),
-            category: product.category ? {
-                ...product.category,
-                createdAt: product.category.createdAt.toISOString(),
-                updatedAt: product.category.updatedAt.toISOString(),
-            } : null
-        }));
+        return {
+            products: products.map(product => ({
+                ...product,
+                price: Number(product.price),
+                discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
+                discountValue: product.discountValue ? Number(product.discountValue) : null,
+                stock: Number(product.stock),
+                createdAt: product.createdAt.toISOString(),
+                updatedAt: product.updatedAt.toISOString(),
+            })),
+            pagination: {
+                total,
+                pages: Math.ceil(total / limit),
+                page,
+                limit
+            }
+        };
     } catch (error) {
         console.error("Failed to fetch products:", error);
-        return [];
+        return { products: [], pagination: { total: 0, pages: 0, page: 1, limit: 50 } };
     }
 }
 
-export async function getAdminCategories() {
+export async function getAdminCategories(page = 1, limit = 50) {
     try {
-        const categories = await prisma.category.findMany({
-            include: {
-                _count: {
-                    select: { products: true }
+        const skip = (page - 1) * limit;
+        const [categories, total] = await Promise.all([
+            prisma.category.findMany({
+                select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                    image: true,
+                    isFeatured: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    _count: {
+                        select: { products: true }
+                    }
+                },
+                skip,
+                take: limit,
+                orderBy: {
+                    name: 'asc'
                 }
-            },
-            orderBy: {
-                name: 'asc'
+            }),
+            prisma.category.count()
+        ]);
+        
+        return {
+            categories: categories.map(category => ({
+                ...category,
+                createdAt: category.createdAt.toISOString(),
+                updatedAt: category.updatedAt.toISOString(),
+            })),
+            pagination: {
+                total,
+                pages: Math.ceil(total / limit),
+                page,
+                limit
             }
-        });
-        return categories.map(category => ({
-            ...category,
-            createdAt: category.createdAt.toISOString(),
-            updatedAt: category.updatedAt.toISOString(),
-        }));
+        };
     } catch (error) {
         console.error("Failed to fetch categories:", error);
-        return [];
+        return { categories: [], pagination: { total: 0, pages: 0, page: 1, limit: 50 } };
     }
 }
 
-export async function getAdminOrders() {
+export async function getAdminOrders(page = 1, limit = 50) {
     try {
-        const orders = await prisma.order.findMany({
-            include: {
-                items: {
-                    include: {
-                        product: true
+        const skip = (page - 1) * limit;
+        const [orders, total] = await Promise.all([
+            prisma.order.findMany({
+                select: {
+                    id: true,
+                    Name: true,
+                    phone: true,
+                    streetAddress: true,
+                    city: true,
+                    totalAmount: true,
+                    status: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    items: {
+                        select: {
+                            id: true,
+                            quantity: true,
+                            price: true,
+                            product: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    images: true,
+                                    price: true
+                                }
+                            }
+                        }
                     }
+                },
+                skip,
+                take: limit,
+                orderBy: {
+                    createdAt: 'desc'
                 }
-            },
-            orderBy: {
-                createdAt: 'desc'
-            }
-        });
+            }),
+            prisma.order.count()
+        ]);
 
-        return orders.map(order => ({
-            id: order.id,
-            Name: order.Name,
-            phone: order.phone,
-            streetAddress: order.streetAddress,
-            city: order.city,
-            totalAmount: Number(order.totalAmount),
-            status: order.status,
-            createdAt: order.createdAt.toISOString(),
-            updatedAt: order.updatedAt.toISOString(),
-            items: order.items.map(item => ({
-                ...item,
-                price: Number(item.price),
-                product: item.product ? {
-                    ...item.product,
-                    price: Number(item.product.price),
-                    discountPrice: item.product.discountPrice ? Number(item.product.discountPrice) : null,
-                    discountType: item.product.discountType,
-                    discountValue: item.product.discountValue ? Number(item.product.discountValue) : null,
-                    stock: Number(item.product.stock),
-                    createdAt: item.product.createdAt.toISOString(),
-                    updatedAt: item.product.updatedAt.toISOString(),
-                } : null
-            }))
-        }));
+        return {
+            orders: orders.map(order => ({
+                id: order.id,
+                Name: order.Name,
+                phone: order.phone,
+                streetAddress: order.streetAddress,
+                city: order.city,
+                totalAmount: Number(order.totalAmount),
+                status: order.status,
+                createdAt: order.createdAt.toISOString(),
+                updatedAt: order.updatedAt.toISOString(),
+                items: order.items.map(item => ({
+                    ...item,
+                    price: Number(item.price),
+                    product: item.product ? {
+                        ...item.product,
+                        price: Number(item.product.price),
+                    } : null
+                }))
+            })),
+            pagination: {
+                total,
+                pages: Math.ceil(total / limit),
+                page,
+                limit
+            }
+        };
     } catch (error) {
         console.error("Failed to fetch orders:", error);
-        return [];
+        return { orders: [], pagination: { total: 0, pages: 0, page: 1, limit: 50 } };
     }
 }
 
@@ -598,6 +675,8 @@ export async function bulkCreateProducts(products: any[]) {
 export interface BannerInput {
     title: string;
     subtitle?: string;
+    titleAr: string;
+    subtitleAr?: string;
     image: string;
     buttonText?: string;
     link?: string;
@@ -630,6 +709,8 @@ export async function createBanner(data: BannerInput) {
             data: {
                 title: data.title,
                 subtitle: data.subtitle,
+                titleAr: data.titleAr,
+                subtitleAr: data.subtitleAr,
                 image: data.image,
                 buttonText: data.buttonText || "Shop Now",
                 link: data.link || "/products",
@@ -662,6 +743,8 @@ export async function updateBanner(id: string, data: BannerInput) {
             data: {
                 title: data.title,
                 subtitle: data.subtitle,
+                titleAr: data.titleAr,
+                subtitleAr: data.subtitleAr,
                 image: data.image,
                 buttonText: data.buttonText,
                 link: data.link,

@@ -11,8 +11,10 @@ import { useLanguage } from "@/app/context/LanguageContext";
 
 interface Banner {
     id: string;
-    title: string;
+    title: string | null;
     subtitle: string | null;
+    titleAr: string | null;
+    subtitleAr: string | null;
     image: string;
     buttonText: string | null;
     link: string | null;
@@ -113,7 +115,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                             <div key={banner.id} className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-border-color/50 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all overflow-hidden flex flex-col lg:flex-row">
                                 <div className="lg:w-1/3 aspect-21/9 lg:aspect-auto overflow-hidden bg-gray-100 dark:bg-gray-800">
                                     <img
-                                        alt={banner.title}
+                                        alt={banner.title || "Banner"}
                                         className="w-full h-full object-cover"
                                         src={banner.image}
                                     />
@@ -134,6 +136,14 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                         <p className="text-sm text-text-sub dark:text-gray-400 line-clamp-2">
                                             {banner.subtitle || t('admin.noSubtitle')}
                                         </p>
+                                        {banner.titleAr && (
+                                            <>
+                                                <h3 className="text-lg font-bold text-text-main dark:text-white mt-3 text-right" dir="rtl">{banner.titleAr}</h3>
+                                                <p className="text-sm text-text-sub dark:text-gray-400 line-clamp-2 text-right" dir="rtl">
+                                                    {banner.subtitleAr || t('admin.noSubtitle')}
+                                                </p>
+                                            </>
+                                        )}
                                         <div className="flex gap-4 mt-2">
                                             <div className="flex flex-col">
                                                 <span className="text-[10px] text-text-sub/60 dark:text-gray-500 font-bold uppercase">{t('admin.button')}</span>
@@ -178,7 +188,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                             )}
                                             {canDelete && (
                                                 <button
-                                                    onClick={() => handleDelete(banner.id, banner.title)}
+                                                    onClick={() => handleDelete(banner.id, banner.title || "Banner")}
                                                     className="p-3 text-text-sub hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors"
                                                     title={t('admin.deleteBanner')}
                                                 >

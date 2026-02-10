@@ -79,8 +79,10 @@ model Order {
 
 model Banner {
   id         String   @id @default(cuid())
-  title      String
+  title      String?
   subtitle   String?
+  titleAr    String?
+  subtitleAr String?
   image      String
   buttonText String?  @default("Shop Now")
   link       String?  @default("/products")

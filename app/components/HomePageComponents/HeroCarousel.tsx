@@ -6,8 +6,10 @@ import { useLanguage } from '@/app/context/LanguageContext';
 
 interface Banner {
     id: string;
-    title: string;
+    title: string | null;
     subtitle: string | null;
+    titleAr: string | null;
+    subtitleAr: string | null;
     image: string;
     buttonText: string | null;
     link: string | null;
@@ -20,17 +22,29 @@ interface HeroCarouselProps {
 }
 
 const HeroCarousel = ({ banners }: HeroCarouselProps) => {
-    const { t, dir } = useLanguage();
+    const { t, dir, language } = useLanguage();
 
-    const DEFAULT_BANNER = {
+    const DEFAULT_BANNER: Banner = {
         id: 'default',
         title: t('home.trendingNow'),
         subtitle: t('footer.brandDescription'),
+        titleAr: 'الآن شائع',
+        subtitleAr: 'مستحضرات عناية بالبشرة نباتية فاخرة مصممة لكشف إشراقتك الطبيعية. خالي من القسوة وللنباتيين ومستدام.',
         image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB8pRgU38opDPgidWmDRVHh18-R0XsEouLP3xdxsGLZz4BX3nQjc-9PXhgFNDVECMvP80S7ZtFmpA-QwwrnKgOR8B7WY0FlM3qJCAf1J8cxpwvyt6V15oxTZz-uhtroLEp-87KWQzsp-6-2mVURrFG_Q6mWjJ5YGqT0gqwmcLOPMK6pDk77rqmdXEvvM82qGkXdLNmSeXBPXY9j9zwnT_PjJ5YAOzWa2PqrFvo1SOjMCtz71ZHQraBSPlt7TKx00ccpwm4TTWoB6b0y",
         buttonText: t('home.shopNow'),
         link: "/products",
         badge: t('home.newArrival'),
         isActive: true
+    };
+
+    // Helper function to get title based on language
+    const getBannerTitle = (banner: Banner): string => {
+        return language === 'ar' ? (banner.titleAr || banner.title || '') : (banner.title || banner.titleAr || '');
+    };
+
+    // Helper function to get subtitle based on language
+    const getBannerSubtitle = (banner: Banner): string => {
+        return language === 'ar' ? (banner.subtitleAr || banner.subtitle || '') : (banner.subtitle || banner.subtitleAr || '');
     };
 
     // If no banners are provided or the list is empty, use the default banner as a single-item array
@@ -91,7 +105,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                 <div className="absolute inset-0 w-full h-full bg-gray-50 dark:bg-white/5">
                                     <img
                                         src={banner.image}
-                                        alt={banner.title}
+                                        alt={getBannerTitle(banner)}
                                         className="w-full h-full object-cover"
                                     />
                                     {/* Subtle overlay for text readability on mobile */}
@@ -106,10 +120,10 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                             {banner.badge || t('home.newArrival')}
                                         </span>
                                         <h2 className="text-3xl sm:text-4xl font-extrabold leading-[1.1] tracking-tight text-white mb-3 drop-shadow-lg">
-                                            {banner.title}
+                                            {getBannerTitle(banner)}
                                         </h2>
                                         <p className="text-sm sm:text-base text-white/90 max-w-md mb-5 line-clamp-3 drop-shadow">
-                                            {banner.subtitle || t('footer.brandDescription')}
+                                            {getBannerSubtitle(banner) || t('footer.brandDescription')}
                                         </p>
                                         <Link
                                             href={banner.link || "/products"}
@@ -138,10 +152,10 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                             {banner.badge || t('home.newArrival')}
                                         </span>
                                         <h2 className="text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-text-main-light dark:text-text-main-dark mb-4">
-                                            {banner.title}
+                                            {getBannerTitle(banner)}
                                         </h2>
                                         <p className="text-lg text-text-muted-light dark:text-text-muted-dark max-w-md mb-6">
-                                            {banner.subtitle || t('footer.brandDescription')}
+                                            {getBannerSubtitle(banner) || t('footer.brandDescription')}
                                         </p>
                                         <Link
                                             href={banner.link || "/products"}
@@ -158,7 +172,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                     <div className="w-full h-full bg-gray-50 dark:bg-white/5 relative">
                                         <img
                                             src={banner.image}
-                                            alt={banner.title}
+                                            alt={getBannerTitle(banner)}
                                             className="w-full h-full object-cover transition-transform duration-1000 ease-in-out group-hover:scale-105"
                                         />
                                     </div>

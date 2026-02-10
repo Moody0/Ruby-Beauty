@@ -7,8 +7,10 @@ import OnSaleProducts from './OnSaleProducts';
 
 interface Banner {
     id: string;
-    title: string;
+    title: string | null;
     subtitle: string | null;
+    titleAr: string | null;
+    subtitleAr: string | null;
     image: string;
     buttonText: string | null;
     link: string | null;

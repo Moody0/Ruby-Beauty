@@ -10,8 +10,10 @@ interface BannerModalProps {
     onClose: () => void;
     banner?: {
         id: string;
-        title: string;
+        title: string | null;
         subtitle: string | null;
+        titleAr: string | null;
+        subtitleAr: string | null;
         image: string;
         buttonText: string | null;
         link: string | null;
@@ -24,6 +26,8 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
     const { t, dir } = useLanguage();
     const [title, setTitle] = useState("");
     const [subtitle, setSubtitle] = useState("");
+    const [titleAr, setTitleAr] = useState("");
+    const [subtitleAr, setSubtitleAr] = useState("");
     const [image, setImage] = useState("");
     const [buttonText, setButtonText] = useState("Shop Now");
     const [link, setLink] = useState("/products");
@@ -33,8 +37,10 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
 
     useEffect(() => {
         if (banner) {
-            setTitle(banner.title);
+            setTitle(banner.title || "");
             setSubtitle(banner.subtitle || "");
+            setTitleAr(banner.titleAr || "");
+            setSubtitleAr(banner.subtitleAr || "");
             setImage(banner.image);
             setButtonText(banner.buttonText || "Shop Now");
             setLink(banner.link || "/products");
@@ -43,6 +49,8 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
         } else {
             setTitle("");
             setSubtitle("");
+            setTitleAr("");
+            setSubtitleAr("");
             setImage("");
             setButtonText("Shop Now");
             setLink("/products");
@@ -61,6 +69,8 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
             const data: BannerInput = {
                 title,
                 subtitle: subtitle || undefined,
+                titleAr,
+                subtitleAr: subtitleAr || undefined,
                 image,
                 buttonText: buttonText || undefined,
                 link: link || undefined,
@@ -147,7 +157,7 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
 
                     <div className="flex flex-col gap-2">
                         <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
-                            {t('admin.title')}
+                            {t('admin.title')} (English)
                         </label>
                         <input
                             type="text"
@@ -161,7 +171,7 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
 
                     <div className="flex flex-col gap-2">
                         <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
-                            {t('admin.subtitle')}
+                            {t('admin.subtitle')} (English)
                         </label>
                         <textarea
                             value={subtitle}
@@ -169,6 +179,35 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
                             placeholder="Discover our new botanical collection..."
                             rows={2}
                             className="w-full px-4 py-2.5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                            {t('admin.title')} (العربية)
+                        </label>
+                        <input
+                            type="text"
+                            value={titleAr}
+                            onChange={(e) => setTitleAr(e.target.value)}
+                            placeholder="مثال: إشراقة معاد تعريفها"
+                            required
+                            className="w-full px-4 py-2.5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                            dir="rtl"
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                            {t('admin.subtitle')} (العربية)
+                        </label>
+                        <textarea
+                            value={subtitleAr}
+                            onChange={(e) => setSubtitleAr(e.target.value)}
+                            placeholder="اكتشف مجموعتنا النباتية الجديدة..."
+                            rows={2}
+                            className="w-full px-4 py-2.5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                            dir="rtl"
                         />
                     </div>
 

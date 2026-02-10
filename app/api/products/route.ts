@@ -45,11 +45,30 @@ export async function GET(request: Request) {
                 skip,
                 take: limit,
                 orderBy,
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    images: true,
+                    price: true,
+                    discountPrice: true,
+                    discountType: true,
+                    discountValue: true,
+                    stock: true,
+                    isTrending: true,
+                    categoryId: true,
+                    category: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    }
+                }
             }),
             prisma.product.count({ where }),
         ]);
 
-        return NextResponse.json({
+        const response = NextResponse.json({
             products: products.map(p => ({
                 ...p,
                 price: p.price.toString(),
@@ -64,6 +83,10 @@ export async function GET(request: Request) {
                 limit,
             },
         });
+        
+        // Add cache headers
+        response.headers.set('Cache-Control', 'private, max-age=60, stale-while-revalidate=300');
+        return response;
     } catch (error) {
         console.error("Error fetching products:", error);
         return NextResponse.json(

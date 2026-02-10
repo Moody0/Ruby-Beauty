@@ -1,7 +1,7 @@
 import Main from "../components/HomePageComponents/Main";
 import { getActiveBanners, getFeaturedCategories, getTrendingProducts, getOnSaleProducts } from "../../lib/admin-actions";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600; // Revalidate every hour
 
 export default async function Home() {
     const banners = await getActiveBanners();

@@ -100,7 +100,7 @@ export default function CategoriesClient({ categories }: { categories: Category[
                             <div className={`hidden md:flex flex-col items-end ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`}>
                                 <span className="text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400">{t('admin.featured')}</span>
                                 <span className="text-sm font-bold text-primary">
-                                    {categories.filter(c => c.isFeatured).length} / 6 {t('admin.active')}
+                                    {categories.filter(c => c.isFeatured).length} / 8 {t('admin.active')}
                                 </span>
                             </div>
 

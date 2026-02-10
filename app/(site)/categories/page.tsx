@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import React from "react";
 import CategoriesContent from "./CategoriesContent";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600; // Revalidate every hour
 
 async function getAllCategories() {
     try {

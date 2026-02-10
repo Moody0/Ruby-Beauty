@@ -23,7 +23,9 @@ export async function GET(request: Request) {
             },
         });
 
-        return NextResponse.json(categories);
+        const response = NextResponse.json(categories);
+        response.headers.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
+        return response;
     } catch (error) {
         console.error("Error fetching categories:", error);
         return NextResponse.json(
