@@ -2,7 +2,7 @@ import * as XLSX from 'xlsx';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
-const excelFilePath = 'C:\\Users\\moham\\OneDrive\\Desktop\\products_export.xlsx';
+const excelFilePath = 'C:\\Users\\moham\\OneDrive\\Desktop\\Ruby-Beauty-Products.xlsx';
 
 function getValue(row: any, searchKey: string): any {
     const entry = Object.entries(row).find(([k]) => k.trim() === searchKey.trim());
