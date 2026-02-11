@@ -69,7 +69,7 @@ const Footer = () => {
                         <h5 className="font-bold text-text-main-light dark:text-text-main-dark">{t('footer.support')}</h5>
                         <ul className="flex flex-col gap-2.5 text-sm text-text-muted-light dark:text-text-muted-dark">
                             <li><a className="hover:text-primary transition-colors" href="https://wa.me/963933254796" target="_blank" rel="noopener noreferrer">{t('footer.helpCenter')}</a></li>
-                            <li><Link className="hover:text-primary transition-colors" href="/about-us">{t('footer.shippingReturns')}</Link></li>
+                            <li><Link className="hover:text-primary transition-colors" href="/shipping-returns">{t('footer.shippingReturns')}</Link></li>
                             <li><a className="hover:text-primary transition-colors" href="https://wa.me/963933254796" target="_blank" rel="noopener noreferrer">{t('footer.orderStatus')}</a></li>
                             <li><a className="hover:text-primary transition-colors" href="https://wa.me/963933254796" target="_blank" rel="noopener noreferrer">{t('footer.contactUs')}</a></li>
                         </ul>

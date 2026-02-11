@@ -9,13 +9,13 @@ import ar from '@/app/locales/ar.json';
 type Language = 'en' | 'ar';
 
 // Recursive type for nested translation objects
-type TranslationValue = string | { [key: string]: TranslationValue };
+type TranslationValue = string | string[] | { [key: string]: TranslationValue };
 type TranslationObject = { [key: string]: TranslationValue };
 
 interface LanguageContextType {
     language: Language;
     setLanguage: (lang: Language) => void;
-    t: (key: string) => string;
+    t: (key: string) => any;
     dir: 'ltr' | 'rtl';
 }
 
@@ -50,28 +50,28 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     // Translation function with fallback
-    const t = useCallback((key: string): string => {
+    const t = useCallback((key: string): any => {
         const keys = key.split('.');
         let result: TranslationValue = translations[language];
 
         for (const k of keys) {
-            if (typeof result === 'object' && result !== null && k in result) {
+            if (typeof result === 'object' && result !== null && !Array.isArray(result) && k in result) {
                 result = result[k];
             } else {
                 // Fallback to English if key not found
                 let fallback: TranslationValue = translations['en'];
                 for (const fk of keys) {
-                    if (typeof fallback === 'object' && fallback !== null && fk in fallback) {
+                    if (typeof fallback === 'object' && fallback !== null && !Array.isArray(fallback) && fk in fallback) {
                         fallback = fallback[fk];
                     } else {
                         return key; // Return key if not found in fallback either
                     }
                 }
-                return typeof fallback === 'string' ? fallback : key;
+                return fallback;
             }
         }
 
-        return typeof result === 'string' ? result : key;
+        return result;
     }, [language]);
 
     const dir = language === 'ar' ? 'rtl' : 'ltr';

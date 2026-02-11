@@ -480,5 +480,53 @@
                 "description": "Respecting our earth through glass packaging, recycled materials, and ethical sourcing practices that give back."
             }
         }
+    },
+    "shippingReturnsPage": {
+        "title": "Transparency & Care",
+        "description": "Our commitment to your beauty journey includes clear communication. Below you will find our official policies designed to ensure safety, hygiene, and timely delivery.",
+        "shipping": {
+            "title": "Shipping Policy",
+            "verification": {
+                "title": "WhatsApp Order Verification",
+                "description": "To ensure security and accuracy, every order undergoes a manual verification. After checkout, our concierge team will reach out via WhatsApp to confirm your details. Orders are processed only after this confirmation is complete."
+            },
+            "timelines": {
+                "title": "Delivery Timelines",
+                "standard": "Standard",
+                "standardTime": "3-5 Business Days",
+                "express": "Express",
+                "expressTime": "1-2 Business Days",
+                "note": "Note: International shipping may vary based on customs processing (7-14 days)."
+            },
+            "review": {
+                "title": "The Importance of Review",
+                "description": "Please meticulously review your delivery address and selected products before finalizing. Once an order is handed to our courier partners, address modifications are not guaranteed and may incur additional fees."
+            }
+        },
+        "returns": {
+            "title": "Return & Refunds",
+            "finalSale": {
+                "title": "All Sales Are Final",
+                "description": "Due to the intimate nature of beauty and skincare products, we do not accept returns, exchanges, or offer refunds for change of mind."
+            },
+            "hygiene": {
+                "title": "Hygiene & Safety Protocols",
+                "description": "Your safety is our priority. Skincare and cosmetic products cannot be resold or reused once they have left our controlled distribution environment. This strict policy ensures that every customer receives 100% untampered, fresh, and hygienic formulas."
+            },
+            "damaged": {
+                "title": "Damaged or Incorrect Items?",
+                "description": "In the rare event that your item arrives damaged or you received the incorrect product, we are here to help.",
+                "steps": [
+                    "Report within 24 hours of delivery.",
+                    "Provide clear photos of the damage and outer packaging.",
+                    "Email support@glowessentials.com with your Order ID."
+                ]
+            }
+        },
+        "support": {
+            "title": "Still have questions?",
+            "description": "Our support team is available Mon-Fri, 9am - 6pm.",
+            "cta": "Contact Us"
+        }
     }
 }
