@@ -10,6 +10,7 @@ import { deleteProduct, toggleProductTrending, bulkToggleTrending, bulkCreatePro
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useLanguage } from "@/app/context/LanguageContext";
+import * as XLSX from 'xlsx';
 
 interface Product {
     id: string;
@@ -279,14 +280,14 @@ export default function ProductsClient({ products, categories }: { products: Pro
             link.click();
             document.body.removeChild(link);
 
-            toast.success("Products exported successfully");
+            toast.success(t('admin.exportSuccess'));
         } catch (error) {
             console.error("Export failed:", error);
-            toast.error("Failed to export products");
+            toast.error(t('admin.exportError'));
         }
     };
 
-    const handleImportCSV = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
@@ -294,39 +295,59 @@ export default function ProductsClient({ products, categories }: { products: Pro
         const reader = new FileReader();
         reader.onload = async (event) => {
             try {
-                const text = event.target?.result as string;
-                const lines = text.split('\n');
-                if (lines.length < 2) {
-                    toast.error("CSV file is empty or missing headers");
+                let data: any[] = [];
+                const fileName = file.name.toLowerCase();
+
+                if (fileName.endsWith('.csv')) {
+                    const text = event.target?.result as string;
+                    const lines = text.split('\n');
+                    if (lines.length < 2) {
+                        toast.error(t('admin.fileEmpty'));
+                        return;
+                    }
+
+                    const headers = lines[0].split(',').map(h => h.trim());
+                    data = lines.slice(1).filter(line => line.trim()).map(line => {
+                        const values = line.split(',').map(v => v.replace(/^"|"$/g, '').trim());
+                        const obj: any = {};
+                        headers.forEach((header, i) => {
+                            obj[header] = values[i];
+                        });
+                        return obj;
+                    });
+                } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+                    const bstr = event.target?.result;
+                    const wb = XLSX.read(bstr, { type: 'binary' });
+                    const wsname = wb.SheetNames[0];
+                    const ws = wb.Sheets[wsname];
+                    data = XLSX.utils.sheet_to_json(ws);
+                }
+
+                if (data.length === 0) {
+                    toast.error(t('admin.fileEmpty'));
                     return;
                 }
 
-                const headers = lines[0].split(',').map(h => h.trim());
-
-                const data = lines.slice(1).filter(line => line.trim()).map(line => {
-                    const values = line.split(',').map(v => v.replace(/^"|"$/g, '').trim());
-                    const obj: any = {};
-                    headers.forEach((header, i) => {
-                        obj[header] = values[i];
-                    });
-                    return obj;
-                });
-
                 const result = await bulkCreateProducts(data);
                 if (result.success) {
-                    toast.success(`Successfully imported ${result.count} products`);
+                    toast.success(t('admin.importSuccess').replace('{count}', result.count?.toString() || '0'));
                 } else {
-                    toast.error(result.error || "Failed to import products");
+                    toast.error(result.error || t('admin.importError'));
                 }
             } catch (error) {
                 console.error("Import error:", error);
-                toast.error("Failed to parse CSV file");
+                toast.error(t('admin.fileParseError'));
             } finally {
                 setIsSubmittingBulk(false);
                 if (e.target) e.target.value = '';
             }
         };
-        reader.readAsText(file);
+
+        if (file.name.toLowerCase().endsWith('.csv')) {
+            reader.readAsText(file);
+        } else {
+            reader.readAsBinaryString(file);
+        }
     };
 
     return (
@@ -353,17 +374,17 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                 onClick={handleExportCSV}
                                 className="bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-text-main dark:text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm"
                             >
-                                <span className="material-symbols-outlined text-[20px]">file_download</span>
+                                <span className="material-symbols-outlined text-[20px]">file_upload</span>
                                 {t('admin.exportData')}
                             </button>
                             <label className="bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-text-main dark:text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm cursor-pointer">
-                                <span className="material-symbols-outlined text-[20px]">file_upload</span>
+                                <span className="material-symbols-outlined text-[20px]">file_download</span>
                                 {t('admin.importData')}
                                 <input
                                     type="file"
-                                    accept=".csv"
+                                    accept=".csv, .xlsx, .xls"
                                     className="hidden"
-                                    onChange={handleImportCSV}
+                                    onChange={handleImportFile}
                                     disabled={isSubmittingBulk}
                                 />
                             </label>
