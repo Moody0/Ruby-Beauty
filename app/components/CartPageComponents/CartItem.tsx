@@ -2,8 +2,10 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { MdDelete } from 'react-icons/md';
 import { CartItem as CartItemType } from '@/app/context/CartContext';
 import { useLanguage } from '@/app/context/LanguageContext';
+
 
 interface CartItemProps {
     item: CartItemType;
