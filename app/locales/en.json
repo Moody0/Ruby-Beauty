@@ -187,6 +187,7 @@
         "deliveredMtd": "Delivered (MTD)",
         "allOrders": "All Orders",
         "pending": "Pending",
+        "selectAll":"Select All",
         "shipped": "Shipped",
         "delivered": "Delivered",
         "processing": "Processing",

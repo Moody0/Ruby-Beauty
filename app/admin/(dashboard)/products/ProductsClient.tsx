@@ -243,7 +243,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
     const handleExportCSV = () => {
         try {
             // Prepare headers
-            const headers = ["Name", "SKU", "Category", "Price", "Stock", "Status", "Is Trending"];
+            const headers = ["Name", "SKU", "Category", "Price", "Stock", "Status", "Is Trending", "Images"];
 
             // Prepare data rows
             const rows = products.map((p: any) => [
@@ -253,7 +253,8 @@ export default function ProductsClient({ products, categories }: { products: Pro
                 p.price,
                 p.stock,
                 p.stock > 0 ? "In Stock" : "Out of Stock",
-                p.isTrending ? "Yes" : "No"
+                p.isTrending ? "Yes" : "No",
+                `"${(p.images || '').replace(/"/g, '""')}"`
             ]);
 
             // Combine into CSV string

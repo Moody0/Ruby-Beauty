@@ -226,6 +226,7 @@
         "onSaleOnly": "خصومات فقط",
         "itemsSelected": "عناصر محددة",
         "deselectAll": "إلغاء تحديد الكل",
+        "selectAll":"تحديد الكل",
         "removeTrending": "إزالة من الرائج",
         "removeSale": "إزالة الخصم",
         "deleteSelected": "حذف المحدد",

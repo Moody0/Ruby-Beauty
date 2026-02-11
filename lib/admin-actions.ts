@@ -182,7 +182,7 @@ export async function getAdminProducts(page = 1, limit = 50) {
     }
 }
 
-export async function getAdminCategories(page = 1, limit = 50) {
+export async function getAdminCategories(page = 1, limit = 500) {
     try {
         const skip = (page - 1) * limit;
         const [categories, total] = await Promise.all([
@@ -1151,6 +1151,47 @@ export async function bulkDeleteProducts(ids: string[]) {
     } catch (error: any) {
         console.error("Detailed Bulk Delete Error:", error);
         return { success: false, error: "Failed to delete selected products. Check server logs for details." };
+    }
+}
+
+export async function bulkDeleteCategories(ids: string[]) {
+    try {
+        // Find which categories have products
+        const categoriesWithProducts = await prisma.category.findMany({
+            where: {
+                id: { in: ids },
+                products: { some: {} }
+            },
+            select: { id: true, name: true }
+        });
+
+        const idsWithProducts = new Set(categoriesWithProducts.map(c => c.id));
+        const idsToDelete = ids.filter(id => !idsWithProducts.has(id));
+
+        if (idsToDelete.length > 0) {
+            await prisma.category.deleteMany({
+                where: {
+                    id: { in: idsToDelete }
+                }
+            });
+        }
+
+        revalidatePath('/');
+        revalidatePath('/admin/categories');
+        revalidatePath('/admin/products');
+
+        if (idsWithProducts.size > 0) {
+            const names = categoriesWithProducts.map(c => c.name).join(", ");
+            return { 
+                success: true, 
+                message: `Deleted ${idsToDelete.length} categories. Could not delete: ${names} because they still contain products. Move or delete the products first.` 
+            };
+        }
+
+        return { success: true };
+    } catch (error: any) {
+        console.error("Detailed Bulk Delete Categories Error:", error);
+        return { success: false, error: "Failed to delete selected categories." };
     }
 }
 

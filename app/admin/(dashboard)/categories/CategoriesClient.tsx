@@ -4,7 +4,7 @@ import AdminHeader from "../../components/AdminHeader";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import { useState } from "react";
 import CategoryModal from "./CategoryModal";
-import { deleteCategory, toggleCategoryFeatured, bulkFixCategoryNames } from "../../../../lib/admin-actions";
+import { deleteCategory, toggleCategoryFeatured, bulkFixCategoryNames, bulkDeleteCategories } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useLanguage } from "@/app/context/LanguageContext";
@@ -31,6 +31,56 @@ export default function CategoriesClient({ categories }: { categories: Category[
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
+
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [isSubmittingBulk, setIsSubmittingBulk] = useState(false);
+
+    const toggleSelect = (id: string) => {
+        const newSelected = new Set(selectedIds);
+        if (newSelected.has(id)) {
+            newSelected.delete(id);
+        } else {
+            newSelected.add(id);
+        }
+        setSelectedIds(newSelected);
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedIds.size === filteredCategories.length) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(filteredCategories.map(c => c.id)));
+        }
+    };
+
+    const handleBulkDelete = async () => {
+        if (selectedIds.size === 0) return;
+        const ids = Array.from(selectedIds);
+        
+        if (!confirm(`Are you sure you want to delete ${ids.length} categories? This action cannot be undone.`)) {
+            return;
+        }
+
+        setIsSubmittingBulk(true);
+        try {
+            const result = await bulkDeleteCategories(ids);
+            if (result.success) {
+                if (result.message) {
+                    toast(result.message, { icon: '⚠️', duration: 6000 });
+                } else {
+                    toast.success(`Deleted ${ids.length} categories successfully`);
+                }
+                setSelectedIds(new Set());
+            } else {
+                toast.error(result.error || "Failed to delete categories");
+            }
+        } catch (error) {
+            console.error("Error in bulk delete:", error);
+            toast.error("An unexpected error occurred");
+        } finally {
+            setIsSubmittingBulk(false);
+        }
+    };
 
     const [isFixing, setIsFixing] = useState(false);
 
@@ -135,16 +185,52 @@ export default function CategoriesClient({ categories }: { categories: Category[
                                 {t('admin.manageCategories')}
                             </p>
                         </div>
-                        <div className="w-full md:w-auto flex flex-col md:flex-row gap-4 items-center">
+                        <div className="w-full md:w-auto flex flex-col md:flex-row flex-wrap gap-4 items-center justify-end">
+                            {/* Selection Info and Actions */}
+                            {selectedIds.size > 0 && (
+                                <div className={`flex items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-300 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`}>
+                                    <span className="text-sm font-medium text-text-sub dark:text-gray-400 whitespace-nowrap">
+                                        {selectedIds.size} {t('admin.selected')}
+                                    </span>
+                                    {canDelete && (
+                                        <button
+                                            onClick={handleBulkDelete}
+                                            disabled={isSubmittingBulk}
+                                            className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-lg transition-all shadow-md shadow-red-500/20 disabled:opacity-50 whitespace-nowrap"
+                                        >
+                                            {isSubmittingBulk ? (
+                                                <span className="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>
+                                            ) : (
+                                                <span className="material-symbols-outlined text-[18px]">delete</span>
+                                            )}
+                                            {t('admin.deleteSelected')}
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Select All Toggle */}
+                            {filteredCategories.length > 0 && (
+                                <button
+                                    onClick={toggleSelectAll}
+                                    className="flex items-center gap-2 px-4 py-2 bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 rounded-lg text-xs font-bold text-text-main dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-all whitespace-nowrap"
+                                >
+                                    <span className="material-symbols-outlined text-[18px]">
+                                        {selectedIds.size === filteredCategories.length ? 'check_box' : 'check_box_outline_blank'}
+                                    </span>
+                                    {selectedIds.size === filteredCategories.length ? t('admin.deselectAll') : t('admin.selectAll')}
+                                </button>
+                            )}
+
                             {/* Featured Count Indicator */}
-                            <div className={`hidden md:flex flex-col items-end ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`}>
+                            <div className={`hidden md:flex flex-col items-end ${dir === 'rtl' ? 'ml-2' : 'mr-2'} whitespace-nowrap`}>
                                 <span className="text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400">{t('admin.featured')}</span>
                                 <span className="text-sm font-bold text-primary">
                                     {categories.filter(c => c.isFeatured).length} / 8 {t('admin.active')}
                                 </span>
                             </div>
 
-                            <div className="relative w-full md:w-72">
+                            <div className="relative w-full md:w-64">
                                 <span className={`material-symbols-outlined absolute ${dir === 'rtl' ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 text-text-sub/50 dark:text-gray-400/50 text-xl`}>search</span>
                                 <input
                                     type="text"
@@ -157,7 +243,7 @@ export default function CategoriesClient({ categories }: { categories: Category[
                             {canManage && (
                                 <button
                                     onClick={handleAdd}
-                                    className="w-full md:w-auto bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                                    className="w-full md:w-auto bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 whitespace-nowrap"
                                 >
                                     <span className="material-symbols-outlined">add</span>
                                     {t('admin.addCategory')}
@@ -174,7 +260,18 @@ export default function CategoriesClient({ categories }: { categories: Category[
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {filteredCategories.map((category) => (
-                            <div key={category.id} className="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-color/50 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all overflow-hidden group">
+                            <div 
+                                key={category.id} 
+                                className={`bg-surface-light dark:bg-surface-dark rounded-xl border ${selectedIds.has(category.id) ? 'border-primary shadow-md shadow-primary/10' : 'border-border-color/50 dark:border-gray-700 shadow-sm'} hover:shadow-lg transition-all overflow-hidden group relative`}
+                            >
+                                {/* Selection Checkbox */}
+                                <button
+                                    onClick={() => toggleSelect(category.id)}
+                                    className={`absolute top-4 left-4 z-10 w-6 h-6 rounded-md border flex items-center justify-center transition-all ${selectedIds.has(category.id) ? 'bg-primary border-primary text-white' : 'bg-white/80 dark:bg-black/20 border-white/50 text-transparent hover:border-primary'}`}
+                                >
+                                    <span className="material-symbols-outlined text-[18px]">check</span>
+                                </button>
+
                                 <div className="category-card-image w-full h-[200px] overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                                     {category.image ? (
                                         <img
@@ -195,7 +292,7 @@ export default function CategoriesClient({ categories }: { categories: Category[
                                         <span className="bg-primary-light dark:bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold">
                                             {category._count.products} {t('admin.products')}
                                         </span>
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center flex-wrap justify-end gap-2">
                                             {canManage && (
                                                 <button
                                                     onClick={() => handleToggleFeatured(category.id, category.isFeatured)}
