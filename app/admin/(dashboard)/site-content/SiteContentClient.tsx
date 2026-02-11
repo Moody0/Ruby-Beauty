@@ -292,7 +292,7 @@ export default function SiteContentClient({
                                 <div className="space-y-6">
                                     <div className="flex items-center gap-2 mb-6">
                                         <span className="material-symbols-outlined text-primary">image</span>
-                                        <h3 className="font-bold text-text-main dark:text-white text-lg">Page Header Image</h3>
+                                        <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.pageHeaderImage')}</h3>
                                     </div>
                                     
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
@@ -307,7 +307,7 @@ export default function SiteContentClient({
                                                     className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                                 <p className="text-xs text-text-sub dark:text-gray-400">
-                                                    This image will be displayed at the top of the Shipping & Returns page.
+                                                    {t('admin.shippingReturnsImageHint')}
                                                 </p>
                                             </div>
                                         </div>
@@ -543,7 +543,7 @@ export default function SiteContentClient({
                                 <div className="space-y-6 border-t border-[#e6dbdf] dark:border-gray-700 pt-8">
                                     <div className="flex items-center gap-2 mb-2">
                                         <span className="material-symbols-outlined text-primary">clean_hands</span>
-                                        <h3 className="font-bold text-text-main dark:text-white text-lg">Hygiene & Safety Protocols</h3>
+                                        <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.hygieneProtocols')}</h3>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         <div className="space-y-4">
@@ -552,7 +552,7 @@ export default function SiteContentClient({
                                                 <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.englishContent')}</span>
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
+                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.hygieneImage')}</label>
                                                 <input
                                                     type="text"
                                                     value={hygieneTitle}
@@ -576,7 +576,7 @@ export default function SiteContentClient({
                                                 <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.arabicContent')}</span>
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
+                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.hygieneImage')}</label>
                                                 <input
                                                     type="text"
                                                     value={hygieneTitleAr}
