@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { MdInfo, MdArrowBack } from 'react-icons/md';
 
 interface ShippingFormProps {
     formData: {
@@ -86,7 +87,7 @@ const ShippingForm = ({ formData, handleInputChange }: ShippingFormProps) => {
                 </div>
                 <div className="mt-8 pt-6 border-t border-[#f4f0f2] dark:border-[#3a2228]">
                     <div className="flex items-center gap-3 p-4 bg-soft-pink dark:bg-primary/5 rounded-xl border border-primary/10">
-                        <span className="material-symbols-outlined text-primary">info</span>
+                        <MdInfo className="text-primary" />
                         <p className="text-sm text-[#89616f] dark:text-[#a08590]">{t('checkout.deliveryInfo')}</p>
                     </div>
                 </div>
@@ -94,7 +95,7 @@ const ShippingForm = ({ formData, handleInputChange }: ShippingFormProps) => {
 
             <div className="flex items-center justify-between mt-4">
                 <Link className="flex items-center gap-2 text-sm font-bold text-[#89616f] hover:text-primary transition-colors" href="/cart">
-                    <span className={`material-symbols-outlined text-sm ${dir === 'rtl' ? 'rotate-180' : ''}`}>arrow_back</span>
+                    <MdArrowBack className={`text-sm ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                     {t('common.returnToCart')}
                 </Link>
             </div>

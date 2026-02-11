@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { CartItem as CartItemType } from '@/app/context/CartContext';
 import CartItem from './CartItem';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { MdArrowBack } from 'react-icons/md';
 
 interface CartItemsListProps {
     items: CartItemType[];
@@ -34,7 +35,7 @@ const CartItemsList = ({ items, cartCount, removeItem, updateQuantity }: CartIte
             </div>
             <div className="mt-4">
                 <Link href="/products" className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:gap-3 transition-all">
-                    <span className={`material-symbols-outlined text-sm ${dir === 'rtl' ? 'rotate-180' : ''}`}>arrow_back</span>
+                    <MdArrowBack className={`text-sm ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                     {t('cart.continueShopping')}
                 </Link>
             </div>

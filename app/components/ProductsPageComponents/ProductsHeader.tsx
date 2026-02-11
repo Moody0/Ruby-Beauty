@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { MdKeyboardArrowDown } from 'react-icons/md';
 
 interface ProductsHeaderProps {
     sort: string;
@@ -30,7 +31,7 @@ const ProductsHeader = ({ sort, setSort }: ProductsHeaderProps) => {
                         <option value="Price: High to Low">{t('products.priceHighLow')}</option>
                         <option value="Newest Arrivals">{t('products.newestArrivals')}</option>
                     </select>
-                    <span className="material-symbols-outlined absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none text-xl">keyboard_arrow_down</span>
+                    <MdKeyboardArrowDown className="absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none text-xl" />
                 </div>
             </div>
         </div>

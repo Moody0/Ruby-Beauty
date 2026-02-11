@@ -4,6 +4,7 @@ import React, { useRef } from 'react';
 import ProductCard from '../ProductsPageComponents/ProductCard';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { MdChevronLeft, MdChevronRight, MdArrowForward } from 'react-icons/md';
 
 interface Product {
     id: string;
@@ -53,20 +54,18 @@ const OnSaleProducts = ({ products }: { products: Product[] }) => {
                                 onClick={() => scroll('left')}
                                 className="size-10 rounded-full border border-gray-200 dark:border-white/10 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all active:scale-90"
                             >
-                                <span className={`material-symbols-outlined ${dir === 'rtl' ? 'rotate-180' : ''}`}>chevron_left</span>
+                                <MdChevronLeft className={`${dir === 'rtl' ? 'rotate-180' : ''}`} />
                             </button>
                             <button
                                 onClick={() => scroll('right')}
                                 className="size-10 rounded-full border border-gray-200 dark:border-white/10 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all active:scale-90"
                             >
-                                <span className={`material-symbols-outlined ${dir === 'rtl' ? 'rotate-180' : ''}`}>chevron_right</span>
+                                <MdChevronRight className={`${dir === 'rtl' ? 'rotate-180' : ''}`} />
                             </button>
                         </div>
                         <Link className="text-primary font-bold text-sm flex items-center gap-1 group" href="/products">
                             {t('common.viewAll')}
-                            <span className={`material-symbols-outlined text-sm transition-transform group-hover:translate-x-1 ${dir === 'rtl' ? 'rotate-180 group-hover:-translate-x-1' : ''}`}>
-                                arrow_forward
-                            </span>
+                            <MdArrowForward className={`text-sm transition-transform group-hover:translate-x-1 ${dir === 'rtl' ? 'rotate-180 group-hover:-translate-x-1' : ''}`} />
                         </Link>
                     </div>
                 </div>

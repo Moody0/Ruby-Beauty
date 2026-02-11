@@ -3,6 +3,7 @@
 import React from 'react';
 import { CartItem } from '@/app/context/CartContext';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { MdPayments, MdRefresh, MdCheckCircle, MdSupportAgent } from 'react-icons/md';
 
 interface OrderSummaryProps {
     items: CartItem[];
@@ -115,7 +116,7 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                 <div className="bg-[#f8f6f6] dark:bg-[#341a22] rounded-xl p-4 mb-8">
                     <div className="flex items-center justify-between mb-1">
                         <span className="text-xs font-bold text-[#89616f] dark:text-[#a08590] uppercase tracking-wider">{t('checkout.paymentMethod')}</span>
-                        <span className="material-symbols-outlined text-primary text-sm">payments</span>
+                        <MdPayments className="text-primary text-sm" />
                     </div>
                     <p className="text-sm font-bold text-[#181113] dark:text-white">{t('checkout.cashOnDelivery')}</p>
                 </div>
@@ -131,11 +132,11 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                     className="w-full bg-primary hover:bg-primary/90 text-white font-bold rounded-full h-14 flex items-center justify-center gap-2 shadow-lg shadow-primary/25 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                     {loading ? (
-                        <span className="animate-spin material-symbols-outlined">progress_activity</span>
+                        <MdRefresh className="animate-spin" />
                     ) : (
                         <>
                             <span>{t('checkout.placeOrder')}</span>
-                            <span className="material-symbols-outlined text-sm">check_circle</span>
+                            <MdCheckCircle className="text-sm" />
                         </>
                     )}
                 </button>
@@ -144,7 +145,7 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
 
             <div className="bg-[#fcfafa] dark:bg-[#2a161d]/50 p-5 rounded-xl border border-dashed border-[#f4f0f2] dark:border-[#3a2228] flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-white dark:bg-[#341a22] flex items-center justify-center shadow-sm">
-                    <span className="material-symbols-outlined text-primary text-xl">support_agent</span>
+                    <MdSupportAgent className="text-primary text-xl" />
                 </div>
                 <div>
                     <p className="text-sm font-bold dark:text-white">{t('checkout.needAssistance')}</p>

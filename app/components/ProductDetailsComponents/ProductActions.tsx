@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useCart } from "@/app/context/CartContext";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { MdRemove, MdAdd, MdShoppingBag } from "react-icons/md";
 import toast from "react-hot-toast";
 
 interface ProductActionsProps {
@@ -45,21 +46,21 @@ const ProductActions = ({ product }: ProductActionsProps) => {
                     onClick={handleDecrement}
                     className="w-8 md:w-10 h-full flex items-center justify-center text-text-muted hover:text-primary active:scale-90 transition-all"
                 >
-                    <span className="material-symbols-outlined text-[20px]">remove</span>
+                    <MdRemove className="text-[20px]" />
                 </button>
                 <span className="text-lg font-bold text-text-main dark:text-white">{quantity}</span>
                 <button
                     onClick={handleIncrement}
                     className="w-8 md:w-10 h-full flex items-center justify-center text-text-muted hover:text-primary active:scale-90 transition-all"
                 >
-                    <span className="material-symbols-outlined text-[20px]">add</span>
+                    <MdAdd className="text-[20px]" />
                 </button>
             </div>
             <button
                 onClick={handleAddToCart}
                 className="flex-1 h-14 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-lg shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-all transform active:scale-95 hover:-translate-y-0.5 active:translate-y-0"
             >
-                <span className="material-symbols-outlined text-[24px]">shopping_bag</span>
+                <MdShoppingBag className="text-[24px]" />
                 {t('products.addToCart')}
             </button>
         </div>

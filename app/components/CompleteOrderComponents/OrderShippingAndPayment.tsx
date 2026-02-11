@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { MdLocalShipping, MdPayments } from 'react-icons/md';
 
 interface OrderShippingAndPaymentProps {
     name: string;
@@ -17,7 +18,7 @@ const OrderShippingAndPayment = ({ name, streetAddress, city, phone }: OrderShip
         <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="flex flex-col gap-4">
                 <h3 className="text-sm font-bold flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary text-lg">local_shipping</span>
+                    <MdLocalShipping className="text-primary text-lg" />
                     {t('orderComplete.shippingAddress')}
                 </h3>
                 <div className="text-[#5a424a] dark:text-[#b49ba4] text-sm leading-relaxed">
@@ -29,7 +30,7 @@ const OrderShippingAndPayment = ({ name, streetAddress, city, phone }: OrderShip
             </div>
             <div className="flex flex-col gap-4">
                 <h3 className="text-sm font-bold flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary text-lg">payments</span>
+                    <MdPayments className="text-primary text-lg" />
                     {t('checkout.paymentMethod')}
                 </h3>
                 <div className="flex flex-col gap-1">

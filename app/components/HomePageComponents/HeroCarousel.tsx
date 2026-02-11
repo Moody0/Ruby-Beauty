@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { MdArrowForward, MdChevronLeft, MdChevronRight } from 'react-icons/md';
 
 interface Banner {
     id: string;
@@ -127,11 +128,11 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                             className="px-6 sm:px-8 py-3 sm:py-3.5  bg-primary hover:bg-primary/90 text-white rounded-full font-bold text-sm transition-all flex items-center gap-2 w-fit group/btn shadow-lg "
                                         >
                                             {dir === 'rtl' && (
-                                                <span className="material-symbols-outlined text-lg group-hover/btn:-translate-x-1 transition-transform">arrow_forward</span>
+                                                <MdArrowForward className="text-lg group-hover/btn:-translate-x-1 transition-transform" />
                                             )}
                                             {banner.buttonText || t('home.shopNow')}
                                             {dir !== 'rtl' && (
-                                                <span className="material-symbols-outlined text-lg group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+                                                <MdArrowForward className="text-lg group-hover/btn:translate-x-1 transition-transform" />
                                             )}
                                         </Link>
                                     </div>
@@ -159,7 +160,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                             className={`px-8 py-3.5 bg-primary hover:bg-primary/90 text-white rounded-full font-bold text-sm transition-all flex items-center gap-2 w-fit group/btn ${dir === 'rtl' ? 'self-end' : ''}`}
                                         >
                                             {banner.buttonText || t('home.shopNow')}
-                                            <span className={`material-symbols-outlined text-lg group-hover/btn:translate-x-1 transition-transform ${dir === 'rtl' ? ' group-hover/btn:-translate-x-1' : ''}`}>arrow_forward</span>
+                                            <MdArrowForward className={`text-lg group-hover/btn:translate-x-1 transition-transform ${dir === 'rtl' ? ' group-hover/btn:-translate-x-1' : ''}`} />
                                         </Link>
                                     </div>
                                 </div>
@@ -187,14 +188,14 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                 className={`absolute ${dir === 'rtl' ? 'right-4 rotate-180' : 'left-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100`}
                                 aria-label="Previous slide"
                             >
-                                <span className={`material-symbols-outlined ${dir === 'rtl' ? '' : ''}`}>chevron_left</span>
+                                <MdChevronLeft />
                             </button>
                             <button
                                 onClick={nextSlide}
                                 className={`absolute ${dir === 'rtl' ? 'left-4 rotate-180' : 'right-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100`}
                                 aria-label="Next slide"
                             >
-                                <span className="material-symbols-outlined">chevron_right</span>
+                                <MdChevronRight />
                             </button>
 
                             {/* Dots Indicator */}

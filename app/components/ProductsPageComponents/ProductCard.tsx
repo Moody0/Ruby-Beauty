@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React from 'react';
 import { useCart } from '@/app/context/CartContext';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { MdAddShoppingCart, MdAdd } from 'react-icons/md';
 import toast from 'react-hot-toast';
 
 interface Product {
@@ -64,7 +65,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     onClick={handleQuickAdd}
                     className="hidden lg:flex absolute bottom-4 left-4 right-4 items-center justify-center gap-2 rounded-lg bg-white/95 py-3 text-sm font-bold text-[#181113] shadow-lg backdrop-blur-sm transition-all hover:bg-primary hover:text-white opacity-0 translate-y-4 group-hover:translate-y-0 group-hover:opacity-100 dark:bg-background-dark/95 dark:text-white dark:hover:bg-primary"
                 >
-                    <span className="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+                    <MdAddShoppingCart className="text-[20px]" />
                     {t('products.addToCart')}
                 </button>
                 <button
@@ -72,7 +73,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     className="lg:hidden absolute bottom-2 ltr:right-2 p-2 rtl:left-2 flex rounded-full bg-white/90 text-black shadow-md backdrop-blur-sm"
                     aria-label={t('products.addToCart')}
                 >
-                    <span className="material-symbols-outlined text-[18px]">add</span>
+                    <MdAdd className="text-[18px]" />
                 </button>
             </Link>
             <div className="flex flex-col gap-1 p-0.5">

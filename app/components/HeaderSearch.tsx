@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { MdSearch, MdArrowForward, MdSearchOff } from 'react-icons/md';
 
 interface HeaderSearchProps {
     onSearchSelect?: () => void;
@@ -69,7 +70,7 @@ const HeaderSearch = ({ onSearchSelect, placeholder, autoFocus = false, locale }
     return (
         <div ref={searchRef} className="relative w-full group">
             <div className={`absolute inset-y-0 ${dir === 'rtl' ? 'right-0 pr-3' : 'left-0 pl-3'} flex items-center pointer-events-none`}>
-                <span className="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark">search</span>
+                <MdSearch className="text-text-muted-light dark:text-text-muted-dark" />
             </div>
             <input
                 autoFocus={autoFocus}
@@ -119,15 +120,13 @@ const HeaderSearch = ({ onSearchSelect, placeholder, autoFocus = false, locale }
                                             )}
                                         </div>
                                     </div>
-                                    <span className={`material-symbols-outlined text-gray-300 group-hover/item:text-primary ${dir === 'rtl' ? 'translate-x-2 group-hover/item:translate-x-0 rotate-180' : '-translate-x-2 group-hover/item:translate-x-0'} opacity-0 group-hover/item:opacity-100 transition-all text-xl`}>
-                                        arrow_forward
-                                    </span>
+                                    <MdArrowForward className={`text-gray-300 group-hover/item:text-primary ${dir === 'rtl' ? 'translate-x-2 group-hover/item:translate-x-0 rotate-180' : '-translate-x-2 group-hover/item:translate-x-0'} opacity-0 group-hover/item:opacity-100 transition-all text-xl`} />
                                 </Link>
                             ))}
                         </div>
                     ) : (
                         <div className="p-8 text-center flex flex-col items-center gap-2">
-                            <span className="material-symbols-outlined text-3xl text-[#e6dbdf] dark:text-[#4a2e36]">search_off</span>
+                            <MdSearchOff className="text-3xl text-[#e6dbdf] dark:text-[#4a2e36]" />
                             <p className="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">{t('products.noProducts')}</p>
                         </div>
                     )}

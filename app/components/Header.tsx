@@ -8,6 +8,7 @@ import { useCart } from '@/app/context/CartContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import HeaderSearch from './HeaderSearch';
 import LanguageToggle from './LanguageToggle';
+import { MdMenu, MdSearch, MdShoppingBag, MdClose, MdHome, MdShoppingCart, MdCategory, MdExpandMore, MdInfo } from 'react-icons/md';
 
 const Header = () => {
     const pathname = usePathname();
@@ -61,7 +62,7 @@ const Header = () => {
                             onClick={() => setIsMobileMenuOpen(true)}
                             className="md:hidden p-0 flex items-center justify-center w-10 h-10 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main-light dark:text-text-main-dark"
                         >
-                            <span className="material-symbols-outlined text-[24px]">menu</span>
+                            <MdMenu className="text-[24px]" />
 
                         </button>
 
@@ -94,10 +95,10 @@ const Header = () => {
                                 onClick={() => setIsMobileSearchOpen(true)}
                                 className="md:hidden p-2 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main-light dark:text-text-main-dark"
                             >
-                                <span className="material-symbols-outlined text-[20px]">search</span>
+                                <MdSearch className="text-[20px]" />
                             </button>
                             <Link href="/cart" className="p-2 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main-light dark:text-text-main-dark relative group">
-                                <span className="material-symbols-outlined text-[24px]">shopping_bag</span>
+                                <MdShoppingBag className="text-[24px]" />
                                 {cartCount > 0 && (
                                     <span className="absolute top-1 right-0.5 rtl:right-auto rtl:left-0.5 size-2 bg-primary rounded-full"></span>
                                 )}
@@ -126,7 +127,7 @@ const Header = () => {
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
                             >
-                                <span className="material-symbols-outlined text-text-main-light dark:text-white text-3xl">close</span>
+                                <MdClose className="text-text-main-light dark:text-white text-3xl" />
                             </button>
                         </div>
 
@@ -136,7 +137,7 @@ const Header = () => {
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className={`flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border ${isActive('/') ? 'bg-primary/10 text-primary border-primary/20' : 'border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20'}`}
                             >
-                                <span className="material-symbols-outlined text-2xl opacity-70">home</span>
+                                <MdHome className="text-2xl opacity-70" />
                                 <span className="text-xl font-medium">{t('common.home')}</span>
                             </Link>
                             <Link
@@ -144,7 +145,7 @@ const Header = () => {
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className={`flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border ${isActive('/products') ? 'bg-primary/10 text-primary border-primary/20' : 'border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20'}`}
                             >
-                                <span className="material-symbols-outlined text-2xl opacity-70">shopping_cart</span>
+                                <MdShoppingCart className="text-2xl opacity-70" />
                                 <span className="text-xl font-medium">{t('common.shop')}</span>
                             </Link>
 
@@ -154,10 +155,10 @@ const Header = () => {
                                 className="flex items-center justify-between gap-4 py-4 px-6 rounded-2xl transition-all border border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20"
                             >
                                 <div className="flex items-center gap-4">
-                                    <span className="material-symbols-outlined text-2xl opacity-70">category</span>
+                                    <MdCategory className="text-2xl opacity-70" />
                                     <span className="text-xl font-medium">{t('common.categories')}</span>
                                 </div>
-                                <span className={`material-symbols-outlined transition-transform ${isCategoriesExpanded ? 'rotate-180' : ''}`}>expand_more</span>
+                                <MdExpandMore className={`transition-transform ${isCategoriesExpanded ? 'rotate-180' : ''}`} />
                             </button>
                             
 
@@ -204,7 +205,7 @@ const Header = () => {
                                         : 'border-transparent hover:bg-primary/5 hover:text-primary hover:border-primary/20'
                                 }`}
                             >
-                                <span className="material-symbols-outlined text-2xl opacity-70">info</span>
+                                <MdInfo className="text-2xl opacity-70" />
                                 <span className="text-xl font-medium">{t('common.aboutUs')}</span>
                             </Link>
                         </nav>
@@ -222,7 +223,7 @@ const Header = () => {
                                 onClick={() => setIsMobileSearchOpen(false)}
                                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                             >
-                                <span className="material-symbols-outlined">close</span>
+                                <MdClose />
                             </button>
                         </div>
                         <div className="p-4">
