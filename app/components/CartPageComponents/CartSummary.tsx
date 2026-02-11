@@ -39,7 +39,14 @@ const CartSummary = ({ subtotal }: CartSummaryProps) => {
             </div>
             <div className="bg-[#fcfafa] dark:bg-[#2a161d]/50 p-4 rounded-xl border border-dashed border-gray-200 dark:border-[#3a2228] text-center">
                 <p className="text-sm text-[#89616f]">{t('footer.contactUs')}</p>
-                <a className="text-sm font-bold text-primary hover:underline mt-1 block" href="#">{t('footer.helpCenter')}</a>
+                <a 
+                    className="text-sm font-bold text-primary hover:underline mt-1 block" 
+                    href="https://wa.me/963933254796"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    {t('footer.helpCenter')}
+                </a>
             </div>
         </div>
     );

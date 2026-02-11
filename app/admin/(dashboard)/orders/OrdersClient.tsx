@@ -4,7 +4,7 @@ import AdminHeader from "../../components/AdminHeader";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import Link from "next/link";
 import { updateOrderStatus, deleteOrder } from "../../../../lib/admin-actions";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import OrderDetailsModal from "./OrderDetailsModal";
 import { OrderStatus } from "@prisma/client";
 import { useSession } from "next-auth/react";
@@ -257,34 +257,42 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                                         </span>
                                                     </td>
                                                     <td className="p-4">
-                                                        <div className="relative group/status w-fit">
+                                                        <div className="relative w-fit group">
                                                             <select
-                                                                disabled={updatingId === order.id || !canManage}
                                                                 value={order.status}
+                                                                disabled={updatingId === order.id || !canManage}
                                                                 onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
-                                                                className={`appearance-none ${dir === 'rtl' ? 'pr-8 pl-10' : 'pl-8 pr-10'} py-1.5 rounded-full text-xs font-bold cursor-pointer transition-all outline-none border bg-white dark:bg-surface-dark focus:ring-2 focus:ring-primary/20 ${statusColor === "blue" ? "text-blue-600 border-blue-100 dark:text-blue-300 dark:border-blue-900/50" :
-                                                                    statusColor === "amber" ? "text-amber-600 border-amber-100 dark:text-amber-300 dark:border-amber-900/50" :
-                                                                        statusColor === "emerald" ? "text-emerald-600 border-emerald-100 dark:text-emerald-300 dark:border-emerald-900/50" :
-                                                                            statusColor === "red" ? "text-red-600 border-red-100 dark:text-red-300 dark:border-red-900/50" :
-                                                                                statusColor === "purple" ? "text-purple-600 border-purple-100 dark:text-purple-300 dark:border-purple-900/50" :
-                                                                                    "text-gray-600 border-gray-100 dark:text-gray-300 dark:border-gray-800"
+                                                                className={`appearance-none pl-11 pr-12 py-3.5 rounded-2xl text-xs font-bold transition-all outline-none border shadow-sm hover:shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${statusColor === "blue" ? "text-blue-600 bg-blue-50/50 border-blue-100 dark:text-blue-300 dark:bg-blue-900/20 dark:border-blue-800" :
+                                                                    statusColor === "amber" ? "text-amber-600 bg-amber-50/50 border-amber-100 dark:text-amber-300 dark:bg-amber-900/20 dark:border-amber-800" :
+                                                                        statusColor === "emerald" ? "text-emerald-600 bg-emerald-50/50 border-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/20 dark:border-emerald-800" :
+                                                                            statusColor === "red" ? "text-red-600 bg-red-50/50 border-red-100 dark:text-red-300 dark:bg-red-900/20 dark:border-red-800" :
+                                                                                statusColor === "purple" ? "text-purple-600 bg-purple-50/50 border-purple-100 dark:text-purple-300 dark:bg-purple-900/20 dark:border-purple-800" :
+                                                                                    "text-gray-600 bg-gray-50/50 border-gray-100 dark:text-gray-300 dark:bg-gray-800 dark:border-gray-700"
                                                                     }`}
                                                             >
-                                                                <option value="PENDING">{t('admin.pending')}</option>
-                                                                <option value="PROCESSING">{t('admin.processing')}</option>
-                                                                <option value="SHIPPED">{t('admin.shipped')}</option>
-                                                                <option value="DELIVERED">{t('admin.delivered')}</option>
-                                                                <option value="CANCELLED">{t('admin.cancelled')}</option>
+                                                                <option value="PENDING" className="bg-white dark:bg-surface-dark text-amber-600">{t('admin.pending')}</option>
+                                                                <option value="PROCESSING" className="bg-white dark:bg-surface-dark text-blue-600">{t('admin.processing')}</option>
+                                                                <option value="SHIPPED" className="bg-white dark:bg-surface-dark text-purple-600">{t('admin.shipped')}</option>
+                                                                <option value="DELIVERED" className="bg-white dark:bg-surface-dark text-emerald-600">{t('admin.delivered')}</option>
+                                                                <option value="CANCELLED" className="bg-white dark:bg-surface-dark text-red-600">{t('admin.cancelled')}</option>
                                                             </select>
-                                                            <span className={`absolute ${dir === 'rtl' ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 size-2 rounded-full ${statusColor === "blue" ? "bg-blue-500" :
-                                                                statusColor === "amber" ? "bg-amber-500" :
-                                                                    statusColor === "emerald" ? "bg-emerald-500" :
-                                                                        statusColor === "red" ? "bg-red-500" :
-                                                                            statusColor === "purple" ? "bg-purple-500" : "bg-gray-500"
-                                                                }`}></span>
-                                                            <span className={`material-symbols-outlined absolute ${dir === 'rtl' ? 'left-3' : 'right-3'} top-1/2 -translate-y-1/2 text-[16px] pointer-events-none text-text-sub dark:text-gray-500`}>
-                                                                {updatingId === order.id ? 'sync' : 'expand_more'}
-                                                            </span>
+                                                            
+                                                            {/* Status Dot */}
+                                                            <div className={`absolute ${dir === 'rtl' ? 'right-5' : 'left-5'} top-1/2 -translate-y-1/2 flex items-center pointer-events-none`}>
+                                                                <span className={`size-2.5 rounded-full ${statusColor === "blue" ? "bg-blue-500 animate-pulse" :
+                                                                    statusColor === "amber" ? "bg-amber-500" :
+                                                                        statusColor === "emerald" ? "bg-emerald-500" :
+                                                                            statusColor === "red" ? "bg-red-500" :
+                                                                                statusColor === "purple" ? "bg-purple-500" : "bg-gray-500"
+                                                                    }`}></span>
+                                                            </div>
+
+                                                            {/* Arrow Icon */}
+                                                            <div className={`absolute ${dir === 'rtl' ? 'left-3' : 'right-3'} top-1/2 -translate-y-1/2 flex items-center pointer-events-none transition-transform group-hover:translate-y-[-40%] duration-200`}>
+                                                                <span className="material-symbols-outlined text-[18px] text-current opacity-70">
+                                                                    {updatingId === order.id ? 'sync' : 'expand_more'}
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </td>
                                                     <td className={`p-4 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>

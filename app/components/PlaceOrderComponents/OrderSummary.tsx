@@ -149,7 +149,14 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                 </div>
                 <div>
                     <p className="text-sm font-bold dark:text-white">{t('checkout.needAssistance')}</p>
-                    <a className="text-xs text-[#89616f] hover:text-primary underline" href="#">{t('checkout.speakWithExpert')}</a>
+                    <a 
+                        className="text-xs text-[#89616f] hover:text-primary underline" 
+                        href="https://wa.me/963933254796"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {t('checkout.speakWithExpert')}
+                    </a>
                 </div>
             </div>
         </div>
