@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link'
+import Image from 'next/image'
 import React from 'react'
 import { useLanguage } from '@/app/context/LanguageContext';
 import { MdChevronRight } from 'react-icons/md';
@@ -38,10 +39,12 @@ const Categories = ({ categories }: { categories: Category[] }) => {
                             className="group flex flex-col gap-3 p-2 rounded-2xl transition-all duration-300 hover:bg-white dark:hover:bg-white/5 premium-shadow-hover"
                         >
                             <div className="relative aspect-4/4 w-full overflow-hidden rounded-xl bg-gray-100 dark:bg-white/5">
-                                <img
+                                <Image
                                     src={category.image || defaultImage}
                                     alt={category.name}
-                                    className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-110"
+                                    className="object-contain transition-transform duration-500 group-hover:scale-110"
+                                    fill
+                                    sizes="(max-width: 640px) 50vw, 25vw"
                                 />
                             </div>
                             <div className="flex flex-col items-center text-center px-1">

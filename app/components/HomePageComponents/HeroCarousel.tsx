@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { MdArrowForward, MdChevronLeft, MdChevronRight } from 'react-icons/md';
 
@@ -63,6 +64,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
         setCurrentIndex(index);
     };
 
+    // Auto-rotation effect
     useEffect(() => {
         if (isPaused || displayBanners.length <= 1) return;
 
@@ -72,14 +74,6 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
 
         return () => clearInterval(interval);
     }, [isPaused, nextSlide, displayBanners.length]);
-
-    // Preload images for smoother transitions
-    useEffect(() => {
-        displayBanners.forEach((banner) => {
-            const img = new Image();
-            img.src = banner.image;
-        });
-    }, [displayBanners]);
 
     if (displayBanners.length === 0) return null;
 
@@ -101,10 +95,13 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                             <div className="md:hidden relative w-full h-full">
                                 {/* Image Container */}
                                 <div className="absolute inset-0 w-full h-full bg-gray-50 dark:bg-white/5">
-                                    <img
+                                    <Image
                                         src={banner.image}
                                         alt={getBannerTitle(banner)}
-                                        className="w-full h-full object-cover"
+                                        className="object-cover"
+                                        fill
+                                        priority={index === 0}
+                                        sizes="100vw"
                                     />
                                     {/* Subtle overlay for text readability on mobile */}
                                     <div className="absolute inset-0 bg-black/20"></div>
@@ -168,10 +165,13 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                 {/* Hero Image — order-1 in RTL so it appears on the left */}
                                 <div className={`w-full md:w-1/2 h-full relative ${dir === 'rtl' ? 'order-1' : 'order-2'}`}>
                                     <div className="w-full h-full bg-gray-50 dark:bg-white/5 relative">
-                                        <img
+                                        <Image
                                             src={banner.image}
                                             alt={getBannerTitle(banner)}
-                                            className="w-full h-full object-cover transition-transform duration-1000 ease-in-out group-hover:scale-105"
+                                            className="object-cover transition-transform duration-1000 ease-in-out group-hover:scale-105"
+                                            fill
+                                            priority={index === 0}
+                                            sizes="50vw"
                                         />
                                     </div>
                                 </div>

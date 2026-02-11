@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import React from 'react';
 import { useCart } from '@/app/context/CartContext';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -56,10 +57,14 @@ const ProductCard = ({ product }: ProductCardProps) => {
                         -{Math.round((1 - Number(product.discountPrice) / Number(product.price)) * 100)}%
                     </span>
                 )}
-                <img
+                <Image
                     alt={product.name}
-                    className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
+                    className="object-contain transition-transform duration-500 group-hover:scale-105"
                     src={product.images}
+                    fill
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    priority={product.isTrending}
+                    loading={product.isTrending ? undefined : "lazy"}
                 />
                 <button
                     onClick={handleQuickAdd}

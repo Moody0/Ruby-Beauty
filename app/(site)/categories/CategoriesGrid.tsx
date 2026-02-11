@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useLanguage } from "@/app/context/LanguageContext";
 
 interface Category {
@@ -37,10 +38,13 @@ const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
                         className="group flex flex-col gap-5 p-2 rounded-2xl bg-surface-light dark:bg-surface-dark border border-transparent hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all animate-in fade-in zoom-in-95 duration-500"
                     >
                         <div className="relative aspect-16/10 overflow-hidden rounded-xl bg-background-light dark:bg-background-dark">
-                            <div
-                                className="h-full w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                                style={{ backgroundImage: `url('${category.image || defaultImage}')` }}
-                            ></div>
+                            <Image
+                                src={category.image || defaultImage}
+                                alt={category.name}
+                                className="object-cover transition-transform duration-700 group-hover:scale-110"
+                                fill
+                                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            />
                         </div>
                         <div className="px-4 pb-4">
                             <h3 className="text-2xl font-bold text-text-main-light dark:text-text-main-dark group-hover:text-primary transition-colors">{category.name}</h3>

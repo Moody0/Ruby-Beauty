@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useLanguage } from "@/app/context/LanguageContext";
 import CategoriesGrid from "./CategoriesGrid";
 import { Settings } from "@prisma/client";
@@ -66,11 +67,15 @@ export default function CategoriesContent({ categories, siteSettings }: Categori
                         </div>
                     </div>
                     <div className="hidden lg:block w-1/3">
-                        <img
-                            alt={t('products.productSelection')}
-                            className="rounded-2xl shadow-2xl rotate-3 scale-110 rtl:-rotate-3 w-full h-auto object-cover"
-                            src={ctaImage}
-                        />
+                        <div className="relative aspect-square w-full">
+                            <Image
+                                src={ctaImage}
+                                alt={t('products.productSelection')}
+                                className="rounded-2xl shadow-2xl rotate-3 scale-110 rtl:-rotate-3 object-cover"
+                                fill
+                                sizes="(max-width: 1024px) 0vw, 33vw"
+                            />
+                        </div>
                     </div>
                 </div>
             </section>

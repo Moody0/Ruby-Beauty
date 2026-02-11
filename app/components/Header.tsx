@@ -10,7 +10,11 @@ import HeaderSearch from './HeaderSearch';
 import LanguageToggle from './LanguageToggle';
 import { MdMenu, MdSearch, MdShoppingBag, MdClose, MdHome, MdShoppingCart, MdCategory, MdExpandMore, MdInfo } from 'react-icons/md';
 
-const Header = () => {
+interface HeaderProps {
+    initialCategories?: any[];
+}
+
+const Header = ({ initialCategories = [] }: HeaderProps) => {
     const pathname = usePathname();
     const { cartCount } = useCart();
     const { t, dir, language } = useLanguage();
@@ -21,7 +25,7 @@ const Header = () => {
         if (path === '/') return pathname === '/';
         return pathname.startsWith(path);
     };
-    const [categories, setCategories] = useState<any[]>([]);
+    const [categories, setCategories] = useState<any[]>(initialCategories);
     const [categorySearch, setCategorySearch] = useState('');
     const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
 
@@ -34,6 +38,8 @@ const Header = () => {
     }, [isMobileSearchOpen, isMobileMenuOpen]);
 
     useEffect(() => {
+        if (initialCategories.length > 0) return;
+
         const fetchCategories = async () => {
             try {
                 // Limit to 20 categories for mobile menu to avoid loading hundreds
@@ -45,7 +51,7 @@ const Header = () => {
             }
         };
         fetchCategories();
-    }, []);
+    }, [initialCategories]);
 
     const filteredCategories = categories.filter((c: any) => {
         if (!categorySearch) return true;
