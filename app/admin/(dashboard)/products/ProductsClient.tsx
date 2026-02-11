@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import AdminHeader from "../../components/AdminHeader";
 import AddProductModal from "./AddProductModal";
-import { deleteProduct, toggleProductTrending, bulkToggleTrending, bulkCreateProducts } from "../../../../lib/admin-actions";
+import { deleteProduct, toggleProductTrending, bulkToggleTrending, bulkCreateProducts, bulkRemoveSale } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useLanguage } from "@/app/context/LanguageContext";
@@ -162,6 +162,27 @@ export default function ProductsClient({ products, categories }: { products: Pro
             const result = await bulkToggleTrending(ids, false);
             if (result.success) {
                 toast.success(`Removed trending status from ${ids.length} products`);
+                setSelectedIds(new Set());
+            } else {
+                toast.error(result.error || "Failed to update products");
+            }
+        } catch (error) {
+            console.error("Error in bulk update:", error);
+            toast.error("An unexpected error occurred");
+        } finally {
+            setIsSubmittingBulk(false);
+        }
+    };
+
+    const handleBulkRemoveSale = async () => {
+        if (selectedIds.size === 0) return;
+
+        const ids = Array.from(selectedIds);
+        setIsSubmittingBulk(true);
+        try {
+            const result = await bulkRemoveSale(ids);
+            if (result.success) {
+                toast.success(`Removed sale from ${ids.length} products`);
                 setSelectedIds(new Set());
             } else {
                 toast.error(result.error || "Failed to update products");
@@ -465,6 +486,20 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                 <span className="material-symbols-outlined text-[18px]">trending_down</span>
                                             )}
                                             {t('admin.removeTrending')}
+                                        </button>
+                                    )}
+                                    {canEdit && (
+                                        <button
+                                            onClick={handleBulkRemoveSale}
+                                            disabled={isSubmittingBulk}
+                                            className="flex items-center gap-2 px-4 py-2 bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 text-xs font-bold rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900/30 transition-all border border-emerald-200 dark:border-emerald-800/50 disabled:opacity-50"
+                                        >
+                                            {isSubmittingBulk ? (
+                                                <span className="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>
+                                            ) : (
+                                                <span className="material-symbols-outlined text-[18px]">money_off</span>
+                                            )}
+                                            {t('admin.removeSale')}
                                         </button>
                                     )}
                                     {canDelete && (

@@ -229,6 +229,7 @@
         "itemsSelected": "Items selected",
         "deselectAll": "Deselect all",
         "removeTrending": "Remove Trending",
+        "removeSale": "Remove Sale",
         "deleteSelected": "Delete Selected",
         "sku": "SKU",
         "inventory": "Inventory",

@@ -1063,3 +1063,25 @@ export async function bulkToggleTrending(ids: string[], isTrending: boolean) {
     }
 }
 
+export async function bulkRemoveSale(ids: string[]) {
+    try {
+        await prisma.product.updateMany({
+            where: {
+                id: { in: ids }
+            },
+            data: {
+                discountPrice: null,
+                discountType: null,
+                discountValue: null
+            }
+        });
+
+        revalidatePath('/');
+        revalidatePath('/admin/products');
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to bulk remove sale:", error);
+        return { success: false, error: "Failed to bulk remove sale" };
+    }
+}
+
