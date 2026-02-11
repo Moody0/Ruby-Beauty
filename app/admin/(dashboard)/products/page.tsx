@@ -5,8 +5,8 @@ export const revalidate = 60; // Revalidate every minute for admin
 
 export default async function AdminProductsPage() {
     const [productsData, categoriesData] = await Promise.all([
-        getAdminProducts(1, 50),
-        getAdminCategories(1, 100)
+        getAdminProducts(1, 2000),
+        getAdminCategories(1, 2000)
     ]);
 
     return <ProductsClient products={productsData.products} categories={categoriesData.categories} />;

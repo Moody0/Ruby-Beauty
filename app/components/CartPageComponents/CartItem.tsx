@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { MdDelete } from 'react-icons/md';
 import { CartItem as CartItemType } from '@/app/context/CartContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 
@@ -55,7 +56,7 @@ const CartItem = ({ item, removeItem, updateQuantity }: CartItemProps) => {
                         onClick={() => removeItem(item.id)}
                         className="text-[#89616f] hover:text-primary transition-colors flex items-center gap-1 text-sm font-medium"
                     >
-                        <span className="material-symbols-outlined text-[18px]">delete</span>
+                        <MdDelete className="text-[18px]" />
                         <span className="hidden sm:inline">{t('cart.remove')}</span>
                     </button>
                 </div>
