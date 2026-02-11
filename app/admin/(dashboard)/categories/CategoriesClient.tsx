@@ -65,14 +65,18 @@ export default function CategoriesClient({ categories }: { categories: Category[
         try {
             const result = await bulkDeleteCategories(ids);
             if (result.success) {
-                if (result.message) {
-                    toast(result.message, { icon: '⚠️', duration: 6000 });
+                if (result.partial) {
+                    toast(t('admin.bulkDeleteCategoriesPartial')
+                        .replace('{count}', result.count?.toString() || '0')
+                        .replace('{names}', result.names || ''), 
+                        { icon: '⚠️', duration: 6000 }
+                    );
                 } else {
-                    toast.success(`Deleted ${ids.length} categories successfully`);
+                    toast.success(t('admin.bulkDeleteCategoriesSuccess').replace('{count}', result.count?.toString() || '0'));
                 }
                 setSelectedIds(new Set());
             } else {
-                toast.error(result.error || "Failed to delete categories");
+                toast.error(t(`admin.${result.error}`) || t('admin.bulkDeleteCategoriesError'));
             }
         } catch (error) {
             console.error("Error in bulk delete:", error);
@@ -144,7 +148,7 @@ export default function CategoriesClient({ categories }: { categories: Category[
                 if (result.success) {
                     toast.success(t('admin.categoryDeleted'));
                 } else {
-                    toast.error(result.error || "Failed to delete category");
+                    toast.error(t(`admin.${result.error}`) || t('admin.deleteCategoryError'));
                 }
             } catch (error) {
                 console.error("Error deleting category:", error);

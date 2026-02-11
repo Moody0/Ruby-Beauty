@@ -142,9 +142,9 @@ export default function ProductsClient({ products, categories }: { products: Pro
             try {
                 const result = await deleteProduct(id);
                 if (result.success) {
-                    toast.success("Product deleted successfully");
+                    toast.success(t('admin.productDeleted'));
                 } else {
-                    toast.error(result.error || "Failed to delete product");
+                    toast.error(t(`admin.${result.error}`) || t('admin.deleteProductError'));
                 }
             } catch (error) {
                 console.error("Error deleting product:", error);
@@ -206,14 +206,18 @@ export default function ProductsClient({ products, categories }: { products: Pro
         try {
             const result = await bulkDeleteProducts(ids);
             if (result.success) {
-                if (result.message) {
-                    toast(result.message, { icon: '⚠️', duration: 6000 });
+                if (result.partial) {
+                    toast(t('admin.bulkDeleteProductsPartial')
+                        .replace('{count}', result.count?.toString() || '0')
+                        .replace('{names}', result.names || ''), 
+                        { icon: '⚠️', duration: 6000 }
+                    );
                 } else {
-                    toast.success(`Deleted ${ids.length} products successfully`);
+                    toast.success(t('admin.bulkDeleteProductsSuccess').replace('{count}', result.count?.toString() || '0'));
                 }
                 setSelectedIds(new Set());
             } else {
-                toast.error(result.error || "Failed to delete products");
+                toast.error(t(`admin.${result.error}`) || t('admin.bulkDeleteProductsError'));
             }
         } catch (error) {
             console.error("Error in bulk delete:", error);

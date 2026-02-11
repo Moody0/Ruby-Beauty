@@ -401,9 +401,12 @@ export async function deleteProduct(id: string) {
 
         revalidatePath('/admin/products');
         return { success: true };
-    } catch (error) {
+    } catch (error: any) {
         console.error("Failed to delete product:", error);
-        return { success: false, error: "Failed to delete product" };
+        if (error.code === 'P2003') {
+            return { success: false, error: "deleteProductWithOrders" };
+        }
+        return { success: false, error: "deleteProductError" };
     }
 }
 
@@ -501,7 +504,7 @@ export async function deleteCategory(id: string) {
         });
 
         if (productsCount > 0) {
-            return { success: false, error: "Cannot delete category with associated products. Please move or delete the products first." };
+            return { success: false, error: "deleteCategoryWithProducts" };
         }
 
         await prisma.category.delete({
@@ -513,7 +516,7 @@ export async function deleteCategory(id: string) {
         return { success: true };
     } catch (error) {
         console.error("Failed to delete category:", error);
-        return { success: false, error: "Failed to delete category" };
+        return { success: false, error: "deleteCategoryError" };
     }
 }
 
@@ -1143,14 +1146,16 @@ export async function bulkDeleteProducts(ids: string[]) {
             const names = productsWithOrders.map(p => p.name).join(", ");
             return { 
                 success: true, 
-                message: `Deleted ${idsToDelete.length} products. Could not delete: ${names} because they are part of existing orders.` 
+                partial: true,
+                count: idsToDelete.length,
+                names
             };
         }
 
-        return { success: true };
+        return { success: true, count: idsToDelete.length };
     } catch (error: any) {
         console.error("Detailed Bulk Delete Error:", error);
-        return { success: false, error: "Failed to delete selected products. Check server logs for details." };
+        return { success: false, error: "bulkDeleteProductsError" };
     }
 }
 
@@ -1184,14 +1189,16 @@ export async function bulkDeleteCategories(ids: string[]) {
             const names = categoriesWithProducts.map(c => c.name).join(", ");
             return { 
                 success: true, 
-                message: `Deleted ${idsToDelete.length} categories. Could not delete: ${names} because they still contain products. Move or delete the products first.` 
+                partial: true,
+                count: idsToDelete.length,
+                names
             };
         }
 
-        return { success: true };
+        return { success: true, count: idsToDelete.length };
     } catch (error: any) {
         console.error("Detailed Bulk Delete Categories Error:", error);
-        return { success: false, error: "Failed to delete selected categories." };
+        return { success: false, error: "bulkDeleteCategoriesError" };
     }
 }
 
