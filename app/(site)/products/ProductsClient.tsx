@@ -13,7 +13,7 @@ import { useLanguage } from '@/app/context/LanguageContext';
 interface Category {
     id: string;
     name: string;
-    description: string;
+    description: string | null;
 }
 
 interface Product {

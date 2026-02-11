@@ -7,7 +7,7 @@ import { MdFilterList, MdKeyboardArrowDown } from 'react-icons/md';
 interface Category {
     id: string;
     name: string;
-    description: string;
+    description: string | null;
 }
 
 interface ProductsSidebarProps {
