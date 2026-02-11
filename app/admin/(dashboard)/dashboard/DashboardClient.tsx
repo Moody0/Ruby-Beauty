@@ -6,6 +6,7 @@ import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import { useState } from "react";
 import OrderDetailsModal from "../orders/OrderDetailsModal";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { MdAttachMoney, MdShoppingBag, MdCheckroom, MdCategory, MdChevronRight, MdChevronLeft } from "react-icons/md";
 
 interface RecentOrder {
     id: string;
@@ -64,7 +65,7 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                         <div className="flex flex-col gap-4 rounded-xl p-5 md:p-6 bg-surface-light dark:bg-surface-dark shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] dark:shadow-none border border-[#e6dbdf]/50 dark:border-gray-700">
                             <div className="flex justify-between items-start">
                                 <div className="p-3 bg-primary/10 rounded-lg text-primary">
-                                    <span className="material-symbols-outlined filled">attach_money</span>
+                                    <MdAttachMoney className="text-[24px]" />
                                 </div>
                             </div>
                             <div>
@@ -81,7 +82,7 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                         <div className="flex flex-col gap-4 rounded-xl p-5 md:p-6 bg-surface-light dark:bg-surface-dark shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] dark:shadow-none border border-[#e6dbdf]/50 dark:border-gray-700">
                             <div className="flex justify-between items-start">
                                 <div className="p-3 bg-primary/10 rounded-lg text-primary">
-                                    <span className="material-symbols-outlined filled">shopping_bag</span>
+                                    <MdShoppingBag className="text-[24px]" />
                                 </div>
                             </div>
                             <div>
@@ -98,7 +99,7 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                         <div className="flex flex-col gap-4 rounded-xl p-5 md:p-6 bg-surface-light dark:bg-surface-dark shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] dark:shadow-none border border-[#e6dbdf]/50 dark:border-gray-700">
                             <div className="flex justify-between items-start">
                                 <div className="p-3 bg-primary/10 rounded-lg text-primary">
-                                    <span className="material-symbols-outlined filled">checkroom</span>
+                                    <MdCheckroom className="text-[24px]" />
                                 </div>
                             </div>
                             <div>
@@ -115,7 +116,7 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                         <div className="flex flex-col gap-4 rounded-xl p-5 md:p-6 bg-surface-light dark:bg-surface-dark shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] dark:shadow-none border border-[#e6dbdf]/50 dark:border-gray-700">
                             <div className="flex justify-between items-start">
                                 <div className="p-3 bg-primary/10 rounded-lg text-primary">
-                                    <span className="material-symbols-outlined filled">category</span>
+                                    <MdCategory className="text-[24px]" />
                                 </div>
                             </div>
                             <div>
@@ -233,11 +234,10 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                                                     <td className="p-3 md:p-4 text-right">
                                                         <button
                                                             onClick={() => handleViewDetails(order)}
-                                                            className="text-text-sub hover:text-text-main dark:text-gray-400 dark:hover:text-white transition-colors cursor-pointer"
+                                                            className="flex items-center gap-1 text-primary hover:text-primary-hover font-bold transition-colors ml-auto"
                                                         >
-                                                            <span className="material-symbols-outlined">
-                                                                more_vert
-                                                            </span>
+                                                            <span>{t('admin.details')}</span>
+                                                            {dir === 'rtl' ? <MdChevronLeft className="text-lg" /> : <MdChevronRight className="text-lg" />}
                                                         </button>
                                                     </td>
                                                 </tr>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useLanguage } from "@/app/context/LanguageContext";
+import { MdClose, MdPerson, MdLocationOn, MdInventory2, MdSync, MdDelete } from "react-icons/md";
 
 interface Order {
     id: string;
@@ -67,7 +68,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order, canDelete, o
                         onClick={onClose}
                         className="p-2 text-text-sub dark:text-gray-400 hover:text-primary hover:bg-primary/10 rounded-full transition-colors"
                     >
-                        <span className="material-symbols-outlined">close</span>
+                        <MdClose className="text-[24px]" />
                     </button>
                 </div>
 
@@ -97,7 +98,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order, canDelete, o
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-3">
                             <h4 className="text-sm font-bold text-text-main dark:text-white flex items-center gap-2">
-                                <span className="material-symbols-outlined text-primary text-[18px]">person</span>
+                                <MdPerson className="text-primary text-[18px]" />
                                 {t('admin.customerInformation')}
                             </h4>
                             <div className={`space-y-1 ${dir === 'rtl' ? 'mr-6' : 'ml-6'}`}>
@@ -107,7 +108,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order, canDelete, o
                         </div>
                         <div className="space-y-3">
                             <h4 className="text-sm font-bold text-text-main dark:text-white flex items-center gap-2">
-                                <span className="material-symbols-outlined text-primary text-[18px]">location_on</span>
+                                <MdLocationOn className="text-primary text-[18px]" />
                                 {t('admin.shippingAddress')}
                             </h4>
                             <div className={`space-y-1 ${dir === 'rtl' ? 'mr-6' : 'ml-6'}`}>
@@ -122,7 +123,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order, canDelete, o
                     {/* Order Items */}
                     <div className="space-y-4">
                         <h4 className="text-sm font-bold text-text-main dark:text-white flex items-center gap-2">
-                            <span className="material-symbols-outlined text-primary text-[18px]">inventory_2</span>
+                            <MdInventory2 className="text-primary text-[18px]" />
                             {t('admin.itemsCount').replace('{count}', order.items.length.toString())}
                         </h4>
                         <div className="border border-[#e6dbdf] dark:border-gray-700 rounded-2xl overflow-hidden">
@@ -179,9 +180,9 @@ export default function OrderDetailsModal({ isOpen, onClose, order, canDelete, o
                             className="h-10 px-5 rounded-xl font-bold text-sm border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all disabled:opacity-50 flex items-center gap-2"
                         >
                             {isDeleting ? (
-                                <span className="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+                                <MdSync className="text-[18px] animate-spin" />
                             ) : (
-                                <span className="material-symbols-outlined text-[18px]">delete</span>
+                                <MdDelete className="text-[18px]" />
                             )}
                             {t('admin.deleteOrder')}
                         </button>

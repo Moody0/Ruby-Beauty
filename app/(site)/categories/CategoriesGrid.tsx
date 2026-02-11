@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { MdExpandMore } from "react-icons/md";
 import { useLanguage } from "@/app/context/LanguageContext";
 
 interface Category {
@@ -61,7 +62,7 @@ const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
                         className="group relative px-10 py-4 bg-surface-light dark:bg-surface-dark border border-[#e6dbdf] dark:border-gray-700 rounded-full font-bold text-sm text-text-main-light dark:text-white hover:border-primary hover:text-primary transition-all duration-300 shadow-sm hover:shadow-md flex items-center gap-2"
                     >
                         {t('categoriesPage.loadMoreCategories')}
-                        <span className="material-symbols-outlined text-[18px] group-hover:translate-y-1 transition-transform">expand_more</span>
+                        <MdExpandMore className="text-[18px] group-hover:translate-y-1 transition-transform" />
                     </button>
                 </div>
             )}

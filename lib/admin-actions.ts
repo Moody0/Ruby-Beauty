@@ -302,10 +302,21 @@ export async function getAdminOrders(page = 1, limit = 50) {
 
 export async function createProduct(data: ProductInput) {
     try {
+        let slug = data.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+        
+        // Check for slug collision
+        const existingWithSlug = await prisma.product.findUnique({
+            where: { slug }
+        });
+
+        if (existingWithSlug) {
+            slug = `${slug}-${Math.random().toString(36).substring(2, 7)}`;
+        }
+
         const product = await prisma.product.create({
             data: {
                 name: data.name,
-                slug: data.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''),
+                slug: slug,
                 description: data.description,
                 price: parseFloat(data.price as string),
                 discountPrice: data.discountPrice ? parseFloat(data.discountPrice as string) : null,
@@ -346,13 +357,27 @@ export async function createProduct(data: ProductInput) {
     }
 }
 
-export async function updateProduct(id: string, data: ProductInput) {
+export async function updateProduct(id: string, data: ProductInput & { isTrending?: boolean }) {
     try {
+        let slug = data.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+        
+        // Check if this slug is used by ANOTHER product
+        const slugConflict = await prisma.product.findFirst({
+            where: {
+                slug: slug,
+                id: { not: id }
+            }
+        });
+
+        if (slugConflict) {
+            slug = `${slug}-${Math.random().toString(36).substring(2, 7)}`;
+        }
+
         const product = await prisma.product.update({
             where: { id },
             data: {
                 name: data.name,
-                slug: data.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''),
+                slug: slug,
                 description: data.description,
                 price: parseFloat(data.price as string),
                 discountPrice: data.discountPrice ? parseFloat(data.discountPrice as string) : null,
@@ -362,6 +387,7 @@ export async function updateProduct(id: string, data: ProductInput) {
                 sku: data.sku,
                 images: data.images,
                 categoryId: data.categoryId,
+                isTrending: data.isTrending,
             }
         });
 
@@ -389,7 +415,7 @@ export async function updateProduct(id: string, data: ProductInput) {
         };
     } catch (error) {
         console.error("Failed to update product:", error);
-        return { success: false, error: "Failed to update product" };
+        return { success: false, error: `Failed to update product: ${error instanceof Error ? error.message : String(error)}` };
     }
 }
 

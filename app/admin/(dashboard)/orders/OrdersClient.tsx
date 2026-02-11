@@ -1,6 +1,7 @@
 "use client";
 
 import AdminHeader from "../../components/AdminHeader";
+import { MdPendingActions, MdLocalShipping, MdTaskAlt, MdPayments, MdExpandMore, MdVisibility, MdDelete, MdSync, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import Link from "next/link";
 import { updateOrderStatus, deleteOrder } from "../../../../lib/admin-actions";
@@ -139,7 +140,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                         <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-amber-50 dark:bg-amber-900/20 text-amber-600 rounded-lg">
-                                    <span className="material-symbols-outlined filled">pending_actions</span>
+                                    <MdPendingActions className="text-2xl" />
                                 </div>
                             </div>
                             <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.pendingOrders')}</p>
@@ -149,7 +150,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                         <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-lg">
-                                    <span className="material-symbols-outlined filled">local_shipping</span>
+                                    <MdLocalShipping className="text-2xl" />
                                 </div>
                             </div>
                             <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.shippedToday')}</p>
@@ -159,7 +160,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                         <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 rounded-lg">
-                                    <span className="material-symbols-outlined filled">task_alt</span>
+                                    <MdTaskAlt className="text-2xl" />
                                 </div>
                             </div>
                             <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.deliveredMtd')}</p>
@@ -169,7 +170,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                         <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-primary/10 text-primary rounded-lg">
-                                    <span className="material-symbols-outlined filled">payments</span>
+                                    <MdPayments className="text-2xl" />
                                 </div>
                             </div>
                             <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.totalRevenue')}</p>
@@ -289,9 +290,11 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
 
                                                             {/* Arrow Icon */}
                                                             <div className={`absolute ${dir === 'rtl' ? 'left-3' : 'right-3'} top-1/2 -translate-y-1/2 flex items-center pointer-events-none transition-transform group-hover:translate-y-[-40%] duration-200`}>
-                                                                <span className="material-symbols-outlined text-[18px] text-current opacity-70">
-                                                                    {updatingId === order.id ? 'sync' : 'expand_more'}
-                                                                </span>
+                                                                {updatingId === order.id ? (
+                                                                    <MdSync className="text-[18px] text-current opacity-70 animate-spin" />
+                                                                ) : (
+                                                                    <MdExpandMore className="text-[18px] text-current opacity-70" />
+                                                                )}
                                                             </div>
                                                         </div>
                                                     </td>
@@ -311,9 +314,9 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                                                     title={t('admin.deleteOrder')}
                                                                 >
                                                                     {deletingId === order.id ? (
-                                                                        <span className="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+                                                                        <MdSync className="text-[18px] animate-spin" />
                                                                     ) : (
-                                                                        <span className="material-symbols-outlined text-[18px]">delete</span>
+                                                                        <MdDelete className="text-[18px]" />
                                                                     )}
                                                                 </button>
                                                             )}
@@ -338,11 +341,11 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                 </p>
                                 <div className="flex items-center gap-2">
                                     <button className="size-8 flex items-center justify-center rounded-lg border border-[#e6dbdf] dark:border-gray-700 text-text-sub hover:bg-white dark:hover:bg-gray-800 transition-colors">
-                                        <span className={`material-symbols-outlined text-[18px] ${dir === 'rtl' ? 'rotate-180' : ''}`}>chevron_left</span>
+                                        <MdChevronLeft className={`text-[18px] ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                                     </button>
                                     <button className="size-8 flex items-center justify-center rounded-lg bg-primary text-white text-xs font-bold shadow-sm shadow-primary/20">1</button>
                                     <button className="size-8 flex items-center justify-center rounded-lg border border-[#e6dbdf] dark:border-gray-700 text-text-sub hover:bg-white dark:hover:bg-gray-800 transition-colors">
-                                        <span className={`material-symbols-outlined text-[18px] ${dir === 'rtl' ? 'rotate-180' : ''}`}>chevron_right</span>
+                                        <MdChevronRight className={`text-[18px] ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                                     </button>
                                 </div>
                             </div>

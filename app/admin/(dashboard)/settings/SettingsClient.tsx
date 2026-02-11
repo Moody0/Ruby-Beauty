@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { MdWarning } from "react-icons/md";
 import AdminHeader from "../../components/AdminHeader";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import { updateAdminCredentials } from "../../../../lib/admin-actions";
@@ -209,9 +210,7 @@ export default function SettingsClient({
                             {newPassword && (
                                 <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
                                     <div className="flex gap-3">
-                                        <span className="material-symbols-outlined text-amber-600 dark:text-amber-400 text-xl">
-                                            warning
-                                        </span>
+                                        <MdWarning className="text-amber-600 dark:text-amber-400 text-xl" />
                                         <div>
                                             <p className="text-sm font-bold text-amber-800 dark:text-amber-300">
                                                 {t('admin.passwordChangeNotice')}

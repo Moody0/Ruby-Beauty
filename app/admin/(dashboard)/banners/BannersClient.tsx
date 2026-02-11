@@ -3,6 +3,15 @@
 import AdminHeader from "../../components/AdminHeader";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import { useState } from "react";
+import { 
+    MdAdd, 
+    MdSync, 
+    MdVisibility, 
+    MdVisibilityOff, 
+    MdEdit, 
+    MdDelete, 
+    MdViewCarousel 
+} from "react-icons/md";
 import BannerModal from "./BannerModal";
 import { deleteBanner, toggleBannerStatus } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
@@ -98,7 +107,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                 onClick={handleAdd}
                                 className="bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
                             >
-                                <span className="material-symbols-outlined">add</span>
+                                <MdAdd className="text-xl" />
                                 {t('admin.createNewAd')}
                             </button>
                         )}
@@ -167,11 +176,9 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                                     }`}
                                             >
                                                 {loadingMap[banner.id] ? (
-                                                    <span className="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>
+                                                    <MdSync className="animate-spin text-[18px]" />
                                                 ) : (
-                                                    <span className="material-symbols-outlined text-[18px]">
-                                                        {banner.isActive ? 'visibility' : 'visibility_off'}
-                                                    </span>
+                                                    banner.isActive ? <MdVisibility className="text-[18px]" /> : <MdVisibilityOff className="text-[18px]" />
                                                 )}
                                                 {banner.isActive ? t('admin.active') : t('admin.hidden')}
                                             </button>
@@ -183,7 +190,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                                     className="p-3 text-text-sub hover:text-primary hover:bg-primary-light dark:hover:bg-primary/10 rounded-xl transition-colors"
                                                     title={t('admin.editBanner')}
                                                 >
-                                                    <span className="material-symbols-outlined text-[22px]">edit</span>
+                                                    <MdEdit className="text-[22px]" />
                                                 </button>
                                             )}
                                             {canDelete && (
@@ -192,7 +199,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                                     className="p-3 text-text-sub hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors"
                                                     title={t('admin.deleteBanner')}
                                                 >
-                                                    <span className="material-symbols-outlined text-[22px]">delete</span>
+                                                    <MdDelete className="text-[22px]" />
                                                 </button>
                                             )}
                                         </div>
@@ -204,7 +211,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
 
                     {banners.length === 0 && (
                         <div className="text-center py-20 bg-surface-light dark:bg-surface-dark rounded-2xl border border-dashed border-border-color dark:border-gray-700">
-                            <span className="material-symbols-outlined text-5xl text-text-sub/30 mb-4">view_carousel</span>
+                            <MdViewCarousel className="text-5xl text-text-sub/30 mb-4 mx-auto" />
                             <p className="text-text-sub italic">
                                 {t('admin.noBanners')}
                             </p>

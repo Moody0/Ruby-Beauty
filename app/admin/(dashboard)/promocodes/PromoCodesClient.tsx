@@ -8,6 +8,7 @@ import { deletePromoCode, togglePromoCodeStatus } from "../../../../lib/admin-ac
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { MdSearch, MdAdd, MdSync, MdToggleOn, MdToggleOff, MdEdit, MdDelete } from "react-icons/md";
 
 interface PromoCode {
     id: string;
@@ -98,7 +99,7 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
                         </div>
                         <div className="w-full md:w-auto flex flex-col md:flex-row gap-4 items-center">
                             <div className="relative w-full md:w-72">
-                                <span className={`material-symbols-outlined absolute top-1/2 -translate-y-1/2 text-text-sub/50 dark:text-gray-400/50 text-xl ${dir === 'rtl' ? 'right-3' : 'left-3'}`}>search</span>
+                                <MdSearch className={`absolute top-1/2 -translate-y-1/2 text-text-sub/50 dark:text-gray-400/50 text-xl ${dir === 'rtl' ? 'right-3' : 'left-3'}`} />
                                 <input
                                     type="text"
                                     placeholder={t('admin.searchCodes')}
@@ -112,7 +113,7 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
                                     onClick={handleAdd}
                                     className="w-full md:w-auto bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
                                 >
-                                    <span className="material-symbols-outlined">add</span>
+                                    <MdAdd className="text-[20px]" />
                                     {t('admin.addPromoCode')}
                                 </button>
                             )}
@@ -193,32 +194,32 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
                                                         <button
                                                             onClick={() => handleToggleStatus(pc.id, pc.isActive)}
                                                             disabled={loadingMap[pc.id]}
-                                                            className={`p-2 rounded-lg transition-colors ${pc.isActive ? 'text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/10' : 'text-gray-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/10'}`}
+                                                            className={`p-2 rounded-lg transition-colors ${pc.isActive ? 'text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-500/10' : 'text-text-sub hover:bg-gray-100 dark:hover:bg-gray-800'}`}
                                                             title={pc.isActive ? t('admin.deactivate') : t('admin.activate')}
                                                         >
                                                             {loadingMap[pc.id] ? (
-                                                                <span className="animate-spin material-symbols-outlined text-[20px]">progress_activity</span>
+                                                                <MdSync className="animate-spin text-[20px]" />
                                                             ) : (
-                                                                <span className="material-symbols-outlined text-[20px]">{pc.isActive ? 'toggle_on' : 'toggle_off'}</span>
+                                                                pc.isActive ? <MdToggleOn className="text-[20px]" /> : <MdToggleOff className="text-[20px]" />
                                                             )}
                                                         </button>
                                                     )}
                                                     {canManage && (
                                                         <button
                                                             onClick={() => handleEdit(pc)}
-                                                            className="p-2 text-text-sub hover:text-primary hover:bg-primary-light dark:hover:bg-primary/10 rounded-lg transition-colors"
+                                                            className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"
                                                             title={t('admin.editPromoCode')}
                                                         >
-                                                            <span className="material-symbols-outlined text-[20px]">edit</span>
+                                                            <MdEdit className="text-[20px]" />
                                                         </button>
                                                     )}
                                                     {canDelete && (
                                                         <button
                                                             onClick={() => handleDelete(pc.id, pc.code)}
-                                                            className="p-2 text-text-sub hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors"
+                                                            className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
                                                             title={t('admin.deletePromoCode')}
                                                         >
-                                                            <span className="material-symbols-outlined text-[20px]">delete</span>
+                                                            <MdDelete className="text-[20px]" />
                                                         </button>
                                                     )}
                                                 </div>

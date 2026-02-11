@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { MdImage, MdImageNotSupported, MdVerified, MdSchedule, MdLocalShipping, MdWarning, MdCleanHands, MdAssignmentReturn } from "react-icons/md";
 import AdminHeader from "../../components/AdminHeader";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import { updateSiteSettings } from "../../../../lib/admin-actions";
@@ -213,7 +214,7 @@ export default function SiteContentClient({
                                 {/* Image Settings */}
                                 <div className="border-t border-[#e6dbdf] dark:border-gray-700 pt-8 mt-8">
                                     <div className="flex items-center gap-2 mb-6">
-                                        <span className="material-symbols-outlined text-primary">image</span>
+                                        <MdImage className="text-primary text-xl" />
                                         <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.ctaImage')}</h3>
                                     </div>
                                     
@@ -248,7 +249,7 @@ export default function SiteContentClient({
                                                     />
                                                 ) : (
                                                     <div className="text-center p-6">
-                                                        <span className="material-symbols-outlined text-4xl text-text-sub/30 mb-2">image_not_supported</span>
+                                                        <MdImageNotSupported className="text-4xl text-text-sub/30 mb-2 mx-auto" />
                                                         <p className="text-xs text-text-sub/50">{t('admin.noImageProvided') || "No image URL provided"}</p>
                                                     </div>
                                                 )}
@@ -291,7 +292,7 @@ export default function SiteContentClient({
                                 {/* Shipping & Returns Page Image */}
                                 <div className="space-y-6">
                                     <div className="flex items-center gap-2 mb-6">
-                                        <span className="material-symbols-outlined text-primary">image</span>
+                                        <MdImage className="text-primary text-xl" />
                                         <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.pageHeaderImage')}</h3>
                                     </div>
                                     
@@ -326,7 +327,7 @@ export default function SiteContentClient({
                                                     />
                                                 ) : (
                                                     <div className="text-center p-6">
-                                                        <span className="material-symbols-outlined text-4xl text-text-sub/30 mb-2">image_not_supported</span>
+                                                        <MdImageNotSupported className="text-4xl text-text-sub/30 mb-2 mx-auto" />
                                                         <p className="text-xs text-text-sub/50">{t('admin.noImageProvided') || "No image URL provided"}</p>
                                                     </div>
                                                 )}
@@ -338,7 +339,7 @@ export default function SiteContentClient({
                                 {/* 1. Verification Section */}
                                 <div className="space-y-6 border-t border-[#e6dbdf] dark:border-gray-700 pt-8">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <span className="material-symbols-outlined text-primary">verified</span>
+                                        <MdVerified className="text-primary text-xl" />
                                         <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.verificationSection')}</h3>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -396,7 +397,7 @@ export default function SiteContentClient({
                                 {/* 2. Shipping Times */}
                                 <div className="space-y-6 border-t border-[#e6dbdf] dark:border-gray-700 pt-8">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <span className="material-symbols-outlined text-primary">schedule</span>
+                                        <MdSchedule className="text-primary text-xl" />
                                         <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.shippingTimes')}</h3>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -426,7 +427,7 @@ export default function SiteContentClient({
                                 {/* 3. Shipping Section */}
                                 <div className="space-y-6 border-t border-[#e6dbdf] dark:border-gray-700 pt-8">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <span className="material-symbols-outlined text-primary">local_shipping</span>
+                                        <MdLocalShipping className="text-primary text-xl" />
                                         <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.shippingSection')}</h3>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -484,7 +485,7 @@ export default function SiteContentClient({
                                 {/* 4. Final Sale Section */}
                                 <div className="space-y-6 border-t border-[#e6dbdf] dark:border-gray-700 pt-8">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <span className="material-symbols-outlined text-primary">warning</span>
+                                        <MdWarning className="text-primary text-xl" />
                                         <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.finalSaleSection')}</h3>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -542,7 +543,7 @@ export default function SiteContentClient({
                                 {/* 5. Hygiene Section */}
                                 <div className="space-y-6 border-t border-[#e6dbdf] dark:border-gray-700 pt-8">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <span className="material-symbols-outlined text-primary">clean_hands</span>
+                                        <MdCleanHands className="text-primary text-xl" />
                                         <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.hygieneProtocols')}</h3>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -600,7 +601,7 @@ export default function SiteContentClient({
                                 {/* 6. Returns Section */}
                                 <div className="space-y-6 border-t border-[#e6dbdf] dark:border-gray-700 pt-8">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <span className="material-symbols-outlined text-primary">assignment_return</span>
+                                        <MdAssignmentReturn className="text-primary text-xl" />
                                         <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.returnsSection')}</h3>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

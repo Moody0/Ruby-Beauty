@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createPromoCode, updatePromoCode } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { MdClose, MdSync } from "react-icons/md";
 
 interface PromoCodeModalProps {
     isOpen: boolean;
@@ -90,7 +91,7 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
                         onClick={onClose}
                         className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
                     >
-                        <span className="material-symbols-outlined text-gray-500">close</span>
+                        <MdClose className="text-[24px] text-gray-500" />
                     </button>
                 </div>
 

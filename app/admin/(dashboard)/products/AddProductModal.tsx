@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { MdClose, MdExpandMore, MdSync, MdCheckCircle } from "react-icons/md";
 import { createProduct, updateProduct } from "../../../../lib/admin-actions";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { toast } from "react-hot-toast";
@@ -158,7 +159,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                         onClick={onClose}
                         className="p-2 text-text-sub dark:text-gray-400 hover:text-primary hover:bg-primary/10 rounded-full transition-colors"
                     >
-                        <span className="material-symbols-outlined">close</span>
+                        <MdClose className="text-[24px]" />
                     </button>
                 </div>
 
@@ -180,7 +181,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                                             onClick={() => removeImage(url)}
                                             className="absolute top-1 right-1 size-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                                         >
-                                            <span className="material-symbols-outlined text-xs">close</span>
+                                            <MdClose className="text-xs" />
                                         </button>
                                     </div>
                                 ))}
@@ -250,7 +251,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                                         <option key={cat.id} value={cat.id}>{cat.name}</option>
                                     ))}
                                 </select>
-                                <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-sub">expand_more</span>
+                                <MdExpandMore className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-sub text-[20px]" />
                             </div>
                         </div>
 
@@ -357,9 +358,11 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                         disabled={isLoading}
                         className="bg-primary hover:bg-primary/90 disabled:opacity-50 text-white h-12 px-8 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
                     >
-                        <span className="material-symbols-outlined text-[20px]">
-                            {isLoading ? 'sync' : 'check_circle'}
-                        </span>
+                        {isLoading ? (
+                            <MdSync className="animate-spin text-[20px]" />
+                        ) : (
+                            <MdCheckCircle className="text-[20px]" />
+                        )}
                         {isLoading ? (product ? t("admin.addProductModal.updating") : t("admin.addProductModal.saving")) : (product ? t("admin.addProductModal.updateProduct") : t("admin.addProductModal.saveProduct"))}
                     </button>
                 </div>

@@ -10,6 +10,22 @@ import { deleteProduct, toggleProductTrending, bulkToggleTrending, bulkCreatePro
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { 
+    MdChevronRight, 
+    MdChevronLeft, 
+    MdFileUpload, 
+    MdFileDownload, 
+    MdAdd, 
+    MdSearch, 
+    MdExpandMore, 
+    MdLocalFireDepartment, 
+    MdSell, 
+    MdTrendingDown, 
+    MdMoneyOff, 
+    MdDelete, 
+    MdEdit,
+    MdSync
+} from 'react-icons/md';
 
 interface Product {
     id: string;
@@ -363,7 +379,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                             {/* Breadcrumbs */}
                             <div className="flex items-center gap-2 text-sm text-text-sub dark:text-gray-400 mb-1">
                                 <Link href="/admin/dashboard" className="hover:text-primary cursor-pointer transition-colors">{t('admin.dashboard')}</Link>
-                                <span className={`material-symbols-outlined text-[12px] ${dir === 'rtl' ? 'rotate-180' : ''}`}>chevron_right</span>
+                                <MdChevronRight className={`text-[12px] ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                                 <span className="text-text-main dark:text-white font-medium">{t('admin.products')}</span>
                             </div>
                             <h2 className="text-3xl font-extrabold text-text-main dark:text-white tracking-tight">{t('admin.products')}</h2>
@@ -374,11 +390,11 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                 onClick={handleExportCSV}
                                 className="bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-text-main dark:text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm"
                             >
-                                <span className="material-symbols-outlined text-[20px]">file_upload</span>
+                                <MdFileUpload className="text-[20px]" />
                                 {t('admin.exportData')}
                             </button>
                             <label className="bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-text-main dark:text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm cursor-pointer">
-                                <span className="material-symbols-outlined text-[20px]">file_download</span>
+                                <MdFileDownload className="text-[20px]" />
                                 {t('admin.importData')}
                                 <input
                                     type="file"
@@ -396,7 +412,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                     }}
                                     className="bg-primary hover:bg-primary/90 text-white h-12 px-6 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
                                 >
-                                    <span className="material-symbols-outlined text-[20px]">add</span>
+                                    <MdAdd className="text-[20px]" />
                                     {t('admin.addNewProduct')}
                                 </button>
                             )}
@@ -447,7 +463,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                         <div className="p-5 border-b border-[#e6dbdf] dark:border-gray-700 flex flex-col lg:flex-row gap-4 lg:items-center justify-between">
                             <div className="relative w-full lg:w-80">
                                 <span className={`absolute inset-y-0 ${dir === 'rtl' ? 'right-0 pr-3' : 'left-0 pl-3'} flex items-center pointer-events-none`}>
-                                    <span className="material-symbols-outlined text-text-sub dark:text-gray-400 text-[20px]">search</span>
+                                    <MdSearch className="text-text-sub dark:text-gray-400 text-[20px]" />
                                 </span>
                                 <input
                                     className={`block w-full ${dir === 'rtl' ? 'pr-10 pl-3' : 'pl-10 pr-3'} py-2.5 border border-[#e6dbdf] dark:border-gray-700 rounded-xl bg-background-light dark:bg-gray-800 text-sm text-text-main dark:text-white placeholder-text-sub dark:placeholder-gray-500 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none`}
@@ -469,7 +485,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                         {uniqueCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                                     </select>
                                     <div className={`absolute inset-y-0 ${dir === 'rtl' ? 'left-0 pl-2' : 'right-0 pr-2'} flex items-center pointer-events-none text-text-sub dark:text-gray-400`}>
-                                        <span className="material-symbols-outlined text-[20px]">expand_more</span>
+                                        <MdExpandMore className="text-[20px]" />
                                     </div>
                                 </div>
                                 {/* Stock Filter */}
@@ -485,7 +501,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                         <option>{t('admin.outOfStock')}</option>
                                     </select>
                                     <div className={`absolute inset-y-0 ${dir === 'rtl' ? 'left-0 pl-2' : 'right-0 pr-2'} flex items-center pointer-events-none text-text-sub dark:text-gray-400`}>
-                                        <span className="material-symbols-outlined text-[20px]">expand_more</span>
+                                        <MdExpandMore className="text-[20px]" />
                                     </div>
                                 </div>
 
@@ -497,7 +513,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                         : 'bg-background-light dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 text-text-main dark:text-white hover:border-amber-500 hover:text-amber-500'
                                         }`}
                                 >
-                                    <span className={`material-symbols-outlined text-[20px] ${showTrendingOnly ? 'fill-1' : ''}`}>local_fire_department</span>
+                                    <MdLocalFireDepartment className={`text-[20px] ${showTrendingOnly ? 'fill-1' : ''}`} />
                                     <span className="hidden sm:inline">{t('admin.trendingOnly')}</span>
                                 </button>
 
@@ -509,7 +525,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                         : 'bg-background-light dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 text-text-main dark:text-white hover:border-emerald-500 hover:text-emerald-500'
                                         }`}
                                 >
-                                    <span className={`material-symbols-outlined text-[20px] ${showOnSaleOnly ? 'fill-1' : ''}`}>sell</span>
+                                    <MdSell className={`text-[20px] ${showOnSaleOnly ? 'fill-1' : ''}`} />
                                     <span className="hidden sm:inline">{t('admin.onSaleOnly')}</span>
                                 </button>
                             </div>
@@ -536,9 +552,9 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                             className="flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-xs font-bold rounded-lg hover:bg-amber-200 dark:hover:bg-amber-900/30 transition-all border border-amber-200 dark:border-amber-800/50 disabled:opacity-50"
                                         >
                                             {isSubmittingBulk ? (
-                                                <span className="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>
+                                                <MdSync className="animate-spin text-[18px]" />
                                             ) : (
-                                                <span className="material-symbols-outlined text-[18px]">trending_down</span>
+                                                <MdTrendingDown className="text-[18px]" />
                                             )}
                                             {t('admin.removeTrending')}
                                         </button>
@@ -550,9 +566,9 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                             className="flex items-center gap-2 px-4 py-2 bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 text-xs font-bold rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900/30 transition-all border border-emerald-200 dark:border-emerald-800/50 disabled:opacity-50"
                                         >
                                             {isSubmittingBulk ? (
-                                                <span className="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>
+                                                <MdSync className="animate-spin text-[18px]" />
                                             ) : (
-                                                <span className="material-symbols-outlined text-[18px]">money_off</span>
+                                                <MdMoneyOff className="text-[18px]" />
                                             )}
                                             {t('admin.removeSale')}
                                         </button>
@@ -564,9 +580,9 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                             className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-lg transition-all shadow-md shadow-red-500/20 disabled:opacity-50"
                                         >
                                             {isSubmittingBulk ? (
-                                                <span className="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>
+                                                <MdSync className="animate-spin text-[18px]" />
                                             ) : (
-                                                <span className="material-symbols-outlined text-[18px]">delete</span>
+                                                <MdDelete className="text-[18px]" />
                                             )}
                                             {t('admin.deleteSelected')}
                                         </button>
@@ -664,9 +680,9 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                         title={product.isTrending ? "Remove from Trending" : "Mark as Trending"}
                                                     >
                                                         {loadingMap[product.id] ? (
-                                                            <span className="animate-spin material-symbols-outlined text-[20px]">progress_activity</span>
+                                                            <MdSync className="animate-spin text-[20px]" />
                                                         ) : (
-                                                            <span className="material-symbols-outlined text-[20px]">{product.isTrending ? 'local_fire_department' : 'local_fire_department'}</span>
+                                                            <MdLocalFireDepartment className="text-[20px]" />
                                                         )}
                                                     </button>
                                                 </td>
@@ -686,7 +702,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                                 onClick={() => handleEdit(product)}
                                                                 className="p-1.5 sm:p-2 text-text-sub dark:text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title={t('admin.editProduct')}
                                                             >
-                                                                <span className="material-symbols-outlined text-[18px] sm:text-[20px]">edit</span>
+                                                                <MdEdit className="text-[18px] sm:text-[20px]" />
                                                             </button>
                                                         )}
                                                         {canDelete && (
@@ -694,7 +710,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                                 onClick={() => handleDelete(product.id, product.name)}
                                                                 className="p-1.5 sm:p-2 text-text-sub dark:text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors" title={t('admin.deleteProduct')}
                                                             >
-                                                                <span className="material-symbols-outlined text-[18px] sm:text-[20px]">delete</span>
+                                                                <MdDelete className="text-[18px] sm:text-[20px]" />
                                                             </button>
                                                         )}
                                                     </div>
@@ -726,7 +742,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                     disabled={currentPage === 1}
                                     className="p-1.5 sm:p-2 border border-[#e6dbdf] dark:border-gray-700 rounded-lg text-text-sub dark:text-gray-400 hover:bg-background-light dark:hover:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                 >
-                                    <span className={`material-symbols-outlined text-[18px] sm:text-[20px] ${dir === 'rtl' ? 'rotate-180' : ''}`}>chevron_left</span>
+                                    <MdChevronLeft className={`text-[18px] sm:text-[20px] ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                                 </button>
 
                                 <div className="flex items-center gap-1">
@@ -766,7 +782,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                     disabled={currentPage === totalPages || totalPages === 0}
                                     className="p-1.5 sm:p-2 border border-[#e6dbdf] dark:border-gray-700 rounded-lg text-text-sub dark:text-gray-400 hover:bg-background-light dark:hover:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                 >
-                                    <span className={`material-symbols-outlined text-[18px] sm:text-[20px] ${dir === 'rtl' ? 'rotate-180' : ''}`}>chevron_right</span>
+                                    <MdChevronRight className={`text-[18px] sm:text-[20px] ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                                 </button>
                             </div>
                         </div>

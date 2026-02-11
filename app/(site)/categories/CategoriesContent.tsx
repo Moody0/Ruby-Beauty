@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { MdChevronRight } from "react-icons/md";
 import { useLanguage } from "@/app/context/LanguageContext";
 import CategoriesGrid from "./CategoriesGrid";
 import { Settings } from "@prisma/client";
@@ -37,7 +38,7 @@ export default function CategoriesContent({ categories, siteSettings }: Categori
             <nav className="container-custom pt-8 pb-4">
                 <ul className="flex items-center gap-2 text-xs font-medium text-text-muted-light dark:text-text-muted-dark uppercase tracking-widest">
                     <li><Link className="hover:text-primary transition-colors" href="/">{t('common.home')}</Link></li>
-                    <li><span className="material-symbols-outlined text-[14px] rtl:rotate-180">chevron_right</span></li>
+                    <li><MdChevronRight className="text-[14px] rtl:rotate-180" /></li>
                     <li className="text-text-main-light dark:text-text-main-dark">{t('categoriesPage.allCategories')}</li>
                 </ul>
             </nav>

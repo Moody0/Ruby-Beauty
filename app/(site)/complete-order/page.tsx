@@ -7,6 +7,7 @@ import OrderBasicInfo from '@/app/components/CompleteOrderComponents/OrderBasicI
 import OrderShippingAndPayment from '@/app/components/CompleteOrderComponents/OrderShippingAndPayment';
 import OrderItemsSelection from '@/app/components/CompleteOrderComponents/OrderItemsSelection';
 import OrderSupportFooter from '@/app/components/CompleteOrderComponents/OrderSupportFooter';
+import { MdRefresh } from 'react-icons/md';
 
 interface OrderItem {
     id: string;
@@ -65,7 +66,7 @@ const CompleteOrderContent = () => {
     if (loading) {
         return (
             <div className="flex-grow flex items-center justify-center min-h-[60vh]">
-                <div className="animate-spin material-symbols-outlined text-primary text-4xl">progress_activity</div>
+                <MdRefresh className="animate-spin text-primary text-4xl" />
             </div>
         );
     }
@@ -103,7 +104,7 @@ const Page = () => {
     return (
         <Suspense fallback={
             <div className="flex-grow flex items-center justify-center min-h-[60vh]">
-                <div className="animate-spin material-symbols-outlined text-primary text-4xl">progress_activity</div>
+                <MdRefresh className="animate-spin text-primary text-4xl" />
             </div>
         }>
             <CompleteOrderContent />

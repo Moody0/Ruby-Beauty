@@ -9,6 +9,7 @@ import ProductCard from '@/app/components/ProductsPageComponents/ProductCard';
 import ProductSkeleton from '@/app/components/ProductsPageComponents/ProductSkeleton';
 import LoadMoreButton from '@/app/components/ProductsPageComponents/LoadMoreButton';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { MdSearchOff } from 'react-icons/md';
 
 interface Category {
     id: string;
@@ -170,7 +171,7 @@ const ProductsClient = ({ initialCategories, initialProducts, initialTotal }: Pr
 
                     {products.length === 0 && !loading && (
                         <div className="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-xl dark:bg-white/5">
-                            <span className="material-symbols-outlined text-4xl text-gray-400 mb-2">search_off</span>
+                            <MdSearchOff className="text-4xl text-gray-400 mb-2" />
                             <p className="text-gray-500 font-medium">{t('products.noProducts')}</p>
                         </div>
                     )}

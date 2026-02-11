@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useLanguage } from "@/app/context/LanguageContext";
 import LanguageToggle from "@/app/components/LanguageToggle";
+import { MdPerson, MdLock } from "react-icons/md";
 
 export default function AdminLoginPage() {
     const router = useRouter();
@@ -84,9 +85,7 @@ export default function AdminLoginPage() {
                             </label>
                             <div className="relative">
                                 <span className={`absolute inset-y-0 ${isRtl ? "right-0" : "left-0"} flex items-center ${isRtl ? "pr-4" : "pl-4"} text-text-sub/60 dark:text-white/40`}>
-                                    <span className="material-symbols-outlined text-[20px]">
-                                        person
-                                    </span>
+                                    <MdPerson className="text-[20px]" />
                                 </span>
                                 <input
                                     className={`w-full ${inputPadding} py-3.5 bg-background-light dark:bg-background-dark border border-[#e6dbdf] dark:border-white/10 rounded-xl focus:ring-4 focus:ring-primary/10 focus:border-primary text-text-main dark:text-white placeholder:text-text-sub/40 dark:placeholder:text-white/30 transition-all outline-none`}
@@ -112,9 +111,7 @@ export default function AdminLoginPage() {
                             </div>
                             <div className="relative">
                                 <span className={`absolute inset-y-0 ${isRtl ? "right-0" : "left-0"} flex items-center ${isRtl ? "pr-4" : "pl-4"} text-text-sub/60 dark:text-white/40`}>
-                                    <span className="material-symbols-outlined text-[20px]">
-                                        lock
-                                    </span>
+                                    <MdLock className="text-[20px]" />
                                 </span>
                                 <input
                                     className={`w-full ${inputPadding} py-3.5 bg-background-light dark:bg-background-dark border border-[#e6dbdf] dark:border-white/10 rounded-xl focus:ring-4 focus:ring-primary/10 focus:border-primary text-text-main dark:text-white placeholder:text-text-sub/40 dark:placeholder:text-white/30 transition-all outline-none`}

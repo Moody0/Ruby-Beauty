@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { MdFavorite, MdEco, MdRecycling } from "react-icons/md";
 import { useLanguage } from "@/app/context/LanguageContext";
 
 export default function AboutUsPage() {
@@ -89,7 +90,7 @@ export default function AboutUsPage() {
                     {/* Value 1 */}
                     <div className="flex flex-col items-center text-center p-10 rounded-3xl border border-[#e5dcdf] dark:border-[#3d262d] bg-white dark:bg-[#1a0d11] hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group">
                         <div className="size-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-8 group-hover:bg-primary group-hover:rotate-6 transition-all duration-500">
-                            <span className="material-symbols-outlined text-primary group-hover:text-white text-4xl">favorite</span>
+                            <MdFavorite className="text-primary group-hover:text-white text-4xl" />
                         </div>
                         <h3 className="text-2xl font-black mb-4 group-hover:text-primary transition-colors">
                             {t('aboutUsPage.values.crueltyFree.title')}
@@ -101,7 +102,7 @@ export default function AboutUsPage() {
                     {/* Value 2 */}
                     <div className="flex flex-col items-center text-center p-10 rounded-3xl border border-[#e5dcdf] dark:border-[#3d262d] bg-white dark:bg-[#1a0d11] hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group">
                         <div className="size-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-8 group-hover:bg-primary group-hover:-rotate-6 transition-all duration-500">
-                            <span className="material-symbols-outlined text-primary group-hover:text-white text-4xl">eco</span>
+                            <MdEco className="text-primary group-hover:text-white text-4xl" />
                         </div>
                         <h3 className="text-2xl font-black mb-4 group-hover:text-primary transition-colors">
                             {t('aboutUsPage.values.vegan.title')}
@@ -113,7 +114,7 @@ export default function AboutUsPage() {
                     {/* Value 3 */}
                     <div className="flex flex-col items-center text-center p-10 rounded-3xl border border-[#e5dcdf] dark:border-[#3d262d] bg-white dark:bg-[#1a0d11] hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group">
                         <div className="size-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-8 group-hover:bg-primary group-hover:rotate-6 transition-all duration-500">
-                            <span className="material-symbols-outlined text-primary group-hover:text-white text-4xl">recycling</span>
+                            <MdRecycling className="text-primary group-hover:text-white text-4xl" />
                         </div>
                         <h3 className="text-2xl font-black mb-4 group-hover:text-primary transition-colors">
                             {t('aboutUsPage.values.sustainable.title')}
