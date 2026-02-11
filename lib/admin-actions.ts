@@ -1076,6 +1076,108 @@ export async function updateAdminCredentials(data: {
     }
 }
 
+export async function getSiteSettings() {
+    try {
+        const settings = await prisma.settings.findUnique({
+            where: { id: "site-settings" }
+        });
+        
+        if (!settings) {
+            // Return default settings if not found
+            return {
+                id: "site-settings",
+                categoriesCtaTitle: "Need expert advice?",
+                categoriesCtaDesc: "Our beauty consultants are here to help you find the perfect products for your skin type and concerns.",
+                categoriesCtaTitleAr: "هل تحتاجين إلى نصيحة الخبراء؟",
+                categoriesCtaDescAr: "مستشارو التجميل لدينا هنا لمساعدتك في العثور على المنتجات المثالية لنوع بشرتك واحتياجاتها.",
+                categoriesCtaImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuC-S_GMsoebb73JIEWcxtvH2G-vVgkfypE8ysWpGMNiiiwyTno8rIbMCpHR-fsa76ZQL49aYswb7bGZh-kgwc6z9lv0VwUSUrStxNWz2qU3RuIb75ShOMAKZMRyrOXZHZjEBgtxfW7r97FEEshOkEd2MqgE6FpGYrmKa8msLtMOQxXBsmhr3ZGGEtL7jpzgMYbgrAXhiHcMfCspdvD5FRNuSbgFY9_xGqcJM9KbgG0MoC4Ie4WkkmCR4FsuavfglcnY13G2ADZxlK8F",
+                shippingTitle: "Fast & Reliable Shipping",
+                shippingDesc: "We ensure your beauty essentials reach you in perfect condition, wherever you are in the world.",
+                shippingTitleAr: "شحن سريع وموثوق",
+                shippingDescAr: "نحن نضمن وصول مستلزمات التجميل الخاصة بك إليك في حالة ممتازة، أينما كنت في العالم.",
+                verificationTitle: "Verification Process",
+                verificationDesc: "Orders are processed within 24-48 hours. You will receive a confirmation email once your package has shipped.",
+                verificationTitleAr: "عملية التحقق",
+                verificationDescAr: "يتم معالجة الطلبات في غضون 24-48 ساعة. ستتلقى رسالة تأكيد بالبريد الإلكتروني بمجرد شحن طردك.",
+                standardShippingTime: "3-5 Business Days",
+                expressShippingTime: "1-2 Business Days",
+                returnsTitle: "Returns & Exchanges",
+                returnsDesc: "Your satisfaction is our priority. If you're not happy with your purchase, we're here to help.",
+                returnsTitleAr: "المرتجعات والاستبدال",
+                returnsDescAr: "رضاكم هو أولويتنا. إذا لم تكن راضيًا عن مشترياتك، فنحن هنا للمساعدة.",
+                finalSaleTitle: "Final Sale Items",
+                finalSaleDesc: "Certain items like opened skincare and personalized products are final sale for hygiene reasons.",
+                finalSaleTitleAr: "أصناف البيع النهائي",
+                finalSaleDescAr: "بعض العناصر مثل منتجات العناية بالبشرة المفتوحة والمنتجات المخصصة هي بيع نهائي لأسباب صحية.",
+                hygieneTitle: "Hygiene & Safety Protocols",
+                hygieneDesc: "For your safety and to maintain the highest hygiene standards, we follow strict protocols for handling beauty products.",
+                hygieneTitleAr: "بروتوكولات النظافة والسلامة",
+                hygieneDescAr: "من أجل سلامتك وللحفاظ على أعلى معايير النظافة، نتبع بروتوكولات صارمة للتعامل مع منتجات التجميل.",
+                shippingReturnsImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuC1GmfD6bueEsJqlHNPjDWHMlhsLZSm2Jmp21TUCLKvobkcd7oAPMMdwzfm8BOHC5XtR0EP6tLI7DT5hhyLxuijsbpX2kQf6iNlqROU-8k-DrqZAUqdc7-0lE4nxuCcLaEb0fEaXVBxc_yXkiUlyhfvaYJ1FfHZtngnoJbeanLgsf7rcxqON6rjkoC4BQv6FhlwLNKZrMbxjCugphq-bo5GCqBoLfmjjZSuH0N5eV-Kz33xFQTD5jSYCTsVYAwOkwhLQsQiPD_lnD9U",
+                updatedAt: new Date(),
+            };
+        }
+        
+        return settings;
+    } catch (error) {
+        console.error("Failed to fetch site settings:", error);
+        return null;
+    }
+}
+
+export async function updateSiteSettings(data: {
+    categoriesCtaTitle?: string;
+    categoriesCtaDesc?: string;
+    categoriesCtaTitleAr?: string;
+    categoriesCtaDescAr?: string;
+    categoriesCtaImage?: string;
+    shippingTitle?: string;
+    shippingDesc?: string;
+    shippingTitleAr?: string;
+    shippingDescAr?: string;
+    verificationTitle?: string;
+    verificationDesc?: string;
+    verificationTitleAr?: string;
+    verificationDescAr?: string;
+    standardShippingTime?: string;
+    expressShippingTime?: string;
+    returnsTitle?: string;
+    returnsDesc?: string;
+    returnsTitleAr?: string;
+    returnsDescAr?: string;
+    finalSaleTitle?: string;
+    finalSaleDesc?: string;
+    finalSaleTitleAr?: string;
+    finalSaleDescAr?: string;
+    hygieneTitle?: string;
+    hygieneDesc?: string;
+    hygieneTitleAr?: string;
+    hygieneDescAr?: string;
+    shippingReturnsImage?: string;
+}) {
+    try {
+        await prisma.settings.upsert({
+            where: { id: "site-settings" },
+            update: data,
+            create: {
+                id: "site-settings",
+                ...data
+            }
+        });
+
+        revalidatePath('/categories');
+        revalidatePath('/shipping-returns');
+        revalidatePath('/admin/site-content');
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to update site settings:", error);
+        return { 
+            success: false, 
+            error: error instanceof Error ? error.message : "Failed to update settings" 
+        };
+    }
+}
+
 export async function bulkToggleTrending(ids: string[], isTrending: boolean) {
     try {
         await prisma.product.updateMany({

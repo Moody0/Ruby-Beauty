@@ -70,6 +70,7 @@
         "addToCart": "Add to Cart",
         "inStock": "In Stock",
         "description": "Description",
+        "productSelection": "Product selection",
         "relatedProducts": "Related Products"
     },
     "cart": {
@@ -151,6 +152,24 @@
         "promoCodes": "Promo Codes",
         "users": "Users",
         "settings": "Settings",
+        "siteContent": "Site Content",
+        "categoriesPageCta": "Categories Page CTA",
+        "categoriesCtaDescription": "Update the 'Need expert advice?' section content on the categories page.",
+        "shippingReturnsContent": "Shipping & Returns Content",
+        "shippingReturnsDescription": "Update the content for the Shipping & Returns page.",
+        "shippingSection": "Shipping Section",
+        "verificationSection": "Verification Section",
+        "returnsSection": "Returns & Exchanges Section",
+        "finalSaleSection": "Final Sale Section",
+        "shippingTimes": "Shipping Times",
+        "standardTime": "Standard Shipping Time",
+        "expressTime": "Express Shipping Time",
+        "englishContent": "English Content",
+        "arabicContent": "Arabic Content",
+        "title": "Title",
+        "description": "Description",
+        "saving": "Saving...",
+        "saveChanges": "Save Changes",
         "adminPanel": "Admin Panel",
         "signOut": "Sign Out",
         "login": {
@@ -248,6 +267,14 @@
         "importError": "Failed to import products",
         "fileEmpty": "File is empty or missing headers",
         "fileParseError": "Failed to parse file",
+        "ctaImage": "CTA Image",
+        "ctaPreview": "CTA Preview",
+        "imageUrl": "Image URL",
+        "preview": "Preview",
+        "ctaImageDescription": "Paste a direct link to the image you want to display in the CTA section.",
+        "noImageProvided": "No image URL provided",
+        "selected": "selected",
+        "itemsSelected": "items selected",
         "sku": "SKU",
         "inventory": "Inventory",
         "productName": "Product",
@@ -444,8 +471,8 @@
     "categoriesPage": {
         "title": "Shop by Category",
         "description": "Explore our curated selections of premium beauty essentials. From botanical skincare to professional tools, find everything you need for your daily ritual.",
-        "cantDecide": "Can't decide where to start?",
-        "skinQuizDescription": "Take our Skin Quiz to get a personalized routine curated just for you by our beauty experts.",
+        "cantDecide": "Need expert advice?",
+        "skinQuizDescription": "Our beauty consultants are here to help you find the perfect products for your skin type and concerns.",
         "viewAllProducts": "View All Products",
         "loadMoreCategories": "Load More Categories",
         "premiumCollection": "Premium collection",
@@ -524,7 +551,7 @@
         },
         "support": {
             "title": "Still have questions?",
-            "description": "Our support team is available Mon-Fri, 9am - 6pm.",
+            "description": "Our support team is available 24/7.",
             "cta": "Contact Us"
         }
     }

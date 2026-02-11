@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { useLanguage } from "@/app/context/LanguageContext";
 import CategoriesGrid from "./CategoriesGrid";
+import { Settings } from "@prisma/client";
 
 interface Category {
     id: string;
@@ -14,10 +15,21 @@ interface Category {
 
 interface CategoriesContentProps {
     categories: Category[];
+    siteSettings: Settings | null;
 }
 
-export default function CategoriesContent({ categories }: CategoriesContentProps) {
-    const { t } = useLanguage();
+export default function CategoriesContent({ categories, siteSettings }: CategoriesContentProps) {
+    const { t, language } = useLanguage();
+
+    const ctaTitle = language === 'ar' 
+        ? (siteSettings?.categoriesCtaTitleAr || t('categoriesPage.cantDecide'))
+        : (siteSettings?.categoriesCtaTitle || t('categoriesPage.cantDecide'));
+    
+    const ctaDesc = language === 'ar'
+        ? (siteSettings?.categoriesCtaDescAr || t('categoriesPage.skinQuizDescription'))
+        : (siteSettings?.categoriesCtaDesc || t('categoriesPage.skinQuizDescription'));
+
+    const ctaImage = siteSettings?.categoriesCtaImage || "https://lh3.googleusercontent.com/aida-public/AB6AXuC-S_GMsoebb73JIEWcxtvH2G-vVgkfypE8ysWpGMNiiiwyTno8rIbMCpHR-fsa76ZQL49aYswb7bGZh-kgwc6z9lv0VwUSUrStxNWz2qU3RuIb75ShOMAKZMRyrOXZHZjEBgtxfW7r97FEEshOkEd2MqgE6FpGYrmKa8msLtMOQxXBsmhr3ZGGEtL7jpzgMYbgrAXhiHcMfCspdvD5FRNuSbgFY9_xGqcJM9KbgG0MoC4Ie4WkkmCR4FsuavfglcnY13G2ADZxlK8F";
 
     return (
         <main className="w-full pb-20">
@@ -46,17 +58,18 @@ export default function CategoriesContent({ categories }: CategoriesContentProps
             <section className="container-custom mt-24">
                 <div className="rounded-3xl bg-primary/5 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 border border-primary/10">
                     <div className="flex flex-col gap-4 text-center md:text-left rtl:md:text-right">
-                        <h4 className="text-3xl font-extrabold text-text-main-light dark:text-text-main-dark">{t('categoriesPage.cantDecide')}</h4>
-                        <p className="text-text-muted-light dark:text-text-muted-dark max-w-md">{t('categoriesPage.skinQuizDescription')}</p>
-                        <div className="flex flex-wrap gap-4 mt-2 justify-center md:justify-start rtl:md:justify-end">
-                            <Link href="/products" className="px-8 py-3 bg-transparent border border-primary text-primary rounded-full font-bold text-sm hover:bg-primary/5 transition-all">{t('categoriesPage.viewAllProducts')}</Link>
+                        <h4 className="text-3xl font-extrabold text-text-main-light dark:text-text-main-dark">{ctaTitle}</h4>
+                        <p className="text-text-muted-light dark:text-text-muted-dark max-w-md">{ctaDesc}</p>
+                        <div className="flex flex-wrap gap-4 mt-2 justify-center md:justify-start">
+                            <Link href="/products" className="px-8 py-3 bg-primary text-white rounded-full font-bold text-sm hover:bg-primary/90 transition-all">{t('categoriesPage.viewAllProducts')}</Link>
+                            <Link target="_blank" href="https://wa.me/963933254796" className="px-8 py-3 bg-transparent border border-primary text-primary rounded-full font-bold text-sm hover:bg-primary/5 transition-all">{t('footer.contactUs')}</Link>
                         </div>
                     </div>
                     <div className="hidden lg:block w-1/3">
                         <img
-                            alt="Product selection"
-                            className="rounded-2xl shadow-2xl rotate-3 scale-110 rtl:-rotate-3"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-S_GMsoebb73JIEWcxtvH2G-vVgkfypE8ysWpGMNiiiwyTno8rIbMCpHR-fsa76ZQL49aYswb7bGZh-kgwc6z9lv0VwUSUrStxNWz2qU3RuIb75ShOMAKZMRyrOXZHZjEBgtxfW7r97FEEshOkEd2MqgE6FpGYrmKa8msLtMOQxXBsmhr3ZGGEtL7jpzgMYbgrAXhiHcMfCspdvD5FRNuSbgFY9_xGqcJM9KbgG0MoC4Ie4WkkmCR4FsuavfglcnY13G2ADZxlK8F"
+                            alt={t('products.productSelection')}
+                            className="rounded-2xl shadow-2xl rotate-3 scale-110 rtl:-rotate-3 w-full h-auto object-cover"
+                            src={ctaImage}
                         />
                     </div>
                 </div>

@@ -120,6 +120,50 @@ model OrderItem {
   @@index([productId])
 }
 
+model Settings {
+  id                  String   @id @default("site-settings")
+  categoriesCtaTitle  String?  @default("Need expert advice?")
+  categoriesCtaDesc   String?  @default("Our beauty consultants are here to help you find the perfect products for your skin type and concerns.")
+  categoriesCtaTitleAr String? @default("هل تحتاجين إلى نصيحة الخبراء؟")
+  categoriesCtaDescAr  String? @default("مستشارو التجميل لدينا هنا لمساعدتك في العثور على المنتجات المثالية لنوع بشرتك واحتياجاتها.")
+  categoriesCtaImage   String? @default("https://lh3.googleusercontent.com/aida-public/AB6AXuC-S_GMsoebb73JIEWcxtvH2G-vVgkfypE8ysWpGMNiiiwyTno8rIbMCpHR-fsa76ZQL49aYswb7bGZh-kgwc6z9lv0VwUSUrStxNWz2qU3RuIb75ShOMAKZMRyrOXZHZjEBgtxfW7r97FEEshOkEd2MqgE6FpGYrmKa8msLtMOQxXBsmhr3ZGGEtL7jpzgMYbgrAXhiHcMfCspdvD5FRNuSbgFY9_xGqcJM9KbgG0MoC4Ie4WkkmCR4FsuavfglcnY13G2ADZxlK8F")
+  
+  // Shipping & Returns Page Content
+  shippingTitle        String? @default("Fast & Reliable Shipping")
+  shippingDesc         String? @default("We ensure your beauty essentials reach you in perfect condition, wherever you are in the world.")
+  shippingTitleAr      String? @default("شحن سريع وموثوق")
+  shippingDescAr       String? @default("نحن نضمن وصول مستلزمات التجميل الخاصة بك إليك في حالة ممتازة، أينما كنت في العالم.")
+  
+  verificationTitle    String? @default("Verification Process")
+  verificationDesc     String? @default("Orders are processed within 24-48 hours. You will receive a confirmation email once your package has shipped.")
+  verificationTitleAr  String? @default("عملية التحقق")
+  verificationDescAr   String? @default("يتم معالجة الطلبات في غضون 24-48 ساعة. ستتلقى رسالة تأكيد بالبريد الإلكتروني بمجرد شحن طردك.")
+  
+  standardShippingTime String? @default("3-5 Business Days")
+  expressShippingTime  String? @default("1-2 Business Days")
+  
+  returnsTitle         String? @default("Returns & Exchanges")
+  returnsDesc          String? @default("Your satisfaction is our priority. If you're not happy with your purchase, we're here to help.")
+  returnsTitleAr       String? @default("المرتجعات والاستبدال")
+  returnsDescAr        String? @default("رضاكم هو أولويتنا. إذا لم تكن راضيًا عن مشترياتك، فنحن هنا للمساعدة.")
+  
+  finalSaleTitle       String? @default("Final Sale Items")
+  finalSaleDesc        String? @default("Certain items like opened skincare and personalized products are final sale for hygiene reasons.")
+  finalSaleTitleAr     String? @default("أصناف البيع النهائي")
+  finalSaleDescAr      String? @default("بعض العناصر مثل منتجات العناية بالبشرة المفتوحة والمنتجات المخصصة هي بيع نهائي لأسباب صحية.")
+  
+  // Hygiene Section
+  hygieneTitle         String? @default("Hygiene & Safety Protocols")
+  hygieneDesc          String? @default("For your safety and to maintain the highest hygiene standards, we follow strict protocols for handling beauty products.")
+  hygieneTitleAr       String? @default("بروتوكولات النظافة والسلامة")
+  hygieneDescAr        String? @default("من أجل سلامتك وللحفاظ على أعلى معايير النظافة، نتبع بروتوكولات صارمة للتعامل مع منتجات التجميل.")
+  
+  // Shipping & Returns Image
+  shippingReturnsImage String? @default("https://lh3.googleusercontent.com/aida-public/AB6AXuC1GmfD6bueEsJqlHNPjDWHMlhsLZSm2Jmp21TUCLKvobkcd7oAPMMdwzfm8BOHC5XtR0EP6tLI7DT5hhyLxuijsbpX2kQf6iNlqROU-8k-DrqZAUqdc7-0lE4nxuCcLaEb0fEaXVBxc_yXkiUlyhfvaYJ1FfHZtngnoJbeanLgsf7rcxqON6rjkoC4BQv6FhlwLNKZrMbxjCugphq-bo5GCqBoLfmjjZSuH0N5eV-Kz33xFQTD5jSYCTsVYAwOkwhLQsQiPD_lnD9U")
+  
+  updatedAt           DateTime @updatedAt
+}
+
 enum OrderStatus {
   PENDING
   PROCESSING

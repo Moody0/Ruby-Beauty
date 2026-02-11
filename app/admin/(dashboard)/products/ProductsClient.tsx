@@ -520,7 +520,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                             <div className="bg-primary/5 dark:bg-primary/10 border-b border-[#e6dbdf] dark:border-gray-700 px-5 py-4 flex items-center justify-between animate-in slide-in-from-top duration-300">
                                 <div className="flex items-center gap-3">
                                     <span className="flex items-center justify-center size-6 bg-primary text-white text-xs font-bold rounded-full">{selectedIds.size}</span>
-                                    <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.itemsSelected')}</span>
+                                    <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.selected')}</span>
                                     <button
                                         onClick={() => setSelectedIds(new Set())}
                                         className="text-xs text-text-sub hover:text-primary transition-colors font-medium ml-2 underline"

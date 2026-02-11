@@ -1,17 +1,17 @@
-import { getAdminUser } from "../../../../lib/admin-actions";
-import SettingsClient from "./SettingsClient";
+import { getSiteSettings } from "../../../../lib/admin-actions";
+import SiteContentClient from "./SiteContentClient";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 
-export default async function SettingsPage() {
+export default async function SiteContentPage() {
     const session = await getServerSession(authOptions);
 
     if (!session || session.user.role !== 'SUPER_ADMIN') {
         redirect('/admin/dashboard');
     }
 
-    const adminUser = await getAdminUser();
+    const siteSettings = await getSiteSettings();
     
-    return <SettingsClient initialUser={adminUser} />;
+    return <SiteContentClient initialSettings={siteSettings} />;
 }

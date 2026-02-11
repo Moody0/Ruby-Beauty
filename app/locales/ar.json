@@ -68,6 +68,7 @@
         "addToCart": "أضف إلى السلة",
         "inStock": "متوفر",
         "description": "الوصف",
+        "productSelection": "اختيار المنتجات",
         "relatedProducts": "منتجات ذات صلة"
     },
     "cart": {
@@ -149,6 +150,24 @@
         "promoCodes": "رموز الخصم",
         "users": "المستخدمين",
         "settings": "الإعدادات",
+        "siteContent": "محتوى الموقع",
+        "categoriesPageCta": "قسم الدعوة لاتخاذ إجراء في صفحة الفئات",
+        "categoriesCtaDescription": "تحديث محتوى قسم 'هل تحتاج إلى نصيحة الخبراء؟' في صفحة الفئات.",
+        "shippingReturnsContent": "محتوى الشحن والمرتجعات",
+        "shippingReturnsDescription": "تحديث المحتوى لصفحة الشحن والمرتجعات.",
+        "shippingSection": "قسم الشحن",
+        "verificationSection": "قسم عملية التحقق",
+        "returnsSection": "قسم المرتجعات والاستبدال",
+        "finalSaleSection": "قسم أصناف البيع النهائي",
+        "shippingTimes": "أوقات الشحن",
+        "standardTime": "وقت الشحن القياسي",
+        "expressTime": "وقت الشحن السريع",
+        "englishContent": "المحتوى الإنجليزي",
+        "arabicContent": "المحتوى العربي",
+        "title": "العنوان",
+        "description": "الوصف",
+        "saving": "جاري الحفظ...",
+        "saveChanges": "حفظ التغييرات",
         "adminPanel": "لوحة الإدارة",
         "signOut": "تسجيل الخروج",
         "login": {
@@ -246,6 +265,14 @@
         "importError": "فشل استيراد المنتجات",
         "fileEmpty": "الملف فارغ أو يفتقر إلى العناوين",
         "fileParseError": "فشل في تحليل الملف",
+        "ctaImage": "صورة القسم الترويجي (CTA)",
+        "ctaPreview": "معاينة القسم الترويجي",
+        "imageUrl": "رابط الصورة",
+        "preview": "معاينة",
+        "ctaImageDescription": "قم بلصق رابط مباشر للصورة التي تريد عرضها في قسم CTA.",
+        "noImageProvided": "لم يتم توفير رابط للصورة",
+        "selected": "محدد",
+        "itemsSelected": "عناصر محددة",
         "sku": "SKU",
         "inventory": "المخزون",
         "productName": "المنتج",
@@ -442,12 +469,17 @@
     "categoriesPage": {
         "title": "تسوق حسب الفئة",
         "description": "استكشف اختياراتنا المنسقة من أساسيات الجمال الفاخرة. من العناية بالبشرة النباتية إلى الأدوات الاحترافية، اعثر على كل ما تحتاجه لروتينك اليومي.",
-        "cantDecide": "محتار من أين تبدأ؟",
-        "skinQuizDescription": "قم بإجراء اختبار البشرة الخاص بنا للحصول على روتين مخصص تم تنسيقه خصيصًا لك بواسطة خبراء التجميل لدينا.",
+        "cantDecide": "هل تحتاجين إلى نصيحة الخبراء؟",
+        "skinQuizDescription": "مستشارو التجميل لدينا هنا لمساعدتك في العثور على المنتجات المثالية لنوع بشرتك واحتياجاتها.",
         "viewAllProducts": "عرض جميع المنتجات",
         "loadMoreCategories": "تحميل المزيد من الفئات",
         "premiumCollection": "مجموعة فاخرة",
-        "allCategories": "جميع الفئات"
+        "allCategories": "جميع الفئات",
+        "ctaImage": "صورة الدعوة لاتخاذ إجراء (CTA)",
+        "imageUrl": "رابط الصورة",
+        "preview": "معاينة",
+        "ctaImageDescription": "قم بلصق رابط مباشر للصورة التي تريد عرضها في قسم الدعوة لاتخاذ إجراء.",
+        "noImageProvided": "لم يتم توفير رابط للصورة"
     },
     "aboutUsPage": {
         "hero": {
@@ -522,7 +554,7 @@
         },
         "support": {
             "title": "لا تزال لديك أسئلة؟",
-            "description": "فريق الدعم لدينا متاح من الاثنين إلى الجمعة، من 9 صباحًا حتى 6 مساءً.",
+            "description": "فريق الدعم لدينا متاح 24/7.",
             "cta": "اتصل بنا"
         }
     }

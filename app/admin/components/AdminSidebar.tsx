@@ -23,6 +23,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
         { href: "/admin/banners", icon: "view_carousel", label: t('admin.banners'), permission: "canManageBanners" },
         { href: "/admin/orders", icon: "package_2", label: t('admin.orders'), permission: "canManageOrders" },
         { href: "/admin/promocodes", icon: "local_offer", label: t('admin.promoCodes'), permission: "canManagePromoCodes" },
+        { href: "/admin/site-content", icon: "edit_note", label: t('admin.siteContent'), superAdminOnly: true },
         { href: "/admin/users", icon: "group", label: t('admin.users'), superAdminOnly: true },
         { href: "/admin/settings", icon: "settings", label: t('admin.settings'), superAdminOnly: true },
     ];
