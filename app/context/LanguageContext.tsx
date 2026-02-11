@@ -2,10 +2,6 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 
-// Import translations
-import en from '@/app/locales/en.json';
-import ar from '@/app/locales/ar.json';
-
 type Language = 'en' | 'ar';
 
 // Recursive type for nested translation objects
@@ -17,14 +13,14 @@ interface LanguageContextType {
     setLanguage: (lang: Language) => void;
     t: (key: string) => any;
     dir: 'ltr' | 'rtl';
+    isLoaded: boolean;
 }
-
-const translations: Record<Language, TranslationObject> = { en, ar };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const [language, setLanguageState] = useState<Language>('en');
+    const [translations, setTranslations] = useState<TranslationObject | null>(null);
     const [mounted, setMounted] = useState(false);
 
     // Load language preference from localStorage on mount
@@ -36,10 +32,29 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         setMounted(true);
     }, []);
 
+    // Load translations dynamically
+    useEffect(() => {
+        const loadTranslations = async () => {
+            try {
+                let data;
+                if (language === 'ar') {
+                    data = await import('@/app/locales/ar.json');
+                } else {
+                    data = await import('@/app/locales/en.json');
+                }
+                setTranslations(data.default);
+            } catch (error) {
+                console.error('Failed to load translations:', error);
+            }
+        };
+        loadTranslations();
+    }, [language]);
+
     // Save language preference and update document direction
     useEffect(() => {
         if (mounted) {
             localStorage.setItem('language', language);
+            document.cookie = `language=${language}; path=/; max-age=31536000`; // 1 year
             document.documentElement.lang = language;
             document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
         }
@@ -51,33 +66,26 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
     // Translation function with fallback
     const t = useCallback((key: string): any => {
+        if (!translations) return key;
+
         const keys = key.split('.');
-        let result: TranslationValue = translations[language];
+        let result: TranslationValue = translations;
 
         for (const k of keys) {
             if (typeof result === 'object' && result !== null && !Array.isArray(result) && k in result) {
                 result = result[k];
             } else {
-                // Fallback to English if key not found
-                let fallback: TranslationValue = translations['en'];
-                for (const fk of keys) {
-                    if (typeof fallback === 'object' && fallback !== null && !Array.isArray(fallback) && fk in fallback) {
-                        fallback = fallback[fk];
-                    } else {
-                        return key; // Return key if not found in fallback either
-                    }
-                }
-                return fallback;
+                return key;
             }
         }
 
         return result;
-    }, [language]);
+    }, [translations]);
 
     const dir = language === 'ar' ? 'rtl' : 'ltr';
 
     return (
-        <LanguageContext.Provider value={{ language, setLanguage, t, dir }}>
+        <LanguageContext.Provider value={{ language, setLanguage, t, dir, isLoaded: !!translations }}>
             {children}
         </LanguageContext.Provider>
     );

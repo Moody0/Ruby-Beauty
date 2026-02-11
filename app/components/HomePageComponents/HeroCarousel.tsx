@@ -1,10 +1,11 @@
 "use client";
 
+import Head from 'next/head';
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useLanguage } from '@/app/context/LanguageContext';
 import { MdArrowForward, MdChevronLeft, MdChevronRight } from 'react-icons/md';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 interface Banner {
     id: string;
@@ -25,7 +26,6 @@ interface HeroCarouselProps {
 
 const HeroCarousel = ({ banners }: HeroCarouselProps) => {
     const { t, dir, language } = useLanguage();
-
     const DEFAULT_BANNER: Banner = {
         id: 'default',
         title: t('home.trendingNow'),
@@ -82,6 +82,15 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
         >
+            {/* Preload the first banner image for LCP */}
+            {displayBanners[0]?.image && (
+                <link
+                    rel="preload"
+                    href={displayBanners[0].image}
+                    as="image"
+                    imageSrcSet="(max-width: 768px) 100vw, 50vw"
+                />
+            )}
             <div className="w-full">
                 <div className="relative overflow-hidden rounded-2xl bg-surface-light dark:bg-surface-dark min-h-[500px] sm:min-h-[550px] md:min-h-[550px]">
                     {/* Slides */}
@@ -101,7 +110,8 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                         className="object-cover"
                                         fill
                                         priority={index === 0}
-                                        sizes="100vw"
+                                        sizes="(max-width: 768px) 100vw, 50vw"
+                                        quality={85}
                                     />
                                     {/* Subtle overlay for text readability on mobile */}
                                     <div className="absolute inset-0 bg-black/20"></div>
@@ -198,15 +208,15 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                 <MdChevronRight />
                             </button>
 
-                            {/* Dots Indicator */}
+                            {/* Dots */}
                             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
                                 {displayBanners.map((_, index) => (
                                     <button
                                         key={index}
                                         onClick={() => goToSlide(index)}
-                                        className={`h-2 rounded-full transition-all duration-300 ${index === currentIndex
+                                        className={`w-2 h-2 rounded-full transition-all ${index === currentIndex
                                             ? 'w-8 bg-primary'
-                                            : 'w-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500'
+                                            : 'bg-white/50 hover:bg-white/80'
                                             }`}
                                         aria-label={`Go to slide ${index + 1}`}
                                     />

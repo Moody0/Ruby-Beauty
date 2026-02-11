@@ -1,19 +1,15 @@
-"use client";
-
 import Link from 'next/link';
 import React from 'react';
-import { FaInstagram } from "react-icons/fa";
-import { FaFacebook } from "react-icons/fa";
-import { FaWhatsapp } from "react-icons/fa";
-import { useLanguage } from '@/app/context/LanguageContext';
+import { FaInstagram, FaFacebook, FaWhatsapp } from "react-icons/fa";
 
-const Footer = () => {
-    const { t } = useLanguage();
+interface FooterProps {
+    t: (key: string) => string;
+}
 
+const Footer = ({ t }: FooterProps) => {
     return (
         <footer
             className="bg-surface-light dark:bg-surface-dark border-t border-[#f4f0f2] dark:border-[#3a1d26] pt-16 pb-8"
-            suppressHydrationWarning
         >
             <div className="container-custom">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">

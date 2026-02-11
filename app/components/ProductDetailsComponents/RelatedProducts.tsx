@@ -10,7 +10,7 @@ interface RelatedProductsProps {
 }
 
 const RelatedProducts = ({ products }: RelatedProductsProps) => {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
 
     if (products.length === 0) return null;
 
@@ -21,7 +21,7 @@ const RelatedProducts = ({ products }: RelatedProductsProps) => {
                 {products.map(related => (
                     // Cast to any to bypass stale Prisma types (isTrending/slug missing in generated client)
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    <ProductCard key={related.id} product={related as any} />
+                    <ProductCard key={related.id} product={related as any} t={t} language={language} />
                 ))}
             </div>
         </section>

@@ -1,6 +1,7 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { prisma } from "@/lib/prisma";
+import { getI18n } from "@/lib/i18n";
 
 async function getCategories() {
     try {
@@ -27,12 +28,15 @@ export default async function SiteLayout({
     children: React.ReactNode;
 }) {
     const categories = await getCategories();
+    const { t, dir, language } = await getI18n();
 
     return (
-        <div className="min-h-screen flex flex-col">
-            <Header initialCategories={categories} />
-            {children}
-            <Footer />
+        <div className="min-h-screen flex flex-col" dir={dir}>
+            <Header initialCategories={categories} t={t} dir={dir} language={language} />
+            <main className="flex-1">
+                {children}
+            </main>
+            <Footer t={t} />
         </div>
     );
 }

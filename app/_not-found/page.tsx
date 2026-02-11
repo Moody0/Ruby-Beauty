@@ -1,16 +1,14 @@
-"use client";
-
 import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { useLanguage } from "@/app/context/LanguageContext";
+import { getI18n } from "@/lib/i18n";
 
-export default function NotFound() {
-  const { t, dir } = useLanguage();
+export default async function NotFound() {
+  const { t, dir, language } = await getI18n();
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header t={t} dir={dir} language={language} />
 
       <main className="flex-grow flex items-center justify-center px-4 py-16">
         <div className="max-w-xl text-center">
@@ -48,7 +46,7 @@ export default function NotFound() {
         </div>
       </main>
 
-      <Footer />
+      <Footer t={t} />
     </div>
   );
 }

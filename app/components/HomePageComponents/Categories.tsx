@@ -1,9 +1,6 @@
-"use client";
-
 import Link from 'next/link'
 import Image from 'next/image'
 import React from 'react'
-import { useLanguage } from '@/app/context/LanguageContext';
 import { MdChevronRight } from 'react-icons/md';
 
 interface Category {
@@ -13,9 +10,13 @@ interface Category {
     image: string | null;
 }
 
-const Categories = ({ categories }: { categories: Category[] }) => {
-    const { t, dir } = useLanguage();
+interface CategoriesProps {
+    categories: Category[];
+    t: (key: string) => string;
+    dir: 'ltr' | 'rtl';
+}
 
+const Categories = ({ categories, t, dir }: CategoriesProps) => {
     const defaultImage = 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800';
 
     if (!categories || categories.length === 0) {

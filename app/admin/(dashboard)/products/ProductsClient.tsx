@@ -10,7 +10,6 @@ import { deleteProduct, toggleProductTrending, bulkToggleTrending, bulkCreatePro
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useLanguage } from "@/app/context/LanguageContext";
-import * as XLSX from 'xlsx';
 
 interface Product {
     id: string;
@@ -316,6 +315,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                         return obj;
                     });
                 } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+                    const XLSX = await import('xlsx');
                     const bstr = event.target?.result;
                     const wb = XLSX.read(bstr, { type: 'binary' });
                     const wsname = wb.SheetNames[0];

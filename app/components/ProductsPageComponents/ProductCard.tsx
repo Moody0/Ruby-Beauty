@@ -1,12 +1,7 @@
-"use client";
-
 import Link from 'next/link';
 import Image from 'next/image';
 import React from 'react';
-import { useCart } from '@/app/context/CartContext';
-import { useLanguage } from '@/app/context/LanguageContext';
-import { MdAddShoppingCart, MdAdd } from 'react-icons/md';
-import toast from 'react-hot-toast';
+import AddToCartButton from './AddToCartButton';
 
 interface Product {
     id: string;
@@ -23,29 +18,11 @@ interface Product {
 
 interface ProductCardProps {
     product: Product;
+    t: (key: string) => string;
+    language: 'en' | 'ar';
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
-    const { addItem } = useCart();
-    const { t, language } = useLanguage();
-
-    const handleQuickAdd = (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        addItem({
-            id: product.id,
-            name: product.name,
-            price: Number(product.discountPrice || product.price),
-            image: product.images,
-            slug: product.slug,
-            quantity: 1,
-            description: product.description || undefined
-        });
-
-        toast.success(language === 'ar' ? `تمت إضافة ${product.name} إلى السلة` : `Added ${product.name} to cart`);
-    };
-
+const ProductCard = ({ product, t, language }: ProductCardProps) => {
     return (
         <div className="group relative flex flex-col gap-3 p-2 rounded-2xl transition-all duration-300 hover:bg-white dark:hover:bg-white/5 premium-shadow-hover">
             <Link href={`/products/${product.slug}`} className="relative aspect-4/4 w-full overflow-hidden rounded-xl bg-gray-100 dark:bg-white/5 block">
@@ -66,20 +43,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     priority={product.isTrending}
                     loading={product.isTrending ? undefined : "lazy"}
                 />
-                <button
-                    onClick={handleQuickAdd}
-                    className="hidden lg:flex absolute bottom-4 left-4 right-4 items-center justify-center gap-2 rounded-lg bg-white/95 py-3 text-sm font-bold text-[#181113] shadow-lg backdrop-blur-sm transition-all hover:bg-primary hover:text-white opacity-0 translate-y-4 group-hover:translate-y-0 group-hover:opacity-100 dark:bg-background-dark/95 dark:text-white dark:hover:bg-primary"
-                >
-                    <MdAddShoppingCart className="text-[20px]" />
-                    {t('products.addToCart')}
-                </button>
-                <button
-                    onClick={handleQuickAdd}
-                    className="lg:hidden absolute bottom-2 ltr:right-2 p-2 rtl:left-2 flex rounded-full bg-white/90 text-black shadow-md backdrop-blur-sm"
-                    aria-label={t('products.addToCart')}
-                >
-                    <MdAdd className="text-[18px]" />
-                </button>
+                <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="desktop" />
+                <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="mobile" />
             </Link>
             <div className="flex flex-col gap-1 p-0.5">
                 <div className="flex items-start justify-between gap-2">

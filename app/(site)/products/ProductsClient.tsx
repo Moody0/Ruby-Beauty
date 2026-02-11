@@ -38,7 +38,7 @@ interface ProductsClientProps {
 const ProductsClient = ({ initialCategories, initialProducts, initialTotal }: ProductsClientProps) => {
     const searchParams = useSearchParams();
     const initialCategoryId = searchParams.get('category');
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
 
     const [categories, setCategories] = useState<Category[]>(initialCategories);
     const [products, setProducts] = useState<Product[]>(initialProducts);
@@ -177,7 +177,7 @@ const ProductsClient = ({ initialCategories, initialProducts, initialTotal }: Pr
 
                     <div className="grid grid-cols-2 gap-x-2 gap-y-6 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
                         {products.map(product => (
-                            <ProductCard key={product.id} product={product} />
+                            <ProductCard key={product.id} product={product} t={t} language={language} />
                         ))}
                         {loading && (
                             [...Array(products.length > 0 ? 5 : 12)].map((_, i) => (
