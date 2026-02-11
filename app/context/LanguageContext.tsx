@@ -61,7 +61,18 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }, [language, mounted]);
 
     const setLanguage = useCallback((lang: Language) => {
-        setLanguageState(lang);
+        try {
+            localStorage.setItem('language', lang);
+            document.cookie = `language=${lang}; path=/; max-age=31536000`;
+        } catch (e) {
+            console.warn('Could not persist language immediately', e);
+        }
+
+        if (typeof window !== 'undefined') {
+            // Reload the page so the entire app (including server-rendered parts)
+            // reflects the new language only after the navigation completes.
+            window.location.reload();
+        }
     }, []);
 
     // Translation function with fallback
@@ -86,7 +97,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
     return (
         <LanguageContext.Provider value={{ language, setLanguage, t, dir, isLoaded: !!translations }}>
-            {children}
+            <div key={language} dir={dir}>
+                {children}
+            </div>
         </LanguageContext.Provider>
     );
 }
