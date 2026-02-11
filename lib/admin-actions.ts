@@ -631,6 +631,34 @@ export async function getOnSaleProducts() {
     }
 }
 
+export async function getCategoriesForCleanup() {
+    try {
+        return await prisma.category.findMany({
+            select: { id: true, name: true }
+        });
+    } catch (error) {
+        console.error("Failed to fetch categories:", error);
+        return [];
+    }
+}
+
+export async function bulkFixCategoryNames(mapping: { id: string, newName: string }[]) {
+    try {
+        await Promise.all(mapping.map(item => 
+            prisma.category.update({
+                where: { id: item.id },
+                data: { name: item.newName }
+            })
+        ));
+        revalidatePath('/admin/categories');
+        revalidatePath('/admin/products');
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to bulk fix category names:", error);
+        return { success: false };
+    }
+}
+
 export async function bulkCreateProducts(products: any[]) {
     try {
         const categories = await prisma.category.findMany();
@@ -1082,6 +1110,47 @@ export async function bulkRemoveSale(ids: string[]) {
     } catch (error) {
         console.error("Failed to bulk remove sale:", error);
         return { success: false, error: "Failed to bulk remove sale" };
+    }
+}
+
+export async function bulkDeleteProducts(ids: string[]) {
+    try {
+        // Find which products have orders
+        const productsWithOrders = await prisma.product.findMany({
+            where: {
+                id: { in: ids },
+                orderItems: { some: {} }
+            },
+            select: { id: true, name: true }
+        });
+
+        const idsWithOrders = new Set(productsWithOrders.map(p => p.id));
+        const idsToDelete = ids.filter(id => !idsWithOrders.has(id));
+
+        if (idsToDelete.length > 0) {
+            await prisma.product.deleteMany({
+                where: {
+                    id: { in: idsToDelete }
+                }
+            });
+        }
+
+        revalidatePath('/');
+        revalidatePath('/admin/products');
+        revalidatePath('/admin/categories');
+
+        if (idsWithOrders.size > 0) {
+            const names = productsWithOrders.map(p => p.name).join(", ");
+            return { 
+                success: true, 
+                message: `Deleted ${idsToDelete.length} products. Could not delete: ${names} because they are part of existing orders.` 
+            };
+        }
+
+        return { success: true };
+    } catch (error: any) {
+        console.error("Detailed Bulk Delete Error:", error);
+        return { success: false, error: "Failed to delete selected products. Check server logs for details." };
     }
 }
 

@@ -4,7 +4,7 @@ import AdminHeader from "../../components/AdminHeader";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import { useState } from "react";
 import CategoryModal from "./CategoryModal";
-import { deleteCategory, toggleCategoryFeatured } from "../../../../lib/admin-actions";
+import { deleteCategory, toggleCategoryFeatured, bulkFixCategoryNames } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useLanguage } from "@/app/context/LanguageContext";
@@ -31,6 +31,46 @@ export default function CategoriesClient({ categories }: { categories: Category[
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
+
+    const [isFixing, setIsFixing] = useState(false);
+
+    const handleFixGarbledNames = async () => {
+        const garbled = categories.filter(c => /[^\x00-\x7F]/.test(c.name));
+        if (garbled.length === 0) {
+            toast.success("No garbled names found!");
+            return;
+        }
+
+        if (!confirm(`Found ${garbled.length} categories with encoding issues. Fix them?`)) return;
+
+        setIsFixing(true);
+        try {
+            const mapping = garbled.map(c => {
+                let fixedName = c.name;
+                try {
+                    fixedName = Buffer.from(c.name, 'binary').toString('utf8');
+                } catch (e) {}
+                return { id: c.id, newName: fixedName };
+            }).filter(item => item.newName !== categories.find(c => c.id === item.id)?.name);
+
+            if (mapping.length === 0) {
+                toast.success("No names could be automatically fixed.");
+                return;
+            }
+
+            const result = await bulkFixCategoryNames(mapping);
+            if (result.success) {
+                toast.success(`Fixed ${mapping.length} category names!`);
+            } else {
+                toast.error("Failed to fix names.");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("An error occurred during cleanup.");
+        } finally {
+            setIsFixing(false);
+        }
+    };
 
     const filteredCategories = categories.filter(category =>
         category.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

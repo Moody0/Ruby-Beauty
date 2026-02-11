@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import AdminHeader from "../../components/AdminHeader";
 import AddProductModal from "./AddProductModal";
-import { deleteProduct, toggleProductTrending, bulkToggleTrending, bulkCreateProducts, bulkRemoveSale } from "../../../../lib/admin-actions";
+import { deleteProduct, toggleProductTrending, bulkToggleTrending, bulkCreateProducts, bulkRemoveSale, bulkDeleteProducts } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useLanguage } from "@/app/context/LanguageContext";
@@ -176,7 +176,6 @@ export default function ProductsClient({ products, categories }: { products: Pro
 
     const handleBulkRemoveSale = async () => {
         if (selectedIds.size === 0) return;
-
         const ids = Array.from(selectedIds);
         setIsSubmittingBulk(true);
         try {
@@ -189,6 +188,35 @@ export default function ProductsClient({ products, categories }: { products: Pro
             }
         } catch (error) {
             console.error("Error in bulk update:", error);
+            toast.error("An unexpected error occurred");
+        } finally {
+            setIsSubmittingBulk(false);
+        }
+    };
+
+    const handleBulkDelete = async () => {
+        if (selectedIds.size === 0) return;
+        const ids = Array.from(selectedIds);
+        
+        if (!confirm(`Are you sure you want to delete ${ids.length} products? This action cannot be undone.`)) {
+            return;
+        }
+
+        setIsSubmittingBulk(true);
+        try {
+            const result = await bulkDeleteProducts(ids);
+            if (result.success) {
+                if (result.message) {
+                    toast(result.message, { icon: '⚠️', duration: 6000 });
+                } else {
+                    toast.success(`Deleted ${ids.length} products successfully`);
+                }
+                setSelectedIds(new Set());
+            } else {
+                toast.error(result.error || "Failed to delete products");
+            }
+        } catch (error) {
+            console.error("Error in bulk delete:", error);
             toast.error("An unexpected error occurred");
         } finally {
             setIsSubmittingBulk(false);
@@ -234,8 +262,9 @@ export default function ProductsClient({ products, categories }: { products: Pro
                 ...rows.map(r => r.join(","))
             ].join("\n");
 
-            // Create download link
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            // Create download link with UTF-8 BOM for Excel/Arabic support
+            const BOM = "\uFEFF";
+            const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.setAttribute("href", url);
@@ -504,15 +533,15 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                     )}
                                     {canDelete && (
                                         <button
-                                            onClick={() => {
-                                                if (confirm(`Are you sure you want to delete ${selectedIds.size} products?`)) {
-                                                    // We would call a bulk delete action here if we had one
-                                                    toast.error("Bulk delete coming soon!");
-                                                }
-                                            }}
-                                            className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-lg transition-all shadow-md shadow-red-500/20"
+                                            onClick={handleBulkDelete}
+                                            disabled={isSubmittingBulk}
+                                            className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-lg transition-all shadow-md shadow-red-500/20 disabled:opacity-50"
                                         >
-                                            <span className="material-symbols-outlined text-[18px]">delete</span>
+                                            {isSubmittingBulk ? (
+                                                <span className="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>
+                                            ) : (
+                                                <span className="material-symbols-outlined text-[18px]">delete</span>
+                                            )}
                                             {t('admin.deleteSelected')}
                                         </button>
                                     )}
