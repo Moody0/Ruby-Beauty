@@ -39,6 +39,8 @@ interface Product {
     discountValue: number | null;
     stock: number;
     images: string;
+    subImage1?: string | null;
+    subImage2?: string | null;
     isTrending: boolean;
     category: {
         id: string;

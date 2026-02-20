@@ -2,7 +2,7 @@
 
 import { prisma } from "./prisma";
 import { revalidatePath } from "next/cache";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus, Prisma } from "@prisma/client";
 
 interface ProductInput {
     name: string;
@@ -14,6 +14,8 @@ interface ProductInput {
     stock: string | number;
     sku?: string;
     images: string;
+    subImage1?: string | null;
+    subImage2?: string | null;
     categoryId: string;
 }
 
@@ -125,13 +127,14 @@ function getStatusColor(status: string) {
 export async function getAdminProducts(page = 1, limit = 50) {
     try {
         const skip = (page - 1) * limit;
-        const [products, total] = await Promise.all([
+        const [productsBase, total] = await Promise.all([
             prisma.product.findMany({
                 select: {
                     id: true,
                     name: true,
                     slug: true,
                     images: true,
+                    // subImage1/2 removed from select to avoid client validation error
                     description: true,
                     sku: true,
                     price: true,
@@ -158,6 +161,22 @@ export async function getAdminProducts(page = 1, limit = 50) {
             }),
             prisma.product.count()
         ]);
+
+        // Fetch subImages via raw query to bypass outdated client definition
+        let products: any[] = productsBase;
+        if (productsBase.length > 0) {
+            const ids = productsBase.map(p => p.id);
+            const extraData = await prisma.$queryRaw<any[]>`SELECT id, "subImage1", "subImage2" FROM "Product" WHERE id IN (${Prisma.join(ids)})`;
+            
+            products = productsBase.map(p => {
+                const extra = extraData.find((e: any) => e.id === p.id);
+                return {
+                    ...p,
+                    subImage1: extra?.subImage1 || null,
+                    subImage2: extra?.subImage2 || null,
+                };
+            });
+        }
 
         return {
             products: products.map(product => ({
@@ -325,9 +344,15 @@ export async function createProduct(data: ProductInput) {
                 stock: parseInt(data.stock as string),
                 sku: data.sku,
                 images: data.images,
+                // subImage1/2 removed to avoid client validation error
                 categoryId: data.categoryId,
             }
         });
+
+        // Manually update subImages using raw query
+        if (data.subImage1 || data.subImage2) {
+            await prisma.$executeRaw`UPDATE "Product" SET "subImage1" = ${data.subImage1}, "subImage2" = ${data.subImage2} WHERE id = ${product.id}`;
+        }
 
         revalidatePath('/admin/products');
 
@@ -349,6 +374,8 @@ export async function createProduct(data: ProductInput) {
                 categoryId: product.categoryId,
                 createdAt: product.createdAt.toISOString(),
                 updatedAt: product.updatedAt.toISOString(),
+                subImage1: data.subImage1 || null,
+                subImage2: data.subImage2 || null,
             }
         };
     } catch (error) {
@@ -386,10 +413,16 @@ export async function updateProduct(id: string, data: ProductInput & { isTrendin
                 stock: parseInt(data.stock as string),
                 sku: data.sku,
                 images: data.images,
+                // subImage1/2 removed to avoid client validation error
                 categoryId: data.categoryId,
                 isTrending: data.isTrending,
             }
         });
+
+        // Manually update subImages using raw query
+        if (data.subImage1 !== undefined || data.subImage2 !== undefined) {
+             await prisma.$executeRaw`UPDATE "Product" SET "subImage1" = ${data.subImage1 ?? null}, "subImage2" = ${data.subImage2 ?? null} WHERE id = ${id}`;
+        }
 
         revalidatePath('/admin/products');
 
@@ -411,6 +444,8 @@ export async function updateProduct(id: string, data: ProductInput & { isTrendin
                 categoryId: product.categoryId,
                 createdAt: product.createdAt.toISOString(),
                 updatedAt: product.updatedAt.toISOString(),
+                subImage1: data.subImage1 || null,
+                subImage2: data.subImage2 || null,
             }
         };
     } catch (error) {

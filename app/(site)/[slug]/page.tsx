@@ -12,12 +12,9 @@ import RelatedProducts from '@/app/components/ProductDetailsComponents/RelatedPr
 
 const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     const params = await props.params;
-    // Fetch product by slug
-    const product = await prisma.product.findUnique({
-        where: {
-            slug: params.slug,
-        },
-    });
+    // Fetch product by slug using raw query to bypass potential client schema mismatch
+    const result = await prisma.$queryRaw<any[]>`SELECT * FROM "Product" WHERE slug = ${params.slug} LIMIT 1`;
+    const product = result[0];
 
     if (!product) {
         notFound();
@@ -39,7 +36,12 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 xl:gap-20">
                 {/* Product Gallery (Left) */}
                 <div className="lg:col-span-2">
-                    <ProductGallery images={product.images} isTrending={product.isTrending} />
+                    <ProductGallery 
+                        images={product.images} 
+                        subImage1={product.subImage1}
+                        subImage2={product.subImage2}
+                        isTrending={product.isTrending} 
+                    />
                 </div>
 
                 {/* Product Details (Right) */}

@@ -23,6 +23,8 @@ interface Product {
     stock: number;
     sku: string | null;
     images: string;
+    subImage1?: string | null;
+    subImage2?: string | null;
 }
 
 interface AddProductModalProps {
@@ -45,6 +47,8 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
         stock: "",
         sku: "",
         images: "", // Comma separated links
+        subImage1: "",
+        subImage2: "",
     });
 
     const [imageLink, setImageLink] = useState("");
@@ -62,6 +66,8 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                 stock: product.stock.toString(),
                 sku: product.sku || "",
                 images: product.images,
+                subImage1: product.subImage1 || "",
+                subImage2: product.subImage2 || "",
             });
         } else if (isOpen) {
             // Reset for new product
@@ -75,6 +81,8 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                 stock: "0",
                 sku: "",
                 images: "",
+                subImage1: "",
+                subImage2: "",
             });
         }
     }, [product, isOpen]);
@@ -207,6 +215,40 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                                     {t("admin.addProductModal.addLink")}
                                 </button>
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Sub Images Section */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.subImage1")}</label>
+                            <input
+                                className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
+                                placeholder={t("admin.addProductModal.subImage1Placeholder")}
+                                type="text"
+                                value={formData.subImage1}
+                                onChange={(e) => setFormData({ ...formData, subImage1: e.target.value })}
+                            />
+                            {formData.subImage1 && (
+                                <div className="relative aspect-square w-20 rounded-xl border border-[#e6dbdf] dark:border-gray-700 overflow-hidden mt-2">
+                                    <img src={formData.subImage1} alt={t("admin.addProductModal.subImage1PreviewAlt")} className="w-full h-full object-cover" />
+                                </div>
+                            )}
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.subImage2")}</label>
+                            <input
+                                className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
+                                placeholder={t("admin.addProductModal.subImage2Placeholder")}
+                                type="text"
+                                value={formData.subImage2}
+                                onChange={(e) => setFormData({ ...formData, subImage2: e.target.value })}
+                            />
+                            {formData.subImage2 && (
+                                <div className="relative aspect-square w-20 rounded-xl border border-[#e6dbdf] dark:border-gray-700 overflow-hidden mt-2">
+                                    <img src={formData.subImage2} alt={t("admin.addProductModal.subImage2PreviewAlt")} className="w-full h-full object-cover" />
+                                </div>
+                            )}
                         </div>
                     </div>
 
