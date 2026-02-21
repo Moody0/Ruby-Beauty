@@ -9,7 +9,7 @@ interface ProductPriceProps {
 
 const ProductPrice = ({ price, discountPrice }: ProductPriceProps) => {
     return (
-        <div className="flex items-baseline gap-4 mb-3 lg:mb-6 lg:border-b border-[#f4f0f2] dark:border-white/10 lg:pb-6">
+        <div className="flex items-baseline gap-4 mb-3 lg:mt-6 lg:pt-6 lg:border-t border-[#f4f0f2] dark:border-white/10">
             {discountPrice ? (
                 <>
                     <span className="text-3xl font-bold text-primary" dir="ltr">${Number(discountPrice).toFixed(2)}</span>

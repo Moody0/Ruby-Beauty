@@ -60,7 +60,7 @@ export default function AdminLoginPage() {
                         <img
                             src="/Ruby-Beauty-Logo.jpeg"
                             alt="Ruby Beauty"
-                            className="h-16 w-auto object-contain mb-4"
+                            className="h-24 w-24 object-cover rounded-full mb-4"
                         />
                         <h1 className="text-text-main dark:text-white text-2xl font-extrabold tracking-tight">
                             {t("admin.login.title")}
