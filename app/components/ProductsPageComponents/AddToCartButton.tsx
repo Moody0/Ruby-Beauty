@@ -33,7 +33,7 @@ const AddToCartButton = ({ product, label, language, variant = 'desktop' }: AddT
             id: product.id,
             name: product.name,
             price: Number(product.discountPrice || product.price),
-            image: product.images,
+            image: product.images.split(',')[0],
             slug: product.slug,
             quantity: 1,
             description: product.description || undefined

@@ -466,13 +466,7 @@
             "failedToCreate": "Failed to create product",
             "failedToUpdate": "Failed to update product",
             "errorGeneric": "An error occurred. Please try again.",
-            "imagePreviewAlt": "Image preview",
-            "subImage1": "Additional Image 1",
-            "subImage1Placeholder": "Enter URL for additional image 1",
-            "subImage1PreviewAlt": "Additional Image 1 Preview",
-            "subImage2": "Additional Image 2",
-            "subImage2Placeholder": "Enter URL for additional image 2",
-            "subImage2PreviewAlt": "Additional Image 2 Preview"
+            "imagePreviewAlt": "Image preview"
         },
         "deleteCategory": "Delete Category",
         "enterCurrentPassword": "Enter your current password",

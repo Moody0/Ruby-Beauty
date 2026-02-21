@@ -14,8 +14,6 @@ interface ProductInput {
     stock: string | number;
     sku?: string;
     images: string;
-    subImage1?: string | null;
-    subImage2?: string | null;
     categoryId: string;
 }
 
@@ -124,80 +122,41 @@ function getStatusColor(status: string) {
     }
 }
 
-export async function getAdminProducts(page = 1, limit = 50) {
+export async function getAdminProducts() {
     try {
-        const skip = (page - 1) * limit;
-        const [productsBase, total] = await Promise.all([
-            prisma.product.findMany({
-                select: {
-                    id: true,
-                    name: true,
-                    slug: true,
-                    images: true,
-                    // subImage1/2 removed from select to avoid client validation error
-                    description: true,
-                    sku: true,
-                    price: true,
-                    discountPrice: true,
-                    discountType: true,
-                    discountValue: true,
-                    stock: true,
-                    isTrending: true,
-                    categoryId: true,
-                    createdAt: true,
-                    updatedAt: true,
-                    category: {
-                        select: {
-                            id: true,
-                            name: true
-                        }
-                    }
-                },
-                skip,
-                take: limit,
-                orderBy: {
-                    createdAt: 'desc'
-                }
-            }),
-            prisma.product.count()
-        ]);
-
-        // Fetch subImages via raw query to bypass outdated client definition
-        let products: any[] = productsBase;
-        if (productsBase.length > 0) {
-            const ids = productsBase.map(p => p.id);
-            const extraData = await prisma.$queryRaw<any[]>`SELECT id, "subImage1", "subImage2" FROM "Product" WHERE id IN (${Prisma.join(ids)})`;
-            
-            products = productsBase.map(p => {
-                const extra = extraData.find((e: any) => e.id === p.id);
-                return {
-                    ...p,
-                    subImage1: extra?.subImage1 || null,
-                    subImage2: extra?.subImage2 || null,
-                };
-            });
-        }
-
-        return {
-            products: products.map(product => ({
-                ...product,
-                price: Number(product.price),
-                discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
-                discountValue: product.discountValue ? Number(product.discountValue) : null,
-                stock: Number(product.stock),
-                createdAt: product.createdAt.toISOString(),
-                updatedAt: product.updatedAt.toISOString(),
-            })),
-            pagination: {
-                total,
-                pages: Math.ceil(total / limit),
-                page,
-                limit
+        const products = await prisma.product.findMany({
+            orderBy: {
+                createdAt: 'desc'
+            },
+            include: {
+                category: true
             }
-        };
+        });
+
+        return products.map(product => ({
+            id: product.id,
+            name: product.name,
+            slug: product.slug,
+            images: product.images,
+            sku: product.sku,
+            description: product.description,
+            price: Number(product.price),
+            discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
+            discountType: product.discountType,
+            discountValue: product.discountValue ? Number(product.discountValue) : null,
+            stock: Number(product.stock),
+            categoryId: product.categoryId,
+            category: {
+                id: product.category.id,
+                name: product.category.name
+            },
+            createdAt: product.createdAt.toISOString(),
+            updatedAt: product.updatedAt.toISOString(),
+            isTrending: product.isTrending,
+        }));
     } catch (error) {
         console.error("Failed to fetch products:", error);
-        return { products: [], pagination: { total: 0, pages: 0, page: 1, limit: 50 } };
+        return [];
     }
 }
 
@@ -344,15 +303,9 @@ export async function createProduct(data: ProductInput) {
                 stock: parseInt(data.stock as string),
                 sku: data.sku,
                 images: data.images,
-                // subImage1/2 removed to avoid client validation error
                 categoryId: data.categoryId,
             }
         });
-
-        // Manually update subImages using raw query
-        if (data.subImage1 || data.subImage2) {
-            await prisma.$executeRaw`UPDATE "Product" SET "subImage1" = ${data.subImage1}, "subImage2" = ${data.subImage2} WHERE id = ${product.id}`;
-        }
 
         revalidatePath('/admin/products');
 
@@ -374,8 +327,6 @@ export async function createProduct(data: ProductInput) {
                 categoryId: product.categoryId,
                 createdAt: product.createdAt.toISOString(),
                 updatedAt: product.updatedAt.toISOString(),
-                subImage1: data.subImage1 || null,
-                subImage2: data.subImage2 || null,
             }
         };
     } catch (error) {
@@ -413,16 +364,10 @@ export async function updateProduct(id: string, data: ProductInput & { isTrendin
                 stock: parseInt(data.stock as string),
                 sku: data.sku,
                 images: data.images,
-                // subImage1/2 removed to avoid client validation error
                 categoryId: data.categoryId,
                 isTrending: data.isTrending,
             }
         });
-
-        // Manually update subImages using raw query
-        if (data.subImage1 !== undefined || data.subImage2 !== undefined) {
-             await prisma.$executeRaw`UPDATE "Product" SET "subImage1" = ${data.subImage1 ?? null}, "subImage2" = ${data.subImage2 ?? null} WHERE id = ${id}`;
-        }
 
         revalidatePath('/admin/products');
 
@@ -444,8 +389,6 @@ export async function updateProduct(id: string, data: ProductInput & { isTrendin
                 categoryId: product.categoryId,
                 createdAt: product.createdAt.toISOString(),
                 updatedAt: product.updatedAt.toISOString(),
-                subImage1: data.subImage1 || null,
-                subImage2: data.subImage2 || null,
             }
         };
     } catch (error) {

@@ -100,7 +100,7 @@ const HeaderSearch = ({ onSearchSelect, placeholder, autoFocus = false, locale }
                                 >
                                     <div className="shrink-0 size-12 rounded-lg bg-gray-100 overflow-hidden">
                                         <img
-                                            src={product.images}
+                                            src={product.images ? product.images.split(',')[0] : ''}
                                             alt={product.name}
                                             className="w-full h-full object-cover"
                                         />

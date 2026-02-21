@@ -43,8 +43,6 @@ model Product {
   name          String
   slug          String      @unique
   images        String
-  subImage1     String?
-  subImage2     String?
   isTrending    Boolean     @default(false)
   description   String?
   price         Decimal     @db.Decimal(10, 2)

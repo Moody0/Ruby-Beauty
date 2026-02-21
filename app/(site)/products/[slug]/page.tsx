@@ -1,9 +1,9 @@
 import React from 'react';
 import { prisma } from "@/lib/prisma";
 import { notFound } from 'next/navigation';
-import ProductBreadcrumbs from '@/app/components/ProductDetailsComponents/ProductBreadcrumbs';
 import ProductGallery from '@/app/components/ProductDetailsComponents/ProductGallery';
-import ProductInfo from '@/app/components/ProductDetailsComponents/ProductInfo';
+import ProductHeader from '@/app/components/ProductDetailsComponents/ProductHeader';
+import ProductPrice from '@/app/components/ProductDetailsComponents/ProductPrice';
 import ProductActions from '@/app/components/ProductDetailsComponents/ProductActions';
 import ProductAccordions from '@/app/components/ProductDetailsComponents/ProductAccordions';
 import RelatedProducts from '@/app/components/ProductDetailsComponents/RelatedProducts';
@@ -31,24 +31,35 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
 
     return (
         <div className="grow w-full mx-auto px-6 py-8 md:px-20 lg:px-32 xl:px-48 2xl:px-64 lg:py-12">
-            <ProductBreadcrumbs productName={product.name} />
+            
+            {/* Mobile Header (Title & Description above image) */}
+            <div className="block lg:hidden mb-6">
+                <ProductHeader
+                    name={product.name}
+                    description={product.description}
+                />
+            </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 xl:gap-20">
                 {/* Product Gallery (Left) */}
                 <div className="lg:col-span-2">
                     <ProductGallery 
                         images={product.images} 
-                        subImage1={product.subImage1}
-                        subImage2={product.subImage2}
                         isTrending={product.isTrending} 
                     />
                 </div>
 
                 {/* Product Details (Right) */}
                 <div className="flex flex-col lg:col-span-3">
-                    <ProductInfo
-                        name={product.name}
-                        description={product.description}
+                    {/* Desktop Header (Hidden on mobile) */}
+                    <div className="hidden lg:block">
+                        <ProductHeader
+                            name={product.name}
+                            description={product.description}
+                        />
+                    </div>
+                    
+                    <ProductPrice
                         price={product.price.toString()}
                         discountPrice={product.discountPrice?.toString()}
                     />
@@ -67,9 +78,6 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                         image: product.images.split(',')[0],
                         slug: product.slug
                     }} />
-
-                    <div className="flex flex-wrap justify-center gap-6 mb-10 border-t border-[#f4f0f2] dark:border-white/10">
-                    </div>
 
                     <ProductAccordions />
                 </div>

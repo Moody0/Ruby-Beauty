@@ -21,7 +21,7 @@ const CartItem = ({ item, removeItem, updateQuantity }: CartItemProps) => {
             <div className="shrink-0">
                 <div
                     className="w-24 h-24 bg-gray-100 rounded-lg bg-cover bg-center"
-                    style={{ backgroundImage: `url('${item.image}')` }}
+                    style={{ backgroundImage: `url('${item.image.split(',')[0]}')` }}
                 ></div>
             </div>
             <div className="flex flex-col flex-1 justify-between py-1">

@@ -464,13 +464,7 @@
             "failedToCreate": "فشل إنشاء المنتج",
             "failedToUpdate": "فشل تحديث المنتج",
             "errorGeneric": "حدث خطأ. يرجى المحاولة مرة أخرى.",
-            "imagePreviewAlt": "معاينة الصورة",
-            "subImage1": "صورة إضافية 1",
-            "subImage1Placeholder": "أدخل رابط الصورة الإضافية 1",
-            "subImage1PreviewAlt": "معاينة الصورة الإضافية 1",
-            "subImage2": "صورة إضافية 2",
-            "subImage2Placeholder": "أدخل رابط الصورة الإضافية 2",
-            "subImage2PreviewAlt": "معاينة الصورة الإضافية 2"
+            "imagePreviewAlt": "معاينة الصورة"
         },
         "deleteCategory": "حذف الفئة",
         "enterCurrentPassword": "أدخل كلمة المرور الحالية",

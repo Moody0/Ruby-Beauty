@@ -23,8 +23,6 @@ interface Product {
     stock: number;
     sku: string | null;
     images: string;
-    subImage1?: string | null;
-    subImage2?: string | null;
 }
 
 interface AddProductModalProps {
@@ -35,7 +33,7 @@ interface AddProductModalProps {
 }
 
 export default function AddProductModal({ isOpen, onClose, categories, product }: AddProductModalProps) {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
@@ -47,8 +45,6 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
         stock: "",
         sku: "",
         images: "", // Comma separated links
-        subImage1: "",
-        subImage2: "",
     });
 
     const [imageLink, setImageLink] = useState("");
@@ -66,11 +62,8 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                 stock: product.stock.toString(),
                 sku: product.sku || "",
                 images: product.images,
-                subImage1: product.subImage1 || "",
-                subImage2: product.subImage2 || "",
             });
         } else if (isOpen) {
-            // Reset for new product
             setFormData({
                 name: "",
                 description: "",
@@ -78,11 +71,9 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                 price: "",
                 discountType: "NONE",
                 discountValue: "",
-                stock: "0",
+                stock: "",
                 sku: "",
                 images: "",
-                subImage1: "",
-                subImage2: "",
             });
         }
     }, [product, isOpen]);
@@ -176,7 +167,9 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
 
                     {/* Images Section */}
                     <div className="space-y-4">
-                        <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.productImages")}</label>
+                        <label className="text-sm font-bold text-text-main dark:text-white">
+                            {t("admin.addProductModal.productImages")}
+                        </label>
 
                         {/* Image Gallery */}
                         {formData.images && (
@@ -184,10 +177,18 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                                 {formData.images.split(',').filter(Boolean).map((url, index) => (
                                     <div key={index} className="relative aspect-square rounded-xl border border-[#e6dbdf] dark:border-gray-700 overflow-hidden group">
                                         <img src={url} alt={`${t("admin.addProductModal.imagePreviewAlt")} ${index}`} className="w-full h-full object-cover" />
+                                        
+                                        {/* Main Image Badge */}
+                                        {index === 0 && (
+                                            <div className="absolute top-2 left-2 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm z-10">
+                                                {language === 'ar' ? 'الرئيسية' : 'Main'}
+                                            </div>
+                                        )}
+
                                         <button
                                             type="button"
                                             onClick={() => removeImage(url)}
-                                            className="absolute top-1 right-1 size-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                            className="absolute top-1 right-1 size-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
                                         >
                                             <MdClose className="text-xs" />
                                         </button>
@@ -215,40 +216,6 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                                     {t("admin.addProductModal.addLink")}
                                 </button>
                             </div>
-                        </div>
-                    </div>
-
-                    {/* Sub Images Section */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.subImage1")}</label>
-                            <input
-                                className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
-                                placeholder={t("admin.addProductModal.subImage1Placeholder")}
-                                type="text"
-                                value={formData.subImage1}
-                                onChange={(e) => setFormData({ ...formData, subImage1: e.target.value })}
-                            />
-                            {formData.subImage1 && (
-                                <div className="relative aspect-square w-20 rounded-xl border border-[#e6dbdf] dark:border-gray-700 overflow-hidden mt-2">
-                                    <img src={formData.subImage1} alt={t("admin.addProductModal.subImage1PreviewAlt")} className="w-full h-full object-cover" />
-                                </div>
-                            )}
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.subImage2")}</label>
-                            <input
-                                className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
-                                placeholder={t("admin.addProductModal.subImage2Placeholder")}
-                                type="text"
-                                value={formData.subImage2}
-                                onChange={(e) => setFormData({ ...formData, subImage2: e.target.value })}
-                            />
-                            {formData.subImage2 && (
-                                <div className="relative aspect-square w-20 rounded-xl border border-[#e6dbdf] dark:border-gray-700 overflow-hidden mt-2">
-                                    <img src={formData.subImage2} alt={t("admin.addProductModal.subImage2PreviewAlt")} className="w-full h-full object-cover" />
-                                </div>
-                            )}
                         </div>
                     </div>
 
