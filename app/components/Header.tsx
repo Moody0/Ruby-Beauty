@@ -3,9 +3,9 @@ import React from 'react';
 import ThemeToggle from './ThemeToggle';
 import HeaderSearch from './HeaderSearch';
 import LanguageToggle from './LanguageToggle';
-import { MdMenu, MdSearch, MdShoppingBag } from 'react-icons/md';
+import { MdMenu, MdSearch } from 'react-icons/md';
 import MobileMenu from './MobileMenu';
-import CartBadge from './CartBadge';
+import CartTrigger from './CartTrigger';
 
 interface HeaderProps {
     initialCategories?: any[];
@@ -43,10 +43,7 @@ const Header = ({ initialCategories = [], t, dir, language }: HeaderProps) => {
                             <Link href="/about-us" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('common.about')}</Link>
                         </nav>
                         <div className="flex items-center gap-1 md:gap-2">
-                            <Link href="/cart" className="p-2 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main-light dark:text-text-main-dark relative group">
-                                <MdShoppingBag className="text-[24px]" />
-                                <CartBadge />
-                            </Link>
+                            <CartTrigger />
                             <LanguageToggle />
                             <div className="block">
                                 <ThemeToggle />

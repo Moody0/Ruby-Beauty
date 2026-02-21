@@ -69,6 +69,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
     const [isSubmittingBulk, setIsSubmittingBulk] = useState(false);
+    const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
     const itemsPerPage = 20;
 
     // Calculate stats
@@ -299,6 +300,39 @@ export default function ProductsClient({ products, categories }: { products: Pro
         } catch (error) {
             console.error("Export failed:", error);
             toast.error(t('admin.exportError'));
+        } finally {
+            setIsExportMenuOpen(false);
+        }
+    };
+
+    const handleExportXLSX = async () => {
+        try {
+            const XLSX = await import('xlsx');
+            
+            // Prepare data
+            const data = products.map((p: any) => ({
+                Name: p.name,
+                SKU: p.sku || '',
+                Category: p.category?.name || 'Uncategorized',
+                Price: p.price,
+                Stock: p.stock,
+                Status: p.stock > 0 ? "In Stock" : "Out of Stock",
+                "Is Trending": p.isTrending ? "Yes" : "No",
+                Images: p.images || ''
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Products");
+            
+            XLSX.writeFile(wb, `ruby_beauty_products_${new Date().toISOString().split('T')[0]}.xlsx`);
+            
+            toast.success(t('admin.exportSuccess'));
+        } catch (error) {
+            console.error("Export XLSX failed:", error);
+            toast.error(t('admin.exportError'));
+        } finally {
+            setIsExportMenuOpen(false);
         }
     };
 
@@ -386,13 +420,39 @@ export default function ProductsClient({ products, categories }: { products: Pro
                             <p className="text-text-sub dark:text-gray-400">{t('admin.manageCatalog')}</p>
                         </div>
                         <div className="flex flex-wrap items-center gap-3">
-                            <button
-                                onClick={handleExportCSV}
-                                className="bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-text-main dark:text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm"
-                            >
-                                <MdFileUpload className="text-[20px]" />
-                                {t('admin.exportData')}
-                            </button>
+                            <div className="relative">
+                                <button
+                                    onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
+                                    className="bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-text-main dark:text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm"
+                                >
+                                    <MdFileUpload className="text-[20px]" />
+                                    {t('admin.exportData')}
+                                    <MdExpandMore className={`text-[18px] transition-transform duration-200 ${isExportMenuOpen ? 'rotate-180' : ''}`} />
+                                </button>
+                                
+                                {isExportMenuOpen && (
+                                    <>
+                                        <div className="fixed inset-0 z-40" onClick={() => setIsExportMenuOpen(false)} />
+                                        <div className={`absolute top-full mt-2 w-48 bg-white dark:bg-[#1a1a1a] border border-gray-100 dark:border-gray-700 rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200 ${dir === 'rtl' ? 'left-0' : 'right-0'}`}>
+                                            <button 
+                                                onClick={handleExportCSV}
+                                                className="w-full text-start px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-medium text-text-main dark:text-white transition-colors flex items-center gap-3 border-b border-gray-50 dark:border-white/5"
+                                            >
+                                                <span className="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-bold px-1.5 py-0.5 rounded">CSV</span> 
+                                                <span>Export as CSV</span>
+                                            </button>
+                                            <button 
+                                                onClick={handleExportXLSX}
+                                                className="w-full text-start px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-medium text-text-main dark:text-white transition-colors flex items-center gap-3"
+                                            >
+                                                <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold px-1.5 py-0.5 rounded">XLSX</span> 
+                                                <span>Export as Excel</span>
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+
                             <label className="bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-text-main dark:text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm cursor-pointer">
                                 <MdFileDownload className="text-[20px]" />
                                 {t('admin.importData')}
