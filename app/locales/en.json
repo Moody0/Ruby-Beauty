@@ -18,7 +18,8 @@
         "more": "more",
         "showMore": "Show more",
         "showLess": "Show less",
-        "categories": "Categories"
+        "categories": "Categories",
+        "continueShopping": "Continue Shopping"
 
     },
     "header": {
@@ -86,7 +87,11 @@
         "freeShipping": "Free",
         "total": "Total",
         "proceedToCheckout": "Proceed to Checkout",
-        "continueShopping": "Continue Shopping"
+        "continueShopping": "Continue Shopping",
+        "items": "Items",
+        "title": "Shopping Cart",
+        "checkout": "Checkout",
+        "empty": "Empty"
     },
     "checkout": {
         "placeOrder": "Place Order",

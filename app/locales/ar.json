@@ -18,7 +18,8 @@
         "more": "المزيد",
         "showMore": "المزيد",
         "showLess": "عرض أقل",
-        "categories": "الاقسام"
+        "categories": "الاقسام",
+        "continueShopping": "متابعة التسوق"
     },
     "header": {
         "brandName": "Ruby Beauty"
@@ -84,7 +85,11 @@
         "freeShipping": "مجاني",
         "total": "الإجمالي",
         "proceedToCheckout": "المتابعة للدفع",
-        "continueShopping": "متابعة التسوق"
+        "continueShopping": "متابعة التسوق",
+        "items": "العناصر",
+        "title": "سلة التسوق",
+        "checkout": "الدفع",
+        "empty": "فارغة"
     },
     "checkout": {
         "placeOrder": "تأكيد الطلب",
