@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MdImage, MdImageNotSupported, MdSchedule, MdLocalShipping, MdWarning, MdCleanHands, MdAssignmentReturn } from "react-icons/md";
+import { MdImage, MdImageNotSupported, MdSchedule, MdLocalShipping, MdWarning, MdCleanHands, MdAssignmentReturn, MdVerified } from "react-icons/md";
 import AdminHeader from "../../components/AdminHeader";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import { updateSiteSettings } from "../../../../lib/admin-actions";

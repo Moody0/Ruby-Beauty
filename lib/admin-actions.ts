@@ -1213,22 +1213,6 @@ export async function updateSiteSettings(data: {
     aboutNarrativeQuote?: string;
     aboutNarrativeQuoteAr?: string;
     aboutNarrativeImage?: string;
-    aboutValuesTitle?: string;
-    aboutValuesTitleAr?: string;
-    aboutValuesDesc?: string;
-    aboutValuesDescAr?: string;
-    aboutValue1Title?: string;
-    aboutValue1TitleAr?: string;
-    aboutValue1Desc?: string;
-    aboutValue1DescAr?: string;
-    aboutValue2Title?: string;
-    aboutValue2TitleAr?: string;
-    aboutValue2Desc?: string;
-    aboutValue2DescAr?: string;
-    aboutValue3Title?: string;
-    aboutValue3TitleAr?: string;
-    aboutValue3Desc?: string;
-    aboutValue3DescAr?: string;
 }) {
     try {
         await prisma.settings.upsert({
