@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MdImage, MdImageNotSupported, MdVerified, MdSchedule, MdLocalShipping, MdWarning, MdCleanHands, MdAssignmentReturn } from "react-icons/md";
+import { MdImage, MdImageNotSupported, MdSchedule, MdLocalShipping, MdWarning, MdCleanHands, MdAssignmentReturn } from "react-icons/md";
 import AdminHeader from "../../components/AdminHeader";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import { updateSiteSettings } from "../../../../lib/admin-actions";
@@ -38,6 +38,38 @@ interface SiteSettings {
     hygieneTitleAr: string | null;
     hygieneDescAr: string | null;
     shippingReturnsImage: string | null;
+    aboutHeroTitle: string | null;
+    aboutHeroTitleAr: string | null;
+    aboutHeroSubtitle: string | null;
+    aboutHeroSubtitleAr: string | null;
+    aboutHeroImage: string | null;
+    aboutNarrativeTitle: string | null;
+    aboutNarrativeTitleAr: string | null;
+    aboutNarrativeFounded: string | null;
+    aboutNarrativeFoundedAr: string | null;
+    aboutNarrativeDesc1: string | null;
+    aboutNarrativeDesc1Ar: string | null;
+    aboutNarrativeDesc2: string | null;
+    aboutNarrativeDesc2Ar: string | null;
+    aboutNarrativeQuote: string | null;
+    aboutNarrativeQuoteAr: string | null;
+    aboutNarrativeImage: string | null;
+    aboutValuesTitle: string | null;
+    aboutValuesTitleAr: string | null;
+    aboutValuesDesc: string | null;
+    aboutValuesDescAr: string | null;
+    aboutValue1Title: string | null;
+    aboutValue1TitleAr: string | null;
+    aboutValue1Desc: string | null;
+    aboutValue1DescAr: string | null;
+    aboutValue2Title: string | null;
+    aboutValue2TitleAr: string | null;
+    aboutValue2Desc: string | null;
+    aboutValue2DescAr: string | null;
+    aboutValue3Title: string | null;
+    aboutValue3TitleAr: string | null;
+    aboutValue3Desc: string | null;
+    aboutValue3DescAr: string | null;
 }
 
 export default function SiteContentClient({ 
@@ -54,6 +86,25 @@ export default function SiteContentClient({
     const [ctaTitleAr, setCtaTitleAr] = useState(initialSettings?.categoriesCtaTitleAr || "");
     const [ctaDescAr, setCtaDescAr] = useState(initialSettings?.categoriesCtaDescAr || "");
     const [ctaImage, setCtaImage] = useState(initialSettings?.categoriesCtaImage || "");
+
+    // Site Settings State - About Us
+    const [aboutHeroTitle, setAboutHeroTitle] = useState(initialSettings?.aboutHeroTitle || "");
+    const [aboutHeroTitleAr, setAboutHeroTitleAr] = useState(initialSettings?.aboutHeroTitleAr || "");
+    const [aboutHeroSubtitle, setAboutHeroSubtitle] = useState(initialSettings?.aboutHeroSubtitle || "");
+    const [aboutHeroSubtitleAr, setAboutHeroSubtitleAr] = useState(initialSettings?.aboutHeroSubtitleAr || "");
+    const [aboutHeroImage, setAboutHeroImage] = useState(initialSettings?.aboutHeroImage || "");
+    
+    const [aboutNarrativeTitle, setAboutNarrativeTitle] = useState(initialSettings?.aboutNarrativeTitle || "");
+    const [aboutNarrativeTitleAr, setAboutNarrativeTitleAr] = useState(initialSettings?.aboutNarrativeTitleAr || "");
+    const [aboutNarrativeFounded, setAboutNarrativeFounded] = useState(initialSettings?.aboutNarrativeFounded || "Founded in 2024");
+    const [aboutNarrativeFoundedAr, setAboutNarrativeFoundedAr] = useState(initialSettings?.aboutNarrativeFoundedAr || "تأسست في 2024");
+    const [aboutNarrativeDesc1, setAboutNarrativeDesc1] = useState(initialSettings?.aboutNarrativeDesc1 || "");
+    const [aboutNarrativeDesc1Ar, setAboutNarrativeDesc1Ar] = useState(initialSettings?.aboutNarrativeDesc1Ar || "");
+    const [aboutNarrativeDesc2, setAboutNarrativeDesc2] = useState(initialSettings?.aboutNarrativeDesc2 || "");
+    const [aboutNarrativeDesc2Ar, setAboutNarrativeDesc2Ar] = useState(initialSettings?.aboutNarrativeDesc2Ar || "");
+    const [aboutNarrativeQuote, setAboutNarrativeQuote] = useState(initialSettings?.aboutNarrativeQuote || "");
+    const [aboutNarrativeQuoteAr, setAboutNarrativeQuoteAr] = useState(initialSettings?.aboutNarrativeQuoteAr || "");
+    const [aboutNarrativeImage, setAboutNarrativeImage] = useState(initialSettings?.aboutNarrativeImage || "");
 
     // Site Settings State - Shipping & Returns
     const [shippingTitle, setShippingTitle] = useState(initialSettings?.shippingTitle || "");
@@ -122,6 +173,22 @@ export default function SiteContentClient({
                 hygieneTitleAr,
                 hygieneDescAr,
                 shippingReturnsImage,
+                aboutHeroTitle,
+                aboutHeroTitleAr,
+                aboutHeroSubtitle,
+                aboutHeroSubtitleAr,
+                aboutHeroImage,
+                aboutNarrativeTitle,
+                aboutNarrativeTitleAr,
+                aboutNarrativeFounded,
+                aboutNarrativeFoundedAr,
+                aboutNarrativeDesc1,
+                aboutNarrativeDesc1Ar,
+                aboutNarrativeDesc2,
+                aboutNarrativeDesc2Ar,
+                aboutNarrativeQuote,
+                aboutNarrativeQuoteAr,
+                aboutNarrativeImage,
             });
 
             if (result.success) {
@@ -257,6 +324,8 @@ export default function SiteContentClient({
                                         </div>
                                     </div>
                                 </div>
+
+
 
                                 <div className="flex justify-end pt-4">
                                     <button
@@ -651,6 +720,273 @@ export default function SiteContentClient({
                                                     onChange={(e) => setReturnsDescAr(e.target.value)}
                                                     className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                                 />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-end pt-4">
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmittingSettings}
+                                        className="px-8 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed min-w-[200px]"
+                                    >
+                                        {isSubmittingSettings ? (
+                                            <span className="flex items-center justify-center gap-2">
+                                                <span className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full" />
+                                                {t('admin.saving')}
+                                            </span>
+                                        ) : (
+                                            t('admin.saveChanges')
+                                        )}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        {/* About Us Page Content */}
+                        <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#e6dbdf] dark:border-gray-700 p-8">
+                            <div className="mb-8">
+                                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-2">
+                                    {t('admin.aboutUsContent')}
+                                </h2>
+                                <p className="text-text-sub dark:text-gray-400">
+                                    {t('admin.aboutUsDescription')}
+                                </p>
+                            </div>
+
+                            <form onSubmit={handleSiteSettingsSubmit} className="space-y-12">
+                                {/* Hero Section */}
+                                <div className="space-y-6">
+                                    <div className="flex items-center gap-2 mb-6">
+                                        <MdImage className="text-primary text-xl" />
+                                        <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.heroSection')}</h3>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div className="space-y-4">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">EN</span>
+                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.englishContent')}</span>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
+                                                <input
+                                                    type="text"
+                                                    value={aboutHeroTitle}
+                                                    onChange={(e) => setAboutHeroTitle(e.target.value)}
+                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.subtitle')}</label>
+                                                <textarea
+                                                    rows={3}
+                                                    value={aboutHeroSubtitle}
+                                                    onChange={(e) => setAboutHeroSubtitle(e.target.value)}
+                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-4" dir="rtl">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">AR</span>
+                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.arabicContent')}</span>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
+                                                <input
+                                                    type="text"
+                                                    value={aboutHeroTitleAr}
+                                                    onChange={(e) => setAboutHeroTitleAr(e.target.value)}
+                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.subtitle')}</label>
+                                                <textarea
+                                                    rows={3}
+                                                    value={aboutHeroSubtitleAr}
+                                                    onChange={(e) => setAboutHeroSubtitleAr(e.target.value)}
+                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Hero Image */}
+                                    <div className="pt-4">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.heroImage')}</label>
+                                            <div className="flex gap-4 items-start">
+                                                <div className="flex-1 space-y-2">
+                                                    <input
+                                                        type="text"
+                                                        value={aboutHeroImage}
+                                                        onChange={(e) => setAboutHeroImage(e.target.value)}
+                                                        placeholder="https://example.com/image.jpg"
+                                                        className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    />
+                                                </div>
+                                                <div className="w-32 aspect-video rounded-xl border border-[#e6dbdf] dark:border-gray-700 overflow-hidden bg-background-light dark:bg-gray-800 flex items-center justify-center">
+                                                    {aboutHeroImage ? (
+                                                        <img 
+                                                            src={aboutHeroImage} 
+                                                            alt="Hero Preview" 
+                                                            className="w-full h-full object-cover"
+                                                            onError={(e) => {
+                                                                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x225?text=Invalid';
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <MdImageNotSupported className="text-2xl text-text-sub/30" />
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Narrative Section */}
+                                <div className="space-y-6 border-t border-[#e6dbdf] dark:border-gray-700 pt-8">
+                                    <div className="flex items-center gap-2 mb-6">
+                                        <MdAssignmentReturn className="text-primary text-xl" />
+                                        <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.narrativeSection')}</h3>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div className="space-y-4">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">EN</span>
+                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.englishContent')}</span>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.foundedText')}</label>
+                                                <input
+                                                    type="text"
+                                                    value={aboutNarrativeFounded}
+                                                    onChange={(e) => setAboutNarrativeFounded(e.target.value)}
+                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
+                                                <input
+                                                    type="text"
+                                                    value={aboutNarrativeTitle}
+                                                    onChange={(e) => setAboutNarrativeTitle(e.target.value)}
+                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')} 1</label>
+                                                <textarea
+                                                    rows={4}
+                                                    value={aboutNarrativeDesc1}
+                                                    onChange={(e) => setAboutNarrativeDesc1(e.target.value)}
+                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')} 2</label>
+                                                <textarea
+                                                    rows={4}
+                                                    value={aboutNarrativeDesc2}
+                                                    onChange={(e) => setAboutNarrativeDesc2(e.target.value)}
+                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.quote')}</label>
+                                                <input
+                                                    type="text"
+                                                    value={aboutNarrativeQuote}
+                                                    onChange={(e) => setAboutNarrativeQuote(e.target.value)}
+                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-4" dir="rtl">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">AR</span>
+                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.arabicContent')}</span>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.foundedText')}</label>
+                                                <input
+                                                    type="text"
+                                                    value={aboutNarrativeFoundedAr}
+                                                    onChange={(e) => setAboutNarrativeFoundedAr(e.target.value)}
+                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
+                                                <input
+                                                    type="text"
+                                                    value={aboutNarrativeTitleAr}
+                                                    onChange={(e) => setAboutNarrativeTitleAr(e.target.value)}
+                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')} 1</label>
+                                                <textarea
+                                                    rows={4}
+                                                    value={aboutNarrativeDesc1Ar}
+                                                    onChange={(e) => setAboutNarrativeDesc1Ar(e.target.value)}
+                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')} 2</label>
+                                                <textarea
+                                                    rows={4}
+                                                    value={aboutNarrativeDesc2Ar}
+                                                    onChange={(e) => setAboutNarrativeDesc2Ar(e.target.value)}
+                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.quote')}</label>
+                                                <input
+                                                    type="text"
+                                                    value={aboutNarrativeQuoteAr}
+                                                    onChange={(e) => setAboutNarrativeQuoteAr(e.target.value)}
+                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Narrative Image */}
+                                    <div className="pt-4">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.narrativeImage')}</label>
+                                            <div className="flex gap-4 items-start">
+                                                <div className="flex-1 space-y-2">
+                                                    <input
+                                                        type="text"
+                                                        value={aboutNarrativeImage}
+                                                        onChange={(e) => setAboutNarrativeImage(e.target.value)}
+                                                        placeholder="https://example.com/image.jpg"
+                                                        className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    />
+                                                </div>
+                                                <div className="w-32 aspect-video rounded-xl border border-[#e6dbdf] dark:border-gray-700 overflow-hidden bg-background-light dark:bg-gray-800 flex items-center justify-center">
+                                                    {aboutNarrativeImage ? (
+                                                        <img 
+                                                            src={aboutNarrativeImage} 
+                                                            alt="Narrative Preview" 
+                                                            className="w-full h-full object-cover"
+                                                            onError={(e) => {
+                                                                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x225?text=Invalid';
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <MdImageNotSupported className="text-2xl text-text-sub/30" />
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

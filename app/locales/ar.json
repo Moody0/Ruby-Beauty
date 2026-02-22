@@ -147,6 +147,7 @@
         "switchTo": "تغيير اللغة"
     },
     "admin": {
+        "foundedText": "نص التأسيس",
         "dashboard": "لوحة التحكم",
         "products": "المنتجات",
         "categories": "الفئات",
@@ -161,6 +162,14 @@
         "shippingReturnsContent": "محتوى الشحن والمرتجعات",
         "shippingReturnsDescription": "تحديث المحتوى لصفحة الشحن والمرتجعات.",
         "pageHeaderImage": "صورة ترويسة الصفحة",
+        "aboutUsContent": "محتوى صفحة من نحن",
+        "aboutUsDescription": "تحديث محتوى صفحة من نحن.",
+        "heroSection": "قسم البطل",
+        "narrativeSection": "قسم السرد",
+        "quote": "اقتباس",
+        "subtitle": "عنوان فرعي",
+        "heroImage": "صورة البطل",
+        "narrativeImage": "صورة السرد",
         "shippingReturnsImageHint": "سيتم عرض هذه الصورة في الجزء العلوي من صفحة الشحن والمرتجعات.",
         "hygieneProtocols": "بروتوكولات النظافة والسلامة",
         "hygieneImage": "صورة بروتوكولات النظافة والسلامة",

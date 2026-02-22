@@ -149,6 +149,7 @@
         "switchTo": "Switch language"
     },
     "admin": {
+        "foundedText": "Founded Text",
         "dashboard": "Dashboard",
         "products": "Products",
         "categories": "Categories",
@@ -163,6 +164,14 @@
         "shippingReturnsContent": "Shipping & Returns Content",
         "shippingReturnsDescription": "Update the content for the Shipping & Returns page.",
         "pageHeaderImage": "Page Header Image",
+        "aboutUsContent": "About Us Content",
+        "aboutUsDescription": "Update the content for the About Us page.",
+        "heroSection": "Hero Section",
+        "narrativeSection": "Narrative Section",
+        "quote": "Quote",
+        "subtitle": "Subtitle",
+        "heroImage": "Hero Image",
+        "narrativeImage": "Narrative Image",
         "shippingReturnsImageHint": "This image will be displayed at the top of the Shipping & Returns page.",
         "hygieneProtocols": "Hygiene & Safety Protocols",
         "hygieneImage": "Hygiene & Safety Protocols Image",

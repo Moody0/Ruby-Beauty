@@ -1118,6 +1118,45 @@ export async function getSiteSettings() {
                 hygieneTitleAr: "بروتوكولات النظافة والسلامة",
                 hygieneDescAr: "من أجل سلامتك وللحفاظ على أعلى معايير النظافة، نتبع بروتوكولات صارمة للتعامل مع منتجات التجميل.",
                 shippingReturnsImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuC1GmfD6bueEsJqlHNPjDWHMlhsLZSm2Jmp21TUCLKvobkcd7oAPMMdwzfm8BOHC5XtR0EP6tLI7DT5hhyLxuijsbpX2kQf6iNlqROU-8k-DrqZAUqdc7-0lE4nxuCcLaEb0fEaXVBxc_yXkiUlyhfvaYJ1FfHZtngnoJbeanLgsf7rcxqON6rjkoC4BQv6FhlwLNKZrMbxjCugphq-bo5GCqBoLfmjjZSuH0N5eV-Kz33xFQTD5jSYCTsVYAwOkwhLQsQiPD_lnD9U",
+                
+                aboutHeroTitle: "Our Story",
+                aboutHeroTitleAr: "قصتنا",
+                aboutHeroSubtitle: "Redefining beauty with clean, conscious care that honors your skin and the earth.",
+                aboutHeroSubtitleAr: "إعادة تعريف الجمال بعناية نظيفة وواعية تكرم بشرتك والأرض.",
+                aboutHeroImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAz8qN2iAHz-UZeEQfqOY49U5OCZ5z4ejVm7ILFjFSl9S5xg_6UuBa61qOmrkMPrBa4CuXDzHa9EN3-LNyUxi5IDK5A9TvJWkNuG-tt_RRyvJH8LvynO1daOEkTk47KDtkW3Md2ugZYShZJdxolsjiJUtDdOOz4Q7-6TNrexIvyClP0ADf1TWdbCUk1kBn8bfzhTC1cn8s9jG3yt0tDDht7__J5YKKf690SmKN4WIJX_pc2LOj3x1CnYk5JuqEu0Bzp2vGwsrYLaJWb",
+                
+                aboutNarrativeTitle: "Our Mission for Clean Beauty",
+                aboutNarrativeTitleAr: "مهمتنا للجمال النظيف",
+                aboutNarrativeFounded: "Founded in 2024",
+                aboutNarrativeFoundedAr: "تأسست في 2024",
+                aboutNarrativeDesc1: "We believe that beauty should be kind—to your skin, your spirit, and the planet. Our journey started in a sun-drenched studio with a simple, radical goal: to create high-performance skincare without compromising on ethics or transparency.",
+                aboutNarrativeDesc1Ar: "نؤمن بأن الجمال يجب أن يكون لطيفًا - على بشرتك، وروحك، والكوكب. بدأت رحلتنا في استوديو مشمس بهدف بسيط وجذري: إنشاء عناية بالبشرة عالية الأداء دون المساومة على الأخلاق أو الشفافية.",
+                aboutNarrativeDesc2: "For too long, the industry was clouded by hidden ingredients and unsustainable practices. Ruby Beauty was born to bring light back to your ritual. Every formula is meticulously crafted with botanical extracts and clean science, ensuring that what you put on your body is as pure as the results it delivers.",
+                aboutNarrativeDesc2Ar: "لفترة طويلة، كانت الصناعة ملبدة بالمكونات الخفية والممارسات غير المستدامة. ولدت روبي بيوتي لإعادة النور إلى طقوسك. يتم صياغة كل تركيبة بدقة باستخدام المستخلصات النباتية والعلوم النظيفة، مما يضمن أن ما تضعه على جسمك نقي بقدر النتائج التي يقدمها.",
+                aboutNarrativeQuote: "Naturally inspired, scientifically proven.",
+                aboutNarrativeQuoteAr: "مستوحى طبيعياً، مثبت علمياً.",
+                aboutNarrativeImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuC4yp4c_LJLNPwaV2ay8DZ6xRHD0UF1WqXU8eDtrdDoiVjtq9oNRc9Cn6cnbqsNwOLO-y-99jnkiLnCsGLs2rQqthU8TPqhAh2Msisbst1UyfyrILBR5fRO7KYu90u1FEoeRRjGceGVbB5vz2SJAtjzUrLLtA6BmR8VN5a5Seo4MraBJj7i4Gs4QPEZbURtSN-F7wbJsu4WNj3pEaWlye2SuJvokQhYXJ27gnAoabHg5_0_4DZY49qyKnQuMHHL9atOIILRIMD3FkeZ",
+                
+                aboutValuesTitle: "Our Core Values",
+                aboutValuesTitleAr: "قيمنا الجوهرية",
+                aboutValuesDesc: "We are committed to transparency, sustainability, and ethical practices in everything we do.",
+                aboutValuesDescAr: "نحن ملتزمون بالشفافية والاستدامة والممارسات الأخلاقية في كل ما نقوم به.",
+                
+                aboutValue1Title: "Cruelty-Free",
+                aboutValue1TitleAr: "خالٍ من القسوة",
+                aboutValue1Desc: "We never test on animals. Our products are certified cruelty-free by Leaping Bunny.",
+                aboutValue1DescAr: "نحن لا نختبر أبدًا على الحيوانات. منتجاتنا معتمدة خالية من القسوة من قبل Leaping Bunny.",
+                
+                aboutValue2Title: "100% Vegan",
+                aboutValue2TitleAr: "نباتي 100٪",
+                aboutValue2Desc: "No animal-derived ingredients. Just pure, potent plant power.",
+                aboutValue2DescAr: "لا توجد مكونات مشتقة من الحيوانات. فقط قوة نباتية نقية وفعالة.",
+                
+                aboutValue3Title: "Sustainable",
+                aboutValue3TitleAr: "مستدام",
+                aboutValue3Desc: "Eco-friendly packaging and responsibly sourced ingredients.",
+                aboutValue3DescAr: "تغليف صديق للبيئة ومكونات من مصادر مسؤولة.",
+                
                 updatedAt: new Date(),
             };
         }
@@ -1158,6 +1197,38 @@ export async function updateSiteSettings(data: {
     hygieneTitleAr?: string;
     hygieneDescAr?: string;
     shippingReturnsImage?: string;
+    aboutHeroTitle?: string;
+    aboutHeroTitleAr?: string;
+    aboutHeroSubtitle?: string;
+    aboutHeroSubtitleAr?: string;
+    aboutHeroImage?: string;
+    aboutNarrativeTitle?: string;
+    aboutNarrativeTitleAr?: string;
+    aboutNarrativeFounded?: string;
+    aboutNarrativeFoundedAr?: string;
+    aboutNarrativeDesc1?: string;
+    aboutNarrativeDesc1Ar?: string;
+    aboutNarrativeDesc2?: string;
+    aboutNarrativeDesc2Ar?: string;
+    aboutNarrativeQuote?: string;
+    aboutNarrativeQuoteAr?: string;
+    aboutNarrativeImage?: string;
+    aboutValuesTitle?: string;
+    aboutValuesTitleAr?: string;
+    aboutValuesDesc?: string;
+    aboutValuesDescAr?: string;
+    aboutValue1Title?: string;
+    aboutValue1TitleAr?: string;
+    aboutValue1Desc?: string;
+    aboutValue1DescAr?: string;
+    aboutValue2Title?: string;
+    aboutValue2TitleAr?: string;
+    aboutValue2Desc?: string;
+    aboutValue2DescAr?: string;
+    aboutValue3Title?: string;
+    aboutValue3TitleAr?: string;
+    aboutValue3Desc?: string;
+    aboutValue3DescAr?: string;
 }) {
     try {
         await prisma.settings.upsert({
@@ -1171,6 +1242,7 @@ export async function updateSiteSettings(data: {
 
         revalidatePath('/categories');
         revalidatePath('/shipping-returns');
+        revalidatePath('/about-us');
         revalidatePath('/admin/site-content');
         return { success: true };
     } catch (error) {
