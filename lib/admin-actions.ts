@@ -416,17 +416,57 @@ export async function deleteProduct(id: string) {
 
 export async function updateOrderStatus(id: string, status: OrderStatus) {
     try {
-        await prisma.order.update({
-            where: { id },
-            data: { status }
+        const result = await prisma.$transaction(async (tx) => {
+            // Get current order and its status
+            const order = await tx.order.findUnique({
+                where: { id },
+                include: { items: true }
+            });
+
+            if (!order) throw new Error("Order not found");
+
+            // If changing to DELIVERED and it wasn't already DELIVERED
+            if (status === 'DELIVERED' && order.status !== 'DELIVERED') {
+                for (const item of order.items) {
+                    await tx.product.update({
+                        where: { id: item.productId },
+                        data: {
+                            stock: {
+                                decrement: item.quantity
+                            }
+                        }
+                    });
+                }
+            }
+            
+            // If changing FROM DELIVERED to something else (cancellation/return)
+            // Revert the stock deduction
+            if (order.status === 'DELIVERED' && status !== 'DELIVERED') {
+                for (const item of order.items) {
+                    await tx.product.update({
+                        where: { id: item.productId },
+                        data: {
+                            stock: {
+                                increment: item.quantity
+                            }
+                        }
+                    });
+                }
+            }
+
+            return await tx.order.update({
+                where: { id },
+                data: { status }
+            });
         });
 
         revalidatePath('/admin/orders');
         revalidatePath('/admin/dashboard');
+        revalidatePath('/admin/products');
         return { success: true };
     } catch (error) {
         console.error("Failed to update order status:", error);
-        return { success: false, error: "Failed to update order status" };
+        return { success: false, error: error instanceof Error ? error.message : "Failed to update order status" };
     }
 }
 

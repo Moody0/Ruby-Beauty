@@ -155,25 +155,25 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
 
                         <div className="rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-surface-light dark:bg-surface-dark overflow-hidden shadow-sm">
                             <div className="overflow-x-auto">
-                                <table className="w-full text-left border-collapse min-w-[640px]">
+                                <table className={`w-full border-collapse min-w-[640px] ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                     <thead>
                                         <tr className="border-b border-[#e6dbdf] dark:border-gray-700 bg-background-light/50 dark:bg-gray-800/50">
-                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}>
                                                 {t('admin.orderId')}
                                             </th>
-                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}>
                                                 {t('admin.customer')}
                                             </th>
-                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}>
                                                 {t('admin.product')}
                                             </th>
-                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}>
                                                 {t('admin.date')}
                                             </th>
-                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}>
                                                 {t('admin.amount')}
                                             </th>
-                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}>
                                                 {t('admin.status')}
                                             </th>
                                             <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}></th>
@@ -231,10 +231,10 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                                                             {t(`admin.${order.status.toLowerCase()}`)}
                                                         </span>
                                                     </td>
-                                                    <td className="p-3 md:p-4 text-right">
+                                                    <td className={`p-3 md:p-4 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
                                                         <button
                                                             onClick={() => handleViewDetails(order)}
-                                                            className="flex items-center gap-1 text-primary hover:text-primary-hover font-bold transition-colors ml-auto"
+                                                            className={`flex items-center gap-1 text-primary hover:text-primary-hover font-bold transition-colors ${dir === 'rtl' ? 'mr-auto' : 'ml-auto'}`}
                                                         >
                                                             <span>{t('admin.details')}</span>
                                                             {dir === 'rtl' ? <MdChevronLeft className="text-lg" /> : <MdChevronRight className="text-lg" />}

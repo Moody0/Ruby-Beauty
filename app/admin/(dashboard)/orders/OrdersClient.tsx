@@ -1,7 +1,7 @@
 "use client";
 
 import AdminHeader from "../../components/AdminHeader";
-import { MdPendingActions, MdLocalShipping, MdTaskAlt, MdPayments, MdExpandMore, MdVisibility, MdDelete, MdSync, MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { MdPendingActions, MdLocalShipping, MdTaskAlt, MdPayments, MdExpandMore, MdVisibility, MdDelete, MdSync, MdChevronLeft, MdChevronRight, MdArrowUpward, MdArrowDownward } from "react-icons/md";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import Link from "next/link";
 import { updateOrderStatus, deleteOrder } from "../../../../lib/admin-actions";
@@ -46,6 +46,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
     const [filter, setFilter] = useState<string>("ALL");
+    const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' }>({ key: 'createdAt', direction: 'desc' });
 
     // Calculate stats
     const stats = {
@@ -73,7 +74,39 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
     const filteredOrders = orders.filter(o => {
         if (filter === "ALL") return true;
         return o.status === filter;
+    }).sort((a, b) => {
+        const { key, direction } = sortConfig;
+        
+        let comparison = 0;
+        
+        if (key === 'totalAmount') {
+            comparison = Number(a.totalAmount) - Number(b.totalAmount);
+        } else if (key === 'createdAt') {
+            comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        } else if (key === 'id' || key === 'Name' || key === 'status') {
+            const valA = String(a[key as keyof Order] || '').toLowerCase();
+            const valB = String(b[key as keyof Order] || '').toLowerCase();
+            comparison = valA.localeCompare(valB);
+        }
+        
+        return direction === 'asc' ? comparison : -comparison;
     });
+
+    const handleSort = (key: string) => {
+        setSortConfig(current => ({
+            key,
+            direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc'
+        }));
+    };
+
+    const SortIcon = ({ column }: { column: string }) => {
+        return (
+            <span className={`inline-flex flex-col ml-1 ${sortConfig.key === column ? 'text-primary' : 'text-gray-300'}`}>
+                <MdArrowUpward className={`w-3 h-3 -mb-1 ${sortConfig.key === column && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                <MdArrowDownward className={`w-3 h-3 ${sortConfig.key === column && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+            </span>
+        );
+    };
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -227,15 +260,55 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
 
                         <div className="bg-surface-light dark:bg-surface-dark rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm overflow-hidden">
                             <div className="overflow-x-auto">
-                                <table className="w-full text-left border-collapse">
+                                <table className={`w-full border-collapse ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                     <thead>
                                         <tr className="border-b border-[#e6dbdf] dark:border-gray-700 bg-background-light/50 dark:bg-gray-800/50">
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.orderId')}</th>
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.customerName')}</th>
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.date')}</th>
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.totalAmount')}</th>
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.products')}</th>
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.orderStatus')}</th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('id')}>
+                                                <div className="flex items-center">
+                                                    {t('admin.orderId')}
+                                                    <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'id' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'id' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    </span>
+                                                </div>
+                                            </th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('Name')}>
+                                                <div className="flex items-center">
+                                                    {t('admin.customerName')}
+                                                    <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'Name' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'Name' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    </span>
+                                                </div>
+                                            </th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('createdAt')}>
+                                                <div className="flex items-center">
+                                                    {t('admin.date')}
+                                                    <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'createdAt' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'createdAt' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    </span>
+                                                </div>
+                                            </th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('totalAmount')}>
+                                                <div className="flex items-center">
+                                                    {t('admin.totalAmount')}
+                                                    <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'totalAmount' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'totalAmount' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    </span>
+                                                </div>
+                                            </th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}>{t('admin.products')}</th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('status')}>
+                                                <div className="flex items-center">
+                                                    {t('admin.orderStatus')}
+                                                    <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'status' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'status' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    </span>
+                                                </div>
+                                            </th>
                                             <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>{t('admin.actions')}</th>
                                         </tr>
                                     </thead>
@@ -299,7 +372,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                                         </div>
                                                     </td>
                                                     <td className={`p-4 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
-                                                        <div className="flex items-center gap-2 justify-end">
+                                                        <div className={`flex items-center gap-2 ${dir === 'rtl' ? 'justify-start' : 'justify-end'}`}>
                                                             <button
                                                                 onClick={() => handleViewDetails(order)}
                                                                 className="text-primary hover:text-primary-hover text-xs font-bold transition-colors"

@@ -8,7 +8,7 @@ import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import AdminHeader from "../../components/AdminHeader";
 import UserModal from "./UserModal";
 import { useLanguage } from "@/app/context/LanguageContext";
-import { MdChevronRight, MdPersonAdd, MdEdit, MdDelete } from "react-icons/md";
+import { MdChevronRight, MdPersonAdd, MdEdit, MdDelete, MdArrowUpward, MdArrowDownward } from "react-icons/md";
 
 interface User {
     id: string;
@@ -32,6 +32,30 @@ export default function UsersClient({ users }: { users: User[] }) {
     const { t, dir } = useLanguage();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' }>({ key: 'createdAt', direction: 'desc' });
+
+    const sortedUsers = [...users].sort((a, b) => {
+        const { key, direction } = sortConfig;
+        
+        let comparison = 0;
+        
+        if (key === 'createdAt') {
+            comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        } else if (key === 'username' || key === 'role') {
+            const valA = String(a[key as keyof User] || '').toLowerCase();
+            const valB = String(b[key as keyof User] || '').toLowerCase();
+            comparison = valA.localeCompare(valB);
+        }
+        
+        return direction === 'asc' ? comparison : -comparison;
+    });
+
+    const handleSort = (key: string) => {
+        setSortConfig(current => ({
+            key,
+            direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc'
+        }));
+    };
 
     const handleEdit = (user: User) => {
         setSelectedUser(user);
@@ -100,18 +124,42 @@ export default function UsersClient({ users }: { users: User[] }) {
 
                     <div className="bg-surface-light dark:bg-surface-dark border border-[#e6dbdf] dark:border-gray-700 rounded-2xl shadow-sm overflow-hidden">
                         <div className="overflow-x-auto">
-                            <table className="w-full text-left border-collapse min-w-[800px]">
+                            <table className={`w-full border-collapse min-w-[800px] ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                 <thead>
                                     <tr className="bg-background-light dark:bg-gray-800/50 border-b border-[#e6dbdf] dark:border-gray-700 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">
-                                        <th className={`p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.username')}</th>
-                                        <th className={`p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.role')}</th>
-                                        <th className={`p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.permissionsSummary')}</th>
-                                        <th className={`p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.createdAt')}</th>
+                                        <th className={`p-5 cursor-pointer select-none group`} onClick={() => handleSort('username')}>
+                                            <div className="flex items-center">
+                                                {t('admin.username')}
+                                                <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'username' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'username' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                </span>
+                                            </div>
+                                        </th>
+                                        <th className={`p-5 cursor-pointer select-none group`} onClick={() => handleSort('role')}>
+                                            <div className="flex items-center">
+                                                {t('admin.role')}
+                                                <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'role' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'role' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                </span>
+                                            </div>
+                                        </th>
+                                        <th className={`p-5`}>{t('admin.permissionsSummary')}</th>
+                                        <th className={`p-5 cursor-pointer select-none group`} onClick={() => handleSort('createdAt')}>
+                                            <div className="flex items-center">
+                                                {t('admin.createdAt')}
+                                                <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'createdAt' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'createdAt' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                </span>
+                                            </div>
+                                        </th>
                                         <th className={`p-5 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>{t('admin.actions')}</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-[#e6dbdf] dark:divide-gray-700">
-                                    {users.map((user) => (
+                                    {sortedUsers.map((user) => (
                                         <tr key={user.id} className="group hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors">
                                             <td className="p-5">
                                                 <div className="flex items-center gap-3">

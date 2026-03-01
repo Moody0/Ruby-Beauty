@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Rubik } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: "--font-plus-jakarta",
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "800"],
+const rubik = Rubik({
+  variable: "--font-rubik",
+  subsets: ["latin", "arabic"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -55,7 +55,7 @@ export default async function RootLayout({
   const session = await getServerSession(authOptions);
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={rubik.variable}>
       <head>
         <link
           rel="preload"
@@ -65,7 +65,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${plusJakartaSans.variable} antialiased`}
+        className={`${rubik.className} antialiased`}
         suppressHydrationWarning
       >
         <Providers session={session}>

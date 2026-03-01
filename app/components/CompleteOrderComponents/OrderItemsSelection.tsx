@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
 
 interface OrderItem {
@@ -26,11 +27,17 @@ const OrderItemsSelection = ({ items }: OrderItemsSelectionProps) => {
                 {items.map((item) => (
                     <div
                         key={item.id}
-                        className="w-16 h-16 bg-gray-100 rounded-lg bg-cover bg-center border border-[#f4f0f2] relative group"
-                        style={{ backgroundImage: `url('${item.product.images}')` }}
+                        className="w-16 h-16 !bg-white rounded-lg border border-[#f4f0f2] relative group overflow-hidden"
                         title={item.product.name}
                     >
-                        <span className="absolute -top-2 ltr:-right-2 rtl:-left-2 bg-primary text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-sm">
+                        <Image
+                            src={item.product.images.split(',')[0]}
+                            alt={item.product.name}
+                            fill
+                            className="object-contain p-1"
+                            sizes="64px"
+                        />
+                        <span className="absolute -top-1 ltr:-right-1 rtl:-left-1 bg-primary text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm z-10">
                             {item.quantity}
                         </span>
                     </div>

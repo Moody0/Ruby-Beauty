@@ -24,12 +24,18 @@ import {
     MdMoneyOff, 
     MdDelete, 
     MdEdit,
-    MdSync
+    MdSync,
+    MdArrowUpward,
+    MdArrowDownward,
+    MdShare,
+    MdContentCopy
 } from 'react-icons/md';
+import { FaFacebook, FaWhatsapp, FaTwitter } from 'react-icons/fa';
 
 interface Product {
     id: string;
     name: string;
+    slug: string;
     description: string | null;
     categoryId: string;
     sku: string | null;
@@ -70,7 +76,58 @@ export default function ProductsClient({ products, categories }: { products: Pro
     const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
     const [isSubmittingBulk, setIsSubmittingBulk] = useState(false);
     const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
+    const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' }>({ key: 'name', direction: 'asc' });
+    const [activeShareId, setActiveShareId] = useState<string | null>(null);
     const itemsPerPage = 20;
+
+    const handleCopyLink = (slug: string) => {
+        const url = `${window.location.origin}/products/${slug}`;
+        navigator.clipboard.writeText(url);
+        toast.success(t('admin.linkCopied'));
+        setActiveShareId(null);
+    };
+
+    const handleSocialShare = (platform: 'facebook' | 'whatsapp' | 'twitter', product: Product) => {
+        const url = `${window.location.origin}/products/${product.slug}`;
+        const text = `Check out ${product.name} at Ruby Beauty!`;
+        
+        // Warn the user about localhost sharing limitations
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        if (isLocal && platform === 'facebook') {
+            toast("Facebook sharing previews don't work on localhost. It will work correctly once the site is live on a public URL.", {
+                icon: 'ℹ️',
+                duration: 5000
+            });
+        }
+
+        let shareUrl = '';
+        switch (platform) {
+            case 'facebook':
+                // Facebook sharer.php only reliably supports 'u' (URL) and sometimes 'quote'
+                // Note: Previews (image/title/desc) require a public URL for Facebook to scrape Open Graph tags
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+                break;
+            case 'whatsapp':
+                shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + url)}`;
+                break;
+            case 'twitter':
+                shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+                break;
+        }
+        
+        // Open in a standard popup window
+        const width = 600;
+        const height = 450;
+        const left = (window.innerWidth - width) / 2;
+        const top = (window.innerHeight - height) / 2;
+        
+        window.open(
+            shareUrl, 
+            'facebook-share-dialog', 
+            `width=${width},height=${height},top=${top},left=${left},location=0,menubar=0,toolbar=0,status=0,scrollbars=1,resizable=1`
+        );
+        setActiveShareId(null);
+    };
 
     // Calculate stats
     const stats = useMemo(() => {
@@ -112,8 +169,48 @@ export default function ProductsClient({ products, categories }: { products: Pro
             const matchesOnSale = !showOnSaleOnly || p.discountPrice !== null;
 
             return matchesSearch && matchesCategory && matchesStock && matchesTrending && matchesOnSale;
+        }).sort((a, b) => {
+            const { key, direction } = sortConfig;
+            
+            let comparison = 0;
+            
+            if (key === 'price') {
+                const priceA = a.discountPrice || a.price;
+                const priceB = b.discountPrice || b.price;
+                comparison = priceA - priceB;
+            } else if (key === 'stock') {
+                comparison = Number(a.stock) - Number(b.stock);
+            } else if (key === 'isTrending') {
+                // Determine trending value: true=1, false=0
+                const valA = a.isTrending ? 1 : 0;
+                const valB = b.isTrending ? 1 : 0;
+                comparison = valA - valB;
+            } else if (key === 'category') {
+                const valA = String(a.category?.name || '').toLowerCase();
+                const valB = String(b.category?.name || '').toLowerCase();
+                comparison = valA.localeCompare(valB);
+            } else if (key === 'status') {
+                // Determine status value: stock > 0 => 1 (active), stock <= 0 => 0 (draft/inactive)
+                const valA = Number(a.stock) > 0 ? 1 : 0;
+                const valB = Number(b.stock) > 0 ? 1 : 0;
+                comparison = valA - valB;
+            } else {
+                // Default string comparison for name, etc.
+                const valA = String(a[key as keyof Product] || '').toLowerCase();
+                const valB = String(b[key as keyof Product] || '').toLowerCase();
+                comparison = valA.localeCompare(valB);
+            }
+            
+            return direction === 'asc' ? comparison : -comparison;
         });
-    }, [products, searchQuery, selectedCategory, selectedStockStatus, showTrendingOnly, showOnSaleOnly, t]);
+    }, [products, searchQuery, selectedCategory, selectedStockStatus, showTrendingOnly, showOnSaleOnly, t, sortConfig]);
+
+    const handleSort = (key: string) => {
+        setSortConfig(current => ({
+            key,
+            direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc'
+        }));
+    };
 
     // Pagination logic
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -653,7 +750,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
 
                         {/* Table */}
                         <div className="overflow-x-auto">
-                            <table className="w-full text-left border-collapse min-w-[900px]">
+                            <table className={`w-full border-collapse min-w-[900px] ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                 <thead>
                                     <tr className="bg-background-light dark:bg-gray-800/50 border-b border-[#e6dbdf] dark:border-gray-700 text-[10px] sm:text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">
                                         <th className="p-3 sm:p-5 w-10 sm:w-12 text-center text-[0px]">
@@ -664,12 +761,60 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                 onChange={toggleSelectAll}
                                             />
                                         </th>
-                                        <th className={`p-3 sm:p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.productName')}</th>
-                                        <th className={`p-3 sm:p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.categoryName')}</th>
-                                        <th className={`p-3 sm:p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.priceValue')}</th>
-                                        <th className={`p-3 sm:p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.inventory')}</th>
-                                        <th className={`p-3 sm:p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.trending')}</th>
-                                        <th className={`p-3 sm:p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.statusValue')}</th>
+                                        <th className={`p-3 sm:p-5 cursor-pointer select-none group`} onClick={() => handleSort('name')}>
+                                            <div className="flex items-center">
+                                                {t('admin.productName')}
+                                                <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'name' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'name' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                </span>
+                                            </div>
+                                        </th>
+                                        <th className={`p-3 sm:p-5 cursor-pointer select-none group`} onClick={() => handleSort('category')}>
+                                            <div className="flex items-center">
+                                                {t('admin.categoryName')}
+                                                <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'category' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'category' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                </span>
+                                            </div>
+                                        </th>
+                                        <th className={`p-3 sm:p-5 cursor-pointer select-none group`} onClick={() => handleSort('price')}>
+                                            <div className="flex items-center">
+                                                {t('admin.priceValue')}
+                                                <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'price' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'price' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                </span>
+                                            </div>
+                                        </th>
+                                        <th className={`p-3 sm:p-5 cursor-pointer select-none group`} onClick={() => handleSort('stock')}>
+                                            <div className="flex items-center">
+                                                {t('admin.inventory')}
+                                                <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'stock' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'stock' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                </span>
+                                            </div>
+                                        </th>
+                                        <th className={`p-3 sm:p-5 cursor-pointer select-none group`} onClick={() => handleSort('isTrending')}>
+                                            <div className="flex items-center">
+                                                {t('admin.trending')}
+                                                <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'isTrending' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'isTrending' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                </span>
+                                            </div>
+                                        </th>
+                                        <th className={`p-3 sm:p-5 cursor-pointer select-none group`} onClick={() => handleSort('status')}>
+                                            <div className="flex items-center">
+                                                {t('admin.statusValue')}
+                                                <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'status' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'status' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                </span>
+                                            </div>
+                                        </th>
                                         <th className={`p-3 sm:p-5 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>{t('admin.actions')}</th>
                                     </tr>
                                 </thead>
@@ -757,6 +902,51 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                 </td>
                                                 <td className={`p-3 sm:p-5 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
                                                     <div className={`flex items-center ${dir === 'rtl' ? 'justify-start' : 'justify-end'} gap-1 sm:gap-2 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity`}>
+                                                        <div className="relative">
+                                                            <button
+                                                                onClick={() => setActiveShareId(activeShareId === product.id ? null : product.id)}
+                                                                className={`p-1.5 sm:p-2 rounded-lg transition-colors ${activeShareId === product.id ? 'text-primary bg-primary/10' : 'text-text-sub dark:text-gray-400 hover:text-primary hover:bg-primary/10'}`}
+                                                                title={t('admin.shareProduct')}
+                                                            >
+                                                                <MdShare className="text-[18px] sm:text-[20px]" />
+                                                            </button>
+                                                            
+                                                            {activeShareId === product.id && (
+                                                                <>
+                                                                    <div className="fixed inset-0 z-40" onClick={() => setActiveShareId(null)} />
+                                                                    <div className={`absolute bottom-full mb-2 w-48 bg-white dark:bg-[#1a1a1a] border border-gray-100 dark:border-gray-700 rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200 ${dir === 'rtl' ? 'left-0' : 'right-0'}`}>
+                                                                        <button 
+                                                                            onClick={() => handleCopyLink(product.slug)}
+                                                                            className="w-full text-start px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-white/5 text-xs font-medium text-text-main dark:text-white transition-colors flex items-center gap-3 border-b border-gray-50 dark:border-white/5"
+                                                                        >
+                                                                            <MdContentCopy className="text-gray-400" />
+                                                                            <span>{t('admin.copyLink')}</span>
+                                                                        </button>
+                                                                        <button 
+                                                                            onClick={() => handleSocialShare('facebook', product)}
+                                                                            className="w-full text-start px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-white/5 text-xs font-medium text-text-main dark:text-white transition-colors flex items-center gap-3 border-b border-gray-50 dark:border-white/5"
+                                                                        >
+                                                                            <FaFacebook className="text-[#1877F2]" />
+                                                                            <span>{t('admin.shareOnFacebook')}</span>
+                                                                        </button>
+                                                                        <button 
+                                                                            onClick={() => handleSocialShare('whatsapp', product)}
+                                                                            className="w-full text-start px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-white/5 text-xs font-medium text-text-main dark:text-white transition-colors flex items-center gap-3 border-b border-gray-50 dark:border-white/5"
+                                                                        >
+                                                                            <FaWhatsapp className="text-[#25D366]" />
+                                                                            <span>{t('admin.shareOnWhatsApp')}</span>
+                                                                        </button>
+                                                                        <button 
+                                                                            onClick={() => handleSocialShare('twitter', product)}
+                                                                            className="w-full text-start px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-white/5 text-xs font-medium text-text-main dark:text-white transition-colors flex items-center gap-3"
+                                                                        >
+                                                                            <FaTwitter className="text-[#1DA1F2]" />
+                                                                            <span>{t('admin.shareOnTwitter')}</span>
+                                                                        </button>
+                                                                    </div>
+                                                                </>
+                                                            )}
+                                                        </div>
                                                         {canEdit && (
                                                             <button
                                                                 onClick={() => handleEdit(product)}

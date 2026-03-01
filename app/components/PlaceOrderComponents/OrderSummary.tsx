@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import { CartItem } from '@/app/context/CartContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { MdPayments, MdRefresh, MdCheckCircle, MdSupportAgent } from 'react-icons/md';
@@ -53,10 +54,15 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                 <div className="space-y-4 mb-6 max-h-[40vh] overflow-y-auto ltr:pr-2 rtl:pl-2 custom-scrollbar">
                     {items.map((item) => (
                         <div key={item.id} className="flex items-center gap-4">
-                            <div
-                                className="w-16 h-16 bg-gray-100 rounded-lg bg-cover bg-center shrink-0 border border-[#f4f0f2] dark:border-[#3a2228]"
-                                style={{ backgroundImage: `url('${item.image}')` }}
-                            ></div>
+                            <div className="relative w-16 h-16 !bg-white rounded-lg border border-[#e6dbdf] dark:border-gray-800/50 overflow-hidden shrink-0">
+                                <Image
+                                    src={item.image.split(',')[0]}
+                                    alt={item.name}
+                                    fill
+                                    className="object-contain p-1"
+                                    sizes="64px"
+                                />
+                            </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm font-bold truncate dark:text-white" title={item.name}>{item.name}</p>
                                 <p className="text-xs text-[#89616f] dark:text-[#a08590]">{t('cart.quantity')}: {item.quantity} • ${item.price.toFixed(2)}</p>
