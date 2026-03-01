@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import AdminHeader from "../../components/AdminHeader";
@@ -833,12 +832,14 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                 <td className="p-3 sm:p-5">
                                                     <div className="flex items-center gap-3 sm:gap-4">
                                                         <div className="relative size-10 sm:size-12 rounded-lg bg-gray-100 dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 overflow-hidden shrink-0">
-                                                            <Image
-                                                                src={product.images.split(',')[0] || '/placeholder.jpg'}
+                                                            <img
+                                                                src={product.images.split(',')[0] || '/placeholder.svg'}
                                                                 alt={product.name}
-                                                                fill
-                                                                className="object-cover"
-                                                                sizes="48px"
+                                                                className="w-full h-full object-cover"
+                                                                onError={(e) => {
+                                                                    const target = e.target as HTMLImageElement;
+                                                                    target.src = '/placeholder.svg';
+                                                                }}
                                                             />
                                                         </div>
                                                         <div className="flex flex-col min-w-0">
