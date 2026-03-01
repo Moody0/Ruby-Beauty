@@ -615,7 +615,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                     </div>
 
                     {/* Filters & Table Container */}
-                    <div className="bg-surface-light dark:bg-surface-dark border border-[#e6dbdf] dark:border-gray-700 rounded-2xl shadow-sm overflow-hidden">
+                    <div className="bg-surface-light dark:bg-surface-dark border border-[#e6dbdf] dark:border-gray-700 rounded-2xl shadow-sm">
                         {/* Toolbar */}
                         <div className="p-5 border-b border-[#e6dbdf] dark:border-gray-700 flex flex-col lg:flex-row gap-4 lg:items-center justify-between">
                             <div className="relative w-full lg:w-80">
@@ -749,7 +749,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                         )}
 
                         {/* Table */}
-                        <div className="overflow-x-auto">
+                        <div className="overflow-visible">
                             <table className={`w-full border-collapse min-w-[900px] ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                 <thead>
                                     <tr className="bg-background-light dark:bg-gray-800/50 border-b border-[#e6dbdf] dark:border-gray-700 text-[10px] sm:text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">
@@ -821,7 +821,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                 <tbody className="divide-y divide-[#e6dbdf] dark:divide-gray-700">
                                     {currentItems.length > 0 ? (
                                         currentItems.map((product) => (
-                                            <tr key={product.id} className={`group hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors ${selectedIds.has(product.id) ? 'bg-primary/5 dark:bg-primary/10' : ''}`}>
+                                            <tr key={product.id} className={`group hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors ${selectedIds.has(product.id) ? 'bg-primary/5 dark:bg-primary/10' : ''} ${activeShareId === product.id ? 'relative z-50' : ''}`}>
                                                 <td className="p-3 sm:p-5 text-center px-3 sm:px-5">
                                                     <input
                                                         className="rounded border-gray-300 text-primary focus:ring-primary size-3 sm:size-4 cursor-pointer"
@@ -913,8 +913,8 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                             
                                                             {activeShareId === product.id && (
                                                                 <>
-                                                                    <div className="fixed inset-0 z-40" onClick={() => setActiveShareId(null)} />
-                                                                    <div className={`absolute bottom-full mb-2 w-48 bg-white dark:bg-[#1a1a1a] border border-gray-100 dark:border-gray-700 rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200 ${dir === 'rtl' ? 'left-0' : 'right-0'}`}>
+                                                                    <div className="fixed inset-0 z-[9998]" onClick={() => setActiveShareId(null)} />
+                                                                    <div className={`absolute top-full mt-2 w-48 bg-white dark:bg-[#1a1a1a] border border-gray-100 dark:border-gray-700 rounded-xl shadow-xl z-[9999] overflow-hidden animate-in fade-in zoom-in-95 duration-200 ${dir === 'rtl' ? 'left-0' : 'right-0'}`}>
                                                                         <button 
                                                                             onClick={() => handleCopyLink(product.slug)}
                                                                             className="w-full text-start px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-white/5 text-xs font-medium text-text-main dark:text-white transition-colors flex items-center gap-3 border-b border-gray-50 dark:border-white/5"
