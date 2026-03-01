@@ -1,6 +1,7 @@
 import React from 'react';
 import { prisma } from "@/lib/prisma";
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
 import ProductGallery from '@/app/components/ProductDetailsComponents/ProductGallery';
 import ProductHeader from '@/app/components/ProductDetailsComponents/ProductHeader';
 import ProductPrice from '@/app/components/ProductDetailsComponents/ProductPrice';
@@ -8,7 +9,48 @@ import ProductActions from '@/app/components/ProductDetailsComponents/ProductAct
 import ProductAccordions from '@/app/components/ProductDetailsComponents/ProductAccordions';
 import RelatedProducts from '@/app/components/ProductDetailsComponents/RelatedProducts';
 
-// ProductPageProps removed as it was unused and replaced by inline props
+export async function generateMetadata(
+    props: { params: Promise<{ slug: string }> }
+): Promise<Metadata> {
+    const params = await props.params;
+    const result = await prisma.$queryRaw<any[]>`SELECT * FROM "Product" WHERE slug = ${params.slug} LIMIT 1`;
+    const product = result[0];
+
+    if (!product) {
+        return {
+            title: 'Product Not Found',
+        };
+    }
+
+    const title = `${product.name} | Ruby Beauty`;
+    const description = product.description || `Buy ${product.name} at Ruby Beauty.`;
+    const mainImage = product.images.split(',')[0];
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            type: 'website',
+            url: `https://ruby-beauty.com/products/${product.slug}`,
+            images: [
+                {
+                    url: mainImage,
+                    width: 1200,
+                    height: 630,
+                    alt: product.name,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: [mainImage],
+        },
+    };
+}
 
 const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     const params = await props.params;
