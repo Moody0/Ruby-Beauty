@@ -29,7 +29,7 @@ import {
     MdShare,
     MdContentCopy
 } from 'react-icons/md';
-import { FaFacebook, FaWhatsapp, FaTwitter } from 'react-icons/fa';
+import { FaFacebook, FaWhatsapp } from 'react-icons/fa';
 
 interface Product {
     id: string;
@@ -86,7 +86,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
         setActiveShareId(null);
     };
 
-    const handleSocialShare = (platform: 'facebook' | 'whatsapp' | 'twitter', product: Product) => {
+    const handleSocialShare = (platform: 'facebook' | 'whatsapp', product: Product) => {
         const url = `${window.location.origin}/products/${product.slug}`;
         const text = `Check out ${product.name} at Ruby Beauty!`;
         
@@ -108,9 +108,6 @@ export default function ProductsClient({ products, categories }: { products: Pro
                 break;
             case 'whatsapp':
                 shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + url)}`;
-                break;
-            case 'twitter':
-                shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
                 break;
         }
         
@@ -932,17 +929,10 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                                         </button>
                                                                         <button 
                                                                             onClick={() => handleSocialShare('whatsapp', product)}
-                                                                            className="w-full text-start px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-white/5 text-xs font-medium text-text-main dark:text-white transition-colors flex items-center gap-3 border-b border-gray-50 dark:border-white/5"
+                                                                            className="w-full text-start px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-white/5 text-xs font-medium text-text-main dark:text-white transition-colors flex items-center gap-3"
                                                                         >
                                                                             <FaWhatsapp className="text-[#25D366]" />
                                                                             <span>{t('admin.shareOnWhatsApp')}</span>
-                                                                        </button>
-                                                                        <button 
-                                                                            onClick={() => handleSocialShare('twitter', product)}
-                                                                            className="w-full text-start px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-white/5 text-xs font-medium text-text-main dark:text-white transition-colors flex items-center gap-3"
-                                                                        >
-                                                                            <FaTwitter className="text-[#1DA1F2]" />
-                                                                            <span>{t('admin.shareOnTwitter')}</span>
                                                                         </button>
                                                                     </div>
                                                                 </>
