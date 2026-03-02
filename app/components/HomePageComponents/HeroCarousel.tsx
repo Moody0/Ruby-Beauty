@@ -114,10 +114,10 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                     />
                                     {/* Subtle overlay for text readability on mobile */}
                                     <div className="absolute inset-0 bg-black/20"></div>
-                                </div >
+                                </div>
 
                                 {/* Content Overlay */}
-                                < div className={`relative z-10 h-full flex flex-col justify-end items-start p-6 sm:p-8 pb-8 sm:pb-10`}>
+                                <div className={`relative z-10 h-full flex flex-col justify-end items-start p-6 sm:p-8 pb-8 sm:pb-10`}>
                                     <div className={`transition-all duration-700 delay-300 transform ${index === currentIndex ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                                         }`}>
                                         <span className="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-wider mb-3">
@@ -142,15 +142,15 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                             )}
                                         </Link>
                                     </div>
-                                </div >
-                            </div >
+                                </div>
+                            </div>
 
                             {/* Desktop Layout: dir="ltr" so flex order is physical (left/right) in both LTR and RTL docs */}
-                            < div className="hidden md:flex flex-row items-center h-full" dir="ltr" >
+                            <div className="hidden md:flex flex-row items-center h-full" dir="ltr">
                                 {/* Hero Content — in RTL: order-2 = right; in LTR: order-1 = left */}
-                                < div className={`w-full md:w-1/2 p-12 lg:p-20 flex flex-col justify-center gap-6 z-10 h-full relative ${dir === 'rtl' ? 'order-2 items-end text-right' : 'order-1 items-start text-left'}`}>
+                                <div className={`w-full md:w-1/2 p-12 lg:p-20 flex flex-col justify-center gap-6 z-10 h-full relative ${dir === 'rtl' ? 'order-2 items-end text-right' : 'order-1 items-start text-left'}`}>
                                     {/* Content Transition Wrapper — in RTL full width so button can sit at end */}
-                                    < div className={`transition-all duration-700 delay-300 transform ${index === currentIndex ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                                    <div className={`transition-all duration-700 delay-300 transform ${index === currentIndex ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                                         } ${dir === 'rtl' ? 'w-full flex flex-col items-end' : ''}`}>
                                         <span className="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-4">
                                             {banner.badge || t('home.newArrival')}
@@ -168,11 +168,11 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                             {banner.buttonText || t('home.shopNow')}
                                             <MdArrowForward className={`text-lg group-hover/btn:translate-x-1 transition-transform ${dir === 'rtl' ? ' group-hover/btn:-translate-x-1' : ''}`} />
                                         </Link>
-                                    </div >
-                                </div >
+                                    </div>
+                                </div>
 
                                 {/* Hero Image — order-1 in RTL so it appears on the left */}
-                                < div className={`w-full md:w-1/2 h-full relative ${dir === 'rtl' ? 'order-1' : 'order-2'}`}>
+                                <div className={`w-full md:w-1/2 h-full relative ${dir === 'rtl' ? 'order-1' : 'order-2'}`}>
                                     <div className="w-full h-full bg-gray-50 dark:bg-white/5 relative">
                                         <Image
                                             src={banner.image.trim()}
@@ -182,10 +182,10 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                             priority={index === 0}
                                             sizes="50vw"
                                         />
-                                    </div >
-                                </div >
-                            </div >
-                        </div >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     ))}
 
                     {/* Navigation Controls - Only show if more than 1 banner */}
@@ -225,9 +225,9 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                             </>
                         )
                     }
-                </div >
-            </div >
-        </section >
+                </div>
+            </div>
+        </section>
     );
 };
 
