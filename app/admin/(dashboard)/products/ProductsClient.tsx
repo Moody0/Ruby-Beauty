@@ -523,7 +523,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                     <div className="flex items-center gap-3 sm:gap-4">
                                                         <div className="relative size-10 sm:size-12 rounded-lg bg-gray-100 dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 overflow-hidden shrink-0">
                                                             <Image
-                                                                src={product.images.split(',')[0] || '/placeholder.jpg'}
+                                                                src={product.images ? product.images.split(',')[0].trim() : '/placeholder.jpg'}
                                                                 alt={product.name}
                                                                 fill
                                                                 className="object-cover"

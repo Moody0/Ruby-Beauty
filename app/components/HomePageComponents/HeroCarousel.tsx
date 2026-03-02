@@ -76,7 +76,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
     useEffect(() => {
         displayBanners.forEach((banner) => {
             const img = new Image();
-            img.src = banner.image;
+            img.src = banner.image ? banner.image.trim() : "";
         });
     }, [displayBanners]);
 
@@ -101,7 +101,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                 {/* Image Container */}
                                 <div className="absolute inset-0 w-full h-full bg-gray-50 dark:bg-white/5">
                                     <img
-                                        src={banner.image}
+                                        src={banner.image ? banner.image.trim() : ""}
                                         alt={getBannerTitle(banner)}
                                         className="w-full h-full object-cover"
                                     />
@@ -168,7 +168,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                 <div className={`w-full md:w-1/2 h-full relative ${dir === 'rtl' ? 'order-1' : 'order-2'}`}>
                                     <div className="w-full h-full bg-gray-50 dark:bg-white/5 relative">
                                         <img
-                                            src={banner.image}
+                                            src={banner.image ? banner.image.trim() : ""}
                                             alt={getBannerTitle(banner)}
                                             className="w-full h-full object-cover transition-transform duration-1000 ease-in-out group-hover:scale-105"
                                         />

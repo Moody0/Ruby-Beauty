@@ -58,11 +58,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 <img
                     alt={product.name}
                     className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
-                    src={product.images}
+                    src={product.images ? product.images.split(',')[0].trim() : ''}
                 />
                 <button
                     onClick={handleQuickAdd}
-                    className="hidden lg:flex absolute bottom-4 left-4 right-4 items-center justify-center gap-2 rounded-lg bg-white/95 py-3 text-sm font-bold text-[#181113] shadow-lg backdrop-blur-sm transition-all hover:bg-primary hover:text-white opacity-0 translate-y-4 group-hover:translate-y-0 group-hover:opacity-100 dark:bg-background-dark/95 dark:text-white dark:hover:bg-primary"
+                    className="hidden lg:flex absolute bottom-4 left-4 right-4 items-center justify-center gap-2 rounded-lg bg-white/95 py-3 text-sm font-bold text-text-main-light shadow-lg backdrop-blur-sm transition-all hover:bg-primary hover:text-white opacity-0 translate-y-4 group-hover:translate-y-0 group-hover:opacity-100 dark:bg-background-dark/95 dark:text-white dark:hover:bg-primary"
                 >
                     <span className="material-symbols-outlined text-[20px]">add_shopping_cart</span>
                     {t('products.addToCart')}
