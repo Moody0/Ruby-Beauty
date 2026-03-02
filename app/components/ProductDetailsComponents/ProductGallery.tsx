@@ -49,6 +49,7 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                                     fill
                                     sizes="100vw"
                                     priority={index === 0}
+                                    unoptimized
                                 />
                             </div>
                         </SwiperSlide>
@@ -85,6 +86,7 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                                         className="object-contain p-2"
                                         fill
                                         sizes="100px"
+                                        unoptimized
                                     />
                                 </div>
                             </SwiperSlide>

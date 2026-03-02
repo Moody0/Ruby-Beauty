@@ -42,6 +42,7 @@ const ProductCard = ({ product, t, language }: ProductCardProps) => {
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     priority={product.isTrending}
                     loading={product.isTrending ? undefined : "lazy"}
+                    unoptimized
                 />
                 <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="desktop" />
                 <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="mobile" />

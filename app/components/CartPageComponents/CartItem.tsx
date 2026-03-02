@@ -27,6 +27,7 @@ const CartItem = ({ item, removeItem, updateQuantity }: CartItemProps) => {
                         fill
                         className="object-contain p-1"
                         sizes="96px"
+                        unoptimized
                     />
                 </div>
             </div>

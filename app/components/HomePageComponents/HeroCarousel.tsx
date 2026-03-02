@@ -110,7 +110,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                         fill
                                         priority={index === 0}
                                         sizes="100vw"
-                                        quality={85}
+                                        unoptimized
                                     />
                                     {/* Subtle overlay for text readability on mobile */}
                                     <div className="absolute inset-0 bg-black/20"></div>
@@ -181,6 +181,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                             fill
                                             priority={index === 0}
                                             sizes="50vw"
+                                            unoptimized
                                         />
                                     </div>
                                 </div>
