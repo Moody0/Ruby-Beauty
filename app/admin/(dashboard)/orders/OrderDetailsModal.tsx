@@ -143,7 +143,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order, canDelete, o
                                                 <div className="flex items-center gap-3">
                                                     <div className="size-10 rounded-lg bg-gray-100 dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 overflow-hidden shrink-0">
                                                         <img
-                                                            src={item.product?.images.split(',')[0] || '/placeholder.jpg'}
+                                                            src={item.product?.images ? item.product.images.split(',').map((img: string) => img.trim()).filter(Boolean)[0] : '/placeholder.jpg'}
                                                             alt={item.product?.name}
                                                             className="w-full h-full object-cover"
                                                         />

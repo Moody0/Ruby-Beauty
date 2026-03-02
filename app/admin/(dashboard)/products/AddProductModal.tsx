@@ -135,7 +135,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
     };
 
     const removeImage = (url: string) => {
-        const newImages = formData.images.split(',').filter(img => img !== url).join(',');
+        const newImages = formData.images.split(',').filter((img: string) => img !== url).join(',');
         setFormData({ ...formData, images: newImages });
     };
 

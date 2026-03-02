@@ -24,7 +24,7 @@ export async function generateMetadata(
 
     const title = `${product.name} | Ruby Beauty`;
     const description = product.description || `Buy ${product.name} at Ruby Beauty.`;
-    const mainImage = product.images.split(',')[0];
+    const mainImage = (product.images as string).split(',').map((img: string) => img.trim()).filter(Boolean)[0];
 
     return {
         title,
@@ -117,7 +117,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                         id: product.id,
                         name: product.name,
                         price: Number(product.discountPrice || product.price),
-                        image: product.images.split(',')[0],
+                        image: (product.images as string).split(',').map((img: string) => img.trim()).filter(Boolean)[0],
                         slug: product.slug
                     }} />
 

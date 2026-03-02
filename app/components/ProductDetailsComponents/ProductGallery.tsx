@@ -18,7 +18,7 @@ interface ProductGalleryProps {
 }
 
 const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
-    const allImages = images ? images.split(',').filter(Boolean) : [];
+    const allImages = images ? images.split(',').map((img: string) => img.trim()).filter(Boolean) : [];
     const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
 
     if (allImages.length === 0) return null;

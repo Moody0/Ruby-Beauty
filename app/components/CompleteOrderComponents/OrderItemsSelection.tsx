@@ -31,7 +31,7 @@ const OrderItemsSelection = ({ items }: OrderItemsSelectionProps) => {
                         title={item.product.name}
                     >
                         <Image
-                            src={item.product.images.split(',')[0]}
+                            src={item.product.images.split(',').map((img: string) => img.trim()).filter(Boolean)[0]}
                             alt={item.product.name}
                             fill
                             className="object-contain p-1"

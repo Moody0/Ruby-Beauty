@@ -37,7 +37,7 @@ const ProductCard = ({ product, t, language }: ProductCardProps) => {
                 <Image
                     alt={product.name}
                     className="object-contain transition-transform duration-500 group-hover:scale-105"
-                    src={product.images.split(',')[0]}
+                    src={product.images.split(',').map((img: string) => img.trim()).filter(Boolean)[0]}
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     priority={product.isTrending}
