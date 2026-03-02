@@ -20,6 +20,10 @@ interface CartContextType {
     clearCart: () => void;
     cartCount: number;
     subtotal: number;
+    isDrawerOpen: boolean;
+    openDrawer: () => void;
+    closeDrawer: () => void;
+    toggleDrawer: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -27,6 +31,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
     const [items, setItems] = useState<CartItem[]>([]);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     // Load from local storage on mount
     useEffect(() => {
@@ -77,11 +82,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setItems([]);
     };
 
+    const openDrawer = () => setIsDrawerOpen(true);
+    const closeDrawer = () => setIsDrawerOpen(false);
+    const toggleDrawer = () => setIsDrawerOpen(prev => !prev);
+
     const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
     const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
     return (
-        <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, cartCount, subtotal }}>
+        <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, cartCount, subtotal, isDrawerOpen, openDrawer, closeDrawer, toggleDrawer }}>
             {children}
         </CartContext.Provider>
     );

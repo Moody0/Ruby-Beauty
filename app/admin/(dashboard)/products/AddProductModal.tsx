@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { MdClose, MdExpandMore, MdSync, MdCheckCircle } from "react-icons/md";
 import { createProduct, updateProduct } from "../../../../lib/admin-actions";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { toast } from "react-hot-toast";
@@ -32,7 +33,7 @@ interface AddProductModalProps {
 }
 
 export default function AddProductModal({ isOpen, onClose, categories, product }: AddProductModalProps) {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
@@ -63,7 +64,6 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                 images: product.images,
             });
         } else if (isOpen) {
-            // Reset for new product
             setFormData({
                 name: "",
                 description: "",
@@ -71,7 +71,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                 price: "",
                 discountType: "NONE",
                 discountValue: "",
-                stock: "0",
+                stock: "",
                 sku: "",
                 images: "",
             });
@@ -135,7 +135,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
     };
 
     const removeImage = (url: string) => {
-        const newImages = formData.images.split(',').filter(img => img !== url).join(',');
+        const newImages = formData.images.split(',').filter((img: string) => img !== url).join(',');
         setFormData({ ...formData, images: newImages });
     };
 
@@ -158,7 +158,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                         onClick={onClose}
                         className="p-2 text-text-sub dark:text-gray-400 hover:text-primary hover:bg-primary/10 rounded-full transition-colors"
                     >
-                        <span className="material-symbols-outlined">close</span>
+                        <MdClose className="text-[24px]" />
                     </button>
                 </div>
 
@@ -167,7 +167,9 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
 
                     {/* Images Section */}
                     <div className="space-y-4">
-                        <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.productImages")}</label>
+                        <label className="text-sm font-bold text-text-main dark:text-white">
+                            {t("admin.addProductModal.productImages")}
+                        </label>
 
                         {/* Image Gallery */}
                         {formData.images && (
@@ -175,12 +177,20 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                                 {formData.images.split(',').filter(Boolean).map((url, index) => (
                                     <div key={index} className="relative aspect-square rounded-xl border border-[#e6dbdf] dark:border-gray-700 overflow-hidden group">
                                         <img src={url} alt={`${t("admin.addProductModal.imagePreviewAlt")} ${index}`} className="w-full h-full object-cover" />
+                                        
+                                        {/* Main Image Badge */}
+                                        {index === 0 && (
+                                            <div className="absolute top-2 left-2 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm z-10">
+                                                {language === 'ar' ? 'الرئيسية' : 'Main'}
+                                            </div>
+                                        )}
+
                                         <button
                                             type="button"
                                             onClick={() => removeImage(url)}
-                                            className="absolute top-1 right-1 size-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                            className="absolute top-1 right-1 size-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
                                         >
-                                            <span className="material-symbols-outlined text-xs">close</span>
+                                            <MdClose className="text-xs" />
                                         </button>
                                     </div>
                                 ))}
@@ -250,7 +260,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                                         <option key={cat.id} value={cat.id}>{cat.name}</option>
                                     ))}
                                 </select>
-                                <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-sub">expand_more</span>
+                                <MdExpandMore className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-sub text-[20px]" />
                             </div>
                         </div>
 
@@ -357,9 +367,11 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                         disabled={isLoading}
                         className="bg-primary hover:bg-primary/90 disabled:opacity-50 text-white h-12 px-8 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
                     >
-                        <span className="material-symbols-outlined text-[20px]">
-                            {isLoading ? 'sync' : 'check_circle'}
-                        </span>
+                        {isLoading ? (
+                            <MdSync className="animate-spin text-[20px]" />
+                        ) : (
+                            <MdCheckCircle className="text-[20px]" />
+                        )}
                         {isLoading ? (product ? t("admin.addProductModal.updating") : t("admin.addProductModal.saving")) : (product ? t("admin.addProductModal.updateProduct") : t("admin.addProductModal.saveProduct"))}
                     </button>
                 </div>

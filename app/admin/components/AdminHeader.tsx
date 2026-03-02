@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { MdMenu, MdLanguage } from "react-icons/md";
 
 interface AdminHeaderProps {
     title: string;
@@ -20,7 +21,7 @@ export default function AdminHeader({ title, onMenuClick }: AdminHeaderProps) {
                     onClick={onMenuClick}
                     className="lg:hidden text-text-main dark:text-white hover:bg-background-light dark:hover:bg-gray-800 p-2 rounded-lg transition-colors"
                 >
-                    <span className="material-symbols-outlined">menu</span>
+                    <MdMenu className="text-[24px]" />
                 </button>
                 <h2 className="text-lg md:text-xl font-bold leading-tight tracking-tight">{title}</h2>
             </div>
@@ -30,7 +31,7 @@ export default function AdminHeader({ title, onMenuClick }: AdminHeaderProps) {
                     className="flex items-center gap-2 px-3 py-2 text-sm font-bold text-text-sub hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                     title={language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
                 >
-                    <span className="material-symbols-outlined text-[20px]">language</span>
+                    <MdLanguage className="text-[20px]" />
                     <span className="hidden sm:inline">{language === 'en' ? 'العربية' : 'English'}</span>
                 </button>
             </div>

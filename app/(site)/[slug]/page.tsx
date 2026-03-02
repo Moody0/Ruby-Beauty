@@ -1,9 +1,9 @@
 import React from 'react';
 import { prisma } from "@/lib/prisma";
 import { notFound } from 'next/navigation';
-import ProductBreadcrumbs from '@/app/components/ProductDetailsComponents/ProductBreadcrumbs';
 import ProductGallery from '@/app/components/ProductDetailsComponents/ProductGallery';
-import ProductInfo from '@/app/components/ProductDetailsComponents/ProductInfo';
+import ProductHeader from '@/app/components/ProductDetailsComponents/ProductHeader';
+import ProductPrice from '@/app/components/ProductDetailsComponents/ProductPrice';
 import ProductActions from '@/app/components/ProductDetailsComponents/ProductActions';
 import ProductAccordions from '@/app/components/ProductDetailsComponents/ProductAccordions';
 import RelatedProducts from '@/app/components/ProductDetailsComponents/RelatedProducts';
@@ -12,12 +12,9 @@ import RelatedProducts from '@/app/components/ProductDetailsComponents/RelatedPr
 
 const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     const params = await props.params;
-    // Fetch product by slug
-    const product = await prisma.product.findUnique({
-        where: {
-            slug: params.slug,
-        },
-    });
+    // Fetch product by slug using raw query to bypass potential client schema mismatch
+    const result = await prisma.$queryRaw<any[]>`SELECT * FROM "Product" WHERE slug = ${params.slug} LIMIT 1`;
+    const product = result[0];
 
     if (!product) {
         notFound();
@@ -34,29 +31,45 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
 
     return (
         <div className="grow w-full mx-auto px-6 py-8 md:px-20 lg:px-32 xl:px-48 2xl:px-64 lg:py-12">
-            <ProductBreadcrumbs productName={product.name} />
+            
+            {/* Mobile Header (Title & Description above image) - REMOVED per request */}
+            {/* <div className="block lg:hidden mb-6">
+                <ProductHeader
+                    name={product.name}
+                    description={product.description}
+                />
+            </div> */}
 
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 xl:gap-20">
+            <div className="flex flex-col lg:grid lg:grid-cols-5 gap-12 xl:gap-20">
                 {/* Product Gallery (Left) */}
-                <div className="lg:col-span-2">
-                    <ProductGallery images={product.images} isTrending={product.isTrending} />
+                <div className="lg:col-span-2 order-1">
+                    <ProductGallery 
+                        images={product.images} 
+                        isTrending={product.isTrending} 
+                    />
                 </div>
 
                 {/* Product Details (Right) */}
-                <div className="flex flex-col lg:col-span-3">
-                    <ProductInfo
-                        name={product.name}
-                        description={product.description}
+                <div className="flex flex-col lg:col-span-3 order-2">
+                    {/* Header (Title & Description) - Visible on all screens now */}
+                    <div className="block">
+                        <ProductHeader
+                            name={product.name}
+                            description={product.description}
+                        />
+                    </div>
+                    
+                    <ProductPrice
                         price={product.price.toString()}
                         discountPrice={product.discountPrice?.toString()}
                     />
 
-                    {/* Description */}
-                    <div className="mb-8">
+                    {/* Description - REMOVED per request */}
+                    {/* <div className="mb-8">
                         <p className="text-base leading-relaxed text-text-main dark:text-white/80">
                             {product.description || 'Unlock your skin&apos;s natural luminosity with our concentrated Vitamin C serum.'}
                         </p>
-                    </div>
+                    </div> */}
 
                     <ProductActions product={{
                         id: product.id,
@@ -65,10 +78,6 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                         image: product.images.split(',')[0],
                         slug: product.slug
                     }} />
-
-                    {/* Trust Badges - Could be componentized too but leaving inline for now or move to separate file if requested */}
-                    <div className="flex flex-wrap justify-center gap-6 mb-10 border-t border-[#f4f0f2] dark:border-white/10">
-                    </div>
 
                     <ProductAccordions />
                 </div>

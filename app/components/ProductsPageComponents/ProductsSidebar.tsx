@@ -2,11 +2,12 @@
 
 import React, { useState } from 'react';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { MdFilterList, MdKeyboardArrowDown } from 'react-icons/md';
 
 interface Category {
     id: string;
     name: string;
-    description: string;
+    description: string | null;
 }
 
 interface ProductsSidebarProps {
@@ -31,8 +32,8 @@ const ProductsSidebar = ({ categories, selectedCategoryIds, handleCategoryToggle
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex w-full items-center justify-between rounded-xl border border-[#e6dbdf] bg-white px-4 py-3 font-bold text-[#181113] lg:hidden dark:bg-surface-dark dark:border-white/10 dark:text-white"
             >
-                <span className="flex items-center gap-2"><span className="material-symbols-outlined">filter_list</span> {t('products.categories')}</span>
-                <span className={`material-symbols-outlined transition-transform ${isOpen ? 'rotate-180' : ''}`}>keyboard_arrow_down</span>
+                <span className="flex items-center gap-2"><MdFilterList /> {t('products.categories')}</span>
+                <MdKeyboardArrowDown className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
             </button>
             <div className={`${isOpen ? 'block' : 'hidden'} lg:block space-y-8`}>
                 <div className="space-y-4">

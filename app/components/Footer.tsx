@@ -1,19 +1,15 @@
-"use client";
-
 import Link from 'next/link';
 import React from 'react';
-import { FaInstagram } from "react-icons/fa";
-import { FaFacebook } from "react-icons/fa";
-import { FaWhatsapp } from "react-icons/fa";
-import { useLanguage } from '@/app/context/LanguageContext';
+import { FaInstagram, FaFacebook, FaWhatsapp } from "react-icons/fa";
 
-const Footer = () => {
-    const { t } = useLanguage();
+interface FooterProps {
+    t: (key: string) => string;
+}
 
+const Footer = ({ t }: FooterProps) => {
     return (
         <footer
             className="bg-surface-light dark:bg-surface-dark border-t border-[#f4f0f2] dark:border-[#3a1d26] pt-16 pb-8"
-            suppressHydrationWarning
         >
             <div className="container-custom">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
@@ -69,8 +65,7 @@ const Footer = () => {
                         <h5 className="font-bold text-text-main-light dark:text-text-main-dark">{t('footer.support')}</h5>
                         <ul className="flex flex-col gap-2.5 text-sm text-text-muted-light dark:text-text-muted-dark">
                             <li><a className="hover:text-primary transition-colors" href="https://wa.me/963933254796" target="_blank" rel="noopener noreferrer">{t('footer.helpCenter')}</a></li>
-                            <li><Link className="hover:text-primary transition-colors" href="/about-us">{t('footer.shippingReturns')}</Link></li>
-                            <li><a className="hover:text-primary transition-colors" href="https://wa.me/963933254796" target="_blank" rel="noopener noreferrer">{t('footer.orderStatus')}</a></li>
+                            <li><Link className="hover:text-primary transition-colors" href="/shipping-returns">{t('footer.shippingReturns')}</Link></li>
                             <li><a className="hover:text-primary transition-colors" href="https://wa.me/963933254796" target="_blank" rel="noopener noreferrer">{t('footer.contactUs')}</a></li>
                         </ul>
                     </div>

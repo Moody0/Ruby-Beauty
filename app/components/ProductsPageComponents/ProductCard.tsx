@@ -1,10 +1,7 @@
-"use client";
-
 import Link from 'next/link';
+import Image from 'next/image';
 import React from 'react';
-import { useCart } from '@/app/context/CartContext';
-import { useLanguage } from '@/app/context/LanguageContext';
-import toast from 'react-hot-toast';
+import AddToCartButton from './AddToCartButton';
 
 interface Product {
     id: string;
@@ -21,32 +18,14 @@ interface Product {
 
 interface ProductCardProps {
     product: Product;
+    t: (key: string) => string;
+    language: 'en' | 'ar';
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
-    const { addItem } = useCart();
-    const { t, language } = useLanguage();
-
-    const handleQuickAdd = (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        addItem({
-            id: product.id,
-            name: product.name,
-            price: Number(product.discountPrice || product.price),
-            image: product.images,
-            slug: product.slug,
-            quantity: 1,
-            description: product.description || undefined
-        });
-
-        toast.success(language === 'ar' ? `تمت إضافة ${product.name} إلى السلة` : `Added ${product.name} to cart`);
-    };
-
+const ProductCard = ({ product, t, language }: ProductCardProps) => {
     return (
         <div className="group relative flex flex-col gap-3 p-2 rounded-2xl transition-all duration-300 hover:bg-white dark:hover:bg-white/5 premium-shadow-hover">
-            <Link href={`/products/${product.slug}`} className="relative aspect-4/4 w-full overflow-hidden rounded-xl bg-gray-100 dark:bg-white/5 block">
+            <Link href={`/products/${product.slug}`} className="relative aspect-4/4 w-full overflow-hidden rounded-xl !bg-white block border border-[#e6dbdf] dark:border-gray-800/50 shadow-sm">
                 {product.isTrending && (
                     <span className="absolute ltr:left-2 rtl:right-2 top-2 z-10 rounded bg-white px-1.5 py-0.5 text-[10px]  font-bold uppercase tracking-wider text-black shadow-sm">{t('home.trendingNow')}</span>
                 )}
@@ -55,8 +34,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
                         -{Math.round((1 - Number(product.discountPrice) / Number(product.price)) * 100)}%
                     </span>
                 )}
-                <img
+                <Image
                     alt={product.name}
+<<<<<<< HEAD
                     className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
                     src={product.images ? product.images.split(',')[0].trim() : ''}
                 />
@@ -74,6 +54,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 >
                     <span className="material-symbols-outlined text-[18px]">add</span>
                 </button>
+=======
+                    className="object-contain transition-transform duration-500 group-hover:scale-105"
+                    src={product.images.split(',').map((img: string) => img.trim()).filter(Boolean)[0]}
+                    fill
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    priority={product.isTrending}
+                    loading={product.isTrending ? undefined : "lazy"}
+                />
+                <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="desktop" />
+                <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="mobile" />
+>>>>>>> a19576317a12ff361fa14bd438f06655de705684
             </Link>
             <div className="flex flex-col gap-1 p-0.5">
                 <div className="flex items-start justify-between gap-2">

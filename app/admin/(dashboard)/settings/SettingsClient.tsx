@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { MdWarning } from "react-icons/md";
 import AdminHeader from "../../components/AdminHeader";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
-import { getAdminUser, updateAdminCredentials } from "../../../../lib/admin-actions";
+import { updateAdminCredentials } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { signOut } from "next-auth/react";
 import { useLanguage } from "@/app/context/LanguageContext";
@@ -15,9 +16,15 @@ interface AdminUser {
     updatedAt: string;
 }
 
-export default function SettingsClient({ initialUser }: { initialUser: AdminUser | null }) {
+export default function SettingsClient({ 
+    initialUser
+}: { 
+    initialUser: AdminUser | null
+}) {
     const { t } = useLanguage();
     const { openSidebar } = useAdminSidebar();
+    
+    // Account Settings State
     const [currentPassword, setCurrentPassword] = useState("");
     const [newUsername, setNewUsername] = useState("");
     const [newPassword, setNewPassword] = useState("");
@@ -30,56 +37,56 @@ export default function SettingsClient({ initialUser }: { initialUser: AdminUser
         }
     }, [initialUser]);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleAccountSubmit = async (e: React.FormEvent) => {
+         e.preventDefault();
 
-        if (!currentPassword) {
-            toast.error(t('admin.currentPasswordRequired'));
-            return;
-        }
+         if (!currentPassword) {
+             toast.error(t('admin.currentPasswordRequired'));
+             return;
+         }
 
-        if (newPassword && newPassword !== confirmPassword) {
-            toast.error(t('admin.passwordsDoNotMatch'));
-            return;
-        }
+         if (newPassword && newPassword !== confirmPassword) {
+             toast.error(t('admin.passwordsDoNotMatch'));
+             return;
+         }
 
-        if (newPassword && newPassword.length < 6) {
-            toast.error(t('admin.passwordTooShort'));
-            return;
-        }
+         if (newPassword && newPassword.length < 6) {
+             toast.error(t('admin.passwordTooShort'));
+             return;
+         }
 
-        setIsSubmitting(true);
+         setIsSubmitting(true);
 
-        try {
-            const result = await updateAdminCredentials({
-                currentPassword,
-                newUsername: newUsername !== initialUser?.username ? newUsername : undefined,
-                newPassword: newPassword || undefined,
-            });
+         try {
+             const result = await updateAdminCredentials({
+                 currentPassword,
+                 newUsername: newUsername !== initialUser?.username ? newUsername : undefined,
+                 newPassword: newPassword || undefined,
+             });
 
-            if (result.success) {
-                toast.success(result.message || t('admin.settingsUpdated'));
-                setCurrentPassword("");
-                setNewPassword("");
-                setConfirmPassword("");
+             if (result.success) {
+                 toast.success(result.message || t('admin.settingsUpdated'));
+                 setCurrentPassword("");
+                 setNewPassword("");
+                 setConfirmPassword("");
 
-                // If password was changed, sign out
-                if (newPassword) {
-                    toast.success(t('admin.passwordChangedLogout'));
-                    setTimeout(() => {
-                        signOut({ callbackUrl: "/admin/login" });
-                    }, 2000);
-                }
-            } else {
-                toast.error(result.error || t('admin.failedToUpdate'));
-            }
-        } catch (error) {
-            console.error("Error updating settings:", error);
-            toast.error(t('admin.failedToUpdate'));
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+                 // If password was changed, sign out
+                 if (newPassword) {
+                     toast.success(t('admin.passwordChangedLogout'));
+                     setTimeout(() => {
+                         signOut({ callbackUrl: "/admin/login" });
+                     }, 2000);
+                 }
+             } else {
+                 toast.error(result.error || t('admin.failedToUpdate'));
+             }
+         } catch (error) {
+             console.error("Error updating settings:", error);
+             toast.error(t('admin.failedToUpdate'));
+         } finally {
+             setIsSubmitting(false);
+         }
+     };
 
     if (!initialUser) {
         return (
@@ -110,7 +117,7 @@ export default function SettingsClient({ initialUser }: { initialUser: AdminUser
                             </p>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                        <form onSubmit={handleAccountSubmit} className="space-y-6">
                             {/* Current Password */}
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-text-main dark:text-white">
@@ -203,9 +210,7 @@ export default function SettingsClient({ initialUser }: { initialUser: AdminUser
                             {newPassword && (
                                 <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
                                     <div className="flex gap-3">
-                                        <span className="material-symbols-outlined text-amber-600 dark:text-amber-400 text-xl">
-                                            warning
-                                        </span>
+                                        <MdWarning className="text-amber-600 dark:text-amber-400 text-xl" />
                                         <div>
                                             <p className="text-sm font-bold text-amber-800 dark:text-amber-300">
                                                 {t('admin.passwordChangeNotice')}

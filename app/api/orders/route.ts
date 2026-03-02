@@ -55,18 +55,6 @@ export async function POST(request: Request) {
                 }
             });
 
-            // Update product stock
-            for (const item of items) {
-                await tx.product.update({
-                    where: { id: item.productId },
-                    data: {
-                        stock: {
-                            decrement: item.quantity
-                        }
-                    }
-                });
-            }
-
             // Update Promo Code stats
             if (promoCodeId) {
                 await tx.promoCode.update({

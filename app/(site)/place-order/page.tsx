@@ -46,7 +46,24 @@ const PlaceOrderPage = () => {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+        
+        // Prevent non-numeric input for phone
+        if (name === 'phone') {
+            const numericValue = value.replace(/[^0-9]/g, '');
+            // Limit to 10 digits (Syrian mobile format 09xxxxxxxx)
+            if (numericValue.length <= 10) {
+                setFormData(prev => ({ ...prev, [name]: numericValue }));
+            }
+            return;
+        }
+        
         setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const validateSyrianPhone = (phone: string) => {
+        // Syrian mobile numbers are 10 digits and start with 09
+        const syrianPhoneRegex = /^09\d{8}$/;
+        return syrianPhoneRegex.test(phone);
     };
 
     const handleApplyPromo = async (code: string) => {
@@ -67,6 +84,12 @@ const PlaceOrderPage = () => {
 
         if (!formData.firstName || !formData.lastName || !formData.phone || !formData.streetAddress || !formData.city) {
             toast.error("Please fill in all required fields");
+            return;
+        }
+
+        // Validate Syrian Phone Number
+        if (!validateSyrianPhone(formData.phone)) {
+            toast.error("Please enter a valid Syrian mobile number (e.g. 09xxxxxxxx)");
             return;
         }
 

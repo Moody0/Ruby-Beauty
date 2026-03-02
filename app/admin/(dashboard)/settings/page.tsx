@@ -1,7 +1,7 @@
 import { getAdminUser } from "../../../../lib/admin-actions";
 import SettingsClient from "./SettingsClient";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export default async function SettingsPage() {
@@ -12,5 +12,6 @@ export default async function SettingsPage() {
     }
 
     const adminUser = await getAdminUser();
+    
     return <SettingsClient initialUser={adminUser} />;
 }

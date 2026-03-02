@@ -1,8 +1,7 @@
-"use client";
-
 import Link from 'next/link'
+import Image from 'next/image'
 import React from 'react'
-import { useLanguage } from '@/app/context/LanguageContext';
+import { MdChevronRight } from 'react-icons/md';
 
 interface Category {
     id: string;
@@ -11,9 +10,13 @@ interface Category {
     image: string | null;
 }
 
-const Categories = ({ categories }: { categories: Category[] }) => {
-    const { t, dir } = useLanguage();
+interface CategoriesProps {
+    categories: Category[];
+    t: (key: string) => string;
+    dir: 'ltr' | 'rtl';
+}
 
+const Categories = ({ categories, t, dir }: CategoriesProps) => {
     const defaultImage = 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800';
 
     if (!categories || categories.length === 0) {
@@ -26,7 +29,7 @@ const Categories = ({ categories }: { categories: Category[] }) => {
                 <div className="flex items-center justify-between mb-8 px-2">
                     <h3 className="text-2xl font-bold text-text-main-light dark:text-text-main-dark">{t('home.categories')}</h3>
                     <Link className="text-primary font-medium text-sm flex items-center gap-1 " href="/categories">
-                        {t('common.viewAll')} <span className={`material-symbols-outlined text-sm ${dir === 'rtl' ? 'rotate-180' : ''}`}>chevron_right</span>
+                        {t('common.viewAll')} <MdChevronRight className={`text-sm ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                     </Link>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-2 md:gap-4">
@@ -37,10 +40,12 @@ const Categories = ({ categories }: { categories: Category[] }) => {
                             className="group flex flex-col gap-3 p-2 rounded-2xl transition-all duration-300 hover:bg-white dark:hover:bg-white/5 premium-shadow-hover"
                         >
                             <div className="relative aspect-4/4 w-full overflow-hidden rounded-xl bg-gray-100 dark:bg-white/5">
-                                <img
-                                    src={category.image || defaultImage}
+                                <Image
+                                    src={(category.image || defaultImage).trim()}
                                     alt={category.name}
-                                    className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-110"
+                                    className="object-contain transition-transform duration-500 group-hover:scale-110"
+                                    fill
+                                    sizes="(max-width: 640px) 50vw, 25vw"
                                 />
                             </div>
                             <div className="flex flex-col items-center text-center px-1">

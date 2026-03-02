@@ -1,6 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import { 
+    MdDashboard, 
+    MdShoppingBag, 
+    MdCategory, 
+    MdViewCarousel, 
+    MdInventory2, 
+    MdLocalOffer, 
+    MdEditNote, 
+    MdGroup, 
+    MdSettings,
+    MdClose,
+    MdLogout
+} from "react-icons/md";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { useLanguage } from "@/app/context/LanguageContext";
@@ -17,14 +30,15 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
     const isSuperAdmin = session?.user?.role === 'SUPER_ADMIN';
 
     const navItems = [
-        { href: "/admin/dashboard", icon: "dashboard", label: t('admin.dashboard'), filled: true },
-        { href: "/admin/products", icon: "shopping_bag", label: t('admin.products'), permission: "canManageProducts" },
-        { href: "/admin/categories", icon: "category", label: t('admin.categories'), permission: "canManageCategories" },
-        { href: "/admin/banners", icon: "view_carousel", label: t('admin.banners'), permission: "canManageBanners" },
-        { href: "/admin/orders", icon: "package_2", label: t('admin.orders'), permission: "canManageOrders" },
-        { href: "/admin/promocodes", icon: "local_offer", label: t('admin.promoCodes'), permission: "canManagePromoCodes" },
-        { href: "/admin/users", icon: "group", label: t('admin.users'), superAdminOnly: true },
-        { href: "/admin/settings", icon: "settings", label: t('admin.settings'), superAdminOnly: true },
+        { href: "/admin/dashboard", icon: MdDashboard, label: t('admin.dashboard') },
+        { href: "/admin/products", icon: MdShoppingBag, label: t('admin.products'), permission: "canManageProducts" },
+        { href: "/admin/categories", icon: MdCategory, label: t('admin.categories'), permission: "canManageCategories" },
+        { href: "/admin/banners", icon: MdViewCarousel, label: t('admin.banners'), permission: "canManageBanners" },
+        { href: "/admin/orders", icon: MdInventory2, label: t('admin.orders'), permission: "canManageOrders" },
+        { href: "/admin/promocodes", icon: MdLocalOffer, label: t('admin.promoCodes'), permission: "canManagePromoCodes" },
+        { href: "/admin/site-content", icon: MdEditNote, label: t('admin.siteContent'), superAdminOnly: true },
+        { href: "/admin/users", icon: MdGroup, label: t('admin.users'), superAdminOnly: true },
+        { href: "/admin/settings", icon: MdSettings, label: t('admin.settings'), superAdminOnly: true },
     ];
 
     const handleSignOut = () => {
@@ -70,7 +84,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                                 onClick={onClose}
                                 className="lg:hidden text-text-sub dark:text-gray-400 hover:text-text-main dark:hover:text-white"
                             >
-                                <span className="material-symbols-outlined">close</span>
+                                <MdClose className="text-2xl" />
                             </button>
                         </div>
 
@@ -96,12 +110,9 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                                             : "text-text-sub dark:text-gray-400 hover:bg-background-light dark:hover:bg-gray-800 hover:text-text-main dark:hover:text-white"
                                             } group`}
                                     >
-                                        <span
-                                            className={`material-symbols-outlined ${item.filled && isActive ? "filled" : ""
-                                                } ${!isActive ? "group-hover:text-primary transition-colors" : ""}`}
-                                        >
-                                            {item.icon}
-                                        </span>
+                                        <item.icon
+                                            className={`text-xl ${!isActive ? "group-hover:text-primary transition-colors" : ""}`}
+                                        />
                                         <p
                                             className={`text-sm leading-normal ${isActive ? "font-bold" : "font-medium"
                                                 }`}
@@ -120,9 +131,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                             onClick={handleSignOut}
                             className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-text-sub dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-colors group"
                         >
-                            <span className={`material-symbols-outlined group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors ${dir === 'rtl' ? 'rotate-180' : ''}`}>
-                                logout
-                            </span>
+                            <MdLogout className={`text-xl group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                             <p className="text-sm font-medium leading-normal">{t('admin.signOut')}</p>
                         </button>
 

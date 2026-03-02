@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import React from "react";
 import CategoriesContent from "./CategoriesContent";
+import { getSiteSettings } from "@/lib/admin-actions";
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -19,9 +20,12 @@ async function getAllCategories() {
 }
 
 export default async function CategoriesPage() {
-    const categories = await getAllCategories();
+    const [categories, siteSettings] = await Promise.all([
+        getAllCategories(),
+        getSiteSettings()
+    ]);
 
     return (
-        <CategoriesContent categories={categories} />
+        <CategoriesContent categories={categories} siteSettings={siteSettings} />
     );
 }

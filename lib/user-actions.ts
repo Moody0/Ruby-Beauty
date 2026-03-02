@@ -4,7 +4,7 @@ import { prisma } from "./prisma";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"; // Wait, I need to export authOptions
+import { authOptions } from "@/lib/auth"; // Wait, I need to export authOptions
 
 export async function getUsers() {
     try {

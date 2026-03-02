@@ -1,7 +1,10 @@
 "use client";
 
+import Head from 'next/head';
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { MdArrowForward, MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { useLanguage } from '@/app/context/LanguageContext';
 
 interface Banner {
@@ -23,7 +26,6 @@ interface HeroCarouselProps {
 
 const HeroCarousel = ({ banners }: HeroCarouselProps) => {
     const { t, dir, language } = useLanguage();
-
     const DEFAULT_BANNER: Banner = {
         id: 'default',
         title: t('home.trendingNow'),
@@ -62,6 +64,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
         setCurrentIndex(index);
     };
 
+    // Auto-rotation effect
     useEffect(() => {
         if (isPaused || displayBanners.length <= 1) return;
 
@@ -72,6 +75,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
         return () => clearInterval(interval);
     }, [isPaused, nextSlide, displayBanners.length]);
 
+<<<<<<< HEAD
     // Preload images for smoother transitions
     useEffect(() => {
         displayBanners.forEach((banner) => {
@@ -80,6 +84,8 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
         });
     }, [displayBanners]);
 
+=======
+>>>>>>> a19576317a12ff361fa14bd438f06655de705684
     if (displayBanners.length === 0) return null;
 
     return (
@@ -87,6 +93,14 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
         >
+            {/* Preload the first banner image for LCP */}
+            {displayBanners[0]?.image && (
+                <link
+                    rel="preload"
+                    href={displayBanners[0].image.trim()}
+                    as="image"
+                />
+            )}
             <div className="w-full">
                 <div className="relative overflow-hidden rounded-2xl bg-surface-light dark:bg-surface-dark min-h-[500px] sm:min-h-[550px] md:min-h-[550px]">
                     {/* Slides */}
@@ -100,10 +114,19 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                             <div className="md:hidden relative w-full h-full">
                                 {/* Image Container */}
                                 <div className="absolute inset-0 w-full h-full bg-gray-50 dark:bg-white/5">
+<<<<<<< HEAD
                                     <img
                                         src={banner.image ? banner.image.trim() : ""}
+=======
+                                    <Image
+                                        src={banner.image.trim()}
+>>>>>>> a19576317a12ff361fa14bd438f06655de705684
                                         alt={getBannerTitle(banner)}
-                                        className="w-full h-full object-cover"
+                                        className="object-cover"
+                                        fill
+                                        priority={index === 0}
+                                        sizes="100vw"
+                                        quality={85}
                                     />
                                     {/* Subtle overlay for text readability on mobile */}
                                     <div className="absolute inset-0 bg-black/20"></div>
@@ -127,11 +150,11 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                             className="px-6 sm:px-8 py-3 sm:py-3.5  bg-primary hover:bg-primary/90 text-white rounded-full font-bold text-sm transition-all flex items-center gap-2 w-fit group/btn shadow-lg "
                                         >
                                             {dir === 'rtl' && (
-                                                <span className="material-symbols-outlined text-lg group-hover/btn:-translate-x-1 transition-transform">arrow_forward</span>
+                                                <MdArrowForward className="text-lg group-hover/btn:-translate-x-1 transition-transform" />
                                             )}
                                             {banner.buttonText || t('home.shopNow')}
                                             {dir !== 'rtl' && (
-                                                <span className="material-symbols-outlined text-lg group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+                                                <MdArrowForward className="text-lg group-hover/btn:translate-x-1 transition-transform" />
                                             )}
                                         </Link>
                                     </div>
@@ -159,7 +182,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                             className={`px-8 py-3.5 bg-primary hover:bg-primary/90 text-white rounded-full font-bold text-sm transition-all flex items-center gap-2 w-fit group/btn ${dir === 'rtl' ? 'self-end' : ''}`}
                                         >
                                             {banner.buttonText || t('home.shopNow')}
-                                            <span className={`material-symbols-outlined text-lg group-hover/btn:translate-x-1 transition-transform ${dir === 'rtl' ? ' group-hover/btn:-translate-x-1' : ''}`}>arrow_forward</span>
+                                            <MdArrowForward className={`text-lg group-hover/btn:translate-x-1 transition-transform ${dir === 'rtl' ? ' group-hover/btn:-translate-x-1' : ''}`} />
                                         </Link>
                                     </div>
                                 </div>
@@ -167,10 +190,18 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                 {/* Hero Image — order-1 in RTL so it appears on the left */}
                                 <div className={`w-full md:w-1/2 h-full relative ${dir === 'rtl' ? 'order-1' : 'order-2'}`}>
                                     <div className="w-full h-full bg-gray-50 dark:bg-white/5 relative">
+<<<<<<< HEAD
                                         <img
                                             src={banner.image ? banner.image.trim() : ""}
+=======
+                                        <Image
+                                            src={banner.image.trim()}
+>>>>>>> a19576317a12ff361fa14bd438f06655de705684
                                             alt={getBannerTitle(banner)}
-                                            className="w-full h-full object-cover transition-transform duration-1000 ease-in-out group-hover:scale-105"
+                                            className="object-cover transition-transform duration-1000 ease-in-out group-hover:scale-105"
+                                            fill
+                                            priority={index === 0}
+                                            sizes="50vw"
                                         />
                                     </div>
                                 </div>
@@ -187,25 +218,25 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                 className={`absolute ${dir === 'rtl' ? 'right-4 rotate-180' : 'left-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100`}
                                 aria-label="Previous slide"
                             >
-                                <span className={`material-symbols-outlined ${dir === 'rtl' ? '' : ''}`}>chevron_left</span>
+                                <MdChevronLeft />
                             </button>
                             <button
                                 onClick={nextSlide}
                                 className={`absolute ${dir === 'rtl' ? 'left-4 rotate-180' : 'right-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100`}
                                 aria-label="Next slide"
                             >
-                                <span className="material-symbols-outlined">chevron_right</span>
+                                <MdChevronRight />
                             </button>
 
-                            {/* Dots Indicator */}
+                            {/* Dots */}
                             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
                                 {displayBanners.map((_, index) => (
                                     <button
                                         key={index}
                                         onClick={() => goToSlide(index)}
-                                        className={`h-2 rounded-full transition-all duration-300 ${index === currentIndex
+                                        className={`w-2 h-2 rounded-full transition-all ${index === currentIndex
                                             ? 'w-8 bg-primary'
-                                            : 'w-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500'
+                                            : 'bg-white/50 hover:bg-white/80'
                                             }`}
                                         aria-label={`Go to slide ${index + 1}`}
                                     />

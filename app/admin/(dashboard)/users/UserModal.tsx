@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createUser, updateUser } from "@/lib/user-actions";
 import { toast } from "react-hot-toast";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { MdClose, MdSync } from "react-icons/md";
 
 interface User {
     id: string;
@@ -148,8 +149,11 @@ export default function UserModal({ isOpen, onClose, user }: UserModalProps) {
                                 {user ? t('admin.updatingAccess').replace('{username}', user.username) : t('admin.createAccount')}
                             </p>
                         </div>
-                        <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full text-text-sub">
-                            <span className="material-symbols-outlined">close</span>
+                        <button 
+                            onClick={onClose} 
+                            className="p-2 text-text-sub dark:text-gray-400 hover:text-primary hover:bg-primary/10 rounded-full transition-colors"
+                        >
+                            <MdClose className="text-[24px]" />
                         </button>
                     </div>
 
@@ -258,8 +262,11 @@ export default function UserModal({ isOpen, onClose, user }: UserModalProps) {
                                 disabled={isSubmitting}
                                 className="flex-1 px-8 py-4 bg-primary text-white rounded-2xl font-bold hover:bg-primary-dark transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
-                                {isSubmitting && <span className="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>}
-                                {user ? t('admin.updateUser') : t('admin.createUser')}
+                                {isSubmitting ? (
+                                <MdSync className="animate-spin text-[18px]" />
+                            ) : (
+                                user ? t('admin.updateUser') : t('admin.createUser')
+                            )}
                             </button>
                         </div>
                     </form>

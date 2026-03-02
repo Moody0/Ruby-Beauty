@@ -1,8 +1,20 @@
 import type { NextConfig } from "next";
+import withBundleAnalyzer from '@next/bundle-analyzer';
 
 const nextConfig: NextConfig = {
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  experimental: {
+    optimizePackageImports: ['react-icons', 'md-react-icons'],
+  },
   images: {
+<<<<<<< HEAD
     minimumCacheTTL: 31536000,
+=======
+    formats: ['image/avif', 'image/webp'],
+    qualities: [75, 85],
+>>>>>>> a19576317a12ff361fa14bd438f06655de705684
     remotePatterns: [
       {
         protocol: "https",
@@ -24,8 +36,20 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "i.postimg.cc",
       },
+<<<<<<< HEAD
+=======
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+>>>>>>> a19576317a12ff361fa14bd438f06655de705684
     ],
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})(nextConfig);

@@ -2,83 +2,114 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 
-// Import translations
-import en from '@/app/locales/en.json';
-import ar from '@/app/locales/ar.json';
-
 type Language = 'en' | 'ar';
 
 // Recursive type for nested translation objects
-type TranslationValue = string | { [key: string]: TranslationValue };
+type TranslationValue = string | string[] | { [key: string]: TranslationValue };
 type TranslationObject = { [key: string]: TranslationValue };
 
 interface LanguageContextType {
     language: Language;
     setLanguage: (lang: Language) => void;
-    t: (key: string) => string;
+    t: (key: string) => any;
     dir: 'ltr' | 'rtl';
+    isLoaded: boolean;
 }
-
-const translations: Record<Language, TranslationObject> = { en, ar };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-    const [language, setLanguageState] = useState<Language>('en');
+    // Initialize language from localStorage immediately (synchronous)
+    const getInitialLanguage = (): Language => {
+        if (typeof window === 'undefined') return 'en';
+        const savedLang = localStorage.getItem('language') as Language;
+        return (savedLang === 'en' || savedLang === 'ar') ? savedLang : 'en';
+    };
+
+    const [language, setLanguageState] = useState<Language>(getInitialLanguage);
+    const [translations, setTranslations] = useState<TranslationObject | null>(null);
     const [mounted, setMounted] = useState(false);
 
-    // Load language preference from localStorage on mount
+    // Load language preference and set mounted flag
     useEffect(() => {
-        const savedLang = localStorage.getItem('language') as Language;
-        if (savedLang && (savedLang === 'en' || savedLang === 'ar')) {
-            setLanguageState(savedLang);
-        }
         setMounted(true);
     }, []);
+
+    // Load translations dynamically - this happens immediately on mount
+    useEffect(() => {
+        const loadTranslations = async () => {
+            try {
+                let data;
+                if (language === 'ar') {
+                    data = await import('@/app/locales/ar.json');
+                } else {
+                    data = await import('@/app/locales/en.json');
+                }
+                setTranslations(data.default);
+            } catch (error) {
+                console.error('Failed to load translations:', error);
+            }
+        };
+        loadTranslations();
+    }, [language]);
 
     // Save language preference and update document direction
     useEffect(() => {
         if (mounted) {
             localStorage.setItem('language', language);
+            document.cookie = `language=${language}; path=/; max-age=31536000`; // 1 year
             document.documentElement.lang = language;
             document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
         }
     }, [language, mounted]);
 
     const setLanguage = useCallback((lang: Language) => {
-        setLanguageState(lang);
+        try {
+            localStorage.setItem('language', lang);
+            document.cookie = `language=${lang}; path=/; max-age=31536000`;
+        } catch (e) {
+            console.warn('Could not persist language immediately', e);
+        }
+
+        if (typeof window !== 'undefined') {
+            // Reload the page so the entire app (including server-rendered parts)
+            // reflects the new language only after the navigation completes.
+            window.location.reload();
+        }
     }, []);
 
     // Translation function with fallback
-    const t = useCallback((key: string): string => {
+    const t = useCallback((key: string): any => {
+        if (!translations) return key;
+
         const keys = key.split('.');
-        let result: TranslationValue = translations[language];
+        let result: TranslationValue = translations;
 
         for (const k of keys) {
-            if (typeof result === 'object' && result !== null && k in result) {
+            if (typeof result === 'object' && result !== null && !Array.isArray(result) && k in result) {
                 result = result[k];
             } else {
-                // Fallback to English if key not found
-                let fallback: TranslationValue = translations['en'];
-                for (const fk of keys) {
-                    if (typeof fallback === 'object' && fallback !== null && fk in fallback) {
-                        fallback = fallback[fk];
-                    } else {
-                        return key; // Return key if not found in fallback either
-                    }
-                }
-                return typeof fallback === 'string' ? fallback : key;
+                return key;
             }
         }
 
-        return typeof result === 'string' ? result : key;
-    }, [language]);
+        return result;
+    }, [translations]);
 
     const dir = language === 'ar' ? 'rtl' : 'ltr';
 
     return (
-        <LanguageContext.Provider value={{ language, setLanguage, t, dir }}>
-            {children}
+        <LanguageContext.Provider value={{ language, setLanguage, t, dir, isLoaded: !!translations }}>
+            <div 
+                key={language} 
+                dir={dir}
+                style={{ 
+                    opacity: translations ? 1 : 0,
+                    transition: 'opacity 0.15s ease-in'
+                }}
+            >
+                {children}
+            </div>
         </LanguageContext.Provider>
     );
 }

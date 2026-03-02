@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { MdArrowForward } from 'react-icons/md';
 
 interface CartSummaryProps {
     subtotal: number;
@@ -32,13 +33,20 @@ const CartSummary = ({ subtotal }: CartSummaryProps) => {
 
                 <Link href="/place-order" className="w-full bg-primary hover:bg-primary/90 text-white font-bold rounded-full h-14 flex items-center justify-center gap-2 shadow-lg shadow-primary/25 transition-all transform hover:scale-[1.02]">
                     <span>{t('cart.proceedToCheckout')}</span>
-                    <span className={`material-symbols-outlined text-sm ${dir === 'rtl' ? 'rotate-180' : ''}`}>arrow_forward</span>
+                    <MdArrowForward className={`text-sm ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                 </Link>
 
             </div>
             <div className="bg-[#fcfafa] dark:bg-[#2a161d]/50 p-4 rounded-xl border border-dashed border-gray-200 dark:border-[#3a2228] text-center">
                 <p className="text-sm text-[#89616f]">{t('footer.contactUs')}</p>
-                <a className="text-sm font-bold text-primary hover:underline mt-1 block" href="#">{t('footer.helpCenter')}</a>
+                <a 
+                    className="text-sm font-bold text-primary hover:underline mt-1 block" 
+                    href="https://wa.me/963933254796"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    {t('footer.helpCenter')}
+                </a>
             </div>
         </div>
     );

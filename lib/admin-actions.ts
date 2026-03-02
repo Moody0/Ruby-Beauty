@@ -2,7 +2,7 @@
 
 import { prisma } from "./prisma";
 import { revalidatePath } from "next/cache";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus, Prisma } from "@prisma/client";
 
 interface ProductInput {
     name: string;
@@ -122,67 +122,45 @@ function getStatusColor(status: string) {
     }
 }
 
-export async function getAdminProducts(page = 1, limit = 50) {
+export async function getAdminProducts() {
     try {
-        const skip = (page - 1) * limit;
-        const [products, total] = await Promise.all([
-            prisma.product.findMany({
-                select: {
-                    id: true,
-                    name: true,
-                    slug: true,
-                    images: true,
-                    description: true,
-                    sku: true,
-                    price: true,
-                    discountPrice: true,
-                    discountType: true,
-                    discountValue: true,
-                    stock: true,
-                    isTrending: true,
-                    categoryId: true,
-                    createdAt: true,
-                    updatedAt: true,
-                    category: {
-                        select: {
-                            id: true,
-                            name: true
-                        }
-                    }
-                },
-                skip,
-                take: limit,
-                orderBy: {
-                    createdAt: 'desc'
-                }
-            }),
-            prisma.product.count()
-        ]);
-
-        return {
-            products: products.map(product => ({
-                ...product,
-                price: Number(product.price),
-                discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
-                discountValue: product.discountValue ? Number(product.discountValue) : null,
-                stock: Number(product.stock),
-                createdAt: product.createdAt.toISOString(),
-                updatedAt: product.updatedAt.toISOString(),
-            })),
-            pagination: {
-                total,
-                pages: Math.ceil(total / limit),
-                page,
-                limit
+        const products = await prisma.product.findMany({
+            orderBy: {
+                createdAt: 'desc'
+            },
+            include: {
+                category: true
             }
-        };
+        });
+
+        return products.map(product => ({
+            id: product.id,
+            name: product.name,
+            slug: product.slug,
+            images: product.images,
+            sku: product.sku,
+            description: product.description,
+            price: Number(product.price),
+            discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
+            discountType: product.discountType,
+            discountValue: product.discountValue ? Number(product.discountValue) : null,
+            stock: Number(product.stock),
+            categoryId: product.categoryId,
+            category: {
+                id: product.category.id,
+                name: product.category.name
+            },
+            createdAt: product.createdAt.toISOString(),
+            updatedAt: product.updatedAt.toISOString(),
+            isTrending: product.isTrending,
+        }));
     } catch (error) {
         console.error("Failed to fetch products:", error);
-        return { products: [], pagination: { total: 0, pages: 0, page: 1, limit: 50 } };
+        return [];
     }
 }
 
-export async function getAdminCategories(page = 1, limit = 50) {
+export async function getAdminCategories(page = 1, limit = 500) {
     try {
         const skip = (page - 1) * limit;
         const [categories, total] = await Promise.all([
@@ -302,10 +280,21 @@ export async function getAdminOrders(page = 1, limit = 50) {
 
 export async function createProduct(data: ProductInput) {
     try {
+        let slug = data.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+        
+        // Check for slug collision
+        const existingWithSlug = await prisma.product.findUnique({
+            where: { slug }
+        });
+
+        if (existingWithSlug) {
+            slug = `${slug}-${Math.random().toString(36).substring(2, 7)}`;
+        }
+
         const product = await prisma.product.create({
             data: {
                 name: data.name,
-                slug: data.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''),
+                slug: slug,
                 description: data.description,
                 price: parseFloat(data.price as string),
                 discountPrice: data.discountPrice ? parseFloat(data.discountPrice as string) : null,
@@ -346,13 +335,27 @@ export async function createProduct(data: ProductInput) {
     }
 }
 
-export async function updateProduct(id: string, data: ProductInput) {
+export async function updateProduct(id: string, data: ProductInput & { isTrending?: boolean }) {
     try {
+        let slug = data.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+        
+        // Check if this slug is used by ANOTHER product
+        const slugConflict = await prisma.product.findFirst({
+            where: {
+                slug: slug,
+                id: { not: id }
+            }
+        });
+
+        if (slugConflict) {
+            slug = `${slug}-${Math.random().toString(36).substring(2, 7)}`;
+        }
+
         const product = await prisma.product.update({
             where: { id },
             data: {
                 name: data.name,
-                slug: data.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''),
+                slug: slug,
                 description: data.description,
                 price: parseFloat(data.price as string),
                 discountPrice: data.discountPrice ? parseFloat(data.discountPrice as string) : null,
@@ -362,6 +365,7 @@ export async function updateProduct(id: string, data: ProductInput) {
                 sku: data.sku,
                 images: data.images,
                 categoryId: data.categoryId,
+                isTrending: data.isTrending,
             }
         });
 
@@ -389,7 +393,7 @@ export async function updateProduct(id: string, data: ProductInput) {
         };
     } catch (error) {
         console.error("Failed to update product:", error);
-        return { success: false, error: "Failed to update product" };
+        return { success: false, error: `Failed to update product: ${error instanceof Error ? error.message : String(error)}` };
     }
 }
 
@@ -401,25 +405,68 @@ export async function deleteProduct(id: string) {
 
         revalidatePath('/admin/products');
         return { success: true };
-    } catch (error) {
+    } catch (error: any) {
         console.error("Failed to delete product:", error);
-        return { success: false, error: "Failed to delete product" };
+        if (error.code === 'P2003') {
+            return { success: false, error: "deleteProductWithOrders" };
+        }
+        return { success: false, error: "deleteProductError" };
     }
 }
 
 export async function updateOrderStatus(id: string, status: OrderStatus) {
     try {
-        await prisma.order.update({
-            where: { id },
-            data: { status }
+        const result = await prisma.$transaction(async (tx) => {
+            // Get current order and its status
+            const order = await tx.order.findUnique({
+                where: { id },
+                include: { items: true }
+            });
+
+            if (!order) throw new Error("Order not found");
+
+            // If changing to DELIVERED and it wasn't already DELIVERED
+            if (status === 'DELIVERED' && order.status !== 'DELIVERED') {
+                for (const item of order.items) {
+                    await tx.product.update({
+                        where: { id: item.productId },
+                        data: {
+                            stock: {
+                                decrement: item.quantity
+                            }
+                        }
+                    });
+                }
+            }
+            
+            // If changing FROM DELIVERED to something else (cancellation/return)
+            // Revert the stock deduction
+            if (order.status === 'DELIVERED' && status !== 'DELIVERED') {
+                for (const item of order.items) {
+                    await tx.product.update({
+                        where: { id: item.productId },
+                        data: {
+                            stock: {
+                                increment: item.quantity
+                            }
+                        }
+                    });
+                }
+            }
+
+            return await tx.order.update({
+                where: { id },
+                data: { status }
+            });
         });
 
         revalidatePath('/admin/orders');
         revalidatePath('/admin/dashboard');
+        revalidatePath('/admin/products');
         return { success: true };
     } catch (error) {
         console.error("Failed to update order status:", error);
-        return { success: false, error: "Failed to update order status" };
+        return { success: false, error: error instanceof Error ? error.message : "Failed to update order status" };
     }
 }
 
@@ -501,7 +548,7 @@ export async function deleteCategory(id: string) {
         });
 
         if (productsCount > 0) {
-            return { success: false, error: "Cannot delete category with associated products. Please move or delete the products first." };
+            return { success: false, error: "deleteCategoryWithProducts" };
         }
 
         await prisma.category.delete({
@@ -513,7 +560,7 @@ export async function deleteCategory(id: string) {
         return { success: true };
     } catch (error) {
         console.error("Failed to delete category:", error);
-        return { success: false, error: "Failed to delete category" };
+        return { success: false, error: "deleteCategoryError" };
     }
 }
 
@@ -628,6 +675,34 @@ export async function getOnSaleProducts() {
     } catch (error) {
         console.error("Failed to fetch on sale products:", error);
         return [];
+    }
+}
+
+export async function getCategoriesForCleanup() {
+    try {
+        return await prisma.category.findMany({
+            select: { id: true, name: true }
+        });
+    } catch (error) {
+        console.error("Failed to fetch categories:", error);
+        return [];
+    }
+}
+
+export async function bulkFixCategoryNames(mapping: { id: string, newName: string }[]) {
+    try {
+        await Promise.all(mapping.map(item => 
+            prisma.category.update({
+                where: { id: item.id },
+                data: { name: item.newName }
+            })
+        ));
+        revalidatePath('/admin/categories');
+        revalidatePath('/admin/products');
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to bulk fix category names:", error);
+        return { success: false };
     }
 }
 
@@ -1045,6 +1120,164 @@ export async function updateAdminCredentials(data: {
     }
 }
 
+export async function getSiteSettings() {
+    try {
+        const settings = await prisma.settings.findUnique({
+            where: { id: "site-settings" }
+        });
+        
+        if (!settings) {
+            // Return default settings if not found
+            return {
+                id: "site-settings",
+                categoriesCtaTitle: "Need expert advice?",
+                categoriesCtaDesc: "Our beauty consultants are here to help you find the perfect products for your skin type and concerns.",
+                categoriesCtaTitleAr: "هل تحتاجين إلى نصيحة الخبراء؟",
+                categoriesCtaDescAr: "مستشارو التجميل لدينا هنا لمساعدتك في العثور على المنتجات المثالية لنوع بشرتك واحتياجاتها.",
+                categoriesCtaImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuC-S_GMsoebb73JIEWcxtvH2G-vVgkfypE8ysWpGMNiiiwyTno8rIbMCpHR-fsa76ZQL49aYswb7bGZh-kgwc6z9lv0VwUSUrStxNWz2qU3RuIb75ShOMAKZMRyrOXZHZjEBgtxfW7r97FEEshOkEd2MqgE6FpGYrmKa8msLtMOQxXBsmhr3ZGGEtL7jpzgMYbgrAXhiHcMfCspdvD5FRNuSbgFY9_xGqcJM9KbgG0MoC4Ie4WkkmCR4FsuavfglcnY13G2ADZxlK8F",
+                shippingTitle: "Fast & Reliable Shipping",
+                shippingDesc: "We ensure your beauty essentials reach you in perfect condition, wherever you are in the world.",
+                shippingTitleAr: "شحن سريع وموثوق",
+                shippingDescAr: "نحن نضمن وصول مستلزمات التجميل الخاصة بك إليك في حالة ممتازة، أينما كنت في العالم.",
+                verificationTitle: "Verification Process",
+                verificationDesc: "Orders are processed within 24-48 hours. You will receive a confirmation email once your package has shipped.",
+                verificationTitleAr: "عملية التحقق",
+                verificationDescAr: "يتم معالجة الطلبات في غضون 24-48 ساعة. ستتلقى رسالة تأكيد بالبريد الإلكتروني بمجرد شحن طردك.",
+                standardShippingTime: "3-5 Business Days",
+                expressShippingTime: "1-2 Business Days",
+                returnsTitle: "Returns & Exchanges",
+                returnsDesc: "Your satisfaction is our priority. If you're not happy with your purchase, we're here to help.",
+                returnsTitleAr: "المرتجعات والاستبدال",
+                returnsDescAr: "رضاكم هو أولويتنا. إذا لم تكن راضيًا عن مشترياتك، فنحن هنا للمساعدة.",
+                finalSaleTitle: "Final Sale Items",
+                finalSaleDesc: "Certain items like opened skincare and personalized products are final sale for hygiene reasons.",
+                finalSaleTitleAr: "أصناف البيع النهائي",
+                finalSaleDescAr: "بعض العناصر مثل منتجات العناية بالبشرة المفتوحة والمنتجات المخصصة هي بيع نهائي لأسباب صحية.",
+                hygieneTitle: "Hygiene & Safety Protocols",
+                hygieneDesc: "For your safety and to maintain the highest hygiene standards, we follow strict protocols for handling beauty products.",
+                hygieneTitleAr: "بروتوكولات النظافة والسلامة",
+                hygieneDescAr: "من أجل سلامتك وللحفاظ على أعلى معايير النظافة، نتبع بروتوكولات صارمة للتعامل مع منتجات التجميل.",
+                shippingReturnsImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuC1GmfD6bueEsJqlHNPjDWHMlhsLZSm2Jmp21TUCLKvobkcd7oAPMMdwzfm8BOHC5XtR0EP6tLI7DT5hhyLxuijsbpX2kQf6iNlqROU-8k-DrqZAUqdc7-0lE4nxuCcLaEb0fEaXVBxc_yXkiUlyhfvaYJ1FfHZtngnoJbeanLgsf7rcxqON6rjkoC4BQv6FhlwLNKZrMbxjCugphq-bo5GCqBoLfmjjZSuH0N5eV-Kz33xFQTD5jSYCTsVYAwOkwhLQsQiPD_lnD9U",
+                
+                aboutHeroTitle: "Our Story",
+                aboutHeroTitleAr: "قصتنا",
+                aboutHeroSubtitle: "Redefining beauty with clean, conscious care that honors your skin and the earth.",
+                aboutHeroSubtitleAr: "إعادة تعريف الجمال بعناية نظيفة وواعية تكرم بشرتك والأرض.",
+                aboutHeroImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAz8qN2iAHz-UZeEQfqOY49U5OCZ5z4ejVm7ILFjFSl9S5xg_6UuBa61qOmrkMPrBa4CuXDzHa9EN3-LNyUxi5IDK5A9TvJWkNuG-tt_RRyvJH8LvynO1daOEkTk47KDtkW3Md2ugZYShZJdxolsjiJUtDdOOz4Q7-6TNrexIvyClP0ADf1TWdbCUk1kBn8bfzhTC1cn8s9jG3yt0tDDht7__J5YKKf690SmKN4WIJX_pc2LOj3x1CnYk5JuqEu0Bzp2vGwsrYLaJWb",
+                
+                aboutNarrativeTitle: "Our Mission for Clean Beauty",
+                aboutNarrativeTitleAr: "مهمتنا للجمال النظيف",
+                aboutNarrativeFounded: "Founded in 2024",
+                aboutNarrativeFoundedAr: "تأسست في 2024",
+                aboutNarrativeDesc1: "We believe that beauty should be kind—to your skin, your spirit, and the planet. Our journey started in a sun-drenched studio with a simple, radical goal: to create high-performance skincare without compromising on ethics or transparency.",
+                aboutNarrativeDesc1Ar: "نؤمن بأن الجمال يجب أن يكون لطيفًا - على بشرتك، وروحك، والكوكب. بدأت رحلتنا في استوديو مشمس بهدف بسيط وجذري: إنشاء عناية بالبشرة عالية الأداء دون المساومة على الأخلاق أو الشفافية.",
+                aboutNarrativeDesc2: "For too long, the industry was clouded by hidden ingredients and unsustainable practices. Ruby Beauty was born to bring light back to your ritual. Every formula is meticulously crafted with botanical extracts and clean science, ensuring that what you put on your body is as pure as the results it delivers.",
+                aboutNarrativeDesc2Ar: "لفترة طويلة، كانت الصناعة ملبدة بالمكونات الخفية والممارسات غير المستدامة. ولدت روبي بيوتي لإعادة النور إلى طقوسك. يتم صياغة كل تركيبة بدقة باستخدام المستخلصات النباتية والعلوم النظيفة، مما يضمن أن ما تضعه على جسمك نقي بقدر النتائج التي يقدمها.",
+                aboutNarrativeQuote: "Naturally inspired, scientifically proven.",
+                aboutNarrativeQuoteAr: "مستوحى طبيعياً، مثبت علمياً.",
+                aboutNarrativeImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuC4yp4c_LJLNPwaV2ay8DZ6xRHD0UF1WqXU8eDtrdDoiVjtq9oNRc9Cn6cnbqsNwOLO-y-99jnkiLnCsGLs2rQqthU8TPqhAh2Msisbst1UyfyrILBR5fRO7KYu90u1FEoeRRjGceGVbB5vz2SJAtjzUrLLtA6BmR8VN5a5Seo4MraBJj7i4Gs4QPEZbURtSN-F7wbJsu4WNj3pEaWlye2SuJvokQhYXJ27gnAoabHg5_0_4DZY49qyKnQuMHHL9atOIILRIMD3FkeZ",
+                
+                aboutValuesTitle: "Our Core Values",
+                aboutValuesTitleAr: "قيمنا الجوهرية",
+                aboutValuesDesc: "We are committed to transparency, sustainability, and ethical practices in everything we do.",
+                aboutValuesDescAr: "نحن ملتزمون بالشفافية والاستدامة والممارسات الأخلاقية في كل ما نقوم به.",
+                
+                aboutValue1Title: "Cruelty-Free",
+                aboutValue1TitleAr: "خالٍ من القسوة",
+                aboutValue1Desc: "We never test on animals. Our products are certified cruelty-free by Leaping Bunny.",
+                aboutValue1DescAr: "نحن لا نختبر أبدًا على الحيوانات. منتجاتنا معتمدة خالية من القسوة من قبل Leaping Bunny.",
+                
+                aboutValue2Title: "100% Vegan",
+                aboutValue2TitleAr: "نباتي 100٪",
+                aboutValue2Desc: "No animal-derived ingredients. Just pure, potent plant power.",
+                aboutValue2DescAr: "لا توجد مكونات مشتقة من الحيوانات. فقط قوة نباتية نقية وفعالة.",
+                
+                aboutValue3Title: "Sustainable",
+                aboutValue3TitleAr: "مستدام",
+                aboutValue3Desc: "Eco-friendly packaging and responsibly sourced ingredients.",
+                aboutValue3DescAr: "تغليف صديق للبيئة ومكونات من مصادر مسؤولة.",
+                
+                updatedAt: new Date(),
+            };
+        }
+        
+        return settings;
+    } catch (error) {
+        console.error("Failed to fetch site settings:", error);
+        return null;
+    }
+}
+
+export async function updateSiteSettings(data: {
+    categoriesCtaTitle?: string;
+    categoriesCtaDesc?: string;
+    categoriesCtaTitleAr?: string;
+    categoriesCtaDescAr?: string;
+    categoriesCtaImage?: string;
+    shippingTitle?: string;
+    shippingDesc?: string;
+    shippingTitleAr?: string;
+    shippingDescAr?: string;
+    verificationTitle?: string;
+    verificationDesc?: string;
+    verificationTitleAr?: string;
+    verificationDescAr?: string;
+    standardShippingTime?: string;
+    expressShippingTime?: string;
+    returnsTitle?: string;
+    returnsDesc?: string;
+    returnsTitleAr?: string;
+    returnsDescAr?: string;
+    finalSaleTitle?: string;
+    finalSaleDesc?: string;
+    finalSaleTitleAr?: string;
+    finalSaleDescAr?: string;
+    hygieneTitle?: string;
+    hygieneDesc?: string;
+    hygieneTitleAr?: string;
+    hygieneDescAr?: string;
+    shippingReturnsImage?: string;
+    aboutHeroTitle?: string;
+    aboutHeroTitleAr?: string;
+    aboutHeroSubtitle?: string;
+    aboutHeroSubtitleAr?: string;
+    aboutHeroImage?: string;
+    aboutNarrativeTitle?: string;
+    aboutNarrativeTitleAr?: string;
+    aboutNarrativeFounded?: string;
+    aboutNarrativeFoundedAr?: string;
+    aboutNarrativeDesc1?: string;
+    aboutNarrativeDesc1Ar?: string;
+    aboutNarrativeDesc2?: string;
+    aboutNarrativeDesc2Ar?: string;
+    aboutNarrativeQuote?: string;
+    aboutNarrativeQuoteAr?: string;
+    aboutNarrativeImage?: string;
+}) {
+    try {
+        await prisma.settings.upsert({
+            where: { id: "site-settings" },
+            update: data,
+            create: {
+                id: "site-settings",
+                ...data
+            }
+        });
+
+        revalidatePath('/categories');
+        revalidatePath('/shipping-returns');
+        revalidatePath('/about-us');
+        revalidatePath('/admin/site-content');
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to update site settings:", error);
+        return { 
+            success: false, 
+            error: error instanceof Error ? error.message : "Failed to update settings" 
+        };
+    }
+}
+
 export async function bulkToggleTrending(ids: string[], isTrending: boolean) {
     try {
         await prisma.product.updateMany({
@@ -1060,6 +1293,114 @@ export async function bulkToggleTrending(ids: string[], isTrending: boolean) {
     } catch (error) {
         console.error("Failed to bulk toggle trending status:", error);
         return { success: false, error: "Failed to bulk toggle trending status" };
+    }
+}
+
+export async function bulkRemoveSale(ids: string[]) {
+    try {
+        await prisma.product.updateMany({
+            where: {
+                id: { in: ids }
+            },
+            data: {
+                discountPrice: null,
+                discountType: null,
+                discountValue: null
+            }
+        });
+
+        revalidatePath('/');
+        revalidatePath('/admin/products');
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to bulk remove sale:", error);
+        return { success: false, error: "Failed to bulk remove sale" };
+    }
+}
+
+export async function bulkDeleteProducts(ids: string[]) {
+    try {
+        // Find which products have orders
+        const productsWithOrders = await prisma.product.findMany({
+            where: {
+                id: { in: ids },
+                orderItems: { some: {} }
+            },
+            select: { id: true, name: true }
+        });
+
+        const idsWithOrders = new Set(productsWithOrders.map(p => p.id));
+        const idsToDelete = ids.filter(id => !idsWithOrders.has(id));
+
+        if (idsToDelete.length > 0) {
+            await prisma.product.deleteMany({
+                where: {
+                    id: { in: idsToDelete }
+                }
+            });
+        }
+
+        revalidatePath('/');
+        revalidatePath('/admin/products');
+        revalidatePath('/admin/categories');
+
+        if (idsWithOrders.size > 0) {
+            const names = productsWithOrders.map(p => p.name).join(", ");
+            return { 
+                success: true, 
+                partial: true,
+                count: idsToDelete.length,
+                names
+            };
+        }
+
+        return { success: true, count: idsToDelete.length };
+    } catch (error: any) {
+        console.error("Detailed Bulk Delete Error:", error);
+        return { success: false, error: "bulkDeleteProductsError" };
+    }
+}
+
+export async function bulkDeleteCategories(ids: string[]) {
+    try {
+        // Find which categories have products
+        const categoriesWithProducts = await prisma.category.findMany({
+            where: {
+                id: { in: ids },
+                products: { some: {} }
+            },
+            select: { id: true, name: true }
+        });
+
+        const idsWithProducts = new Set(categoriesWithProducts.map(c => c.id));
+        const idsToDelete = ids.filter(id => !idsWithProducts.has(id));
+
+        if (idsToDelete.length > 0) {
+            await prisma.category.deleteMany({
+                where: {
+                    id: { in: idsToDelete }
+                }
+            });
+        }
+
+        revalidatePath('/');
+        revalidatePath('/admin/categories');
+        revalidatePath('/admin/products');
+
+        if (idsWithProducts.size > 0) {
+            const names = categoriesWithProducts.map(c => c.name).join(", ");
+            return { 
+                success: true, 
+                partial: true,
+                count: idsToDelete.length,
+                names
+            };
+        }
+
+        return { success: true, count: idsToDelete.length };
+    } catch (error: any) {
+        console.error("Detailed Bulk Delete Categories Error:", error);
+        return { success: false, error: "bulkDeleteCategoriesError" };
     }
 }
 

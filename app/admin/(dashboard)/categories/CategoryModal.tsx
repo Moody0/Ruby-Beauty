@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { MdClose } from "react-icons/md";
 import { createCategory, updateCategory } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { useLanguage } from "@/app/context/LanguageContext";
@@ -85,7 +86,7 @@ export default function CategoryModal({ isOpen, onClose, category }: CategoryMod
                         onClick={onClose}
                         className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
                     >
-                        <span className="material-symbols-outlined text-gray-500">close</span>
+                        <MdClose className="text-gray-500 text-xl" />
                     </button>
                 </div>
 

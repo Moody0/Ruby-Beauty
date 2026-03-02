@@ -8,6 +8,7 @@ import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import AdminHeader from "../../components/AdminHeader";
 import UserModal from "./UserModal";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { MdChevronRight, MdPersonAdd, MdEdit, MdDelete, MdArrowUpward, MdArrowDownward } from "react-icons/md";
 
 interface User {
     id: string;
@@ -31,6 +32,30 @@ export default function UsersClient({ users }: { users: User[] }) {
     const { t, dir } = useLanguage();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' }>({ key: 'createdAt', direction: 'desc' });
+
+    const sortedUsers = [...users].sort((a, b) => {
+        const { key, direction } = sortConfig;
+        
+        let comparison = 0;
+        
+        if (key === 'createdAt') {
+            comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        } else if (key === 'username' || key === 'role') {
+            const valA = String(a[key as keyof User] || '').toLowerCase();
+            const valB = String(b[key as keyof User] || '').toLowerCase();
+            comparison = valA.localeCompare(valB);
+        }
+        
+        return direction === 'asc' ? comparison : -comparison;
+    });
+
+    const handleSort = (key: string) => {
+        setSortConfig(current => ({
+            key,
+            direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc'
+        }));
+    };
 
     const handleEdit = (user: User) => {
         setSelectedUser(user);
@@ -70,7 +95,7 @@ export default function UsersClient({ users }: { users: User[] }) {
                             {/* Breadcrumbs */}
                             <div className="flex items-center gap-2 text-sm text-text-sub dark:text-gray-400 mb-1">
                                 <Link href="/admin/dashboard" className="hover:text-primary cursor-pointer transition-colors">{t('admin.dashboard')}</Link>
-                                <span className={`material-symbols-outlined text-[12px] ${dir === 'rtl' ? 'rotate-180' : ''}`}>chevron_right</span>
+                                <MdChevronRight className={`text-[12px] ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                                 <span className="text-text-main dark:text-white font-medium">{t('admin.userManagement')}</span>
                             </div>
                             <h2 className="text-3xl font-extrabold text-text-main dark:text-white tracking-tight">{t('admin.systemUsers')}</h2>
@@ -83,7 +108,7 @@ export default function UsersClient({ users }: { users: User[] }) {
                             }}
                             className="bg-primary hover:bg-primary/90 text-white h-12 px-6 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
                         >
-                            <span className="material-symbols-outlined text-[20px]">person_add</span>
+                            <MdPersonAdd className="text-[20px]" />
                             {t('admin.addNewUser')}
                         </button>
                     </div>
@@ -99,18 +124,42 @@ export default function UsersClient({ users }: { users: User[] }) {
 
                     <div className="bg-surface-light dark:bg-surface-dark border border-[#e6dbdf] dark:border-gray-700 rounded-2xl shadow-sm overflow-hidden">
                         <div className="overflow-x-auto">
-                            <table className="w-full text-left border-collapse min-w-[800px]">
+                            <table className={`w-full border-collapse min-w-[800px] ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                 <thead>
                                     <tr className="bg-background-light dark:bg-gray-800/50 border-b border-[#e6dbdf] dark:border-gray-700 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">
-                                        <th className={`p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.username')}</th>
-                                        <th className={`p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.role')}</th>
-                                        <th className={`p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.permissionsSummary')}</th>
-                                        <th className={`p-5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.createdAt')}</th>
+                                        <th className={`p-5 cursor-pointer select-none group`} onClick={() => handleSort('username')}>
+                                            <div className="flex items-center">
+                                                {t('admin.username')}
+                                                <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'username' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'username' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                </span>
+                                            </div>
+                                        </th>
+                                        <th className={`p-5 cursor-pointer select-none group`} onClick={() => handleSort('role')}>
+                                            <div className="flex items-center">
+                                                {t('admin.role')}
+                                                <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'role' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'role' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                </span>
+                                            </div>
+                                        </th>
+                                        <th className={`p-5`}>{t('admin.permissionsSummary')}</th>
+                                        <th className={`p-5 cursor-pointer select-none group`} onClick={() => handleSort('createdAt')}>
+                                            <div className="flex items-center">
+                                                {t('admin.createdAt')}
+                                                <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'createdAt' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'createdAt' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                </span>
+                                            </div>
+                                        </th>
                                         <th className={`p-5 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>{t('admin.actions')}</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-[#e6dbdf] dark:divide-gray-700">
-                                    {users.map((user) => (
+                                    {sortedUsers.map((user) => (
                                         <tr key={user.id} className="group hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors">
                                             <td className="p-5">
                                                 <div className="flex items-center gap-3">
@@ -149,18 +198,18 @@ export default function UsersClient({ users }: { users: User[] }) {
                                                 <div className={`flex items-center ${dir === 'rtl' ? 'justify-start' : 'justify-end'} gap-2`}>
                                                     <button
                                                         onClick={() => handleEdit(user)}
-                                                        className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                                                        className="size-9 rounded-lg flex items-center justify-center text-text-sub dark:text-gray-400 hover:text-primary hover:bg-primary/10 transition-colors"
                                                         title={t('admin.editUser')}
                                                     >
-                                                        <span className="material-symbols-outlined text-[20px]">edit</span>
+                                                        <MdEdit className="text-[20px]" />
                                                     </button>
                                                     {user.username !== 'admin' && (
                                                         <button
                                                             onClick={() => handleDelete(user.id, user.username)}
-                                                            className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                                            className="size-9 rounded-lg flex items-center justify-center text-text-sub dark:text-gray-400 hover:text-red-500 hover:bg-red-500/10 transition-colors"
                                                             title={t('admin.deleteUser')}
                                                         >
-                                                            <span className="material-symbols-outlined text-[20px]">delete</span>
+                                                            <MdDelete className="text-[20px]" />
                                                         </button>
                                                     )}
                                                 </div>

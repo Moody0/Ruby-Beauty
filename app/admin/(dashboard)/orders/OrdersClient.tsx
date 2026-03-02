@@ -1,10 +1,11 @@
 "use client";
 
 import AdminHeader from "../../components/AdminHeader";
+import { MdPendingActions, MdLocalShipping, MdTaskAlt, MdPayments, MdExpandMore, MdVisibility, MdDelete, MdSync, MdChevronLeft, MdChevronRight, MdArrowUpward, MdArrowDownward } from "react-icons/md";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import Link from "next/link";
 import { updateOrderStatus, deleteOrder } from "../../../../lib/admin-actions";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import OrderDetailsModal from "./OrderDetailsModal";
 import { OrderStatus } from "@prisma/client";
 import { useSession } from "next-auth/react";
@@ -45,6 +46,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
     const [filter, setFilter] = useState<string>("ALL");
+    const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' }>({ key: 'createdAt', direction: 'desc' });
 
     // Calculate stats
     const stats = {
@@ -72,7 +74,39 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
     const filteredOrders = orders.filter(o => {
         if (filter === "ALL") return true;
         return o.status === filter;
+    }).sort((a, b) => {
+        const { key, direction } = sortConfig;
+        
+        let comparison = 0;
+        
+        if (key === 'totalAmount') {
+            comparison = Number(a.totalAmount) - Number(b.totalAmount);
+        } else if (key === 'createdAt') {
+            comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        } else if (key === 'id' || key === 'Name' || key === 'status') {
+            const valA = String(a[key as keyof Order] || '').toLowerCase();
+            const valB = String(b[key as keyof Order] || '').toLowerCase();
+            comparison = valA.localeCompare(valB);
+        }
+        
+        return direction === 'asc' ? comparison : -comparison;
     });
+
+    const handleSort = (key: string) => {
+        setSortConfig(current => ({
+            key,
+            direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc'
+        }));
+    };
+
+    const SortIcon = ({ column }: { column: string }) => {
+        return (
+            <span className={`inline-flex flex-col ml-1 ${sortConfig.key === column ? 'text-primary' : 'text-gray-300'}`}>
+                <MdArrowUpward className={`w-3 h-3 -mb-1 ${sortConfig.key === column && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                <MdArrowDownward className={`w-3 h-3 ${sortConfig.key === column && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+            </span>
+        );
+    };
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -139,7 +173,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                         <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-amber-50 dark:bg-amber-900/20 text-amber-600 rounded-lg">
-                                    <span className="material-symbols-outlined filled">pending_actions</span>
+                                    <MdPendingActions className="text-2xl" />
                                 </div>
                             </div>
                             <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.pendingOrders')}</p>
@@ -149,7 +183,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                         <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-lg">
-                                    <span className="material-symbols-outlined filled">local_shipping</span>
+                                    <MdLocalShipping className="text-2xl" />
                                 </div>
                             </div>
                             <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.shippedToday')}</p>
@@ -159,7 +193,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                         <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 rounded-lg">
-                                    <span className="material-symbols-outlined filled">task_alt</span>
+                                    <MdTaskAlt className="text-2xl" />
                                 </div>
                             </div>
                             <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.deliveredMtd')}</p>
@@ -169,7 +203,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                         <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-primary/10 text-primary rounded-lg">
-                                    <span className="material-symbols-outlined filled">payments</span>
+                                    <MdPayments className="text-2xl" />
                                 </div>
                             </div>
                             <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.totalRevenue')}</p>
@@ -226,15 +260,55 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
 
                         <div className="bg-surface-light dark:bg-surface-dark rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm overflow-hidden">
                             <div className="overflow-x-auto">
-                                <table className="w-full text-left border-collapse">
+                                <table className={`w-full border-collapse ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                     <thead>
                                         <tr className="border-b border-[#e6dbdf] dark:border-gray-700 bg-background-light/50 dark:bg-gray-800/50">
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.orderId')}</th>
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.customerName')}</th>
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.date')}</th>
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.totalAmount')}</th>
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.products')}</th>
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.orderStatus')}</th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('id')}>
+                                                <div className="flex items-center">
+                                                    {t('admin.orderId')}
+                                                    <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'id' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'id' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    </span>
+                                                </div>
+                                            </th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('Name')}>
+                                                <div className="flex items-center">
+                                                    {t('admin.customerName')}
+                                                    <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'Name' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'Name' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    </span>
+                                                </div>
+                                            </th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('createdAt')}>
+                                                <div className="flex items-center">
+                                                    {t('admin.date')}
+                                                    <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'createdAt' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'createdAt' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    </span>
+                                                </div>
+                                            </th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('totalAmount')}>
+                                                <div className="flex items-center">
+                                                    {t('admin.totalAmount')}
+                                                    <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'totalAmount' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'totalAmount' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    </span>
+                                                </div>
+                                            </th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}>{t('admin.products')}</th>
+                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('status')}>
+                                                <div className="flex items-center">
+                                                    {t('admin.orderStatus')}
+                                                    <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'status' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'status' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    </span>
+                                                </div>
+                                            </th>
                                             <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>{t('admin.actions')}</th>
                                         </tr>
                                     </thead>
@@ -257,38 +331,48 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                                         </span>
                                                     </td>
                                                     <td className="p-4">
-                                                        <div className="relative group/status w-fit">
+                                                        <div className="relative w-fit group">
                                                             <select
-                                                                disabled={updatingId === order.id || !canManage}
                                                                 value={order.status}
+                                                                disabled={updatingId === order.id || !canManage}
                                                                 onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
-                                                                className={`appearance-none ${dir === 'rtl' ? 'pr-8 pl-10' : 'pl-8 pr-10'} py-1.5 rounded-full text-xs font-bold cursor-pointer transition-all outline-none border bg-white dark:bg-surface-dark focus:ring-2 focus:ring-primary/20 ${statusColor === "blue" ? "text-blue-600 border-blue-100 dark:text-blue-300 dark:border-blue-900/50" :
-                                                                    statusColor === "amber" ? "text-amber-600 border-amber-100 dark:text-amber-300 dark:border-amber-900/50" :
-                                                                        statusColor === "emerald" ? "text-emerald-600 border-emerald-100 dark:text-emerald-300 dark:border-emerald-900/50" :
-                                                                            statusColor === "red" ? "text-red-600 border-red-100 dark:text-red-300 dark:border-red-900/50" :
-                                                                                statusColor === "purple" ? "text-purple-600 border-purple-100 dark:text-purple-300 dark:border-purple-900/50" :
-                                                                                    "text-gray-600 border-gray-100 dark:text-gray-300 dark:border-gray-800"
+                                                                className={`appearance-none pl-11 pr-12 py-3.5 rounded-2xl text-xs font-bold transition-all outline-none border shadow-sm hover:shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${statusColor === "blue" ? "text-blue-600 bg-blue-50/50 border-blue-100 dark:text-blue-300 dark:bg-blue-900/20 dark:border-blue-800" :
+                                                                    statusColor === "amber" ? "text-amber-600 bg-amber-50/50 border-amber-100 dark:text-amber-300 dark:bg-amber-900/20 dark:border-amber-800" :
+                                                                        statusColor === "emerald" ? "text-emerald-600 bg-emerald-50/50 border-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/20 dark:border-emerald-800" :
+                                                                            statusColor === "red" ? "text-red-600 bg-red-50/50 border-red-100 dark:text-red-300 dark:bg-red-900/20 dark:border-red-800" :
+                                                                                statusColor === "purple" ? "text-purple-600 bg-purple-50/50 border-purple-100 dark:text-purple-300 dark:bg-purple-900/20 dark:border-purple-800" :
+                                                                                    "text-gray-600 bg-gray-50/50 border-gray-100 dark:text-gray-300 dark:bg-gray-800 dark:border-gray-700"
                                                                     }`}
                                                             >
-                                                                <option value="PENDING">{t('admin.pending')}</option>
-                                                                <option value="PROCESSING">{t('admin.processing')}</option>
-                                                                <option value="SHIPPED">{t('admin.shipped')}</option>
-                                                                <option value="DELIVERED">{t('admin.delivered')}</option>
-                                                                <option value="CANCELLED">{t('admin.cancelled')}</option>
+                                                                <option value="PENDING" className="bg-white dark:bg-surface-dark text-amber-600">{t('admin.pending')}</option>
+                                                                <option value="PROCESSING" className="bg-white dark:bg-surface-dark text-blue-600">{t('admin.processing')}</option>
+                                                                <option value="SHIPPED" className="bg-white dark:bg-surface-dark text-purple-600">{t('admin.shipped')}</option>
+                                                                <option value="DELIVERED" className="bg-white dark:bg-surface-dark text-emerald-600">{t('admin.delivered')}</option>
+                                                                <option value="CANCELLED" className="bg-white dark:bg-surface-dark text-red-600">{t('admin.cancelled')}</option>
                                                             </select>
-                                                            <span className={`absolute ${dir === 'rtl' ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 size-2 rounded-full ${statusColor === "blue" ? "bg-blue-500" :
-                                                                statusColor === "amber" ? "bg-amber-500" :
-                                                                    statusColor === "emerald" ? "bg-emerald-500" :
-                                                                        statusColor === "red" ? "bg-red-500" :
-                                                                            statusColor === "purple" ? "bg-purple-500" : "bg-gray-500"
-                                                                }`}></span>
-                                                            <span className={`material-symbols-outlined absolute ${dir === 'rtl' ? 'left-3' : 'right-3'} top-1/2 -translate-y-1/2 text-[16px] pointer-events-none text-text-sub dark:text-gray-500`}>
-                                                                {updatingId === order.id ? 'sync' : 'expand_more'}
-                                                            </span>
+                                                            
+                                                            {/* Status Dot */}
+                                                            <div className={`absolute ${dir === 'rtl' ? 'right-5' : 'left-5'} top-1/2 -translate-y-1/2 flex items-center pointer-events-none`}>
+                                                                <span className={`size-2.5 rounded-full ${statusColor === "blue" ? "bg-blue-500 animate-pulse" :
+                                                                    statusColor === "amber" ? "bg-amber-500" :
+                                                                        statusColor === "emerald" ? "bg-emerald-500" :
+                                                                            statusColor === "red" ? "bg-red-500" :
+                                                                                statusColor === "purple" ? "bg-purple-500" : "bg-gray-500"
+                                                                    }`}></span>
+                                                            </div>
+
+                                                            {/* Arrow Icon */}
+                                                            <div className={`absolute ${dir === 'rtl' ? 'left-3' : 'right-3'} top-1/2 -translate-y-1/2 flex items-center pointer-events-none transition-transform group-hover:translate-y-[-40%] duration-200`}>
+                                                                {updatingId === order.id ? (
+                                                                    <MdSync className="text-[18px] text-current opacity-70 animate-spin" />
+                                                                ) : (
+                                                                    <MdExpandMore className="text-[18px] text-current opacity-70" />
+                                                                )}
+                                                            </div>
                                                         </div>
                                                     </td>
                                                     <td className={`p-4 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
-                                                        <div className="flex items-center gap-2 justify-end">
+                                                        <div className={`flex items-center gap-2 ${dir === 'rtl' ? 'justify-start' : 'justify-end'}`}>
                                                             <button
                                                                 onClick={() => handleViewDetails(order)}
                                                                 className="text-primary hover:text-primary-hover text-xs font-bold transition-colors"
@@ -303,9 +387,9 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                                                     title={t('admin.deleteOrder')}
                                                                 >
                                                                     {deletingId === order.id ? (
-                                                                        <span className="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+                                                                        <MdSync className="text-[18px] animate-spin" />
                                                                     ) : (
-                                                                        <span className="material-symbols-outlined text-[18px]">delete</span>
+                                                                        <MdDelete className="text-[18px]" />
                                                                     )}
                                                                 </button>
                                                             )}
@@ -330,11 +414,11 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                 </p>
                                 <div className="flex items-center gap-2">
                                     <button className="size-8 flex items-center justify-center rounded-lg border border-[#e6dbdf] dark:border-gray-700 text-text-sub hover:bg-white dark:hover:bg-gray-800 transition-colors">
-                                        <span className={`material-symbols-outlined text-[18px] ${dir === 'rtl' ? 'rotate-180' : ''}`}>chevron_left</span>
+                                        <MdChevronLeft className={`text-[18px] ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                                     </button>
                                     <button className="size-8 flex items-center justify-center rounded-lg bg-primary text-white text-xs font-bold shadow-sm shadow-primary/20">1</button>
                                     <button className="size-8 flex items-center justify-center rounded-lg border border-[#e6dbdf] dark:border-gray-700 text-text-sub hover:bg-white dark:hover:bg-gray-800 transition-colors">
-                                        <span className={`material-symbols-outlined text-[18px] ${dir === 'rtl' ? 'rotate-180' : ''}`}>chevron_right</span>
+                                        <MdChevronRight className={`text-[18px] ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                                     </button>
                                 </div>
                             </div>

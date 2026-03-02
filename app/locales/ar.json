@@ -18,7 +18,8 @@
         "more": "المزيد",
         "showMore": "المزيد",
         "showLess": "عرض أقل",
-        "categories": "الاقسام"
+        "categories": "الاقسام",
+        "continueShopping": "متابعة التسوق"
     },
     "header": {
         "brandName": "Ruby Beauty"
@@ -68,6 +69,7 @@
         "addToCart": "أضف إلى السلة",
         "inStock": "متوفر",
         "description": "الوصف",
+        "productSelection": "اختيار المنتجات",
         "relatedProducts": "منتجات ذات صلة"
     },
     "cart": {
@@ -83,7 +85,11 @@
         "freeShipping": "مجاني",
         "total": "الإجمالي",
         "proceedToCheckout": "المتابعة للدفع",
-        "continueShopping": "متابعة التسوق"
+        "continueShopping": "متابعة التسوق",
+        "items": "العناصر",
+        "title": "سلة التسوق",
+        "checkout": "الدفع",
+        "empty": "فارغة"
     },
     "checkout": {
         "placeOrder": "تأكيد الطلب",
@@ -141,6 +147,7 @@
         "switchTo": "تغيير اللغة"
     },
     "admin": {
+        "foundedText": "نص التأسيس",
         "dashboard": "لوحة التحكم",
         "products": "المنتجات",
         "categories": "الفئات",
@@ -149,6 +156,36 @@
         "promoCodes": "رموز الخصم",
         "users": "المستخدمين",
         "settings": "الإعدادات",
+        "siteContent": "محتوى الموقع",
+        "categoriesPageCta": "محتوى صفحة الفئات",
+        "categoriesCtaDescription": "تحديث محتوى قسم 'هل تحتاج إلى نصيحة الخبراء؟' في صفحة الفئات.",
+        "shippingReturnsContent": "محتوى الشحن والمرتجعات",
+        "shippingReturnsDescription": "تحديث المحتوى لصفحة الشحن والمرتجعات.",
+        "pageHeaderImage": "صورة ترويسة الصفحة",
+        "aboutUsContent": "محتوى صفحة من نحن",
+        "aboutUsDescription": "تحديث محتوى صفحة من نحن.",
+        "heroSection": "قسم البطل",
+        "narrativeSection": "قسم السرد",
+        "quote": "اقتباس",
+        "subtitle": "عنوان فرعي",
+        "heroImage": "صورة البطل",
+        "narrativeImage": "صورة السرد",
+        "shippingReturnsImageHint": "سيتم عرض هذه الصورة في الجزء العلوي من صفحة الشحن والمرتجعات.",
+        "hygieneProtocols": "بروتوكولات النظافة والسلامة",
+        "hygieneImage": "صورة بروتوكولات النظافة والسلامة",
+        "shippingSection": "قسم الشحن",
+        "verificationSection": "قسم عملية التحقق",
+        "returnsSection": "قسم المرتجعات والاستبدال",
+        "finalSaleSection": "قسم أصناف البيع النهائي",
+        "shippingTimes": "أوقات الشحن",
+        "standardTime": "وقت الشحن القياسي",
+        "expressTime": "وقت الشحن السريع",
+        "englishContent": "المحتوى الإنجليزي",
+        "arabicContent": "المحتوى العربي",
+        "title": "العنوان",
+        "description": "الوصف",
+        "saving": "جاري الحفظ...",
+        "saveChanges": "حفظ التغييرات",
         "adminPanel": "لوحة الإدارة",
         "signOut": "تسجيل الخروج",
         "login": {
@@ -193,6 +230,7 @@
         "customerName": "اسم العميل",
         "totalAmount": "المبلغ الإجمالي",
         "orderStatus": "حالة الطلب",
+        "details": "التفاصيل",
         "viewDetails": "عرض التفاصيل",
         "noOrdersFound": "لم يتم العثور على طلبات لهذا الفلتر.",
         "confirmDeleteOrder": "هل أنت متأكد أنك تريد حذف الطلب #{id}؟ لا يمكن التراجع عن هذا الإجراء.",
@@ -226,8 +264,34 @@
         "onSaleOnly": "خصومات فقط",
         "itemsSelected": "عناصر محددة",
         "deselectAll": "إلغاء تحديد الكل",
+        "selectAll":"تحديد الكل",
         "removeTrending": "إزالة من الرائج",
+        "removeSale": "إزالة الخصم",
         "deleteSelected": "حذف المحدد",
+        "bulkDeleteProductsSuccess": "تم حذف {count} منتجات بنجاح",
+        "bulkDeleteProductsPartial": "تم حذف {count} منتجات. تعذر حذف: {names} لأنها جزء من طلبات موجودة.",
+        "bulkDeleteProductsError": "فشل حذف المنتجات المحددة. تحقق من سجلات الخادم للحصول على التفاصيل.",
+        "bulkDeleteCategoriesSuccess": "تم حذف {count} فئات بنجاح",
+        "bulkDeleteCategoriesPartial": "تم حذف {count} فئات. تعذر حذف: {names} لأنها لا تزال تحتوي على منتجات. قم بنقل أو حذف المنتجات أولاً.",
+        "bulkDeleteCategoriesError": "فشل حذف الفئات المحددة.",
+        "deleteCategoryWithProducts": "لا يمكن حذف فئة تحتوي على منتجات مرتبطة بها. يرجى نقل أو حذف المنتجات أولاً.",
+        "deleteCategoryError": "فشل حذف الفئة",
+        "deleteProductWithOrders": "لا يمكن حذف منتج مرتبط بطلبات موجودة. يرجى حذف الطلبات أولاً.",
+        "deleteProductError": "فشل حذف المنتج",
+        "exportSuccess": "تم تصدير المنتجات بنجاح",
+        "exportError": "فشل تصدير المنتجات",
+        "importSuccess": "تم استيراد {count} منتجات بنجاح",
+        "importError": "فشل استيراد المنتجات",
+        "fileEmpty": "الملف فارغ أو يفتقر إلى العناوين",
+        "fileParseError": "فشل في تحليل الملف",
+        "ctaImage": "صورة القسم الترويجي (CTA)",
+        "ctaPreview": "معاينة القسم الترويجي",
+        "imageUrl": "رابط الصورة",
+        "preview": "معاينة",
+        "ctaImageDescription": "قم بلصق رابط مباشر للصورة التي تريد عرضها في قسم CTA.",
+        "noImageProvided": "لم يتم توفير رابط للصورة",
+        "selected": "محدد",
+        "itemsSelected": "عناصر محددة",
         "sku": "SKU",
         "inventory": "المخزون",
         "productName": "المنتج",
@@ -379,6 +443,12 @@
         "deletePromoCode": "حذف رمز الخصم",
         "deleteProduct": "حذف المنتج",
         "editProduct": "تعديل المنتج",
+        "shareProduct": "مشاركة المنتج",
+        "copyLink": "نسخ الرابط",
+        "linkCopied": "تم نسخ الرابط إلى الحافظة!",
+        "shareOnFacebook": "مشاركة على فيسبوك",
+        "shareOnWhatsApp": "مشاركة على واتساب",
+        "shareOnTwitter": "مشاركة على تويتر",
         "addProductModal": {
             "titleAdd": "إضافة منتج جديد",
             "titleEdit": "تعديل المنتج",
@@ -424,12 +494,17 @@
     "categoriesPage": {
         "title": "تسوق حسب الفئة",
         "description": "استكشف اختياراتنا المنسقة من أساسيات الجمال الفاخرة. من العناية بالبشرة النباتية إلى الأدوات الاحترافية، اعثر على كل ما تحتاجه لروتينك اليومي.",
-        "cantDecide": "محتار من أين تبدأ؟",
-        "skinQuizDescription": "قم بإجراء اختبار البشرة الخاص بنا للحصول على روتين مخصص تم تنسيقه خصيصًا لك بواسطة خبراء التجميل لدينا.",
+        "cantDecide": "هل تحتاجين إلى نصيحة الخبراء؟",
+        "skinQuizDescription": "مستشارو التجميل لدينا هنا لمساعدتك في العثور على المنتجات المثالية لنوع بشرتك واحتياجاتها.",
         "viewAllProducts": "عرض جميع المنتجات",
         "loadMoreCategories": "تحميل المزيد من الفئات",
         "premiumCollection": "مجموعة فاخرة",
-        "allCategories": "جميع الفئات"
+        "allCategories": "جميع الفئات",
+        "ctaImage": "صورة الدعوة لاتخاذ إجراء (CTA)",
+        "imageUrl": "رابط الصورة",
+        "preview": "معاينة",
+        "ctaImageDescription": "قم بلصق رابط مباشر للصورة التي تريد عرضها في قسم الدعوة لاتخاذ إجراء.",
+        "noImageProvided": "لم يتم توفير رابط للصورة"
     },
     "aboutUsPage": {
         "hero": {
@@ -459,6 +534,53 @@
                 "title": "مستدام",
                 "description": "احترام أرضنا من خلال العبوات الزجاجية والمواد المعاد تدويرها وممارسات المصادر الأخلاقية التي ترد الجميل."
             }
+        }
+    },
+    "shippingReturnsPage": {
+        "title": "الشفافية والعناية",
+        "description": "يتضمن التزامنا برحلة جمالك التواصل الواضح. ستجد أدناه سياساتنا الرسمية المصممة لضمان السلامة والنظافة والتسليم في الوقت المناسب.",
+        "shipping": {
+            "title": "سياسة الشحن",
+            "verification": {
+                "title": "التحقق من الطلب عبر WhatsApp",
+                "description": "لضمان الأمان والدقة، يخضع كل طلب للتحقق اليدوي. بعد الدفع، سيتواصل فريق الكونسيرج لدينا عبر WhatsApp لتأكيد تفاصيلك. تتم معالجة الطلبات فقط بعد اكتمال هذا التأكيد."
+            },
+            "timelines": {
+                "title": "جداول التسليم الزمنية",
+                "standard": "عادي",
+                "standardTime": "3-5 أيام عمل",
+                "express": "سريع",
+                "expressTime": "1-2 أيام عمل",
+                "note": "ملاحظة: قد يختلف الشحن الدولي بناءً على المعالجة الجمركية (7-14 يومًا)."
+            },
+            "review": {
+                "title": "أهمية المراجعة",
+                "description": "يرجى مراجعة عنوان التسليم والمنتجات المختارة بدقة قبل الإتمام. بمجرد تسليم الطلب إلى شركاء البريد السريع لدينا، لا نضمن تعديلات العنوان وقد تترتب عليها رسوم إضافية."
+            }
+        },
+        "returns": {
+            "title": "الإرجاع والاسترداد",
+            "finalSale": {
+                "title": "جميع المبيعات نهائية",
+                "description": "نظرًا للطبيعة الخاصة لمنتجات التجميل والعناية بالبشرة، فإننا لا نقبل المرتجعات أو الاستبدال أو عرض المبالغ المستردة لتغيير الرأي."
+            },
+            "hygiene": {
+                "title": "بروتوكولات النظافة والسلامة",
+                "description": "سلامتك هي أولويتنا. لا يمكن إعادة بيع منتجات العناية بالبشرة ومستحضرات التجميل أو إعادة استخدامها بمجرد خروجها من بيئة التوزيع الخاضعة للرقابة لدينا. تضمن هذه السياسة الصارمة حصول كل عميل على تركيبات غير متلاعب بها بنسبة 100% وطازجة وصحية."
+            },
+            "damaged": {
+                "title": "أصناف تالفة أو غير صحيحة؟",
+                "description": "في حالة نادرة وصول منتجك تالفًا أو استلمت المنتج الخطأ، فنحن هنا للمساعدة.",
+                "steps": [
+                    "الإبلاغ خلال 24 ساعة من التسليم.",
+                    "تقديم صور واضحة للتلف والتغليف الخارجي."
+                ]
+            }
+        },
+        "support": {
+            "title": "لا تزال لديك أسئلة؟",
+            "description": "فريق الدعم لدينا متاح 24/7.",
+            "cta": "اتصل بنا"
         }
     }
 }
