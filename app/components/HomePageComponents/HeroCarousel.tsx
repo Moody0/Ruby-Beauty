@@ -86,9 +86,8 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
             {displayBanners[0]?.image && (
                 <link
                     rel="preload"
-                    href={displayBanners[0].image}
+                    href={displayBanners[0].image.trim()}
                     as="image"
-                    imageSrcSet="(max-width: 768px) 100vw, 50vw"
                 />
             )}
             <div className="w-full">
@@ -110,7 +109,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                         className="object-cover"
                                         fill
                                         priority={index === 0}
-                                        sizes="(max-width: 768px) 100vw, 50vw"
+                                        sizes="100vw"
                                         quality={85}
                                     />
                                     {/* Subtle overlay for text readability on mobile */}

@@ -47,7 +47,7 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                                     alt={`Product image ${index + 1}`}
                                     className="object-contain transition-all duration-500 group-hover:scale-[1.02]"
                                     fill
-                                    sizes="(max-width: 1024px) 100vw, 40vw"
+                                    sizes="100vw"
                                     priority={index === 0}
                                 />
                             </div>
