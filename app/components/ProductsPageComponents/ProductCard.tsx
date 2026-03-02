@@ -36,25 +36,6 @@ const ProductCard = ({ product, t, language }: ProductCardProps) => {
                 )}
                 <Image
                     alt={product.name}
-<<<<<<< HEAD
-                    className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
-                    src={product.images ? product.images.split(',')[0].trim() : ''}
-                />
-                <button
-                    onClick={handleQuickAdd}
-                    className="hidden lg:flex absolute bottom-4 left-4 right-4 items-center justify-center gap-2 rounded-lg bg-white/95 py-3 text-sm font-bold text-text-main-light shadow-lg backdrop-blur-sm transition-all hover:bg-primary hover:text-white opacity-0 translate-y-4 group-hover:translate-y-0 group-hover:opacity-100 dark:bg-background-dark/95 dark:text-white dark:hover:bg-primary"
-                >
-                    <span className="material-symbols-outlined text-[20px]">add_shopping_cart</span>
-                    {t('products.addToCart')}
-                </button>
-                <button
-                    onClick={handleQuickAdd}
-                    className="lg:hidden absolute bottom-2 ltr:right-2 p-2 rtl:left-2 flex rounded-full bg-white/90 text-black shadow-md backdrop-blur-sm"
-                    aria-label={t('products.addToCart')}
-                >
-                    <span className="material-symbols-outlined text-[18px]">add</span>
-                </button>
-=======
                     className="object-contain transition-transform duration-500 group-hover:scale-105"
                     src={product.images.split(',').map((img: string) => img.trim()).filter(Boolean)[0]}
                     fill
@@ -64,7 +45,6 @@ const ProductCard = ({ product, t, language }: ProductCardProps) => {
                 />
                 <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="desktop" />
                 <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="mobile" />
->>>>>>> a19576317a12ff361fa14bd438f06655de705684
             </Link>
             <div className="flex flex-col gap-1 p-0.5">
                 <div className="flex items-start justify-between gap-2">

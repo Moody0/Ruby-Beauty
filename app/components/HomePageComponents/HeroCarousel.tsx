@@ -75,17 +75,6 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
         return () => clearInterval(interval);
     }, [isPaused, nextSlide, displayBanners.length]);
 
-<<<<<<< HEAD
-    // Preload images for smoother transitions
-    useEffect(() => {
-        displayBanners.forEach((banner) => {
-            const img = new Image();
-            img.src = banner.image ? banner.image.trim() : "";
-        });
-    }, [displayBanners]);
-
-=======
->>>>>>> a19576317a12ff361fa14bd438f06655de705684
     if (displayBanners.length === 0) return null;
 
     return (
@@ -114,13 +103,8 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                             <div className="md:hidden relative w-full h-full">
                                 {/* Image Container */}
                                 <div className="absolute inset-0 w-full h-full bg-gray-50 dark:bg-white/5">
-<<<<<<< HEAD
-                                    <img
-                                        src={banner.image ? banner.image.trim() : ""}
-=======
                                     <Image
                                         src={banner.image.trim()}
->>>>>>> a19576317a12ff361fa14bd438f06655de705684
                                         alt={getBannerTitle(banner)}
                                         className="object-cover"
                                         fill
@@ -130,10 +114,10 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                     />
                                     {/* Subtle overlay for text readability on mobile */}
                                     <div className="absolute inset-0 bg-black/20"></div>
-                                </div>
+                                </div >
 
                                 {/* Content Overlay */}
-                                <div className={`relative z-10 h-full flex flex-col justify-end items-start p-6 sm:p-8 pb-8 sm:pb-10`}>
+                                < div className={`relative z-10 h-full flex flex-col justify-end items-start p-6 sm:p-8 pb-8 sm:pb-10`}>
                                     <div className={`transition-all duration-700 delay-300 transform ${index === currentIndex ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                                         }`}>
                                         <span className="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-wider mb-3">
@@ -158,15 +142,15 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                             )}
                                         </Link>
                                     </div>
-                                </div>
-                            </div>
+                                </div >
+                            </div >
 
                             {/* Desktop Layout: dir="ltr" so flex order is physical (left/right) in both LTR and RTL docs */}
-                            <div className="hidden md:flex flex-row items-center h-full" dir="ltr">
+                            < div className="hidden md:flex flex-row items-center h-full" dir="ltr" >
                                 {/* Hero Content — in RTL: order-2 = right; in LTR: order-1 = left */}
-                                <div className={`w-full md:w-1/2 p-12 lg:p-20 flex flex-col justify-center gap-6 z-10 h-full relative ${dir === 'rtl' ? 'order-2 items-end text-right' : 'order-1 items-start text-left'}`}>
+                                < div className={`w-full md:w-1/2 p-12 lg:p-20 flex flex-col justify-center gap-6 z-10 h-full relative ${dir === 'rtl' ? 'order-2 items-end text-right' : 'order-1 items-start text-left'}`}>
                                     {/* Content Transition Wrapper — in RTL full width so button can sit at end */}
-                                    <div className={`transition-all duration-700 delay-300 transform ${index === currentIndex ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                                    < div className={`transition-all duration-700 delay-300 transform ${index === currentIndex ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                                         } ${dir === 'rtl' ? 'w-full flex flex-col items-end' : ''}`}>
                                         <span className="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-4">
                                             {banner.badge || t('home.newArrival')}
@@ -184,69 +168,66 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                             {banner.buttonText || t('home.shopNow')}
                                             <MdArrowForward className={`text-lg group-hover/btn:translate-x-1 transition-transform ${dir === 'rtl' ? ' group-hover/btn:-translate-x-1' : ''}`} />
                                         </Link>
-                                    </div>
-                                </div>
+                                    </div >
+                                </div >
 
                                 {/* Hero Image — order-1 in RTL so it appears on the left */}
-                                <div className={`w-full md:w-1/2 h-full relative ${dir === 'rtl' ? 'order-1' : 'order-2'}`}>
+                                < div className={`w-full md:w-1/2 h-full relative ${dir === 'rtl' ? 'order-1' : 'order-2'}`}>
                                     <div className="w-full h-full bg-gray-50 dark:bg-white/5 relative">
-<<<<<<< HEAD
-                                        <img
-                                            src={banner.image ? banner.image.trim() : ""}
-=======
                                         <Image
                                             src={banner.image.trim()}
->>>>>>> a19576317a12ff361fa14bd438f06655de705684
                                             alt={getBannerTitle(banner)}
                                             className="object-cover transition-transform duration-1000 ease-in-out group-hover:scale-105"
                                             fill
                                             priority={index === 0}
                                             sizes="50vw"
                                         />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                    </div >
+                                </div >
+                            </div >
+                        </div >
                     ))}
 
                     {/* Navigation Controls - Only show if more than 1 banner */}
-                    {displayBanners.length > 1 && (
-                        <>
-                            {/* Arrows */}
-                            <button
-                                onClick={prevSlide}
-                                className={`absolute ${dir === 'rtl' ? 'right-4 rotate-180' : 'left-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100`}
-                                aria-label="Previous slide"
-                            >
-                                <MdChevronLeft />
-                            </button>
-                            <button
-                                onClick={nextSlide}
-                                className={`absolute ${dir === 'rtl' ? 'left-4 rotate-180' : 'right-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100`}
-                                aria-label="Next slide"
-                            >
-                                <MdChevronRight />
-                            </button>
+                    {
+                        displayBanners.length > 1 && (
+                            <>
+                                {/* Arrows */}
+                                <button
+                                    onClick={prevSlide}
+                                    className={`absolute ${dir === 'rtl' ? 'right-4 rotate-180' : 'left-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100`}
+                                    aria-label="Previous slide"
+                                >
+                                    <MdChevronLeft />
+                                </button>
+                                <button
+                                    onClick={nextSlide}
+                                    className={`absolute ${dir === 'rtl' ? 'left-4 rotate-180' : 'right-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100`}
+                                    aria-label="Next slide"
+                                >
+                                    <MdChevronRight />
+                                </button>
 
-                            {/* Dots */}
-                            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-                                {displayBanners.map((_, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => goToSlide(index)}
-                                        className={`w-2 h-2 rounded-full transition-all ${index === currentIndex
-                                            ? 'w-8 bg-primary'
-                                            : 'bg-white/50 hover:bg-white/80'
-                                            }`}
-                                        aria-label={`Go to slide ${index + 1}`}
-                                    />
-                                ))}
-                            </div>
-                        </>
-                    )}
-                </div>
-            </div>
-        </section>
+                                {/* Dots */}
+                                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+                                    {displayBanners.map((_, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => goToSlide(index)}
+                                            className={`w-2 h-2 rounded-full transition-all ${index === currentIndex
+                                                ? 'w-8 bg-primary'
+                                                : 'bg-white/50 hover:bg-white/80'
+                                                }`}
+                                            aria-label={`Go to slide ${index + 1}`}
+                                        />
+                                    ))}
+                                </div>
+                            </>
+                        )
+                    }
+                </div >
+            </div >
+        </section >
     );
 };
 

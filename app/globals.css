@@ -1,14 +1,11 @@
 @import "tailwindcss";
 
-<<<<<<< HEAD
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:where(.dark, .dark *));
-=======
 @variant dark (&:where(.dark, .dark *));
 @variant ltr (&:where([dir="ltr"], [dir="ltr"] *));
 @variant rtl (&:where([dir="rtl"], [dir="rtl"] *));
->>>>>>> a19576317a12ff361fa14bd438f06655de705684
 
 @theme {
   --color-primary: #ee2b6c;
@@ -21,18 +18,15 @@
   --color-text-muted-light: #89616f;
   --color-text-muted-dark: #dcbcc7;
 
-<<<<<<< HEAD
+
   /* Semantic Colors */
   --color-text-main: var(--text-main);
   --color-text-sub: var(--text-sub);
 
   --font-display: var(--font-plus-jakarta);
-=======
   --font-sans: var(--font-rubik), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-rubik), ui-serif, system-ui, serif;
->>>>>>> a19576317a12ff361fa14bd438f06655de705684
 
-  --radius-default: 0.5rem;
   --radius-lg: 1rem;
   --radius-xl: 1.5rem;
   --radius-full: 9999px;
@@ -51,6 +45,7 @@
   looks the same as it did with Tailwind CSS v3.
 */
 @layer base {
+
   *,
   ::after,
   ::before,
@@ -65,6 +60,7 @@
     --text-main: #181113;
     --text-sub: #89616f;
   }
+
   .dark {
     --text-main: #fce7ef;
     --text-sub: #dcbcc7;
