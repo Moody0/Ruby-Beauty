@@ -41,7 +41,7 @@ const Categories = ({ categories, t, dir }: CategoriesProps) => {
                         >
                             <div className="relative aspect-4/4 w-full overflow-hidden rounded-xl bg-gray-100 dark:bg-white/5">
                                 <Image
-                                    src={category.image || defaultImage}
+                                    src={(category.image || defaultImage).trim()}
                                     alt={category.name}
                                     className="object-contain transition-transform duration-500 group-hover:scale-110"
                                     fill
