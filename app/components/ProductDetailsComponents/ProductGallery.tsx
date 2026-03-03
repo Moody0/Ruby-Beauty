@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
+import { getSafeImageUrl } from '@/lib/image-utils';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Thumbs, FreeMode } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
@@ -42,13 +42,11 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                     {allImages.map((img, index) => (
                         <SwiperSlide key={`main-${index}`} className="!bg-white">
                             <div className="relative w-full h-full flex items-center justify-center p-6 md:p-8 !bg-white">
-                                <Image
-                                    src={img}
+                                <img
+                                    src={getSafeImageUrl(img)}
                                     alt={`Product image ${index + 1}`}
-                                    className="object-contain transition-all duration-500 group-hover:scale-[1.02]"
-                                    fill
-                                    sizes="100vw"
-                                    priority={index === 0}
+                                    className="w-full h-full object-contain transition-all duration-500 group-hover:scale-[1.02]"
+                                    loading={index === 0 ? "eager" : "lazy"}
                                 />
                             </div>
                         </SwiperSlide>
@@ -68,7 +66,7 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                     <Swiper
                         onSwiper={setThumbsSwiper}
                         spaceBetween={16}
-                        slidesPerView={3}
+                        slidesPerView={4}
                         freeMode={true}
                         watchSlidesProgress={true}
                         modules={[FreeMode, Thumbs]}
@@ -76,15 +74,14 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                     >
                         {allImages.map((img, index) => (
                             <SwiperSlide key={`thumb-${index}`}>
-                                <div 
+                                <div
                                     className="relative aspect-square rounded-xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600 transition-all [&.swiper-slide-thumb-active]:border-primary !bg-white"
                                 >
-                                    <Image
-                                        src={img}
+                                    <img
+                                        src={getSafeImageUrl(img)}
                                         alt={`Thumbnail ${index + 1}`}
-                                        className="object-contain p-2"
-                                        fill
-                                        sizes="100px"
+                                        className="w-full h-full object-contain p-2"
+                                        loading="lazy"
                                     />
                                 </div>
                             </SwiperSlide>
@@ -92,7 +89,7 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                     </Swiper>
                 </div>
             )}
-            
+
             <style jsx global>{`
                 .thumbs-swiper .swiper-slide {
                     opacity: 0.6;
@@ -102,7 +99,7 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                     opacity: 1;
                 }
                 .thumbs-swiper .swiper-slide-thumb-active > div {
-                    border-color: var(--primary-color, #e91e63);
+                    border-color: var(--primary-color, #ee2b6c);
                 }
             `}</style>
         </div>

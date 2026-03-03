@@ -1,10 +1,10 @@
 "use client";
 
 import React from 'react';
-import Image from 'next/image';
 import { CartItem } from '@/app/context/CartContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { MdPayments, MdRefresh, MdCheckCircle, MdSupportAgent } from 'react-icons/md';
+import { getSafeImageUrl } from '@/lib/image-utils';
 
 interface OrderSummaryProps {
     items: CartItem[];
@@ -55,12 +55,11 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                     {items.map((item) => (
                         <div key={item.id} className="flex items-center gap-4">
                             <div className="relative w-16 h-16 !bg-white rounded-lg border border-[#e6dbdf] dark:border-gray-800/50 overflow-hidden shrink-0">
-                                <Image
-                                    src={item.image.split(',')[0]}
+                                <img
+                                    src={getSafeImageUrl(item.image.split(',')[0])}
                                     alt={item.name}
-                                    fill
-                                    className="object-contain p-1"
-                                    sizes="64px"
+                                    className="w-full h-full object-contain p-1"
+                                    loading="lazy"
                                 />
                             </div>
                             <div className="flex-1 min-w-0">
@@ -155,8 +154,8 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                 </div>
                 <div>
                     <p className="text-sm font-bold dark:text-white">{t('checkout.needAssistance')}</p>
-                    <a 
-                        className="text-xs text-[#89616f] hover:text-primary underline" 
+                    <a
+                        className="text-xs text-[#89616f] hover:text-primary underline"
                         href="https://wa.me/963933254796"
                         target="_blank"
                         rel="noopener noreferrer"

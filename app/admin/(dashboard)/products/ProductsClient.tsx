@@ -9,19 +9,20 @@ import { deleteProduct, toggleProductTrending, bulkToggleTrending, bulkCreatePro
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useLanguage } from "@/app/context/LanguageContext";
-import { 
-    MdChevronRight, 
-    MdChevronLeft, 
-    MdFileUpload, 
-    MdFileDownload, 
-    MdAdd, 
-    MdSearch, 
-    MdExpandMore, 
-    MdLocalFireDepartment, 
-    MdSell, 
-    MdTrendingDown, 
-    MdMoneyOff, 
-    MdDelete, 
+import { getSafeImageUrl } from '@/lib/image-utils';
+import {
+    MdChevronRight,
+    MdChevronLeft,
+    MdFileUpload,
+    MdFileDownload,
+    MdAdd,
+    MdSearch,
+    MdExpandMore,
+    MdLocalFireDepartment,
+    MdSell,
+    MdTrendingDown,
+    MdMoneyOff,
+    MdDelete,
     MdEdit,
     MdSync,
     MdArrowUpward,
@@ -89,7 +90,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
     const handleSocialShare = (platform: 'facebook' | 'whatsapp', product: Product) => {
         const url = `${window.location.origin}/products/${product.slug}`;
         const text = `Check out ${product.name} at Ruby Beauty!`;
-        
+
         // Warn the user about localhost sharing limitations
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         if (isLocal && platform === 'facebook') {
@@ -110,16 +111,16 @@ export default function ProductsClient({ products, categories }: { products: Pro
                 shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + url)}`;
                 break;
         }
-        
+
         // Open in a standard popup window
         const width = 600;
         const height = 450;
         const left = (window.innerWidth - width) / 2;
         const top = (window.innerHeight - height) / 2;
-        
+
         window.open(
-            shareUrl, 
-            'facebook-share-dialog', 
+            shareUrl,
+            'facebook-share-dialog',
             `width=${width},height=${height},top=${top},left=${left},location=0,menubar=0,toolbar=0,status=0,scrollbars=1,resizable=1`
         );
         setActiveShareId(null);
@@ -167,9 +168,9 @@ export default function ProductsClient({ products, categories }: { products: Pro
             return matchesSearch && matchesCategory && matchesStock && matchesTrending && matchesOnSale;
         }).sort((a, b) => {
             const { key, direction } = sortConfig;
-            
+
             let comparison = 0;
-            
+
             if (key === 'price') {
                 const priceA = a.discountPrice || a.price;
                 const priceB = b.discountPrice || b.price;
@@ -196,7 +197,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                 const valB = String(b[key as keyof Product] || '').toLowerCase();
                 comparison = valA.localeCompare(valB);
             }
-            
+
             return direction === 'asc' ? comparison : -comparison;
         });
     }, [products, searchQuery, selectedCategory, selectedStockStatus, showTrendingOnly, showOnSaleOnly, t, sortConfig]);
@@ -307,7 +308,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
     const handleBulkDelete = async () => {
         if (selectedIds.size === 0) return;
         const ids = Array.from(selectedIds);
-        
+
         if (!confirm(`Are you sure you want to delete ${ids.length} products? This action cannot be undone.`)) {
             return;
         }
@@ -319,7 +320,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                 if (result.partial) {
                     toast(t('admin.bulkDeleteProductsPartial')
                         .replace('{count}', result.count?.toString() || '0')
-                        .replace('{names}', result.names || ''), 
+                        .replace('{names}', result.names || ''),
                         { icon: '⚠️', duration: 6000 }
                     );
                 } else {
@@ -401,7 +402,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
     const handleExportXLSX = async () => {
         try {
             const XLSX = await import('xlsx');
-            
+
             // Prepare data
             const data = products.map((p: any) => ({
                 Name: p.name,
@@ -417,9 +418,9 @@ export default function ProductsClient({ products, categories }: { products: Pro
             const ws = XLSX.utils.json_to_sheet(data);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Products");
-            
+
             XLSX.writeFile(wb, `ruby_beauty_products_${new Date().toISOString().split('T')[0]}.xlsx`);
-            
+
             toast.success(t('admin.exportSuccess'));
         } catch (error) {
             console.error("Export XLSX failed:", error);
@@ -522,23 +523,23 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                     {t('admin.exportData')}
                                     <MdExpandMore className={`text-[18px] transition-transform duration-200 ${isExportMenuOpen ? 'rotate-180' : ''}`} />
                                 </button>
-                                
+
                                 {isExportMenuOpen && (
                                     <>
                                         <div className="fixed inset-0 z-40" onClick={() => setIsExportMenuOpen(false)} />
                                         <div className={`absolute top-full mt-2 w-48 bg-white dark:bg-[#1a1a1a] border border-gray-100 dark:border-gray-700 rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200 ${dir === 'rtl' ? 'left-0' : 'right-0'}`}>
-                                            <button 
+                                            <button
                                                 onClick={handleExportCSV}
                                                 className="w-full text-start px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-medium text-text-main dark:text-white transition-colors flex items-center gap-3 border-b border-gray-50 dark:border-white/5"
                                             >
-                                                <span className="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-bold px-1.5 py-0.5 rounded">CSV</span> 
+                                                <span className="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-bold px-1.5 py-0.5 rounded">CSV</span>
                                                 <span>Export as CSV</span>
                                             </button>
-                                            <button 
+                                            <button
                                                 onClick={handleExportXLSX}
                                                 className="w-full text-start px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-medium text-text-main dark:text-white transition-colors flex items-center gap-3"
                                             >
-                                                <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold px-1.5 py-0.5 rounded">XLSX</span> 
+                                                <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold px-1.5 py-0.5 rounded">XLSX</span>
                                                 <span>Export as Excel</span>
                                             </button>
                                         </div>
@@ -830,13 +831,10 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                     <div className="flex items-center gap-3 sm:gap-4">
                                                         <div className="relative size-10 sm:size-12 rounded-lg bg-gray-100 dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 overflow-hidden shrink-0">
                                                             <img
-                                                                src={product.images.split(',').map((img: string) => img.trim()).filter(Boolean)[0] || '/placeholder.svg'}
+                                                                src={getSafeImageUrl(product.images.split(',').map((img: string) => img.trim()).filter(Boolean)[0] || '/placeholder.svg')}
                                                                 alt={product.name}
                                                                 className="w-full h-full object-cover"
-                                                                onError={(e) => {
-                                                                    const target = e.target as HTMLImageElement;
-                                                                    target.src = '/placeholder.svg';
-                                                                }}
+                                                                loading="lazy"
                                                             />
                                                         </div>
                                                         <div className="flex flex-col min-w-0">
@@ -908,26 +906,26 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                             >
                                                                 <MdShare className="text-[18px] sm:text-[20px]" />
                                                             </button>
-                                                            
+
                                                             {activeShareId === product.id && (
                                                                 <>
                                                                     <div className="fixed inset-0 z-[9998]" onClick={() => setActiveShareId(null)} />
                                                                     <div className={`absolute top-full mt-2 w-48 bg-white dark:bg-[#1a1a1a] border border-gray-100 dark:border-gray-700 rounded-xl shadow-xl z-[9999] overflow-hidden animate-in fade-in zoom-in-95 duration-200 ${dir === 'rtl' ? 'left-0' : 'right-0'}`}>
-                                                                        <button 
+                                                                        <button
                                                                             onClick={() => handleCopyLink(product.slug)}
                                                                             className="w-full text-start px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-white/5 text-xs font-medium text-text-main dark:text-white transition-colors flex items-center gap-3 border-b border-gray-50 dark:border-white/5"
                                                                         >
                                                                             <MdContentCopy className="text-gray-400" />
                                                                             <span>{t('admin.copyLink')}</span>
                                                                         </button>
-                                                                        <button 
+                                                                        <button
                                                                             onClick={() => handleSocialShare('facebook', product)}
                                                                             className="w-full text-start px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-white/5 text-xs font-medium text-text-main dark:text-white transition-colors flex items-center gap-3 border-b border-gray-50 dark:border-white/5"
                                                                         >
                                                                             <FaFacebook className="text-[#1877F2]" />
                                                                             <span>{t('admin.shareOnFacebook')}</span>
                                                                         </button>
-                                                                        <button 
+                                                                        <button
                                                                             onClick={() => handleSocialShare('whatsapp', product)}
                                                                             className="w-full text-start px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-white/5 text-xs font-medium text-text-main dark:text-white transition-colors flex items-center gap-3"
                                                                         >

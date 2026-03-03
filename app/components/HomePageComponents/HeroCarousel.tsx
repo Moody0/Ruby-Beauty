@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { MdArrowForward, MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import { getSafeImageUrl } from '@/lib/image-utils';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -63,7 +63,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
             {displayBanners[0]?.image && (
                 <link
                     rel="preload"
-                    href={displayBanners[0].image.trim()}
+                    href={getSafeImageUrl(displayBanners[0].image)}
                     as="image"
                 />
             )}
@@ -97,14 +97,11 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                 <div className="md:hidden relative w-full h-full">
                                     {/* Image Container */}
                                     <div className="absolute inset-0 w-full h-full bg-gray-50 dark:bg-white/5">
-                                        <Image
-                                            src={banner.image.trim()}
+                                        <img
+                                            src={getSafeImageUrl(banner.image)}
                                             alt={getBannerTitle(banner)}
-                                            className="object-cover"
-                                            fill
-                                            priority={index === 0}
-                                            sizes="100vw"
-                                            quality={90}
+                                            className="w-full h-full object-cover"
+                                            loading={index === 0 ? "eager" : "lazy"}
                                         />
                                         {/* Subtle overlay for text readability on mobile */}
                                         <div className="absolute inset-0 bg-black/20"></div>
@@ -167,14 +164,11 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
 
                                     {/* Image Side - 50% */}
                                     <div className={`w-1/2 h-full relative ${dir === 'rtl' ? 'order-1' : 'order-2'}`}>
-                                        <Image
-                                            src={banner.image.trim()}
+                                        <img
+                                            src={getSafeImageUrl(banner.image)}
                                             alt={getBannerTitle(banner)}
-                                            className="object-cover"
-                                            fill
-                                            priority={index === 0}
-                                            sizes="50vw"
-                                            quality={90}
+                                            className="w-full h-full object-cover"
+                                            loading={index === 0 ? "eager" : "lazy"}
                                         />
                                     </div>
                                 </div>

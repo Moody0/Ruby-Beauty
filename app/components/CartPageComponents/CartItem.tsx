@@ -1,11 +1,11 @@
 "use client";
 
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { MdDelete } from 'react-icons/md';
 import { CartItem as CartItemType } from '@/app/context/CartContext';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { getSafeImageUrl } from '@/lib/image-utils';
 
 
 interface CartItemProps {
@@ -21,12 +21,11 @@ const CartItem = ({ item, removeItem, updateQuantity }: CartItemProps) => {
         <div className="flex flex-col sm:flex-row gap-6 bg-white dark:bg-[#2a161d] p-5 rounded-xl shadow-sm border border-transparent hover:border-[#f4f0f2] dark:hover:border-[#3a2228] transition-all">
             <div className="shrink-0">
                 <div className="relative w-24 h-24 !bg-white rounded-lg border border-[#e6dbdf] dark:border-gray-800/50 overflow-hidden">
-                    <Image
-                        src={item.image.split(',')[0]}
+                    <img
+                        src={getSafeImageUrl(item.image.split(',')[0])}
                         alt={item.name}
-                        fill
-                        className="object-contain p-1"
-                        sizes="96px"
+                        className="w-full h-full object-contain p-1"
+                        loading="lazy"
                     />
                 </div>
             </div>

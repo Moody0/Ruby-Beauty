@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['react-icons', 'md-react-icons'],
   },
   images: {
+    minimumCacheTTL: 31536000,
     formats: ['image/avif', 'image/webp'],
     qualities: [75, 85],
     remotePatterns: [
