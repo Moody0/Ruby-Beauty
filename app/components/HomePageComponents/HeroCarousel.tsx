@@ -3,7 +3,6 @@
 import Head from 'next/head';
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { MdArrowForward, MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { useLanguage } from '@/app/context/LanguageContext';
 
@@ -103,14 +102,11 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                             <div className="md:hidden relative w-full h-full">
                                 {/* Image Container */}
                                 <div className="absolute inset-0 w-full h-full bg-gray-50 dark:bg-white/5">
-                                    <Image
+                                    <img
                                         src={banner.image.trim()}
                                         alt={getBannerTitle(banner)}
-                                        className="object-cover"
-                                        fill
-                                        priority={index === 0}
-                                        sizes="100vw"
-                                        unoptimized
+                                        className="w-full h-full object-cover"
+                                        loading={index === 0 ? "eager" : "lazy"}
                                     />
                                     {/* Subtle overlay for text readability on mobile */}
                                     <div className="absolute inset-0 bg-black/20"></div>
@@ -174,14 +170,11 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                 {/* Hero Image — order-1 in RTL so it appears on the left */}
                                 <div className={`w-full md:w-1/2 h-full relative ${dir === 'rtl' ? 'order-1' : 'order-2'}`}>
                                     <div className="w-full h-full bg-gray-50 dark:bg-white/5 relative">
-                                        <Image
+                                        <img
                                             src={banner.image.trim()}
                                             alt={getBannerTitle(banner)}
-                                            className="object-cover transition-transform duration-1000 ease-in-out group-hover:scale-105"
-                                            fill
-                                            priority={index === 0}
-                                            sizes="50vw"
-                                            unoptimized
+                                            className="w-full h-full object-cover transition-transform duration-1000 ease-in-out group-hover:scale-105"
+                                            loading={index === 0 ? "eager" : "lazy"}
                                         />
                                     </div>
                                 </div>

@@ -2,7 +2,6 @@
 
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { MdChevronRight } from "react-icons/md";
 import { useLanguage } from "@/app/context/LanguageContext";
 import CategoriesGrid from "./CategoriesGrid";
@@ -23,10 +22,10 @@ interface CategoriesContentProps {
 export default function CategoriesContent({ categories, siteSettings }: CategoriesContentProps) {
     const { t, language } = useLanguage();
 
-    const ctaTitle = language === 'ar' 
+    const ctaTitle = language === 'ar'
         ? (siteSettings?.categoriesCtaTitleAr || t('categoriesPage.cantDecide'))
         : (siteSettings?.categoriesCtaTitle || t('categoriesPage.cantDecide'));
-    
+
     const ctaDesc = language === 'ar'
         ? (siteSettings?.categoriesCtaDescAr || t('categoriesPage.skinQuizDescription'))
         : (siteSettings?.categoriesCtaDesc || t('categoriesPage.skinQuizDescription'));
@@ -69,12 +68,11 @@ export default function CategoriesContent({ categories, siteSettings }: Categori
                     </div>
                     <div className="hidden lg:block w-1/3">
                         <div className="relative aspect-square w-full">
-                            <Image
+                            <img
                                 src={ctaImage}
                                 alt={t('products.productSelection')}
-                                className="rounded-2xl shadow-2xl rotate-3 scale-110 rtl:-rotate-3 object-cover"
-                                fill
-                                sizes="(max-width: 1024px) 0vw, 33vw"
+                                className="w-full h-full rounded-2xl shadow-2xl rotate-3 scale-110 rtl:-rotate-3 object-cover"
+                                loading="lazy"
                             />
                         </div>
                     </div>

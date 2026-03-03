@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import React from 'react';
 import AddToCartButton from './AddToCartButton';
 
@@ -34,15 +33,11 @@ const ProductCard = ({ product, t, language }: ProductCardProps) => {
                         -{Math.round((1 - Number(product.discountPrice) / Number(product.price)) * 100)}%
                     </span>
                 )}
-                <Image
+                <img
                     alt={product.name}
-                    className="object-contain transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                     src={product.images.split(',').map((img: string) => img.trim()).filter(Boolean)[0]}
-                    fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                    priority={product.isTrending}
-                    loading={product.isTrending ? undefined : "lazy"}
-                    unoptimized
+                    loading={product.isTrending ? "eager" : "lazy"}
                 />
                 <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="desktop" />
                 <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="mobile" />

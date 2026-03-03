@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import AdminHeader from "../../components/AdminHeader";
 import AddProductModal from "./AddProductModal";
@@ -830,14 +829,11 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                 <td className="p-3 sm:p-5">
                                                     <div className="flex items-center gap-3 sm:gap-4">
                                                         <div className="relative size-10 sm:size-12 rounded-lg bg-gray-100 dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 overflow-hidden shrink-0">
-                                                            <Image
+                                                            <img
                                                                 src={product.images.split(',').map((img: string) => img.trim()).filter(Boolean)[0] || '/placeholder.svg'}
                                                                 alt={product.name}
-                                                                fill
-                                                                sizes="(max-width: 640px) 40px, 48px"
-                                                                className="object-cover"
-                                                                placeholder="blur"
-                                                                blurDataURL="/placeholder.svg"
+                                                                className="w-full h-full object-cover"
+                                                                loading="lazy"
                                                             />
                                                         </div>
                                                         <div className="flex flex-col min-w-0">
