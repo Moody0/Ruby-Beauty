@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { MdExpandMore } from "react-icons/md";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { getSafeImageUrl } from '@/lib/image-utils';
 
 interface Category {
     id: string;
@@ -39,7 +40,7 @@ const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
                     >
                         <div className="relative aspect-16/10 overflow-hidden rounded-xl bg-background-light dark:bg-background-dark">
                             <img
-                                src={category.image || defaultImage}
+                                src={getSafeImageUrl(category.image || defaultImage)}
                                 alt={category.name}
                                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 loading="lazy"

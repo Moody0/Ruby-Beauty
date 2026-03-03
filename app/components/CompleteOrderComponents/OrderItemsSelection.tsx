@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { getSafeImageUrl } from '@/lib/image-utils';
 
 interface OrderItem {
     id: string;
@@ -30,7 +31,7 @@ const OrderItemsSelection = ({ items }: OrderItemsSelectionProps) => {
                         title={item.product.name}
                     >
                         <img
-                            src={item.product.images.split(',').map((img: string) => img.trim()).filter(Boolean)[0]}
+                            src={getSafeImageUrl(item.product.images.split(',').map((img: string) => img.trim()).filter(Boolean)[0])}
                             alt={item.product.name}
                             className="w-full h-full object-contain p-1"
                             loading="lazy"

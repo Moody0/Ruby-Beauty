@@ -4,6 +4,7 @@ import React from 'react';
 import { CartItem } from '@/app/context/CartContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { MdPayments, MdRefresh, MdCheckCircle, MdSupportAgent } from 'react-icons/md';
+import { getSafeImageUrl } from '@/lib/image-utils';
 
 interface OrderSummaryProps {
     items: CartItem[];
@@ -55,7 +56,7 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                         <div key={item.id} className="flex items-center gap-4">
                             <div className="relative w-16 h-16 !bg-white rounded-lg border border-[#e6dbdf] dark:border-gray-800/50 overflow-hidden shrink-0">
                                 <img
-                                    src={item.image.split(',')[0]}
+                                    src={getSafeImageUrl(item.image.split(',')[0])}
                                     alt={item.name}
                                     className="w-full h-full object-contain p-1"
                                     loading="lazy"

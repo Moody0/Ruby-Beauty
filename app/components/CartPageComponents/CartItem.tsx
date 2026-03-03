@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { MdDelete } from 'react-icons/md';
 import { CartItem as CartItemType } from '@/app/context/CartContext';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { getSafeImageUrl } from '@/lib/image-utils';
 
 
 interface CartItemProps {
@@ -21,7 +22,7 @@ const CartItem = ({ item, removeItem, updateQuantity }: CartItemProps) => {
             <div className="shrink-0">
                 <div className="relative w-24 h-24 !bg-white rounded-lg border border-[#e6dbdf] dark:border-gray-800/50 overflow-hidden">
                     <img
-                        src={item.image.split(',')[0]}
+                        src={getSafeImageUrl(item.image.split(',')[0])}
                         alt={item.name}
                         className="w-full h-full object-contain p-1"
                         loading="lazy"

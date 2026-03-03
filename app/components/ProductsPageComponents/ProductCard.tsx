@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 import AddToCartButton from './AddToCartButton';
+import { getSafeImageUrl } from '@/lib/image-utils';
 
 interface Product {
     id: string;
@@ -36,7 +37,7 @@ const ProductCard = ({ product, t, language }: ProductCardProps) => {
                 <img
                     alt={product.name}
                     className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
-                    src={product.images.split(',').map((img: string) => img.trim()).filter(Boolean)[0]}
+                    src={getSafeImageUrl(product.images.split(',').map((img: string) => img.trim()).filter(Boolean)[0])}
                     loading={product.isTrending ? "eager" : "lazy"}
                 />
                 <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="desktop" />

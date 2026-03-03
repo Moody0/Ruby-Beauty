@@ -5,6 +5,7 @@ import Link from "next/link";
 import { MdChevronRight } from "react-icons/md";
 import { useLanguage } from "@/app/context/LanguageContext";
 import CategoriesGrid from "./CategoriesGrid";
+import { getSafeImageUrl } from '@/lib/image-utils';
 import { Settings } from "@prisma/client";
 
 interface Category {
@@ -69,7 +70,7 @@ export default function CategoriesContent({ categories, siteSettings }: Categori
                     <div className="hidden lg:block w-1/3">
                         <div className="relative aspect-square w-full">
                             <img
-                                src={ctaImage}
+                                src={getSafeImageUrl(ctaImage)}
                                 alt={t('products.productSelection')}
                                 className="w-full h-full rounded-2xl shadow-2xl rotate-3 scale-110 rtl:-rotate-3 object-cover"
                                 loading="lazy"
