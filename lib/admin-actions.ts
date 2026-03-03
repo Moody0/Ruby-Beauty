@@ -618,7 +618,7 @@ export async function getTrendingProducts() {
     try {
         const products = await prisma.product.findMany({
             where: { isTrending: true },
-            take: 8,
+            // Removed limit to allow carousel to show all trending products
             include: { category: true },
             orderBy: { updatedAt: 'desc' }
         });

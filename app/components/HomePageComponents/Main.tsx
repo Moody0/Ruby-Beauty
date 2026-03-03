@@ -79,13 +79,13 @@ const Main = async ({ banners, categories, trendingProducts, onSaleProducts }: M
             <HeroCarousel banners={banners} />
 
             {/* On Sale Section */}
-            <OnSaleProducts products={onSaleProducts} t={t} dir={dir} language={language} />
+            <OnSaleProducts products={onSaleProducts} />
 
             {/* Categories Section */}
             <Categories categories={categories} t={t} dir={dir} />
 
             {/* Trending Products Section */}
-            <TrendingProducts products={trendingProducts} t={t} dir={dir} language={language} />
+            <TrendingProducts products={trendingProducts} />
         </main>
     );
 };

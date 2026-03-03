@@ -1,11 +1,17 @@
 "use client";
 
-import Head from 'next/head';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { MdArrowForward, MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 interface Banner {
     id: string;
@@ -49,39 +55,10 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
 
     const displayBanners = banners && banners.length > 0 ? banners : [DEFAULT_BANNER];
 
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [isPaused, setIsPaused] = useState(false);
-
-    const nextSlide = useCallback(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % displayBanners.length);
-    }, [displayBanners.length]);
-
-    const prevSlide = () => {
-        setCurrentIndex((prevIndex) => (prevIndex - 1 + displayBanners.length) % displayBanners.length);
-    };
-
-    const goToSlide = (index: number) => {
-        setCurrentIndex(index);
-    };
-
-    // Auto-rotation effect
-    useEffect(() => {
-        if (isPaused || displayBanners.length <= 1) return;
-
-        const interval = setInterval(() => {
-            nextSlide();
-        }, 5000); // Rotate every 5 seconds
-
-        return () => clearInterval(interval);
-    }, [isPaused, nextSlide, displayBanners.length]);
-
     if (displayBanners.length === 0) return null;
 
     return (
-        <section className="container-custom pt-4 md:pt-8 group"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-        >
+        <section className="container-custom pt-4 md:pt-8 group hero-carousel">
             {/* Preload the first banner image for LCP */}
             {displayBanners[0]?.image && (
                 <link
@@ -90,141 +67,157 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                     as="image"
                 />
             )}
-            <div className="w-full">
-                <div className="relative overflow-hidden rounded-2xl bg-surface-light dark:bg-surface-dark min-h-[500px] sm:min-h-[550px] md:min-h-[550px]">
-                    {/* Slides */}
-                    {displayBanners.map((banner, index) => (
-                        <div
-                            key={banner.id}
-                            className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
-                                }`}
-                        >
-                            {/* Mobile Layout: Full background image with overlay content */}
-                            <div className="md:hidden relative w-full h-full">
-                                {/* Image Container */}
-                                <div className="absolute inset-0 w-full h-full bg-gray-50 dark:bg-white/5">
-                                    <Image
-                                        src={banner.image.trim()}
-                                        alt={getBannerTitle(banner)}
-                                        className="object-cover"
-                                        fill
-                                        priority={index === 0}
-                                        sizes="100vw"
-                                        quality={85}
-                                    />
-                                    {/* Subtle overlay for text readability on mobile */}
-                                    <div className="absolute inset-0 bg-black/20"></div>
-                                </div>
-
-                                {/* Content Overlay */}
-                                <div className={`relative z-10 h-full flex flex-col justify-end items-start p-6 sm:p-8 pb-8 sm:pb-10`}>
-                                    <div className={`transition-all duration-700 delay-300 transform ${index === currentIndex ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                                        }`}>
-                                        <span className="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-wider mb-3">
-                                            {banner.badge || t('home.newArrival')}
-                                        </span>
-                                        <h2 className="text-3xl sm:text-4xl font-extrabold leading-[1.1] tracking-tight text-white mb-3 drop-shadow-lg">
-                                            {getBannerTitle(banner)}
-                                        </h2>
-                                        <p className="text-sm sm:text-base text-white/90 max-w-md mb-5 line-clamp-3 drop-shadow">
-                                            {getBannerSubtitle(banner) || t('footer.brandDescription')}
-                                        </p>
-                                        <Link
-                                            href={banner.link || "/products"}
-                                            className="px-6 sm:px-8 py-3 sm:py-3.5  bg-primary hover:bg-primary/90 text-white rounded-full font-bold text-sm transition-all flex items-center gap-2 w-fit group/btn shadow-lg "
-                                        >
-                                            {dir === 'rtl' && (
-                                                <MdArrowForward className="text-lg group-hover/btn:-translate-x-1 transition-transform" />
-                                            )}
-                                            {banner.buttonText || t('home.shopNow')}
-                                            {dir !== 'rtl' && (
-                                                <MdArrowForward className="text-lg group-hover/btn:translate-x-1 transition-transform" />
-                                            )}
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Desktop Layout: dir="ltr" so flex order is physical (left/right) in both LTR and RTL docs */}
-                            <div className="hidden md:flex flex-row items-center h-full" dir="ltr">
-                                {/* Hero Content — in RTL: order-2 = right; in LTR: order-1 = left */}
-                                <div className={`w-full md:w-1/2 p-12 lg:p-20 flex flex-col justify-center gap-6 z-10 h-full relative ${dir === 'rtl' ? 'order-2 items-end text-right' : 'order-1 items-start text-left'}`}>
-                                    {/* Content Transition Wrapper — in RTL full width so button can sit at end */}
-                                    <div className={`transition-all duration-700 delay-300 transform ${index === currentIndex ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                                        } ${dir === 'rtl' ? 'w-full flex flex-col items-end' : ''}`}>
-                                        <span className="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-4">
-                                            {banner.badge || t('home.newArrival')}
-                                        </span>
-                                        <h2 className="text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-text-main-light dark:text-text-main-dark mb-4">
-                                            {getBannerTitle(banner)}
-                                        </h2>
-                                        <p className="text-lg text-text-muted-light dark:text-text-muted-dark max-w-md mb-6">
-                                            {getBannerSubtitle(banner) || t('footer.brandDescription')}
-                                        </p>
-                                        <Link
-                                            href={banner.link || "/products"}
-                                            className={`px-8 py-3.5 bg-primary hover:bg-primary/90 text-white rounded-full font-bold text-sm transition-all flex items-center gap-2 w-fit group/btn ${dir === 'rtl' ? 'self-end' : ''}`}
-                                        >
-                                            {banner.buttonText || t('home.shopNow')}
-                                            <MdArrowForward className={`text-lg group-hover/btn:translate-x-1 transition-transform ${dir === 'rtl' ? ' group-hover/btn:-translate-x-1' : ''}`} />
-                                        </Link>
-                                    </div>
-                                </div>
-
-                                {/* Hero Image — order-1 in RTL so it appears on the left */}
-                                <div className={`w-full md:w-1/2 h-full relative ${dir === 'rtl' ? 'order-1' : 'order-2'}`}>
-                                    <div className="w-full h-full bg-gray-50 dark:bg-white/5 relative">
+            <div className="w-full relative">
+                <div className="relative overflow-hidden rounded-2xl bg-surface-light dark:bg-surface-dark h-[500px] sm:h-[550px] md:h-[600px]">
+                    <Swiper
+                        modules={[Autoplay, Navigation, Pagination]}
+                        spaceBetween={0}
+                        slidesPerView={1}
+                        loop={displayBanners.length > 1}
+                        speed={1000}
+                        autoplay={{
+                            delay: 5000,
+                            disableOnInteraction: false,
+                            pauseOnMouseEnter: true
+                        }}
+                        pagination={{
+                            clickable: true,
+                            bulletActiveClass: 'swiper-pagination-bullet-active !bg-primary !w-8 !rounded-full',
+                            bulletClass: 'swiper-pagination-bullet !bg-gray-300 !opacity-100 transition-all duration-300'
+                        }}
+                        navigation={{
+                            nextEl: '.swiper-button-next-hero',
+                            prevEl: '.swiper-button-prev-hero',
+                        }}
+                        className="h-full w-full !h-full"
+                    >
+                        {displayBanners.map((banner, index) => (
+                            <SwiperSlide key={banner.id} className="h-full w-full relative bg-surface-light dark:bg-surface-dark !h-full">
+                                {/* Mobile Layout: Full background image with overlay content */}
+                                <div className="md:hidden relative w-full h-full">
+                                    {/* Image Container */}
+                                    <div className="absolute inset-0 w-full h-full bg-gray-50 dark:bg-white/5">
                                         <Image
                                             src={banner.image.trim()}
                                             alt={getBannerTitle(banner)}
-                                            className="object-cover transition-transform duration-1000 ease-in-out group-hover:scale-105"
+                                            className="object-cover"
+                                            fill
+                                            priority={index === 0}
+                                            sizes="100vw"
+                                            quality={90}
+                                        />
+                                        {/* Subtle overlay for text readability on mobile */}
+                                        <div className="absolute inset-0 bg-black/20"></div>
+                                    </div>
+
+                                    {/* Content Overlay */}
+                                    <div className={`relative z-10 h-full flex flex-col justify-end items-start p-6 sm:p-8 pb-16`}>
+                                        <div className="animate-fadeInUp">
+                                            <span className="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-wider mb-3">
+                                                {banner.badge || t('home.newArrival')}
+                                            </span>
+                                            <h2 className="text-3xl sm:text-4xl font-extrabold leading-[1.1] tracking-tight text-white mb-3 drop-shadow-lg">
+                                                {getBannerTitle(banner)}
+                                            </h2>
+                                            <p className="text-sm sm:text-base text-white/90 max-w-md mb-5 line-clamp-3 drop-shadow">
+                                                {getBannerSubtitle(banner) || t('footer.brandDescription')}
+                                            </p>
+                                            <Link
+                                                href={banner.link || "/products"}
+                                                className="px-6 sm:px-8 py-3 sm:py-3.5 bg-primary hover:bg-primary/90 text-white rounded-full font-bold text-sm transition-all flex items-center gap-2 w-fit group/btn shadow-lg"
+                                            >
+                                                {dir === 'rtl' && (
+                                                    <MdArrowForward className="text-lg group-hover/btn:-translate-x-1 transition-transform" />
+                                                )}
+                                                {banner.buttonText || t('home.shopNow')}
+                                                {dir !== 'rtl' && (
+                                                    <MdArrowForward className="text-lg group-hover/btn:translate-x-1 transition-transform" />
+                                                )}
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Desktop Layout: Split Layout */}
+                                <div className="hidden md:flex flex-row items-center h-full w-full" dir="ltr">
+                                    {/* Text Side - 50% */}
+                                    <div className={`w-1/2 h-full flex flex-col justify-center p-12 lg:p-20 relative z-10 
+                                        ${dir === 'rtl' ? 'order-2 text-right items-end bg-[#2d161e]' : 'order-1 text-left items-start bg-[#2d161e]'}
+                                        text-white
+                                    `}>
+                                        <div className={`animate-fadeInUp w-full max-w-xl ${dir === 'rtl' ? 'flex flex-col items-end' : ''}`}>
+                                            <span className="inline-block py-1 px-3 rounded-full bg-white/10 text-primary text-xs font-bold uppercase tracking-wider mb-4">
+                                                {banner.badge || t('home.newArrival')}
+                                            </span>
+                                            <h2 className="text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight mb-4 text-white">
+                                                {getBannerTitle(banner)}
+                                            </h2>
+                                            <p className="text-lg text-white/80 max-w-md mb-8 leading-relaxed">
+                                                {getBannerSubtitle(banner) || t('footer.brandDescription')}
+                                            </p>
+                                            <Link
+                                                href={banner.link || "/products"}
+                                                className={`px-8 py-3.5 bg-primary hover:bg-primary/90 text-white rounded-full font-bold text-sm transition-all flex items-center gap-2 w-fit group/btn shadow-lg`}
+                                            >
+                                                {banner.buttonText || t('home.shopNow')}
+                                                <MdArrowForward className={`text-lg group-hover/btn:translate-x-1 transition-transform ${dir === 'rtl' ? ' group-hover/btn:-translate-x-1' : ''}`} />
+                                            </Link>
+                                        </div>
+                                    </div>
+
+                                    {/* Image Side - 50% */}
+                                    <div className={`w-1/2 h-full relative ${dir === 'rtl' ? 'order-1' : 'order-2'}`}>
+                                        <Image
+                                            src={banner.image.trim()}
+                                            alt={getBannerTitle(banner)}
+                                            className="object-cover"
                                             fill
                                             priority={index === 0}
                                             sizes="50vw"
+                                            quality={90}
                                         />
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    ))}
+                            </SwiperSlide>
+                        ))}
+                    </Swiper>
 
                     {/* Navigation Controls - Only show if more than 1 banner */}
                     {displayBanners.length > 1 && (
                         <>
-                            {/* Arrows */}
                             <button
-                                onClick={prevSlide}
-                                className={`absolute ${dir === 'rtl' ? 'right-4 rotate-180' : 'left-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100`}
+                                className={`swiper-button-prev-hero absolute ${dir === 'rtl' ? 'right-4 rotate-180' : 'left-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm flex items-center justify-center text-white transition-all opacity-0 group-hover:opacity-100 border border-white/30`}
                                 aria-label="Previous slide"
                             >
-                                <MdChevronLeft />
+                                <MdChevronLeft className="text-2xl" />
                             </button>
                             <button
-                                onClick={nextSlide}
-                                className={`absolute ${dir === 'rtl' ? 'left-4 rotate-180' : 'right-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-text-main dark:text-white hover:bg-white dark:hover:bg-black transition-all opacity-0 group-hover:opacity-100`}
+                                className={`swiper-button-next-hero absolute ${dir === 'rtl' ? 'left-4 rotate-180' : 'right-4'} top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm flex items-center justify-center text-white transition-all opacity-0 group-hover:opacity-100 border border-white/30`}
                                 aria-label="Next slide"
                             >
-                                <MdChevronRight />
+                                <MdChevronRight className="text-2xl" />
                             </button>
-
-                            {/* Dots */}
-                            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-                                {displayBanners.map((_, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => goToSlide(index)}
-                                        className={`w-2 h-2 rounded-full transition-all ${index === currentIndex
-                                            ? 'w-8 bg-primary'
-                                            : 'bg-white/50 hover:bg-white/80'
-                                            }`}
-                                        aria-label={`Go to slide ${index + 1}`}
-                                    />
-                                ))}
-                            </div>
                         </>
                     )}
                 </div>
             </div>
+            
+            {/* Custom Styles for Swiper Pagination */}
+            <style jsx global>{`
+                .hero-carousel .swiper-pagination {
+                    bottom: 24px !important;
+                }
+                /* Adjust pagination color for split layout on desktop */
+                @media (min-width: 768px) {
+                    .hero-carousel .swiper-pagination-bullet {
+                        background: rgba(255, 255, 255, 0.5) !important;
+                    }
+                    .hero-carousel .swiper-pagination-bullet-active {
+                        background: #ee2b6c !important; /* Primary color */
+                        opacity: 1 !important;
+                    }
+                }
+            `}</style>
         </section>
     );
 };
