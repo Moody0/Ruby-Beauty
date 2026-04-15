@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import React from 'react';
 import AddToCartButton from './AddToCartButton';
-import { getSafeImageUrl } from '@/lib/image-utils';
+import ResilientImage from '@/app/components/ResilientImage';
+import { getPrimaryImage } from '@/lib/image-utils';
 
 interface Product {
     id: string;
@@ -23,6 +24,8 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, t, language }: ProductCardProps) => {
+    const primaryImage = getPrimaryImage(product.images);
+
     return (
         <div className="group relative flex flex-col gap-3 p-2 rounded-2xl transition-all duration-300 hover:bg-white dark:hover:bg-white/5 premium-shadow-hover">
             <Link href={`/products/${product.slug}`} className="relative aspect-4/4 w-full overflow-hidden rounded-xl !bg-white block border border-[#e6dbdf] dark:border-gray-800/50 shadow-sm">
@@ -34,10 +37,10 @@ const ProductCard = ({ product, t, language }: ProductCardProps) => {
                         -{Math.round((1 - Number(product.discountPrice) / Number(product.price)) * 100)}%
                     </span>
                 )}
-                <img
+                <ResilientImage
                     alt={product.name}
                     className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
-                    src={getSafeImageUrl(product.images.split(',').map((img: string) => img.trim()).filter(Boolean)[0])}
+                    src={primaryImage}
                     loading={product.isTrending ? "eager" : "lazy"}
                 />
                 <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="desktop" />

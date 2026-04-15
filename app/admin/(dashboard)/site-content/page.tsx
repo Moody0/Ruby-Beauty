@@ -1,4 +1,4 @@
-import { getSiteSettings } from "../../../../lib/admin-actions";
+import { getAdminCategories, getSiteSettings } from "../../../../lib/admin-actions";
 import SiteContentClient from "./SiteContentClient";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -11,7 +11,18 @@ export default async function SiteContentPage() {
         redirect('/admin/dashboard');
     }
 
-    const siteSettings = await getSiteSettings();
+    const [siteSettings, categoriesData] = await Promise.all([
+        getSiteSettings(),
+        getAdminCategories(1, 500),
+    ]);
     
-    return <SiteContentClient initialSettings={siteSettings} />;
+    return (
+        <SiteContentClient
+            initialSettings={siteSettings}
+            categories={categoriesData.categories.map((category) => ({
+                id: category.id,
+                name: category.name,
+            }))}
+        />
+    );
 }

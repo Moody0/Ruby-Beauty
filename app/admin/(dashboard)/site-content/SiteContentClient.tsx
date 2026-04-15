@@ -7,6 +7,12 @@ import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import { updateSiteSettings } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { useLanguage } from "@/app/context/LanguageContext";
+import FooterContentSection from "./FooterContentSection";
+
+interface FooterCategoryOption {
+    id: string;
+    name: string;
+}
 
 interface SiteSettings {
     id: string;
@@ -15,6 +21,43 @@ interface SiteSettings {
     categoriesCtaTitleAr: string | null;
     categoriesCtaDescAr: string | null;
     categoriesCtaImage: string | null;
+    footerBrandTitle: string | null;
+    footerBrandTitleAr: string | null;
+    footerBrandDescription: string | null;
+    footerBrandDescriptionAr: string | null;
+    footerCopyright: string | null;
+    footerCopyrightAr: string | null;
+    footerInstagramUrl: string | null;
+    footerFacebookUrl: string | null;
+    footerWhatsappUrl: string | null;
+    footerShopTitle: string | null;
+    footerShopTitleAr: string | null;
+    footerSupportTitle: string | null;
+    footerSupportTitleAr: string | null;
+    footerCompanyTitle: string | null;
+    footerCompanyTitleAr: string | null;
+    footerSupportLink1Label: string | null;
+    footerSupportLink1LabelAr: string | null;
+    footerSupportLink1Url: string | null;
+    footerSupportLink2Label: string | null;
+    footerSupportLink2LabelAr: string | null;
+    footerSupportLink2Url: string | null;
+    footerSupportLink3Label: string | null;
+    footerSupportLink3LabelAr: string | null;
+    footerSupportLink3Url: string | null;
+    footerCompanyLink1Label: string | null;
+    footerCompanyLink1LabelAr: string | null;
+    footerCompanyLink1Url: string | null;
+    footerCompanyLink2Label: string | null;
+    footerCompanyLink2LabelAr: string | null;
+    footerCompanyLink2Url: string | null;
+    footerCompanyLink3Label: string | null;
+    footerCompanyLink3LabelAr: string | null;
+    footerCompanyLink3Url: string | null;
+    footerCategory1Id: string | null;
+    footerCategory2Id: string | null;
+    footerCategory3Id: string | null;
+    footerCategory4Id: string | null;
     shippingTitle: string | null;
     shippingDesc: string | null;
     shippingTitleAr: string | null;
@@ -73,9 +116,11 @@ interface SiteSettings {
 }
 
 export default function SiteContentClient({ 
-    initialSettings 
+    initialSettings,
+    categories,
 }: { 
-    initialSettings: SiteSettings | null
+    initialSettings: SiteSettings | null;
+    categories: FooterCategoryOption[];
 }) {
     const { t } = useLanguage();
     const { openSidebar } = useAdminSidebar();
@@ -86,6 +131,45 @@ export default function SiteContentClient({
     const [ctaTitleAr, setCtaTitleAr] = useState(initialSettings?.categoriesCtaTitleAr || "");
     const [ctaDescAr, setCtaDescAr] = useState(initialSettings?.categoriesCtaDescAr || "");
     const [ctaImage, setCtaImage] = useState(initialSettings?.categoriesCtaImage || "");
+    const [footerContent, setFooterContent] = useState({
+        footerBrandTitle: initialSettings?.footerBrandTitle || "",
+        footerBrandTitleAr: initialSettings?.footerBrandTitleAr || "",
+        footerBrandDescription: initialSettings?.footerBrandDescription || "",
+        footerBrandDescriptionAr: initialSettings?.footerBrandDescriptionAr || "",
+        footerCopyright: initialSettings?.footerCopyright || "",
+        footerCopyrightAr: initialSettings?.footerCopyrightAr || "",
+        footerInstagramUrl: initialSettings?.footerInstagramUrl || "",
+        footerFacebookUrl: initialSettings?.footerFacebookUrl || "",
+        footerWhatsappUrl: initialSettings?.footerWhatsappUrl || "",
+        footerShopTitle: initialSettings?.footerShopTitle || "",
+        footerShopTitleAr: initialSettings?.footerShopTitleAr || "",
+        footerSupportTitle: initialSettings?.footerSupportTitle || "",
+        footerSupportTitleAr: initialSettings?.footerSupportTitleAr || "",
+        footerCompanyTitle: initialSettings?.footerCompanyTitle || "",
+        footerCompanyTitleAr: initialSettings?.footerCompanyTitleAr || "",
+        footerSupportLink1Label: initialSettings?.footerSupportLink1Label || "",
+        footerSupportLink1LabelAr: initialSettings?.footerSupportLink1LabelAr || "",
+        footerSupportLink1Url: initialSettings?.footerSupportLink1Url || "",
+        footerSupportLink2Label: initialSettings?.footerSupportLink2Label || "",
+        footerSupportLink2LabelAr: initialSettings?.footerSupportLink2LabelAr || "",
+        footerSupportLink2Url: initialSettings?.footerSupportLink2Url || "",
+        footerSupportLink3Label: initialSettings?.footerSupportLink3Label || "",
+        footerSupportLink3LabelAr: initialSettings?.footerSupportLink3LabelAr || "",
+        footerSupportLink3Url: initialSettings?.footerSupportLink3Url || "",
+        footerCompanyLink1Label: initialSettings?.footerCompanyLink1Label || "",
+        footerCompanyLink1LabelAr: initialSettings?.footerCompanyLink1LabelAr || "",
+        footerCompanyLink1Url: initialSettings?.footerCompanyLink1Url || "",
+        footerCompanyLink2Label: initialSettings?.footerCompanyLink2Label || "",
+        footerCompanyLink2LabelAr: initialSettings?.footerCompanyLink2LabelAr || "",
+        footerCompanyLink2Url: initialSettings?.footerCompanyLink2Url || "",
+        footerCompanyLink3Label: initialSettings?.footerCompanyLink3Label || "",
+        footerCompanyLink3LabelAr: initialSettings?.footerCompanyLink3LabelAr || "",
+        footerCompanyLink3Url: initialSettings?.footerCompanyLink3Url || "",
+        footerCategory1Id: initialSettings?.footerCategory1Id || "",
+        footerCategory2Id: initialSettings?.footerCategory2Id || "",
+        footerCategory3Id: initialSettings?.footerCategory3Id || "",
+        footerCategory4Id: initialSettings?.footerCategory4Id || "",
+    });
 
     // Site Settings State - About Us
     const [aboutHeroTitle, setAboutHeroTitle] = useState(initialSettings?.aboutHeroTitle || "");
@@ -139,6 +223,13 @@ export default function SiteContentClient({
 
     const [isSubmittingSettings, setIsSubmittingSettings] = useState(false);
 
+    const handleFooterFieldChange = (field: string, value: string) => {
+        setFooterContent((current) => ({
+            ...current,
+            [field]: value,
+        }));
+    };
+
     const handleSiteSettingsSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmittingSettings(true);
@@ -150,6 +241,11 @@ export default function SiteContentClient({
                 categoriesCtaTitleAr: ctaTitleAr,
                 categoriesCtaDescAr: ctaDescAr,
                 categoriesCtaImage: ctaImage,
+                ...footerContent,
+                footerCategory1Id: footerContent.footerCategory1Id || null,
+                footerCategory2Id: footerContent.footerCategory2Id || null,
+                footerCategory3Id: footerContent.footerCategory3Id || null,
+                footerCategory4Id: footerContent.footerCategory4Id || null,
                 shippingTitle,
                 shippingDesc,
                 shippingTitleAr,
@@ -212,6 +308,32 @@ export default function SiteContentClient({
                 <div className="max-w-4xl mx-auto">
                     {/* Site Content Settings */}
                     <div className="space-y-8">
+                        <form onSubmit={handleSiteSettingsSubmit} className="space-y-6">
+                            <FooterContentSection
+                                footerContent={footerContent}
+                                categories={categories}
+                                onFieldChange={handleFooterFieldChange}
+                                t={t}
+                            />
+
+                            <div className="flex justify-end">
+                                <button
+                                    type="submit"
+                                    disabled={isSubmittingSettings}
+                                    className="min-w-[200px] rounded-xl bg-primary px-8 py-3 font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    {isSubmittingSettings ? (
+                                        <span className="flex items-center justify-center gap-2">
+                                            <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                            {t('admin.saving')}
+                                        </span>
+                                    ) : (
+                                        t('admin.saveChanges')
+                                    )}
+                                </button>
+                            </div>
+                        </form>
+
                         {/* Categories Page CTA */}
                         <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#e6dbdf] dark:border-gray-700 p-8">
                             <div className="mb-8">

@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { MdSearch, MdArrowForward, MdSearchOff } from 'react-icons/md';
+import ResilientImage from './ResilientImage';
+import { getPrimaryImage } from '@/lib/image-utils';
 
 interface HeaderSearchProps {
     onSearchSelect?: () => void;
@@ -99,8 +101,8 @@ const HeaderSearch = ({ onSearchSelect, placeholder, autoFocus = false, locale }
                                     className="flex items-center gap-4 p-2 hover:bg-background-light dark:hover:bg-gray-800 rounded-lg group/item transition-all"
                                 >
                                     <div className="shrink-0 size-12 rounded-lg bg-gray-100 overflow-hidden">
-                                        <img
-                                            src={product.images ? product.images.split(',').map((img: string) => img.trim()).filter(Boolean)[0] : ''}
+                                        <ResilientImage
+                                            src={getPrimaryImage(product.images)}
                                             alt={product.name}
                                             className="w-full h-full object-cover"
                                         />

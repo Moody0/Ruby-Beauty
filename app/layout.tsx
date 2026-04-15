@@ -11,7 +11,13 @@ const rubik = Rubik({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
+const metadataBase =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  process.env.NEXTAUTH_URL ||
+  "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(metadataBase),
   title: {
     default: "Ruby Beauty - Premium Botanical Skincare Store",
     template: "%s | Ruby Beauty"

@@ -6,6 +6,7 @@ import { getSafeImageUrl } from '@/lib/image-utils';
 interface Category {
     id: string;
     name: string;
+    slug: string;
     description: string | null;
     image: string | null;
 }
@@ -36,7 +37,7 @@ const Categories = ({ categories, t, dir }: CategoriesProps) => {
                     {categories.map((category) => (
                         <Link
                             key={category.id}
-                            href={`/products?category=${category.id}`}
+                            href={`/categories/${category.slug}`}
                             className="group flex flex-col gap-3 p-2 rounded-2xl transition-all duration-300 hover:bg-white dark:hover:bg-white/5 premium-shadow-hover"
                         >
                             <div className="relative aspect-4/4 w-full overflow-hidden rounded-xl bg-gray-100 dark:bg-white/5">

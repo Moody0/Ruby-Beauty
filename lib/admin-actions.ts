@@ -3,6 +3,7 @@
 import { prisma } from "./prisma";
 import { revalidatePath } from "next/cache";
 import { OrderStatus, Prisma } from "@prisma/client";
+import { generateUniqueCategorySlug } from "./category-utils";
 
 interface ProductInput {
     name: string;
@@ -486,9 +487,12 @@ export async function deleteOrder(id: string) {
 
 export async function createCategory(data: CategoryInput) {
     try {
+        const slug = await generateUniqueCategorySlug(data.name);
+
         const category = await prisma.category.create({
             data: {
                 name: data.name,
+                slug,
                 description: data.description,
                 image: data.image,
                 isFeatured: data.isFeatured ?? false,
@@ -497,6 +501,9 @@ export async function createCategory(data: CategoryInput) {
 
         revalidatePath('/admin/categories');
         revalidatePath('/admin/products');
+        revalidatePath('/');
+        revalidatePath('/categories');
+        revalidatePath('/products');
 
         return {
             success: true,
@@ -514,10 +521,13 @@ export async function createCategory(data: CategoryInput) {
 
 export async function updateCategory(id: string, data: CategoryInput) {
     try {
+        const slug = await generateUniqueCategorySlug(data.name, id);
+
         const category = await prisma.category.update({
             where: { id },
             data: {
                 name: data.name,
+                slug,
                 description: data.description,
                 image: data.image,
                 isFeatured: data.isFeatured,
@@ -526,6 +536,9 @@ export async function updateCategory(id: string, data: CategoryInput) {
 
         revalidatePath('/admin/categories');
         revalidatePath('/admin/products');
+        revalidatePath('/');
+        revalidatePath('/categories');
+        revalidatePath('/products');
 
         return {
             success: true,
@@ -557,6 +570,9 @@ export async function deleteCategory(id: string) {
 
         revalidatePath('/admin/categories');
         revalidatePath('/admin/products');
+        revalidatePath('/');
+        revalidatePath('/categories');
+        revalidatePath('/products');
         return { success: true };
     } catch (error) {
         console.error("Failed to delete category:", error);
@@ -573,6 +589,8 @@ export async function toggleCategoryFeatured(id: string, isFeatured: boolean) {
 
         revalidatePath('/');
         revalidatePath('/admin/categories');
+        revalidatePath('/categories');
+        revalidatePath('/products');
         return { success: true };
     } catch (error) {
         console.error("Failed to toggle category featured status:", error);
@@ -716,8 +734,12 @@ export async function bulkCreateProducts(products: any[]) {
             let categoryId = categoryMap.get(categoryName);
 
             if (!categoryId) {
+                const categoryLabel = p.Category || 'Uncategorized';
                 const newCat = await prisma.category.create({
-                    data: { name: p.Category || 'Uncategorized' }
+                    data: {
+                        name: categoryLabel,
+                        slug: await generateUniqueCategorySlug(categoryLabel),
+                    }
                 });
                 categoryMap.set(categoryName, newCat.id);
                 categoryId = newCat.id;
@@ -1135,6 +1157,43 @@ export async function getSiteSettings() {
                 categoriesCtaTitleAr: "هل تحتاجين إلى نصيحة الخبراء؟",
                 categoriesCtaDescAr: "مستشارو التجميل لدينا هنا لمساعدتك في العثور على المنتجات المثالية لنوع بشرتك واحتياجاتها.",
                 categoriesCtaImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuC-S_GMsoebb73JIEWcxtvH2G-vVgkfypE8ysWpGMNiiiwyTno8rIbMCpHR-fsa76ZQL49aYswb7bGZh-kgwc6z9lv0VwUSUrStxNWz2qU3RuIb75ShOMAKZMRyrOXZHZjEBgtxfW7r97FEEshOkEd2MqgE6FpGYrmKa8msLtMOQxXBsmhr3ZGGEtL7jpzgMYbgrAXhiHcMfCspdvD5FRNuSbgFY9_xGqcJM9KbgG0MoC4Ie4WkkmCR4FsuavfglcnY13G2ADZxlK8F",
+                footerBrandTitle: "Ruby Beauty",
+                footerBrandTitleAr: "Ruby Beauty",
+                footerBrandDescription: "Premium botanical skincare designed to reveal your natural radiance. Cruelty-free, vegan, and sustainable.",
+                footerBrandDescriptionAr: "منتجات عناية بالبشرة نباتية فاخرة مصممة لإظهار إشراقتك الطبيعية. خالية من القسوة، نباتية ومستدامة.",
+                footerCopyright: "© 2026 Ruby Beauty. All rights reserved.",
+                footerCopyrightAr: "© 2026 روبي بيوتي. جميع الحقوق محفوظة.",
+                footerInstagramUrl: "https://www.instagram.com/ruby.beauty.sy",
+                footerFacebookUrl: "https://www.facebook.com/share/1HzXdo7sLG/?mibextid=wwXIfr",
+                footerWhatsappUrl: "https://wa.me/963933254796",
+                footerShopTitle: "Shop",
+                footerShopTitleAr: "المتجر",
+                footerSupportTitle: "Support",
+                footerSupportTitleAr: "الدعم",
+                footerCompanyTitle: "Company",
+                footerCompanyTitleAr: "الشركة",
+                footerSupportLink1Label: "Help Center",
+                footerSupportLink1LabelAr: "مركز المساعدة",
+                footerSupportLink1Url: "https://wa.me/963933254796",
+                footerSupportLink2Label: "Shipping & Returns",
+                footerSupportLink2LabelAr: "الشحن والإرجاع",
+                footerSupportLink2Url: "/shipping-returns",
+                footerSupportLink3Label: "Contact Us",
+                footerSupportLink3LabelAr: "اتصل بنا",
+                footerSupportLink3Url: "https://wa.me/963933254796",
+                footerCompanyLink1Label: "About Us",
+                footerCompanyLink1LabelAr: "من نحن",
+                footerCompanyLink1Url: "/about-us",
+                footerCompanyLink2Label: "",
+                footerCompanyLink2LabelAr: "",
+                footerCompanyLink2Url: "",
+                footerCompanyLink3Label: "",
+                footerCompanyLink3LabelAr: "",
+                footerCompanyLink3Url: "",
+                footerCategory1Id: null,
+                footerCategory2Id: null,
+                footerCategory3Id: null,
+                footerCategory4Id: null,
                 shippingTitle: "Fast & Reliable Shipping",
                 shippingDesc: "We ensure your beauty essentials reach you in perfect condition, wherever you are in the world.",
                 shippingTitleAr: "شحن سريع وموثوق",
@@ -1214,6 +1273,43 @@ export async function updateSiteSettings(data: {
     categoriesCtaTitleAr?: string;
     categoriesCtaDescAr?: string;
     categoriesCtaImage?: string;
+    footerBrandTitle?: string;
+    footerBrandTitleAr?: string;
+    footerBrandDescription?: string;
+    footerBrandDescriptionAr?: string;
+    footerCopyright?: string;
+    footerCopyrightAr?: string;
+    footerInstagramUrl?: string;
+    footerFacebookUrl?: string;
+    footerWhatsappUrl?: string;
+    footerShopTitle?: string;
+    footerShopTitleAr?: string;
+    footerSupportTitle?: string;
+    footerSupportTitleAr?: string;
+    footerCompanyTitle?: string;
+    footerCompanyTitleAr?: string;
+    footerSupportLink1Label?: string;
+    footerSupportLink1LabelAr?: string;
+    footerSupportLink1Url?: string;
+    footerSupportLink2Label?: string;
+    footerSupportLink2LabelAr?: string;
+    footerSupportLink2Url?: string;
+    footerSupportLink3Label?: string;
+    footerSupportLink3LabelAr?: string;
+    footerSupportLink3Url?: string;
+    footerCompanyLink1Label?: string;
+    footerCompanyLink1LabelAr?: string;
+    footerCompanyLink1Url?: string;
+    footerCompanyLink2Label?: string;
+    footerCompanyLink2LabelAr?: string;
+    footerCompanyLink2Url?: string;
+    footerCompanyLink3Label?: string;
+    footerCompanyLink3LabelAr?: string;
+    footerCompanyLink3Url?: string;
+    footerCategory1Id?: string | null;
+    footerCategory2Id?: string | null;
+    footerCategory3Id?: string | null;
+    footerCategory4Id?: string | null;
     shippingTitle?: string;
     shippingDesc?: string;
     shippingTitleAr?: string;
@@ -1264,9 +1360,11 @@ export async function updateSiteSettings(data: {
             }
         });
 
+        revalidatePath('/', 'layout');
         revalidatePath('/categories');
         revalidatePath('/shipping-returns');
         revalidatePath('/about-us');
+        revalidatePath('/products');
         revalidatePath('/admin/site-content');
         return { success: true };
     } catch (error) {

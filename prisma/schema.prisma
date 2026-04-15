@@ -30,6 +30,7 @@ model User {
 model Category {
   id          String    @id @default(cuid())
   name        String    @unique
+  slug        String    @unique
   description String?
   image       String?
   createdAt   DateTime  @default(now())
@@ -127,6 +128,45 @@ model Settings {
   categoriesCtaTitleAr String? @default("هل تحتاجين إلى نصيحة الخبراء؟")
   categoriesCtaDescAr  String? @default("مستشارو التجميل لدينا هنا لمساعدتك في العثور على المنتجات المثالية لنوع بشرتك واحتياجاتها.")
   categoriesCtaImage   String? @default("https://lh3.googleusercontent.com/aida-public/AB6AXuC-S_GMsoebb73JIEWcxtvH2G-vVgkfypE8ysWpGMNiiiwyTno8rIbMCpHR-fsa76ZQL49aYswb7bGZh-kgwc6z9lv0VwUSUrStxNWz2qU3RuIb75ShOMAKZMRyrOXZHZjEBgtxfW7r97FEEshOkEd2MqgE6FpGYrmKa8msLtMOQxXBsmhr3ZGGEtL7jpzgMYbgrAXhiHcMfCspdvD5FRNuSbgFY9_xGqcJM9KbgG0MoC4Ie4WkkmCR4FsuavfglcnY13G2ADZxlK8F")
+
+  // Footer Content
+  footerBrandTitle         String? @default("Ruby Beauty")
+  footerBrandTitleAr       String? @default("Ruby Beauty")
+  footerBrandDescription   String? @default("Premium botanical skincare designed to reveal your natural radiance. Cruelty-free, vegan, and sustainable.")
+  footerBrandDescriptionAr String? @default("منتجات عناية بالبشرة نباتية فاخرة مصممة لإظهار إشراقتك الطبيعية. خالية من القسوة، نباتية ومستدامة.")
+  footerCopyright          String? @default("© 2026 Ruby Beauty. All rights reserved.")
+  footerCopyrightAr        String? @default("© 2026 روبي بيوتي. جميع الحقوق محفوظة.")
+  footerInstagramUrl       String? @default("https://www.instagram.com/ruby.beauty.sy")
+  footerFacebookUrl        String? @default("https://www.facebook.com/share/1HzXdo7sLG/?mibextid=wwXIfr")
+  footerWhatsappUrl        String? @default("https://wa.me/963933254796")
+  footerShopTitle          String? @default("Shop")
+  footerShopTitleAr        String? @default("المتجر")
+  footerSupportTitle       String? @default("Support")
+  footerSupportTitleAr     String? @default("الدعم")
+  footerCompanyTitle       String? @default("Company")
+  footerCompanyTitleAr     String? @default("الشركة")
+  footerSupportLink1Label   String? @default("Help Center")
+  footerSupportLink1LabelAr String? @default("مركز المساعدة")
+  footerSupportLink1Url     String? @default("https://wa.me/963933254796")
+  footerSupportLink2Label   String? @default("Shipping & Returns")
+  footerSupportLink2LabelAr String? @default("الشحن والإرجاع")
+  footerSupportLink2Url     String? @default("/shipping-returns")
+  footerSupportLink3Label   String? @default("Contact Us")
+  footerSupportLink3LabelAr String? @default("اتصل بنا")
+  footerSupportLink3Url     String? @default("https://wa.me/963933254796")
+  footerCompanyLink1Label   String? @default("About Us")
+  footerCompanyLink1LabelAr String? @default("من نحن")
+  footerCompanyLink1Url     String? @default("/about-us")
+  footerCompanyLink2Label   String?
+  footerCompanyLink2LabelAr String?
+  footerCompanyLink2Url     String?
+  footerCompanyLink3Label   String?
+  footerCompanyLink3LabelAr String?
+  footerCompanyLink3Url     String?
+  footerCategory1Id         String?
+  footerCategory2Id         String?
+  footerCategory3Id         String?
+  footerCategory4Id         String?
   
   // Shipping & Returns Page Content
   shippingTitle        String? @default("Fast & Reliable Shipping")

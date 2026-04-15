@@ -7,31 +7,49 @@ import { MdKeyboardArrowDown } from 'react-icons/md';
 interface ProductsHeaderProps {
     sort: string;
     setSort: (val: string) => void;
+    activeCategory?: {
+        name: string;
+        description: string | null;
+        image: string | null;
+    } | null;
 }
 
-const ProductsHeader = ({ sort, setSort }: ProductsHeaderProps) => {
+const ProductsHeader = ({ sort, setSort, activeCategory = null }: ProductsHeaderProps) => {
     const { t } = useLanguage();
+    const title = activeCategory?.name || t('products.allProducts');
+    const description = activeCategory?.description || (activeCategory ? t('products.categoryDescriptionFallback') : t('products.allProductsDescription'));
+    const eyebrow = activeCategory ? t('products.categoryCollection') : t('products.catalogEyebrow');
 
     return (
-        <div className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end border-b border-[#f4f0f2] pb-6 dark:border-white/10">
-            <div className="flex max-w-2xl flex-col gap-2">
-                <h1 className="text-4xl font-bold tracking-tight text-[#181113] dark:text-white">{t('products.allProducts')}</h1>
-                <p className="text-base text-gray-500 dark:text-gray-400">{t('footer.brandDescription')}</p>
+        <div className="mb-8 flex flex-col gap-6 border-b border-[#ece2e5] pb-6 dark:border-white/10 lg:flex-row lg:items-end lg:justify-between">
+            <div className="min-w-0 max-w-3xl">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#8a6c75] dark:text-white/45">
+                    {eyebrow}
+                </p>
+                <h1 className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-[#171214] dark:text-white md:text-5xl">
+                    {title}
+                </h1>
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-[#6e5b61] dark:text-white/62 md:text-base">
+                    {description}
+                </p>
             </div>
-            <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap">{t('products.sortBy')}:</span>
+
+            <div className="flex items-center gap-3 self-start lg:self-end">
+                <span className="text-sm font-medium text-[#7b676f] dark:text-white/55 whitespace-nowrap">
+                    {t('products.sortBy')}:
+                </span>
                 <div className="relative">
                     <select
                         value={sort}
                         onChange={(e) => setSort(e.target.value)}
-                        className="appearance-none rounded-lg border border-[#e6dbdf] bg-background-light px-4 py-2.5 ltr:pr-10 rtl:pl-10 text-sm font-bold text-[#181113] focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:bg-background-dark dark:border-white/10 dark:text-white cursor-pointer min-w-[160px]"
+                        className="min-w-[180px] cursor-pointer appearance-none rounded-full border border-[#ddd2d6] bg-white px-4 py-3 text-sm font-medium text-[#181113] focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary ltr:pr-10 rtl:pl-10 dark:border-white/10 dark:bg-[#221d20] dark:text-white"
                     >
                         <option value="best_sellers">{t('products.bestSellers')}</option>
                         <option value="Price: Low to High">{t('products.priceLowHigh')}</option>
                         <option value="Price: High to Low">{t('products.priceHighLow')}</option>
                         <option value="Newest Arrivals">{t('products.newestArrivals')}</option>
                     </select>
-                    <MdKeyboardArrowDown className="absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none text-xl" />
+                    <MdKeyboardArrowDown className="absolute top-1/2 -translate-y-1/2 pointer-events-none text-xl text-gray-500 ltr:right-3 rtl:left-3" />
                 </div>
             </div>
         </div>

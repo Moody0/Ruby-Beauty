@@ -7,8 +7,16 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { MdMenu, MdClose, MdHome, MdShoppingCart, MdCategory, MdExpandMore, MdInfo, MdSearch } from 'react-icons/md';
 import HeaderSearch from './HeaderSearch';
 
+interface MobileCategory {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+    image: string | null;
+}
+
 interface MobileMenuProps {
-    initialCategories: any[];
+    initialCategories: MobileCategory[];
 }
 
 const MobileMenu = ({ initialCategories }: MobileMenuProps) => {
@@ -16,7 +24,7 @@ const MobileMenu = ({ initialCategories }: MobileMenuProps) => {
     const pathname = usePathname();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-    const [categories, setCategories] = useState<any[]>(initialCategories);
+    const [categories, setCategories] = useState<MobileCategory[]>(initialCategories);
     const [categorySearch, setCategorySearch] = useState('');
     const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
 
@@ -39,7 +47,7 @@ const MobileMenu = ({ initialCategories }: MobileMenuProps) => {
         const fetchCategories = async () => {
             try {
                 const res = await fetch('/api/categories?limit=20');
-                const data = await res.json();
+                const data: MobileCategory[] = await res.json();
                 setCategories(data);
             } catch (error) {
                 console.error('Failed to fetch categories:', error);
@@ -48,7 +56,7 @@ const MobileMenu = ({ initialCategories }: MobileMenuProps) => {
         fetchCategories();
     }, [initialCategories]);
 
-    const filteredCategories = categories.filter((c: any) => {
+    const filteredCategories = categories.filter((c) => {
         if (!categorySearch) return true;
         return c.name.toLowerCase().includes(categorySearch.toLowerCase());
     });
@@ -136,10 +144,10 @@ const MobileMenu = ({ initialCategories }: MobileMenuProps) => {
                                     placeholder={t('common.search')}
                                     className="w-full mb-2 px-3 py-2 rounded-lg border border-[#eae6e8] dark:border-white/10 bg-white dark:bg-surface-dark"
                                 />
-                                {filteredCategories.map((category: any) => (
+                                {filteredCategories.map((category) => (
                                     <Link
                                         key={category.id}
-                                        href={`/products?category=${category.name}`}
+                                        href={`/categories/${category.slug}`}
                                         onClick={() => {
                                             setIsMobileMenuOpen(false);
                                             setIsCategoriesExpanded(false);

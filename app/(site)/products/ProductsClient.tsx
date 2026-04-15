@@ -1,20 +1,21 @@
 "use client";
 
-import { useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
-import ProductsBreadcrumbs from '@/app/components/ProductsPageComponents/ProductsBreadcrumbs';
-import ProductsHeader from '@/app/components/ProductsPageComponents/ProductsHeader';
-import ProductsSidebar from '@/app/components/ProductsPageComponents/ProductsSidebar';
-import ProductCard from '@/app/components/ProductsPageComponents/ProductCard';
-import ProductSkeleton from '@/app/components/ProductsPageComponents/ProductSkeleton';
-import LoadMoreButton from '@/app/components/ProductsPageComponents/LoadMoreButton';
-import { useLanguage } from '@/app/context/LanguageContext';
-import { MdSearchOff } from 'react-icons/md';
+import React, { useEffect, useState } from "react";
+import ProductsBreadcrumbs from "@/app/components/ProductsPageComponents/ProductsBreadcrumbs";
+import ProductsHeader from "@/app/components/ProductsPageComponents/ProductsHeader";
+import CategorySelector from "@/app/components/ProductsPageComponents/CategorySelector";
+import ProductCard from "@/app/components/ProductsPageComponents/ProductCard";
+import ProductSkeleton from "@/app/components/ProductsPageComponents/ProductSkeleton";
+import LoadMoreButton from "@/app/components/ProductsPageComponents/LoadMoreButton";
+import { useLanguage } from "@/app/context/LanguageContext";
+import { MdSearchOff } from "react-icons/md";
 
 interface Category {
     id: string;
     name: string;
+    slug: string;
     description: string | null;
+    image: string | null;
 }
 
 interface Product {
@@ -34,75 +35,47 @@ interface ProductsClientProps {
     initialCategories: Category[];
     initialProducts: Product[];
     initialTotal: number;
+    activeCategory?: Category | null;
 }
 
-const ProductsClient = ({ initialCategories, initialProducts, initialTotal }: ProductsClientProps) => {
-    const searchParams = useSearchParams();
-    const initialCategoryId = searchParams.get('category');
+const ProductsClient = ({
+    initialCategories,
+    initialProducts,
+    initialTotal,
+    activeCategory = null,
+}: ProductsClientProps) => {
     const { t, language } = useLanguage();
-
-    const [categories, setCategories] = useState<Category[]>(initialCategories);
     const [products, setProducts] = useState<Product[]>(initialProducts);
-    
-    // Initialize selectedCategoryIds from initialCategoryId if it matches a category ID or name
-    const [selectedCategoryIds, setSelectedCategoryIds] = useState<Set<string>>(() => {
-        const set = new Set<string>();
-        if (initialCategoryId && initialCategories.length > 0) {
-            const matchedCategory = initialCategories.find(
-                (cat) => cat.name.toLowerCase() === initialCategoryId.toLowerCase() || cat.id === initialCategoryId
-            );
-            if (matchedCategory) {
-                set.add(matchedCategory.id);
-            }
-        }
-        return set;
-    });
-
     const [sort, setSort] = useState("best_sellers");
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [totalProducts, setTotalProducts] = useState(initialTotal);
     const [isInitialRender, setIsInitialRender] = useState(true);
 
-    // No longer need this useEffect as we initialize in useState
-    /*
-    useEffect(() => {
-        if (initialCategoryId && categories.length > 0) {
-            const matchedCategory = categories.find(
-                (cat) => cat.name.toLowerCase() === initialCategoryId.toLowerCase() || cat.id === initialCategoryId
-            );
-            if (matchedCategory) {
-                setSelectedCategoryIds(new Set([matchedCategory.id]));
-            }
-        }
-    }, [initialCategoryId, categories]);
-    */
-
     const fetchProducts = async (reset = false) => {
         if (reset) {
             setProducts([]);
         }
+
         setLoading(true);
+
         try {
             const currentPage = reset ? 1 : page;
-            const categoryQuery = selectedCategoryIds.size > 0
-                ? `&categoryIds=${Array.from(selectedCategoryIds).join(',')}`
-                : '';
+            const categoryQuery = activeCategory ? `&categoryIds=${activeCategory.id}` : "";
 
-            let sortQuery = '';
-            if (sort === 'Price: Low to High') sortQuery = '&sort=price_asc';
-            else if (sort === 'Price: High to Low') sortQuery = '&sort=price_desc';
-            else if (sort === 'Newest Arrivals') sortQuery = '&sort=newest';
+            let sortQuery = "";
+            if (sort === "Price: Low to High") sortQuery = "&sort=price_asc";
+            else if (sort === "Price: High to Low") sortQuery = "&sort=price_desc";
+            else if (sort === "Newest Arrivals") sortQuery = "&sort=newest";
 
-            const dynamicLimit = 12;
+            const response = await fetch(`/api/products?page=${currentPage}&limit=12${categoryQuery}${sortQuery}`);
 
-            const res = await fetch(`/api/products?page=${currentPage}&limit=${dynamicLimit}${categoryQuery}${sortQuery}`);
-            if (res.ok) {
-                const data = await res.json();
+            if (response.ok) {
+                const data = await response.json();
                 if (reset) {
                     setProducts(data.products);
                 } else {
-                    setProducts(prev => [...prev, ...data.products]);
+                    setProducts((previousProducts) => [...previousProducts, ...data.products]);
                 }
                 setTotalProducts(data.pagination.total);
             }
@@ -113,22 +86,20 @@ const ProductsClient = ({ initialCategories, initialProducts, initialTotal }: Pr
         }
     };
 
-    // Refetch when filters change, but skip the very first render if we already have initial products
     useEffect(() => {
         if (isInitialRender) {
             setIsInitialRender(false);
-            // If we have filters on initial render that differ from the server-side default, we might need to fetch
-            if (selectedCategoryIds.size > 0 || sort !== "best_sellers") {
+            if (sort !== "best_sellers") {
                 setPage(1);
                 fetchProducts(true);
             }
             return;
         }
-        
+
         setPage(1);
         fetchProducts(true);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedCategoryIds, sort]);
+    }, [sort]);
 
     useEffect(() => {
         if (page > 1) {
@@ -137,62 +108,54 @@ const ProductsClient = ({ initialCategories, initialProducts, initialTotal }: Pr
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
 
-    const handleCategoryToggle = (id: string) => {
-        const newSet = new Set(selectedCategoryIds);
-        if (newSet.has(id)) {
-            newSet.delete(id);
-        } else {
-            newSet.add(id);
-        }
-        setSelectedCategoryIds(newSet);
-    };
-
     const handleLoadMore = () => {
-        setPage(prev => prev + 1);
+        setPage((previousPage) => previousPage + 1);
     };
 
     return (
-        <div className="flex-1 container-custom py-8">
-            <ProductsBreadcrumbs />
+        <div className="flex-1 container-custom py-8 md:py-10">
+            <ProductsBreadcrumbs activeCategory={activeCategory} />
 
-            <ProductsHeader sort={sort} setSort={setSort} />
+            <ProductsHeader sort={sort} setSort={setSort} activeCategory={activeCategory} />
 
-            <div className="flex flex-col gap-10 lg:flex-row">
-                <ProductsSidebar
-                    categories={categories}
-                    selectedCategoryIds={selectedCategoryIds}
-                    handleCategoryToggle={handleCategoryToggle}
-                />
+            <CategorySelector categories={initialCategories} activeCategory={activeCategory} />
 
-                <div className="flex-1">
-                    <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">
-                        {t('products.showing')} {products.length} {t('products.of')} {totalProducts} {t('products.results')}
-                    </p>
+            <div className="flex-1">
+                <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">
+                    {t("products.showing")} {products.length} {t("products.of")} {totalProducts} {t("products.results")}
+                </p>
 
-                    {products.length === 0 && !loading && (
-                        <div className="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-xl dark:bg-white/5">
-                            <MdSearchOff className="text-4xl text-gray-400 mb-2" />
-                            <p className="text-gray-500 font-medium">{t('products.noProducts')}</p>
+                {products.length === 0 && !loading && (
+                    <div className="flex flex-col items-center justify-center rounded-[28px] border border-dashed border-[#eadfe2] bg-[#fff8fa] px-6 py-20 text-center dark:border-white/10 dark:bg-white/5">
+                        <div className="mb-4 rounded-full bg-white p-4 shadow-sm dark:bg-white/10">
+                            <MdSearchOff className="text-4xl text-gray-400" />
                         </div>
-                    )}
-
-                    <div className="grid grid-cols-2 gap-x-2 gap-y-6 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
-                        {products.map(product => (
-                            <ProductCard key={product.id} product={product} t={t} language={language} />
-                        ))}
-                        {loading && (
-                            [...Array(products.length > 0 ? 5 : 12)].map((_, i) => (
-                                <ProductSkeleton key={`skeleton-${i}`} />
-                            ))
+                        <p className="text-lg font-semibold text-[#22171b] dark:text-white">
+                            {activeCategory ? t("products.noProductsInCategory") : t("products.noProducts")}
+                        </p>
+                        {activeCategory && (
+                            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                                {activeCategory.name}
+                            </p>
                         )}
                     </div>
+                )}
 
-                    <LoadMoreButton
-                        handleLoadMore={handleLoadMore}
-                        loading={loading}
-                        hasMore={products.length < totalProducts}
-                    />
+                <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
+                    {products.map((product) => (
+                        <ProductCard key={product.id} product={product} t={t} language={language} />
+                    ))}
+                    {loading &&
+                        [...Array(products.length > 0 ? 5 : 12)].map((_, index) => (
+                            <ProductSkeleton key={`skeleton-${index}`} />
+                        ))}
                 </div>
+
+                <LoadMoreButton
+                    handleLoadMore={handleLoadMore}
+                    loading={loading}
+                    hasMore={products.length < totalProducts}
+                />
             </div>
         </div>
     );

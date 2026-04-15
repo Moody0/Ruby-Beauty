@@ -46,7 +46,7 @@ export default async function NotFound() {
         </div>
       </main>
 
-      <Footer t={t} />
+      <Footer t={t} language={language} />
     </div>
   );
 }

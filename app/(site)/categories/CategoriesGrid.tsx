@@ -9,6 +9,7 @@ import { getSafeImageUrl } from '@/lib/image-utils';
 interface Category {
     id: string;
     name: string;
+    slug: string;
     description: string | null;
     image: string | null;
 }
@@ -35,7 +36,7 @@ const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
                 {visibleCategories.map((category) => (
                     <Link
                         key={category.id}
-                        href={`/products?category=${category.id}`}
+                        href={`/categories/${category.slug}`}
                         className="group flex flex-col gap-5 p-2 rounded-2xl bg-surface-light dark:bg-surface-dark border border-transparent hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all animate-in fade-in zoom-in-95 duration-500"
                     >
                         <div className="relative aspect-16/10 overflow-hidden rounded-xl bg-background-light dark:bg-background-dark">

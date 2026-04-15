@@ -12,12 +12,14 @@ export async function GET(request: Request) {
 
         const categories = await prisma.category.findMany({
             ...(take && { take }),
-            orderBy: {
-                createdAt: "asc",
-            },
+            orderBy: [
+                { isFeatured: "desc" },
+                { name: "asc" },
+            ],
             select: {
                 id: true,
                 name: true,
+                slug: true,
                 description: true,
                 image: true,
             },

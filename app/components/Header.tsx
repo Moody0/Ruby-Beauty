@@ -3,18 +3,25 @@ import React from 'react';
 import ThemeToggle from './ThemeToggle';
 import HeaderSearch from './HeaderSearch';
 import LanguageToggle from './LanguageToggle';
-import { MdMenu, MdSearch } from 'react-icons/md';
 import MobileMenu from './MobileMenu';
 import CartTrigger from './CartTrigger';
 
+interface HeaderCategory {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+    image: string | null;
+}
+
 interface HeaderProps {
-    initialCategories?: any[];
+    initialCategories?: HeaderCategory[];
     t: (key: string) => string;
     dir: 'ltr' | 'rtl';
     language: 'en' | 'ar';
 }
 
-const Header = ({ initialCategories = [], t, dir, language }: HeaderProps) => {
+const Header = ({ initialCategories = [], t }: HeaderProps) => {
     return (
         <header className="sticky top-0 z-50 w-full bg-surface-light dark:bg-surface-dark border-b border-[#f4f0f2] dark:border-white/10 transition-all duration-300">
             <div className="container-custom py-4">

@@ -1,21 +1,11 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { prisma } from "@/lib/prisma";
 import { getI18n } from "@/lib/i18n";
+import { getCatalogCategories } from "@/lib/catalog";
 
 async function getCategories() {
     try {
-        const categories = await prisma.category.findMany({
-            take: 20,
-            select: {
-                id: true,
-                name: true,
-            },
-            orderBy: {
-                name: 'asc'
-            }
-        });
-        return categories;
+        return await getCatalogCategories();
     } catch (error) {
         console.error("Failed to fetch categories for header:", error);
         return [];
@@ -36,7 +26,7 @@ export default async function SiteLayout({
             <main className="flex-1">
                 {children}
             </main>
-            <Footer t={t} />
+            <Footer t={t} language={language} />
         </div>
     );
 }
