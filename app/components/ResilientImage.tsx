@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { getImageSourceCandidates, IMAGE_PLACEHOLDER_SRC } from "@/lib/image-utils";
 
 interface ResilientImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src"> {
@@ -23,6 +23,7 @@ const ResilientImage = ({
         () => getImageSourceCandidates(src, fallbackSrc),
         [fallbackSrc, src]
     );
+    const imageRef = useRef<HTMLImageElement | null>(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -33,6 +34,14 @@ const ResilientImage = ({
 
     const currentSrc = candidates[currentIndex] || fallbackSrc;
 
+    useEffect(() => {
+        const imageElement = imageRef.current;
+
+        if (imageElement?.complete && imageElement.naturalWidth > 0) {
+            setIsLoaded(true);
+        }
+    }, [currentSrc]);
+
     return (
         <span className="relative block h-full w-full overflow-hidden">
             <span
@@ -42,10 +51,11 @@ const ResilientImage = ({
                 } ${skeletonClassName || ""}`}
             />
             <img
+                ref={imageRef}
                 {...imgProps}
                 alt={alt}
                 src={currentSrc}
-                className={`${className || ""} transition-opacity duration-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}
+                className={`${className || ""} block transition-opacity duration-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}
                 onLoad={(event) => {
                     setIsLoaded(true);
                     onLoad?.(event);
