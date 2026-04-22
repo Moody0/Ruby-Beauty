@@ -1,17 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import ProductCard from '../ProductsPageComponents/ProductCard';
 import Link from 'next/link';
 import { MdChevronRight, MdChevronLeft } from 'react-icons/md';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, FreeMode } from 'swiper/modules';
 import { useLanguage } from '@/app/context/LanguageContext';
-
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/free-mode';
 
 interface Product {
     id: string;
@@ -32,6 +25,21 @@ interface OnSaleProductsProps {
 
 const OnSaleProducts = ({ products }: OnSaleProductsProps) => {
     const { t, dir, language } = useLanguage();
+    const railRef = useRef<HTMLDivElement | null>(null);
+
+    const scrollRail = (direction: 'prev' | 'next') => {
+        const rail = railRef.current;
+
+        if (!rail) {
+            return;
+        }
+
+        const amount = Math.max(rail.clientWidth * 0.8, 320);
+        rail.scrollBy({
+            left: direction === 'next' ? amount : -amount,
+            behavior: 'smooth',
+        });
+    };
 
     if (!products || products.length === 0) {
         return null;
@@ -48,66 +56,37 @@ const OnSaleProducts = ({ products }: OnSaleProductsProps) => {
                         {t('common.viewAll')} <MdChevronRight className={`text-sm ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                     </Link>
                 </div>
-                
-                <div className="relative -mx-4 px-4 sm:mx-0 sm:px-0">
-                    <Swiper
-                        modules={[Navigation, FreeMode]}
-                        spaceBetween={12}
-                        slidesPerView={'auto'}
-                        freeMode={true}
-                        navigation={{
-                            nextEl: '.swiper-button-next-sale',
-                            prevEl: '.swiper-button-prev-sale',
-                            disabledClass: 'opacity-0 cursor-auto pointer-events-none'
-                        }}
-                        breakpoints={{
-                            // Mobile - Free scrolling
-                            320: {
-                                slidesPerView: 'auto',
-                                spaceBetween: 12,
-                                freeMode: true,
-                                slidesPerGroup: 1
-                            },
-                            480: {
-                                slidesPerView: 'auto',
-                                spaceBetween: 16,
-                                freeMode: true,
-                                slidesPerGroup: 1
-                            },
-                            // Tablet - Scroll by group
-                            640: {
-                                slidesPerView: 3,
-                                spaceBetween: 20,
-                                freeMode: false,
-                                slidesPerGroup: 3
-                            },
-                            // Desktop - Scroll by 4
-                            1024: {
-                                slidesPerView: 4,
-                                spaceBetween: 24,
-                                freeMode: false,
-                                slidesPerGroup: 4
-                            }
-                        }}
-                        className="!pb-4 !px-1"
-                    >
-                        {products.map((product) => (
-                            <SwiperSlide key={product.id} className="!h-auto !w-[179px]">
-                                <ProductCard product={product} t={t} language={language} variant="compact" />
-                            </SwiperSlide>
-                        ))}
-                    </Swiper>
 
-                    {/* Navigation Buttons - Hidden on Mobile */}
-                    <button 
-                        className={`swiper-button-prev-sale absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white dark:bg-surface-dark shadow-lg flex items-center justify-center text-text-main dark:text-white hover:bg-primary hover:text-white transition-all duration-300 opacity-0 group-hover/section:opacity-100 disabled:opacity-0 disabled:cursor-not-allowed hidden md:flex ${dir === 'rtl' ? '-right-5 rotate-180' : '-left-5'}`}
-                        aria-label="Previous slide"
+                <div className="relative">
+                    <div
+                        ref={railRef}
+                        className="-mx-4 overflow-x-auto px-4 scrollbar-hide sm:mx-0 sm:px-0"
+                    >
+                        <div className="flex snap-x snap-mandatory gap-4 pb-2 md:gap-5">
+                        {products.map((product) => (
+                            <div
+                                key={product.id}
+                                className="w-[189px] min-w-[189px] flex-none snap-start md:w-[216px] md:min-w-[216px]"
+                            >
+                                <ProductCard product={product} t={t} language={language} variant="compact" />
+                            </div>
+                        ))}
+                        </div>
+                    </div>
+
+                    <button
+                        className={`hidden md:flex absolute top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main shadow-lg transition hover:bg-primary hover:text-white dark:bg-surface-dark ${dir === 'rtl' ? '-right-5' : '-left-5'}`}
+                        aria-label="Scroll previous sale products"
+                        onClick={() => scrollRail(dir === 'rtl' ? 'next' : 'prev')}
+                        type="button"
                     >
                         <MdChevronLeft className="text-2xl" />
                     </button>
-                    <button 
-                        className={`swiper-button-next-sale absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white dark:bg-surface-dark shadow-lg flex items-center justify-center text-text-main dark:text-white hover:bg-primary hover:text-white transition-all duration-300 opacity-0 group-hover/section:opacity-100 disabled:opacity-0 disabled:cursor-not-allowed hidden md:flex ${dir === 'rtl' ? '-left-5 rotate-180' : '-right-5'}`}
-                        aria-label="Next slide"
+                    <button
+                        className={`hidden md:flex absolute top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main shadow-lg transition hover:bg-primary hover:text-white dark:bg-surface-dark ${dir === 'rtl' ? '-left-5' : '-right-5'}`}
+                        aria-label="Scroll next sale products"
+                        onClick={() => scrollRail(dir === 'rtl' ? 'prev' : 'next')}
+                        type="button"
                     >
                         <MdChevronRight className="text-2xl" />
                     </button>

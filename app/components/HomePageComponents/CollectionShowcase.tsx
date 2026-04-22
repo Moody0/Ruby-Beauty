@@ -29,13 +29,16 @@ const CollectionShowcase = ({ sections, t, dir, language }: CollectionShowcasePr
                 {sections.map((section, index) => {
                     const theme = panelThemes[index % panelThemes.length];
                     const reverseOnLarge = index % 2 === 1;
+                    const desktopGrid = reverseOnLarge
+                        ? "lg:grid-cols-[1.28fr_0.72fr]"
+                        : "lg:grid-cols-[0.72fr_1.28fr]";
 
                     return (
                         <article
                             key={section.category.id}
                             className={`overflow-hidden rounded-[2rem] border ${theme} premium-shadow`}
                         >
-                            <div className="grid gap-8 p-5 md:p-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-center lg:gap-10 lg:p-10">
+                            <div className={`grid gap-8 p-5 md:p-8 lg:items-center lg:gap-10 lg:p-10 ${desktopGrid}`}>
                                 <div className={`flex flex-col justify-center ${reverseOnLarge ? "lg:order-2" : ""}`}>
                                     <div className="lg:rounded-[1.6rem] lg:border lg:border-white/70 lg:bg-white/50 lg:p-8 dark:lg:border-white/10 dark:lg:bg-white/5">
                                         <div className="flex items-start justify-between gap-3 sm:items-center lg:flex-col lg:items-start lg:gap-5">
@@ -94,7 +97,7 @@ const CollectionShowcase = ({ sections, t, dir, language }: CollectionShowcasePr
                                     {section.products.map((product) => (
                                         <div
                                             key={product.id}
-                                            className="w-[179px] min-w-[179px] flex-none snap-start"
+                                            className="w-[189px] min-w-[189px] flex-none snap-start"
                                         >
                                             <ProductCard product={product} t={t} language={language} variant="compact" />
                                         </div>
