@@ -65,6 +65,31 @@ export default async function RootLayout({
   return (
     <html lang={language} dir={dir} suppressHydrationWarning className={rubik.variable}>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function () {
+                var root = document.documentElement;
+                var finished = false;
+                var finish = function () {
+                  if (finished) return;
+                  finished = true;
+                  root.classList.remove('app-loading');
+                  root.classList.add('app-loaded');
+                };
+                root.classList.add('app-loading');
+                if (document.readyState === 'complete') {
+                  finish();
+                } else {
+                  window.addEventListener('load', function () {
+                    requestAnimationFrame(finish);
+                  }, { once: true });
+                  window.setTimeout(finish, 7000);
+                }
+              })();
+            `,
+          }}
+        />
         <link
           rel="preload"
           as="image"
@@ -76,9 +101,17 @@ export default async function RootLayout({
         className={`${rubik.className} antialiased`}
         suppressHydrationWarning
       >
-        <Providers session={session}>
-          {children}
-        </Providers>
+        <div id="initial-page-loader" aria-hidden="true">
+          <div className="initial-page-loader__panel">
+            <div className="initial-page-loader__spinner" />
+            <p className="initial-page-loader__brand">Ruby Beauty</p>
+          </div>
+        </div>
+        <div id="app-shell">
+          <Providers session={session}>
+            {children}
+          </Providers>
+        </div>
       </body>
     </html>
   );

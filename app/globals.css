@@ -103,6 +103,74 @@
   }
 }
 
+html.app-loading body {
+  overflow: hidden;
+}
+
+#initial-page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at top right, rgba(238, 43, 108, 0.16), transparent 34%),
+    linear-gradient(180deg, rgba(255, 250, 252, 0.98), rgba(248, 246, 246, 0.98));
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.dark #initial-page-loader {
+  background:
+    radial-gradient(circle at top right, rgba(238, 43, 108, 0.18), transparent 32%),
+    linear-gradient(180deg, rgba(34, 16, 22, 0.98), rgba(24, 13, 17, 0.98));
+}
+
+html.app-loading #initial-page-loader {
+  opacity: 1;
+  visibility: visible;
+}
+
+.initial-page-loader__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.initial-page-loader__spinner {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  border: 3px solid rgba(238, 43, 108, 0.18);
+  border-top-color: #ee2b6c;
+  animation: ruby-spin 0.9s linear infinite;
+}
+
+.initial-page-loader__brand {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--text-main);
+}
+
+#app-shell {
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}
+
+html.app-loading #app-shell {
+  opacity: 0;
+}
+
+@keyframes ruby-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Custom scrollbar for better aesthetics */
 ::-webkit-scrollbar {
   width: 8px;

@@ -32,6 +32,12 @@ const CollectionShowcase = ({ sections, t, dir, language }: CollectionShowcasePr
                     const desktopGrid = reverseOnLarge
                         ? "lg:grid-cols-[1.28fr_0.72fr]"
                         : "lg:grid-cols-[0.72fr_1.28fr]";
+                    const contentAlignment = reverseOnLarge
+                        ? "lg:items-end lg:text-right"
+                        : "lg:items-start lg:text-left";
+                    const contentStackAlignment = reverseOnLarge
+                        ? "lg:items-end"
+                        : "lg:items-start";
 
                     return (
                         <article
@@ -39,9 +45,9 @@ const CollectionShowcase = ({ sections, t, dir, language }: CollectionShowcasePr
                             className={`overflow-hidden rounded-[2rem] border ${theme} premium-shadow`}
                         >
                             <div className={`grid gap-8 p-5 md:p-8 lg:items-center lg:gap-10 lg:p-10 ${desktopGrid}`}>
-                                <div className={`flex flex-col justify-center ${reverseOnLarge ? "lg:order-2" : ""}`}>
-                                    <div className="lg:rounded-[1.6rem] lg:border lg:border-white/70 lg:bg-white/50 lg:p-8 dark:lg:border-white/10 dark:lg:bg-white/5">
-                                        <div className="flex items-start justify-between gap-3 sm:items-center lg:flex-col lg:items-start lg:gap-5">
+                                <div className={`flex flex-col justify-center ${reverseOnLarge ? "lg:order-2" : ""} ${contentAlignment}`}>
+                                    <div className={`w-full lg:max-w-[420px] lg:rounded-[1.6rem] lg:border lg:border-white/70 lg:bg-white/50 lg:p-8 dark:lg:border-white/10 dark:lg:bg-white/5 ${reverseOnLarge ? "ltr:lg:ml-auto rtl:lg:mr-auto" : ""}`}>
+                                        <div className={`flex items-start justify-between gap-3 sm:items-center lg:flex-col lg:gap-5 ${contentStackAlignment}`}>
                                             <h2 className="flex-1 text-3xl font-extrabold tracking-tight text-text-main-light dark:text-text-main-dark md:text-4xl xl:text-[2.8rem]">
                                                 {section.category.name}
                                             </h2>
@@ -54,7 +60,7 @@ const CollectionShowcase = ({ sections, t, dir, language }: CollectionShowcasePr
                                             </Link>
                                         </div>
 
-                                        <div className="mt-3 lg:mt-6">
+                                        <div className={`mt-3 lg:mt-6 ${reverseOnLarge ? "lg:text-right" : ""}`}>
                                             <span className="inline-flex rounded-full bg-black/5 px-3 py-1 text-sm font-medium text-text-muted-light dark:bg-white/10 dark:text-text-muted-dark">
                                                 {section.category.productCount} {t("home.productsLabel")}
                                             </span>

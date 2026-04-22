@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React from 'react';
 import ProductCard from '../ProductsPageComponents/ProductCard';
 import Link from 'next/link';
 import { MdChevronRight, MdChevronLeft } from 'react-icons/md';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { useProductRail } from './useProductRail';
 
 interface Product {
     id: string;
@@ -25,21 +26,7 @@ interface OnSaleProductsProps {
 
 const OnSaleProducts = ({ products }: OnSaleProductsProps) => {
     const { t, dir, language } = useLanguage();
-    const railRef = useRef<HTMLDivElement | null>(null);
-
-    const scrollRail = (direction: 'prev' | 'next') => {
-        const rail = railRef.current;
-
-        if (!rail) {
-            return;
-        }
-
-        const amount = Math.max(rail.clientWidth * 0.8, 320);
-        rail.scrollBy({
-            left: direction === 'next' ? amount : -amount,
-            behavior: 'smooth',
-        });
-    };
+    const { railRef, canScrollLeft, canScrollRight, scrollLeft, scrollRight } = useProductRail(dir);
 
     if (!products || products.length === 0) {
         return null;
@@ -74,22 +61,26 @@ const OnSaleProducts = ({ products }: OnSaleProductsProps) => {
                         </div>
                     </div>
 
-                    <button
-                        className={`hidden md:flex absolute top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main shadow-lg transition hover:bg-primary hover:text-white dark:bg-surface-dark ${dir === 'rtl' ? '-right-5' : '-left-5'}`}
-                        aria-label="Scroll previous sale products"
-                        onClick={() => scrollRail(dir === 'rtl' ? 'next' : 'prev')}
-                        type="button"
-                    >
-                        <MdChevronLeft className="text-2xl" />
-                    </button>
-                    <button
-                        className={`hidden md:flex absolute top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main shadow-lg transition hover:bg-primary hover:text-white dark:bg-surface-dark ${dir === 'rtl' ? '-left-5' : '-right-5'}`}
-                        aria-label="Scroll next sale products"
-                        onClick={() => scrollRail(dir === 'rtl' ? 'prev' : 'next')}
-                        type="button"
-                    >
-                        <MdChevronRight className="text-2xl" />
-                    </button>
+                    {canScrollLeft && (
+                        <button
+                            className="hidden md:flex absolute left-[-20px] top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main shadow-lg transition hover:bg-primary hover:text-white dark:bg-surface-dark"
+                            aria-label="Scroll left through sale products"
+                            onClick={scrollLeft}
+                            type="button"
+                        >
+                            <MdChevronLeft className="text-2xl" />
+                        </button>
+                    )}
+                    {canScrollRight && (
+                        <button
+                            className="hidden md:flex absolute right-[-20px] top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main shadow-lg transition hover:bg-primary hover:text-white dark:bg-surface-dark"
+                            aria-label="Scroll right through sale products"
+                            onClick={scrollRight}
+                            type="button"
+                        >
+                            <MdChevronRight className="text-2xl" />
+                        </button>
+                    )}
                 </div>
             </div>
         </section>
