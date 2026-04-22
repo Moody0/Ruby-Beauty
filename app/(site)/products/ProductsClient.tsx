@@ -5,7 +5,7 @@ import ProductsBreadcrumbs from "@/app/components/ProductsPageComponents/Product
 import ProductsHeader from "@/app/components/ProductsPageComponents/ProductsHeader";
 import CategorySelector from "@/app/components/ProductsPageComponents/CategorySelector";
 import ProductCard from "@/app/components/ProductsPageComponents/ProductCard";
-import ProductSkeleton from "@/app/components/ProductsPageComponents/ProductSkeleton";
+
 import LoadMoreButton from "@/app/components/ProductsPageComponents/LoadMoreButton";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { MdSearchOff } from "react-icons/md";
@@ -53,10 +53,7 @@ const ProductsClient = ({
     const [isInitialRender, setIsInitialRender] = useState(true);
 
     const fetchProducts = async (reset = false) => {
-        if (reset) {
-            setProducts([]);
-        }
-
+        // Removed clearing products to avoid empty state without skeletons
         setLoading(true);
 
         try {
@@ -145,10 +142,7 @@ const ProductsClient = ({
                     {products.map((product) => (
                         <ProductCard key={product.id} product={product} t={t} language={language} />
                     ))}
-                    {loading &&
-                        [...Array(products.length > 0 ? 5 : 12)].map((_, index) => (
-                            <ProductSkeleton key={`skeleton-${index}`} />
-                        ))}
+                    {/* Removed ProductSkeleton per user request */}
                 </div>
 
                 <LoadMoreButton

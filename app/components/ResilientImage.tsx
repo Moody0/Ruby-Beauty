@@ -44,12 +44,7 @@ const ResilientImage = ({
 
     return (
         <span className="relative block h-full w-full overflow-hidden">
-            <span
-                aria-hidden="true"
-                className={`absolute inset-0 animate-pulse bg-[#f4ecef] dark:bg-white/5 transition-opacity duration-300 ${
-                    isLoaded ? "opacity-0" : "opacity-100"
-                } ${skeletonClassName || ""}`}
-            />
+
             <img
                 ref={imageRef}
                 {...imgProps}

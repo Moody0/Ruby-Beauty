@@ -10,7 +10,7 @@ const HeroCarousel = dynamic(() => import('./HeroCarousel'), {
 });
 
 const OnSaleProducts = dynamic(() => import('./OnSaleProducts'), {
-    loading: () => <div className="h-[400px] animate-pulse bg-gray-100 dark:bg-white/5 rounded-2xl mx-4 my-8" />,
+    loading: () => <div className="h-[400px] bg-gray-100 dark:bg-white/5 rounded-2xl mx-4 my-8" />,
     ssr: true,
 });
 

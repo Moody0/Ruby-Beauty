@@ -19,23 +19,20 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-    // Initialize language from localStorage immediately (synchronous)
-    const getInitialLanguage = (): Language => {
-        if (typeof window === 'undefined') return 'en';
-        const savedLang = localStorage.getItem('language') as Language;
-        return (savedLang === 'en' || savedLang === 'ar') ? savedLang : 'en';
-    };
-
-    const [language, setLanguageState] = useState<Language>(getInitialLanguage);
+    const [language, setLanguageState] = useState<Language>('en');
     const [translations, setTranslations] = useState<TranslationObject | null>(null);
     const [mounted, setMounted] = useState(false);
 
-    // Load language preference and set mounted flag
+    // Load language preference from localStorage on mount
     useEffect(() => {
+        const savedLang = localStorage.getItem('language') as Language;
+        if (savedLang && (savedLang === 'en' || savedLang === 'ar')) {
+            setLanguageState(savedLang);
+        }
         setMounted(true);
     }, []);
 
-    // Load translations dynamically - this happens immediately on mount
+    // Load translations dynamically
     useEffect(() => {
         const loadTranslations = async () => {
             try {
@@ -100,14 +97,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
     return (
         <LanguageContext.Provider value={{ language, setLanguage, t, dir, isLoaded: !!translations }}>
-            <div 
-                key={language} 
-                dir={dir}
-                style={{ 
-                    opacity: translations ? 1 : 0,
-                    transition: 'opacity 0.15s ease-in'
-                }}
-            >
+            <div key={language} dir={dir}>
                 {children}
             </div>
         </LanguageContext.Provider>
