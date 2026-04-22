@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Rubik } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import InitialLoadGate from "./components/InitialLoadGate";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getI18n } from "@/lib/i18n";
@@ -70,22 +71,7 @@ export default async function RootLayout({
             __html: `
               (function () {
                 var root = document.documentElement;
-                var finished = false;
-                var finish = function () {
-                  if (finished) return;
-                  finished = true;
-                  root.classList.remove('app-loading');
-                  root.classList.add('app-loaded');
-                };
                 root.classList.add('app-loading');
-                if (document.readyState === 'complete') {
-                  finish();
-                } else {
-                  window.addEventListener('load', function () {
-                    requestAnimationFrame(finish);
-                  }, { once: true });
-                  window.setTimeout(finish, 7000);
-                }
               })();
             `,
           }}
@@ -108,6 +94,7 @@ export default async function RootLayout({
           </div>
         </div>
         <div id="app-shell">
+          <InitialLoadGate />
           <Providers session={session}>
             {children}
           </Providers>
