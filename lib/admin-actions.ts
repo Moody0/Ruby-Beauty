@@ -642,9 +642,7 @@ export async function getFeaturedCategories() {
 }
 
 export async function getHomeCollectionSections(): Promise<HomeCollectionSection[]> {
-    const maxSections = 3;
-    const fullSectionThreshold = 18;
-    const minimumSectionThreshold = 6;
+    const productsPerSection = 18;
 
     try {
         const featuredCategories = await prisma.category.findMany({
@@ -692,38 +690,14 @@ export async function getHomeCollectionSections(): Promise<HomeCollectionSection
             return [];
         }
 
-        const selectedCategories: typeof eligibleCategories = [];
-        const selectedCategoryIds = new Set<string>();
-
-        const appendCategories = (categoriesToAppend: typeof eligibleCategories) => {
-            for (const category of categoriesToAppend) {
-                if (selectedCategories.length >= maxSections) {
-                    break;
-                }
-
-                if (!selectedCategoryIds.has(category.id)) {
-                    selectedCategories.push(category);
-                    selectedCategoryIds.add(category.id);
-                }
-            }
-        };
-
-        appendCategories(
-            eligibleCategories.filter((category) => category.productCount >= fullSectionThreshold)
-        );
-        appendCategories(
-            eligibleCategories.filter((category) => category.productCount >= minimumSectionThreshold)
-        );
-        appendCategories(eligibleCategories);
-
         const sections = await Promise.all(
-            selectedCategories.slice(0, maxSections).map(async (category) => {
+            eligibleCategories.map(async (category) => {
                 const products = await prisma.product.findMany({
                     where: {
                         categoryId: category.id,
                         stock: { gt: 0 },
                     },
-                    take: fullSectionThreshold,
+                    take: productsPerSection,
                     orderBy: [
                         { isTrending: "desc" },
                         { createdAt: "desc" },
