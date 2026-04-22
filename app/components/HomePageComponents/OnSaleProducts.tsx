@@ -27,8 +27,6 @@ interface OnSaleProductsProps {
 const OnSaleProducts = ({ products }: OnSaleProductsProps) => {
     const { t, dir, language } = useLanguage();
     const { railRef, canScrollLeft, canScrollRight, scrollLeft, scrollRight } = useProductRail(dir);
-    const showLeftControl = dir === 'rtl' ? canScrollRight : canScrollLeft;
-    const showRightControl = dir === 'rtl' ? canScrollLeft : canScrollRight;
 
     if (!products || products.length === 0) {
         return null;
@@ -63,7 +61,7 @@ const OnSaleProducts = ({ products }: OnSaleProductsProps) => {
                         </div>
                     </div>
 
-                    {showLeftControl && (
+                    {canScrollLeft && (
                         <button
                             className="hidden md:flex absolute left-[-20px] top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main shadow-lg transition hover:bg-primary hover:text-white dark:bg-surface-dark"
                             aria-label="Scroll left through sale products"
@@ -73,7 +71,7 @@ const OnSaleProducts = ({ products }: OnSaleProductsProps) => {
                             <MdChevronLeft className="text-2xl" />
                         </button>
                     )}
-                    {showRightControl && (
+                    {canScrollRight && (
                         <button
                             className="hidden md:flex absolute right-[-20px] top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main shadow-lg transition hover:bg-primary hover:text-white dark:bg-surface-dark"
                             aria-label="Scroll right through sale products"
