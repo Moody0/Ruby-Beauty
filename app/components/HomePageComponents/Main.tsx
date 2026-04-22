@@ -73,15 +73,15 @@ const Main = async ({ banners, categories, collectionSections, trendingProducts,
             {/* On Sale Section */}
             <OnSaleProducts products={onSaleProducts} />
 
+            {/* Trending Products Section */}
+            <TrendingProducts products={trendingProducts} />
+
             {/* Collection Showcase / Categories Fallback */}
             {collectionSections.length > 0 ? (
                 <CollectionShowcase sections={collectionSections} t={t} dir={dir} language={language} />
             ) : (
                 <Categories categories={categories} t={t} dir={dir} />
             )}
-
-            {/* Trending Products Section */}
-            <TrendingProducts products={trendingProducts} />
         </main>
     );
 };

@@ -21,14 +21,16 @@ interface ProductCardProps {
     product: Product;
     t: (key: string) => string;
     language: 'en' | 'ar';
+    variant?: 'default' | 'compact';
 }
 
-const ProductCard = ({ product, t, language }: ProductCardProps) => {
+const ProductCard = ({ product, t, language, variant = 'default' }: ProductCardProps) => {
     const primaryImage = getPrimaryImage(product.images);
+    const isCompact = variant === 'compact';
 
     return (
-        <div className="group relative flex flex-col gap-3 p-2 rounded-2xl transition-all duration-300 hover:bg-white dark:hover:bg-white/5 premium-shadow-hover w-full md:max-w-none">
-            <Link href={`/products/${product.slug}`} className="relative aspect-4/4 w-full overflow-hidden rounded-xl !bg-white block border border-[#e6dbdf] dark:border-gray-800/50 shadow-sm">
+        <div className={`group relative flex flex-col gap-3 rounded-2xl p-2 transition-all duration-300 hover:bg-white dark:hover:bg-white/5 premium-shadow-hover ${isCompact ? 'w-[179px] max-w-[179px]' : 'w-full md:max-w-none'}`}>
+            <Link href={`/products/${product.slug}`} className={`relative overflow-hidden rounded-xl !bg-white block border border-[#e6dbdf] dark:border-gray-800/50 shadow-sm ${isCompact ? 'h-[163px] w-[163px]' : 'aspect-4/4 w-full'}`}>
                 {product.isTrending && (
                     <span className="absolute ltr:left-2 rtl:right-2 top-2 z-10 rounded bg-white px-1.5 py-0.5 text-[10px]  font-bold uppercase tracking-wider text-black shadow-sm">{t('home.trendingNow')}</span>
                 )}
@@ -46,7 +48,7 @@ const ProductCard = ({ product, t, language }: ProductCardProps) => {
                 <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="desktop" />
                 <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="mobile" />
             </Link>
-            <div className="flex flex-col gap-1 p-0.5">
+            <div className={`flex flex-col gap-1 p-0.5 ${isCompact ? 'w-[163px]' : ''}`}>
                 <div className="flex items-start justify-between gap-2">
                     <Link href={`/products/${product.slug}`}>
                         <h3 className="text-[13px] md:text-sm font-medium text-text-main-light dark:text-white group-hover:text-primary transition-colors cursor-pointer line-clamp-2 leading-tight" title={product.name}>{product.name}</h3>

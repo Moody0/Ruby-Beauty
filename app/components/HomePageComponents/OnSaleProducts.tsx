@@ -92,8 +92,8 @@ const OnSaleProducts = ({ products }: OnSaleProductsProps) => {
                         className="!pb-4 !px-1"
                     >
                         {products.map((product) => (
-                            <SwiperSlide key={product.id} className="!h-auto !w-[179px] md:!w-auto">
-                                <ProductCard product={product} t={t} language={language} />
+                            <SwiperSlide key={product.id} className="!h-auto !w-[179px]">
+                                <ProductCard product={product} t={t} language={language} variant="compact" />
                             </SwiperSlide>
                         ))}
                     </Swiper>

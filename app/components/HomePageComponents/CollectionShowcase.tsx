@@ -83,9 +83,9 @@ const CollectionShowcase = ({ sections, t, dir, language }: CollectionShowcasePr
                                 </div>
                             </div>
 
-                            <div className="hidden border-t border-white/70 bg-white/65 p-4 md:grid md:grid-cols-2 md:gap-4 lg:grid-cols-3 lg:p-6 xl:grid-cols-6 dark:border-white/10 dark:bg-background-dark/20">
+                            <div className="hidden justify-items-center border-t border-white/70 bg-white/65 p-4 md:grid md:grid-cols-2 md:gap-4 lg:grid-cols-3 lg:p-6 xl:grid-cols-6 dark:border-white/10 dark:bg-background-dark/20">
                                 {section.products.map((product) => (
-                                    <ProductCard key={product.id} product={product} t={t} language={language} />
+                                    <ProductCard key={product.id} product={product} t={t} language={language} variant="compact" />
                                 ))}
                             </div>
 
@@ -94,9 +94,9 @@ const CollectionShowcase = ({ sections, t, dir, language }: CollectionShowcasePr
                                     {section.products.map((product) => (
                                         <div
                                             key={product.id}
-                                            className="w-[74vw] max-w-[280px] flex-none snap-start"
+                                            className="w-[179px] min-w-[179px] flex-none snap-start"
                                         >
-                                            <ProductCard product={product} t={t} language={language} />
+                                            <ProductCard product={product} t={t} language={language} variant="compact" />
                                         </div>
                                     ))}
                                 </div>

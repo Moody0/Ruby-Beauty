@@ -46,9 +46,9 @@ const TrendingProducts = ({ products }: TrendingProductsProps) => {
                         {products.map((product) => (
                             <div
                                 key={product.id}
-                                className="w-[74vw] max-w-[280px] min-w-[240px] flex-none snap-start sm:w-[260px] md:w-[280px] lg:w-[292px] xl:w-[304px]"
+                                className="w-[179px] min-w-[179px] flex-none snap-start"
                             >
-                                <ProductCard product={product} t={t} language={language} />
+                                <ProductCard product={product} t={t} language={language} variant="compact" />
                             </div>
                         ))}
                     </div>
