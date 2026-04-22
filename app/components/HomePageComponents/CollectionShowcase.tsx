@@ -60,7 +60,7 @@ const CollectionShowcase = ({ sections, t, dir, language }: CollectionShowcasePr
                                             </Link>
                                         </div>
 
-                                        <div className={`mt-3 lg:mt-6 ${reverseOnLarge ? "lg:text-right" : ""}`}>
+                                        <div className={`mt-3 lg:mt-6 flex ${dir === "rtl" || reverseOnLarge ? "justify-end" : "justify-start"}`}>
                                             <span className="inline-flex rounded-full bg-black/5 px-3 py-1 text-sm font-medium text-text-muted-light dark:bg-white/10 dark:text-text-muted-dark">
                                                 {section.category.productCount} {t("home.productsLabel")}
                                             </span>
