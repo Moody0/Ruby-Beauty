@@ -50,7 +50,15 @@
         "newArrival": "New Arrival",
         "bestSeller": "Best Seller",
         "onSale": "On Sale Now",
-        "specialOffers": "Special Offers"
+        "specialOffers": "Special Offers",
+        "brandValues": {
+            "vegan": "100% Vegan",
+            "crueltyFree": "Cruelty-Free",
+            "botanical": "Botanical Extracts",
+            "sustainable": "Sustainable Packaging"
+        },
+        "collectionSpotlight": "Collection Spotlight",
+        "productsLabel": "Products"
     },
     "products": {
         "allProducts": "All Products",

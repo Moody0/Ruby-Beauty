@@ -1,9 +1,11 @@
-import Link from 'next/link';
 import React from 'react';
 import dynamic from 'next/dynamic';
 import Categories from './Categories';
+import CollectionShowcase from './CollectionShowcase';
+import HomeTrustStrip from './HomeTrustStrip';
 import TrendingProducts from './TrendingProducts';
 import { getI18n } from '@/lib/i18n';
+import type { HomeCollectionSection } from '@/lib/admin-actions';
 
 const HeroCarousel = dynamic(() => import('./HeroCarousel'), {
     ssr: true,
@@ -56,11 +58,12 @@ interface Product {
 interface MainProps {
     banners: Banner[];
     categories: Category[];
+    collectionSections: HomeCollectionSection[];
     trendingProducts: Product[];
     onSaleProducts: Product[];
 }
 
-const Main = async ({ banners, categories, trendingProducts, onSaleProducts }: MainProps) => {
+const Main = async ({ banners, categories, collectionSections, trendingProducts, onSaleProducts }: MainProps) => {
     const { t, dir, language } = await getI18n();
 
     return (
@@ -68,11 +71,18 @@ const Main = async ({ banners, categories, trendingProducts, onSaleProducts }: M
             {/* Hero Carousel Section */}
             <HeroCarousel banners={banners} />
 
+            {/* Trust Strip */}
+            <HomeTrustStrip t={t} />
+
             {/* On Sale Section */}
             <OnSaleProducts products={onSaleProducts} />
 
-            {/* Categories Section */}
-            <Categories categories={categories} t={t} dir={dir} />
+            {/* Collection Showcase / Categories Fallback */}
+            {collectionSections.length > 0 ? (
+                <CollectionShowcase sections={collectionSections} t={t} dir={dir} language={language} />
+            ) : (
+                <Categories categories={categories} t={t} dir={dir} />
+            )}
 
             {/* Trending Products Section */}
             <TrendingProducts products={trendingProducts} />

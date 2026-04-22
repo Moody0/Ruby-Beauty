@@ -25,6 +25,31 @@ interface CategoryInput {
     isFeatured?: boolean;
 }
 
+export interface HomeCollectionSectionProduct {
+    id: string;
+    slug: string;
+    name: string;
+    description: string | null;
+    price: number;
+    discountPrice: number | null;
+    images: string;
+    categoryId: string;
+    stock: number;
+    isTrending: boolean;
+}
+
+export interface HomeCollectionSection {
+    category: {
+        id: string;
+        name: string;
+        slug: string;
+        description: string | null;
+        image: string | null;
+        productCount: number;
+    };
+    products: HomeCollectionSectionProduct[];
+}
+
 export async function getDashboardStats() {
     try {
         const [
@@ -612,6 +637,127 @@ export async function getFeaturedCategories() {
         }));
     } catch (error) {
         console.error("Failed to fetch featured categories:", error);
+        return [];
+    }
+}
+
+export async function getHomeCollectionSections(): Promise<HomeCollectionSection[]> {
+    const maxSections = 3;
+    const fullSectionThreshold = 18;
+    const minimumSectionThreshold = 6;
+
+    try {
+        const featuredCategories = await prisma.category.findMany({
+            where: { isFeatured: true },
+            orderBy: { updatedAt: "desc" },
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                description: true,
+                image: true,
+            },
+        });
+
+        if (featuredCategories.length === 0) {
+            return [];
+        }
+
+        const featuredCategoryIds = featuredCategories.map((category) => category.id);
+        const inStockCounts = await prisma.product.groupBy({
+            by: ["categoryId"],
+            where: {
+                categoryId: { in: featuredCategoryIds },
+                stock: { gt: 0 },
+            },
+            _count: {
+                _all: true,
+            },
+        });
+
+        const countByCategoryId = new Map(
+            inStockCounts.map((item) => [item.categoryId, item._count._all])
+        );
+
+        const eligibleCategories = featuredCategories
+            .map((category) => ({
+                ...category,
+                name: category.name.trim(),
+                description: category.description?.trim() || null,
+                productCount: countByCategoryId.get(category.id) || 0,
+            }))
+            .filter((category) => category.productCount > 0);
+
+        if (eligibleCategories.length === 0) {
+            return [];
+        }
+
+        const selectedCategories: typeof eligibleCategories = [];
+        const selectedCategoryIds = new Set<string>();
+
+        const appendCategories = (categoriesToAppend: typeof eligibleCategories) => {
+            for (const category of categoriesToAppend) {
+                if (selectedCategories.length >= maxSections) {
+                    break;
+                }
+
+                if (!selectedCategoryIds.has(category.id)) {
+                    selectedCategories.push(category);
+                    selectedCategoryIds.add(category.id);
+                }
+            }
+        };
+
+        appendCategories(
+            eligibleCategories.filter((category) => category.productCount >= fullSectionThreshold)
+        );
+        appendCategories(
+            eligibleCategories.filter((category) => category.productCount >= minimumSectionThreshold)
+        );
+        appendCategories(eligibleCategories);
+
+        const sections = await Promise.all(
+            selectedCategories.slice(0, maxSections).map(async (category) => {
+                const products = await prisma.product.findMany({
+                    where: {
+                        categoryId: category.id,
+                        stock: { gt: 0 },
+                    },
+                    take: fullSectionThreshold,
+                    orderBy: [
+                        { isTrending: "desc" },
+                        { createdAt: "desc" },
+                    ],
+                });
+
+                return {
+                    category: {
+                        id: category.id,
+                        name: category.name,
+                        slug: category.slug,
+                        description: category.description,
+                        image: category.image,
+                        productCount: category.productCount,
+                    },
+                    products: products.map((product) => ({
+                        id: product.id,
+                        slug: product.slug,
+                        name: product.name,
+                        description: product.description,
+                        price: Number(product.price),
+                        discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
+                        images: product.images,
+                        categoryId: product.categoryId,
+                        stock: Number(product.stock),
+                        isTrending: product.isTrending,
+                    })),
+                };
+            })
+        );
+
+        return sections.filter((section) => section.products.length > 0);
+    } catch (error) {
+        console.error("Failed to fetch home collection sections:", error);
         return [];
     }
 }
