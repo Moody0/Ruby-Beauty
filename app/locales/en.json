@@ -20,11 +20,9 @@
         "showLess": "Show less",
         "categories": "Categories",
         "continueShopping": "Continue Shopping"
-
     },
     "header": {
         "brandName": "Ruby Beauty"
-        
     },
     "footer": {
         "brandDescription": "Premium botanical skincare designed to reveal your natural radiance. Cruelty-free, vegan, and sustainable.",
@@ -252,7 +250,7 @@
         "deliveredMtd": "Delivered (MTD)",
         "allOrders": "All Orders",
         "pending": "Pending",
-        "selectAll":"Select All",
+        "selectAll": "Select All",
         "shipped": "Shipped",
         "delivered": "Delivered",
         "processing": "Processing",

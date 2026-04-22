@@ -53,7 +53,7 @@ const OnSaleProducts = ({ products }: OnSaleProductsProps) => {
                     <Swiper
                         modules={[Navigation, FreeMode]}
                         spaceBetween={12}
-                        slidesPerView={1.4}
+                        slidesPerView={'auto'}
                         freeMode={true}
                         navigation={{
                             nextEl: '.swiper-button-next-sale',
@@ -63,13 +63,13 @@ const OnSaleProducts = ({ products }: OnSaleProductsProps) => {
                         breakpoints={{
                             // Mobile - Free scrolling
                             320: {
-                                slidesPerView: 1.4,
+                                slidesPerView: 'auto',
                                 spaceBetween: 12,
                                 freeMode: true,
                                 slidesPerGroup: 1
                             },
                             480: {
-                                slidesPerView: 2.2,
+                                slidesPerView: 'auto',
                                 spaceBetween: 16,
                                 freeMode: true,
                                 slidesPerGroup: 1
@@ -92,7 +92,7 @@ const OnSaleProducts = ({ products }: OnSaleProductsProps) => {
                         className="!pb-4 !px-1"
                     >
                         {products.map((product) => (
-                            <SwiperSlide key={product.id} className="!h-auto">
+                            <SwiperSlide key={product.id} className="!h-auto !w-[179px] md:!w-auto">
                                 <ProductCard product={product} t={t} language={language} />
                             </SwiperSlide>
                         ))}

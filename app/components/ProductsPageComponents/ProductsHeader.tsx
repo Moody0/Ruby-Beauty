@@ -29,9 +29,6 @@ const ProductsHeader = ({ sort, setSort, activeCategory = null }: ProductsHeader
                 <h1 className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-[#171214] dark:text-white md:text-5xl">
                     {title}
                 </h1>
-                <p className="mt-4 max-w-2xl text-sm leading-7 text-[#6e5b61] dark:text-white/62 md:text-base">
-                    {description}
-                </p>
             </div>
 
             <div className="flex items-center gap-3 self-start lg:self-end">

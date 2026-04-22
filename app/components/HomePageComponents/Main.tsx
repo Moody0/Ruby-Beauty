@@ -63,19 +63,8 @@ interface MainProps {
 const Main = async ({ banners, categories, trendingProducts, onSaleProducts }: MainProps) => {
     const { t, dir, language } = await getI18n();
 
-    // Preload the first banner image for LCP
-    const firstBannerImage = banners[0]?.image || "https://lh3.googleusercontent.com/aida-public/AB6AXuB8pRgU38opDPgidWmDRVHh18-R0XsEouLP3xdxsGLZz4BX3nQjc-9PXhgFNDVECMvP80S7ZtFmpA-QwwrnKgOR8B7WY0FlM3qJCAf1J8cxpwvyt6V15oxTZz-uhtroLEp-87KWQzsp-6-2mVURrFG_Q6mWjJ5YGqT0gqwmcLOPMK6pDk77rqmdXEvvM82qGkXdLNmSeXBPXY9j9zwnT_PjJ5YAOzWa2PqrFvo1SOjMCtz71ZHQraBSPlt7TKx00ccpwm4TTWoB6b0y";
-
     return (
         <main className="w-full flex flex-col gap-8">
-            {/* Preload link for LCP image */}
-            <link
-                 rel="preload"
-                 href={firstBannerImage}
-                 as="image"
-                 imageSrcSet="(max-width: 768px) 100vw, 50vw"
-             />
-            
             {/* Hero Carousel Section */}
             <HeroCarousel banners={banners} />
 

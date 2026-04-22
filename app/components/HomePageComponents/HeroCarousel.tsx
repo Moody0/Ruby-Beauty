@@ -53,6 +53,17 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
         return language === 'ar' ? (banner.subtitleAr || banner.subtitle || '') : (banner.subtitle || banner.subtitleAr || '');
     };
 
+    const getBannerButtonText = (banner: Banner): string => {
+        if (language === 'ar') {
+            // If it's the default "Shop Now" or empty, use translation
+            if (!banner.buttonText || banner.buttonText === 'Shop Now') {
+                return t('home.shopNow');
+            }
+            return banner.buttonText;
+        }
+        return banner.buttonText || t('home.shopNow');
+    };
+
     const displayBanners = banners && banners.length > 0 ? banners : [DEFAULT_BANNER];
 
     if (displayBanners.length === 0) return null;
@@ -126,7 +137,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                                 {dir === 'rtl' && (
                                                     <MdArrowForward className="text-lg group-hover/btn:-translate-x-1 transition-transform" />
                                                 )}
-                                                {banner.buttonText || t('home.shopNow')}
+                                                {getBannerButtonText(banner)}
                                                 {dir !== 'rtl' && (
                                                     <MdArrowForward className="text-lg group-hover/btn:translate-x-1 transition-transform" />
                                                 )}
@@ -139,24 +150,24 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                 <div className="hidden md:flex flex-row items-center h-full w-full" dir="ltr">
                                     {/* Text Side - 50% */}
                                     <div className={`w-1/2 h-full flex flex-col justify-center p-12 lg:p-20 relative z-10 
-                                        ${dir === 'rtl' ? 'order-2 text-right items-end bg-[#2d161e]' : 'order-1 text-left items-start bg-[#2d161e]'}
-                                        text-white
+                                        ${dir === 'rtl' ? 'order-2 text-right items-end' : 'order-1 text-left items-start'}
+                                        bg-[#fff0f3] dark:bg-[#2d161e] transition-colors duration-300
                                     `}>
                                         <div className={`animate-fadeInUp w-full max-w-xl ${dir === 'rtl' ? 'flex flex-col items-end' : ''}`}>
-                                            <span className="inline-block py-1 px-3 rounded-full bg-white/10 text-primary text-xs font-bold uppercase tracking-wider mb-4">
+                                            <span className="inline-block py-1 px-3 rounded-full bg-primary/10 dark:bg-white/10 text-primary text-xs font-bold uppercase tracking-wider mb-4">
                                                 {banner.badge || t('home.newArrival')}
                                             </span>
-                                            <h2 className="text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight mb-4 text-white">
+                                            <h2 className="text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight mb-4 text-text-main-light dark:text-white">
                                                 {getBannerTitle(banner)}
                                             </h2>
-                                            <p className="text-lg text-white/80 max-w-md mb-8 leading-relaxed">
+                                            <p className="text-lg text-text-muted-light dark:text-white/80 max-w-md mb-8 leading-relaxed">
                                                 {getBannerSubtitle(banner) || t('footer.brandDescription')}
                                             </p>
                                             <Link
                                                 href={banner.link || "/products"}
                                                 className={`px-8 py-3.5 bg-primary hover:bg-primary/90 text-white rounded-full font-bold text-sm transition-all flex items-center gap-2 w-fit group/btn shadow-lg`}
                                             >
-                                                {banner.buttonText || t('home.shopNow')}
+                                                {getBannerButtonText(banner)}
                                                 <MdArrowForward className={`text-lg group-hover/btn:translate-x-1 transition-transform ${dir === 'rtl' ? ' group-hover/btn:-translate-x-1' : ''}`} />
                                             </Link>
                                         </div>
@@ -204,6 +215,9 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                 /* Adjust pagination color for split layout on desktop */
                 @media (min-width: 768px) {
                     .hero-carousel .swiper-pagination-bullet {
+                        background: rgba(0, 0, 0, 0.2) !important;
+                    }
+                    :global(.dark) .hero-carousel .swiper-pagination-bullet {
                         background: rgba(255, 255, 255, 0.5) !important;
                     }
                     .hero-carousel .swiper-pagination-bullet-active {

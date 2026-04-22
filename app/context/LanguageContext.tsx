@@ -1,6 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import ar from '@/app/locales/ar.json';
+import en from '@/app/locales/en.json';
 
 type Language = 'en' | 'ar';
 
@@ -19,8 +21,8 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-    const [language, setLanguageState] = useState<Language>('en');
-    const [translations, setTranslations] = useState<TranslationObject | null>(null);
+    const [language, setLanguageState] = useState<Language>('ar');
+    const [translations, setTranslations] = useState<TranslationObject>(ar);
     const [mounted, setMounted] = useState(false);
 
     // Load language preference from localStorage on mount
@@ -32,22 +34,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         setMounted(true);
     }, []);
 
-    // Load translations dynamically
+    // Load translations
     useEffect(() => {
-        const loadTranslations = async () => {
-            try {
-                let data;
-                if (language === 'ar') {
-                    data = await import('@/app/locales/ar.json');
-                } else {
-                    data = await import('@/app/locales/en.json');
-                }
-                setTranslations(data.default);
-            } catch (error) {
-                console.error('Failed to load translations:', error);
-            }
-        };
-        loadTranslations();
+        setTranslations(language === 'ar' ? ar : en as any);
     }, [language]);
 
     // Save language preference and update document direction
@@ -80,17 +69,31 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         if (!translations) return key;
 
         const keys = key.split('.');
-        let result: TranslationValue = translations;
+        let result: any = translations;
 
         for (const k of keys) {
-            if (typeof result === 'object' && result !== null && !Array.isArray(result) && k in result) {
-                result = result[k];
+            if (typeof result === 'object' && result !== null && !Array.isArray(result)) {
+                // Try exact match first
+                if (k in result) {
+                    result = result[k];
+                } 
+                // Fallback: search case-insensitively
+                else {
+                    const foundKey = Object.keys(result).find(
+                        existingKey => existingKey.toLowerCase() === k.toLowerCase()
+                    );
+                    if (foundKey) {
+                        result = result[foundKey];
+                    } else {
+                        return key;
+                    }
+                }
             } else {
                 return key;
             }
         }
 
-        return result;
+        return typeof result === 'string' ? result : key;
     }, [translations]);
 
     const dir = language === 'ar' ? 'rtl' : 'ltr';

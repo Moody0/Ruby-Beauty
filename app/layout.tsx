@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { getI18n } from "@/lib/i18n";
 
 const rubik = Rubik({
   variable: "--font-rubik",
@@ -59,9 +60,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await getServerSession(authOptions);
+  const { language, dir } = await getI18n();
 
   return (
-    <html lang="en" suppressHydrationWarning className={rubik.variable}>
+    <html lang={language} dir={dir} suppressHydrationWarning className={rubik.variable}>
       <head>
         <link
           rel="preload"
