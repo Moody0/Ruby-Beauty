@@ -171,6 +171,32 @@ html.app-loading #app-shell {
   }
 }
 
+.image-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.42) 48%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: image-shimmer-slide 1.8s ease-in-out infinite;
+}
+
+.dark .image-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.14) 48%,
+    transparent 100%
+  );
+}
+
+@keyframes image-shimmer-slide {
+  to {
+    transform: translateX(100%);
+  }
+}
+
 /* Custom scrollbar for better aesthetics */
 ::-webkit-scrollbar {
   width: 8px;

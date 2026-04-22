@@ -66,20 +66,28 @@ const ResilientImageInner = ({
     const [isLoaded, setIsLoaded] = useState(false);
 
     const currentSrc = candidates[currentIndex] || fallbackSrc;
+    const setImageRef = (node: HTMLImageElement | null) => {
+        imageRef.current = node;
+
+        if (node?.complete && node.naturalWidth > 0) {
+            setIsLoaded(true);
+        }
+    };
 
     return (
         <span className="relative block h-full w-full overflow-hidden">
             <span
                 aria-hidden="true"
-                className={`absolute inset-0 bg-[#f7eef2] dark:bg-white/6 ${skeletonClassName || ""} ${isLoaded ? "opacity-0" : "opacity-100"} animate-pulse transition-opacity duration-300`}
-            />
-
+                className={`absolute inset-0 overflow-hidden bg-[#f8eef2] dark:bg-white/6 ${skeletonClassName || ""} ${isLoaded ? "opacity-0" : "opacity-100"} transition-opacity duration-500`}
+            >
+                <span className="image-shimmer absolute inset-0" />
+            </span>
             <img
-                ref={imageRef}
+                ref={setImageRef}
                 {...imgProps}
                 alt={alt}
                 src={currentSrc}
-                className={`${className || ""} block transition-opacity duration-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}
+                className={`${className || ""} block transition-opacity duration-500 ${isLoaded ? "opacity-100" : "opacity-0"}`}
                 onLoad={(event) => {
                     setIsLoaded(true);
                     onLoad?.(event);

@@ -46,7 +46,7 @@ const CollectionShowcase = ({ sections, t, dir, language }: CollectionShowcasePr
                         >
                             <div className={`grid gap-8 p-5 md:p-8 lg:items-center lg:gap-10 lg:p-10 ${desktopGrid}`}>
                                 <div className={`flex flex-col justify-center ${reverseOnLarge ? "lg:order-2" : ""} ${contentAlignment}`}>
-                                    <div className={`w-full lg:max-w-[420px] lg:rounded-[1.6rem] lg:border lg:border-white/70 lg:bg-white/50 lg:p-8 dark:lg:border-white/10 dark:lg:bg-white/5 ${reverseOnLarge ? "ltr:lg:ml-auto rtl:lg:mr-auto" : ""}`}>
+                                    <div className={`w-full lg:max-w-[420px] ${reverseOnLarge ? "ltr:lg:ml-auto rtl:lg:mr-auto" : ""}`}>
                                         <div className={`flex items-start justify-between gap-3 sm:items-center lg:flex-col lg:gap-5 ${contentStackAlignment}`}>
                                             <h2 className="flex-1 text-3xl font-extrabold tracking-tight text-text-main-light dark:text-text-main-dark md:text-4xl xl:text-[2.8rem]">
                                                 {section.category.name}
