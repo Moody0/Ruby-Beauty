@@ -37,35 +37,30 @@ const CollectionShowcase = ({ sections, t, dir, language }: CollectionShowcasePr
                             className={`overflow-hidden rounded-[2rem] border ${theme} premium-shadow`}
                         >
                             <div className="grid gap-8 p-5 md:p-8 lg:grid-cols-[1.2fr_0.8fr] lg:p-10">
-                                <div className={`flex flex-col justify-center gap-6 ${reverseOnLarge ? "lg:order-2" : ""}`}>
-                                    <div className="flex flex-wrap items-center gap-3">
-                                        <span className="rounded-full bg-primary/10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-primary">
-                                            {t("home.collectionSpotlight")}
-                                        </span>
-                                        <span className="rounded-full border border-[#ead5de] bg-white/80 px-4 py-1.5 text-xs font-semibold text-text-muted-light dark:border-white/10 dark:bg-white/5 dark:text-text-muted-dark">
-                                            {section.category.productCount} {t("home.productsLabel")}
-                                        </span>
+                                <div className={`flex flex-col justify-center gap-5 ${reverseOnLarge ? "lg:order-2" : ""}`}>
+                                    <div className="space-y-3">
+                                        <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-primary/80">
+                                            {t("products.categoryCollection")}
+                                        </p>
+                                        <h2 className="text-3xl font-extrabold tracking-tight text-text-main-light dark:text-text-main-dark md:text-4xl xl:text-[2.8rem]">
+                                            {section.category.name}
+                                        </h2>
+                                        <p className="max-w-2xl text-sm leading-7 text-text-muted-light dark:text-text-muted-dark md:text-base">
+                                            {description}
+                                        </p>
                                     </div>
 
-                                    <div className="flex flex-col gap-4">
-                                        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-                                            <div className="max-w-2xl">
-                                                <h2 className="text-3xl font-extrabold tracking-tight text-text-main-light dark:text-text-main-dark md:text-4xl xl:text-[2.8rem]">
-                                                    {section.category.name}
-                                                </h2>
-                                                <p className="mt-3 max-w-2xl text-sm leading-7 text-text-muted-light dark:text-text-muted-dark md:text-base">
-                                                    {description}
-                                                </p>
-                                            </div>
-
-                                            <Link
-                                                href={`/categories/${section.category.slug}`}
-                                                className="inline-flex w-fit items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-white transition-all hover:bg-primary/90 hover:gap-3"
-                                            >
-                                                {t("home.shopNow")}
-                                                <MdChevronRight className={dir === "rtl" ? "rotate-180" : ""} />
-                                            </Link>
-                                        </div>
+                                    <div className="flex flex-wrap items-center gap-4">
+                                        <span className="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">
+                                            {section.category.productCount} {t("home.productsLabel")}
+                                        </span>
+                                        <Link
+                                            href={`/categories/${section.category.slug}`}
+                                            className="inline-flex w-fit items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-white transition-all hover:bg-primary/90 hover:gap-3"
+                                        >
+                                            {t("home.shopNow")}
+                                            <MdChevronRight className={dir === "rtl" ? "rotate-180" : ""} />
+                                        </Link>
                                     </div>
                                 </div>
 

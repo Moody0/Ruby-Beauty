@@ -2,7 +2,6 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import Categories from './Categories';
 import CollectionShowcase from './CollectionShowcase';
-import HomeTrustStrip from './HomeTrustStrip';
 import TrendingProducts from './TrendingProducts';
 import { getI18n } from '@/lib/i18n';
 import type { HomeCollectionSection } from '@/lib/admin-actions';
@@ -70,9 +69,6 @@ const Main = async ({ banners, categories, collectionSections, trendingProducts,
         <main className="w-full flex flex-col gap-8">
             {/* Hero Carousel Section */}
             <HeroCarousel banners={banners} />
-
-            {/* Trust Strip */}
-            <HomeTrustStrip t={t} />
 
             {/* On Sale Section */}
             <OnSaleProducts products={onSaleProducts} />
