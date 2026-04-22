@@ -29,38 +29,37 @@ const CollectionShowcase = ({ sections, t, dir, language }: CollectionShowcasePr
                 {sections.map((section, index) => {
                     const theme = panelThemes[index % panelThemes.length];
                     const reverseOnLarge = index % 2 === 1;
-                    const description = section.category.description || t("products.categoryDescriptionFallback");
 
                     return (
                         <article
                             key={section.category.id}
                             className={`overflow-hidden rounded-[2rem] border ${theme} premium-shadow`}
                         >
-                            <div className="grid gap-8 p-5 md:p-8 lg:grid-cols-[1.2fr_0.8fr] lg:p-10">
-                                <div className={`flex flex-col justify-center gap-4 ${reverseOnLarge ? "lg:order-2" : ""}`}>
-                                    <div className="flex items-start justify-between gap-3 sm:items-center">
-                                        <h2 className="flex-1 text-3xl font-extrabold tracking-tight text-text-main-light dark:text-text-main-dark md:text-4xl xl:text-[2.8rem]">
-                                            {section.category.name}
-                                        </h2>
-                                        <Link
-                                            href={`/categories/${section.category.slug}`}
-                                            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-primary/90 sm:px-6 sm:py-3 sm:text-sm"
-                                        >
-                                            {t("home.shopNow")}
-                                            <MdChevronRight className={dir === "rtl" ? "rotate-180" : ""} />
-                                        </Link>
+                            <div className="grid gap-8 p-5 md:p-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-center lg:gap-10 lg:p-10">
+                                <div className={`flex flex-col justify-center ${reverseOnLarge ? "lg:order-2" : ""}`}>
+                                    <div className="lg:rounded-[1.6rem] lg:border lg:border-white/70 lg:bg-white/50 lg:p-8 dark:lg:border-white/10 dark:lg:bg-white/5">
+                                        <div className="flex items-start justify-between gap-3 sm:items-center lg:flex-col lg:items-start lg:gap-5">
+                                            <h2 className="flex-1 text-3xl font-extrabold tracking-tight text-text-main-light dark:text-text-main-dark md:text-4xl xl:text-[2.8rem]">
+                                                {section.category.name}
+                                            </h2>
+                                            <Link
+                                                href={`/categories/${section.category.slug}`}
+                                                className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-primary/90 sm:px-6 sm:py-3 sm:text-sm"
+                                            >
+                                                {t("home.shopNow")}
+                                                <MdChevronRight className={dir === "rtl" ? "rotate-180" : ""} />
+                                            </Link>
+                                        </div>
+
+                                        <div className="mt-3 lg:mt-6">
+                                            <span className="inline-flex rounded-full bg-black/5 px-3 py-1 text-sm font-medium text-text-muted-light dark:bg-white/10 dark:text-text-muted-dark">
+                                                {section.category.productCount} {t("home.productsLabel")}
+                                            </span>
+                                        </div>
                                     </div>
-
-                                    <p className="max-w-2xl text-sm leading-7 text-text-muted-light dark:text-text-muted-dark md:text-base">
-                                        {description}
-                                    </p>
-
-                                    <span className="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">
-                                        {section.category.productCount} {t("home.productsLabel")}
-                                    </span>
                                 </div>
 
-                                <div className={`relative min-h-[260px] overflow-hidden rounded-[1.9rem] border border-white/80 bg-white/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] dark:border-white/10 dark:bg-white/5 ${reverseOnLarge ? "lg:order-1" : ""}`}>
+                                <div className={`relative min-h-[260px] overflow-hidden rounded-[1.9rem] border border-white/80 bg-white/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] lg:min-h-[320px] dark:border-white/10 dark:bg-white/5 ${reverseOnLarge ? "lg:order-1" : ""}`}>
                                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(238,43,108,0.18),transparent_36%),radial-gradient(circle_at_bottom_left,rgba(244,180,207,0.24),transparent_32%)]" />
                                     <div className="absolute inset-0 bg-gradient-to-br from-white/25 via-transparent to-black/10 dark:from-white/10 dark:to-black/25" />
                                     <div className="absolute inset-0">
