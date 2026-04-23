@@ -10,15 +10,18 @@ const clamp = (value: number, min: number, max: number) =>
     Math.min(Math.max(value, min), max);
 
 const getScrollMetrics = (element: HTMLDivElement, dir: Direction) => {
-    const max = Math.max(0, element.scrollWidth - element.clientWidth);
+    const scrollWidth = element.scrollWidth;
+    const clientWidth = element.clientWidth;
+    const max = Math.max(0, scrollWidth - clientWidth);
 
     if (max <= 0) {
         return { max, logical: 0 };
     }
 
     if (dir === "rtl") {
-        const raw = element.scrollLeft;
-        const logical = raw < 0 ? Math.abs(raw) : max - raw;
+        // In modern browsers, scrollLeft is 0 at the right edge and becomes negative as you scroll left.
+        // Some older browsers might use a different system, but absolute value covers most cases.
+        const logical = Math.abs(element.scrollLeft);
         return {
             max,
             logical: clamp(logical, 0, max),
@@ -32,11 +35,12 @@ const getScrollMetrics = (element: HTMLDivElement, dir: Direction) => {
 };
 
 const getTargetScrollLeft = (element: HTMLDivElement, dir: Direction, logical: number) => {
-    const { max } = getScrollMetrics(element, dir);
+    const max = Math.max(0, element.scrollWidth - element.clientWidth);
     const clampedLogical = clamp(logical, 0, max);
 
     if (dir === "rtl") {
-        return element.scrollLeft < 0 ? -clampedLogical : max - clampedLogical;
+        // To scroll left, we need negative scrollLeft in modern browsers.
+        return -clampedLogical;
     }
 
     return clampedLogical;
@@ -45,51 +49,34 @@ const getTargetScrollLeft = (element: HTMLDivElement, dir: Direction, logical: n
 export const useProductRail = (dir: Direction) => {
     const railRef = useRef<HTMLDivElement | null>(null);
     const [scrollState, setScrollState] = useState({
-        canScrollLeft: false,
-        canScrollRight: false,
+        canScrollForward: false,
+        canScrollBackward: false,
     });
+
+    // We use a ref to track if we're currently animating to avoid sync conflicts
+    const isAnimating = useRef(false);
 
     const syncScrollState = useCallback(() => {
         const rail = railRef.current;
-
-        if (!rail) {
-            return;
-        }
+        if (!rail) return;
 
         const { max, logical } = getScrollMetrics(rail, dir);
 
-        if (dir === "rtl") {
-            setScrollState({
-                canScrollLeft: logical < max - SCROLL_EPSILON,
-                canScrollRight: logical > SCROLL_EPSILON,
-            });
-            return;
-        }
-
         setScrollState({
-            canScrollLeft: logical > SCROLL_EPSILON,
-            canScrollRight: logical < max - SCROLL_EPSILON,
+            canScrollBackward: logical > SCROLL_EPSILON,
+            canScrollForward: logical < max - SCROLL_EPSILON,
         });
     }, [dir]);
 
-    const scrollVisual = useCallback(
-        (direction: "left" | "right") => {
+    const scrollLogical = useCallback(
+        (direction: "forward" | "backward") => {
             const rail = railRef.current;
+            if (!rail || isAnimating.current) return;
 
-            if (!rail) {
-                return;
-            }
-
-            const amount = Math.max(rail.clientWidth * 0.82, 320);
+            isAnimating.current = true;
+            const amount = Math.max(rail.clientWidth * 0.85, 300);
             const { logical, max } = getScrollMetrics(rail, dir);
-            const delta =
-                dir === "rtl"
-                    ? direction === "left"
-                        ? amount
-                        : -amount
-                    : direction === "left"
-                        ? -amount
-                        : amount;
+            const delta = direction === "forward" ? amount : -amount;
 
             const nextLogical = clamp(logical + delta, 0, max);
             const targetLeft = getTargetScrollLeft(rail, dir, nextLogical);
@@ -98,24 +85,36 @@ export const useProductRail = (dir: Direction) => {
                 left: targetLeft,
                 behavior: "smooth",
             });
+
+            // Allow syncing once animation is roughly done
+            setTimeout(() => {
+                isAnimating.current = false;
+                syncScrollState();
+            }, 600);
         },
-        [dir]
+        [dir, syncScrollState]
     );
 
     useEffect(() => {
         const rail = railRef.current;
+        if (!rail) return;
 
-        if (!rail) {
-            return;
-        }
-
+        // Reset scroll position on dir/mount
         const resetTarget = getTargetScrollLeft(rail, dir, 0);
         rail.scrollTo({ left: resetTarget, behavior: "auto" });
 
-        const handleScroll = () => syncScrollState();
+        let timeoutId: NodeJS.Timeout;
+        const handleScroll = () => {
+            // Only sync immediately if not animating, otherwise debounce
+            if (!isAnimating.current) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(syncScrollState, 50);
+            }
+        };
+
         const handleResize = () => syncScrollState();
 
-        handleScroll();
+        syncScrollState();
 
         rail.addEventListener("scroll", handleScroll, { passive: true });
         window.addEventListener("resize", handleResize);
@@ -123,22 +122,19 @@ export const useProductRail = (dir: Direction) => {
         const resizeObserver = new ResizeObserver(handleResize);
         resizeObserver.observe(rail);
 
-        if (rail.firstElementChild instanceof HTMLElement) {
-            resizeObserver.observe(rail.firstElementChild);
-        }
-
         return () => {
             rail.removeEventListener("scroll", handleScroll);
             window.removeEventListener("resize", handleResize);
             resizeObserver.disconnect();
+            clearTimeout(timeoutId);
         };
     }, [dir, syncScrollState]);
 
     return {
         railRef,
-        canScrollLeft: scrollState.canScrollLeft,
-        canScrollRight: scrollState.canScrollRight,
-        scrollLeft: () => scrollVisual("left"),
-        scrollRight: () => scrollVisual("right"),
+        canScrollForward: scrollState.canScrollForward,
+        canScrollBackward: scrollState.canScrollBackward,
+        scrollForward: () => scrollLogical("forward"),
+        scrollBackward: () => scrollLogical("backward"),
     };
 };

@@ -27,7 +27,7 @@ interface TrendingProductsProps {
 
 const TrendingProducts = ({ products }: TrendingProductsProps) => {
     const { t, dir, language } = useLanguage();
-    const { railRef, canScrollLeft, canScrollRight, scrollLeft, scrollRight } = useProductRail(dir);
+    const { railRef, canScrollForward, canScrollBackward, scrollForward, scrollBackward } = useProductRail(dir);
 
     if (!products || products.length === 0) {
         return null;
@@ -60,24 +60,24 @@ const TrendingProducts = ({ products }: TrendingProductsProps) => {
                     </div>
                     </div>
 
-                    {canScrollLeft && (
+                    {canScrollForward && (
                         <button
-                            className="hidden md:flex absolute left-[-20px] top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main shadow-lg transition hover:bg-primary hover:text-white dark:bg-surface-dark"
-                            aria-label="Scroll left through trending products"
-                            onClick={scrollLeft}
+                            className="hidden md:flex absolute ltr:right-[-20px] rtl:left-[-20px] top-[95px] md:top-[108px] -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main shadow-lg transition-all hover:bg-primary hover:text-white dark:bg-surface-dark"
+                            aria-label="Next"
+                            onClick={scrollForward}
                             type="button"
                         >
-                            <MdChevronLeft className="text-2xl" />
+                            {dir === 'rtl' ? <MdChevronLeft className="text-2xl" /> : <MdChevronRight className="text-2xl" />}
                         </button>
                     )}
-                    {canScrollRight && (
+                    {canScrollBackward && (
                         <button
-                            className="hidden md:flex absolute right-[-20px] top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main shadow-lg transition hover:bg-primary hover:text-white dark:bg-surface-dark"
-                            aria-label="Scroll right through trending products"
-                            onClick={scrollRight}
+                            className="hidden md:flex absolute ltr:left-[-20px] rtl:right-[-20px] top-[95px] md:top-[108px] -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main shadow-lg transition-all hover:bg-primary hover:text-white dark:bg-surface-dark"
+                            aria-label="Previous"
+                            onClick={scrollBackward}
                             type="button"
                         >
-                            <MdChevronRight className="text-2xl" />
+                            {dir === 'rtl' ? <MdChevronRight className="text-2xl" /> : <MdChevronLeft className="text-2xl" />}
                         </button>
                     )}
                 </div>

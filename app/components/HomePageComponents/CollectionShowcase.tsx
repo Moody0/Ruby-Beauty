@@ -51,40 +51,39 @@ const CollectionShowcase = ({ sections, t, dir, language }: CollectionShowcasePr
                                             <h2 className="flex-1 text-3xl font-extrabold tracking-tight text-text-main-light dark:text-text-main-dark md:text-4xl xl:text-[2.8rem]">
                                                 {section.category.name}
                                             </h2>
-                                            <Link
-                                                href={`/categories/${section.category.slug}`}
-                                                className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-primary/90 sm:px-6 sm:py-3 sm:text-sm"
-                                            >
-                                                {t("home.shopNow")}
-                                                <MdChevronRight className={dir === "rtl" ? "rotate-180" : ""} />
-                                            </Link>
-                                        </div>
-
-                                        <div className={`mt-3 lg:mt-6 flex ${dir === "rtl" || reverseOnLarge ? "justify-end" : "justify-start"}`}>
-                                            <span className="inline-flex rounded-full bg-black/5 px-3 py-1 text-sm font-medium text-text-muted-light dark:bg-white/10 dark:text-text-muted-dark">
-                                                {section.category.productCount} {t("home.productsLabel")}
-                                            </span>
+                                            <div className={`flex flex-col gap-3 ${contentStackAlignment}`}>
+                                                <Link
+                                                    href={`/categories/${section.category.slug}`}
+                                                    className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-primary/90 sm:px-6 sm:py-3 sm:text-sm"
+                                                >
+                                                    {t("home.shopNow")}
+                                                    <MdChevronRight className={dir === "rtl" ? "rotate-180" : ""} />
+                                                </Link>
+                                                <div className={`flex ${dir === "rtl" || reverseOnLarge ? "lg:justify-end" : "lg:justify-start"} justify-center sm:justify-start`}>
+                                                    <span className="inline-flex rounded-full bg-black/5 px-3 py-1 text-sm font-medium text-text-muted-light dark:bg-white/10 dark:text-text-muted-dark">
+                                                        {section.category.productCount} {t("home.productsLabel")}
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className={`relative min-h-[260px] overflow-hidden rounded-[1.9rem] border border-white/80 bg-white/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] lg:min-h-[320px] dark:border-white/10 dark:bg-white/5 ${reverseOnLarge ? "lg:order-1" : ""}`}>
-                                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(238,43,108,0.18),transparent_36%),radial-gradient(circle_at_bottom_left,rgba(244,180,207,0.24),transparent_32%)]" />
-                                    <div className="absolute inset-0 bg-gradient-to-br from-white/25 via-transparent to-black/10 dark:from-white/10 dark:to-black/25" />
+                                <div className={`relative min-h-[260px] overflow-hidden rounded-[1.9rem] border border-white/80 bg-white/60 shadow-sm lg:min-h-[360px] dark:border-white/10 dark:bg-white/5 ${reverseOnLarge ? "lg:order-1" : ""}`}>
                                     <div className="absolute inset-0">
                                         <ResilientImage
                                             src={section.category.image}
                                             alt={section.category.name}
-                                            className="h-full w-full object-cover transition-transform duration-700"
+                                            className="h-full w-full object-fill transition-transform duration-700"
                                             loading="lazy"
                                         />
                                     </div>
-                                    <div className="absolute inset-x-4 bottom-4 rounded-[1.35rem] border border-white/20 bg-black/30 p-4 backdrop-blur-md md:inset-x-6 md:bottom-6 md:p-5">
+                                    <div className="absolute inset-x-4 bottom-4 rounded-[1.35rem] border border-white/20 bg-black/40 p-4 backdrop-blur-md md:inset-x-6 md:bottom-6 md:p-5">
                                         <div className="flex items-end justify-between gap-3">
                                             <p className="text-xl font-bold text-white md:text-2xl">
                                                 {section.category.name}
                                             </p>
-                                            <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white/90">
+                                            <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white">
                                                 {section.category.productCount} {t("home.productsLabel")}
                                             </span>
                                         </div>
