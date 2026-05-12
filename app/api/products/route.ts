@@ -12,15 +12,27 @@ export async function GET(request: Request) {
         const limit = Math.max(1, Math.min(requestedLimit || 12, 12)); // default/cap at 12
         const sort = searchParams.get("sort");
         const categoryIdsParam = searchParams.get("categoryIds");
+        const brandIdsParam = searchParams.get("brandIds");
         const search = searchParams.get("search");
 
         const skip = (page - 1) * limit;
 
-        const where: Prisma.ProductWhereInput = {};
+        const where: Prisma.ProductWhereInput = {
+            brand: {
+                isActive: true,
+            },
+        };
         if (categoryIdsParam) {
             const ids = categoryIdsParam.split(",").filter(Boolean);
             if (ids.length > 0) {
                 where.categoryId = { in: ids };
+            }
+        }
+
+        if (brandIdsParam) {
+            const ids = brandIdsParam.split(",").filter(Boolean);
+            if (ids.length > 0) {
+                where.brandId = { in: ids };
             }
         }
 
@@ -57,7 +69,16 @@ export async function GET(request: Request) {
                     discountValue: true,
                     stock: true,
                     isTrending: true,
+                    brandId: true,
                     categoryId: true,
+                    brand: {
+                        select: {
+                            id: true,
+                            name: true,
+                            slug: true,
+                            group: true,
+                        }
+                    },
                     category: {
                         select: {
                             id: true,

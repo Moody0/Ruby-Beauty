@@ -189,7 +189,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order, canDelete, o
                     )}
                     <button
                         onClick={onClose}
-                        className="bg-primary hover:bg-primary/90 text-white h-10 px-6 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 transition-all transform hover:-translate-y-0.5"
+                        className="bg-primary hover:bg-primary/90 text-white h-10 px-6 rounded-xl font-bold text-sm transition-all transform hover:-translate-y-0.5"
                     >
                         {t('admin.close')}
                     </button>

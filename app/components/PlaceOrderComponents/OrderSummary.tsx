@@ -134,7 +134,7 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                 <button
                     type="submit"
                     disabled={loading || items.length === 0}
-                    className="w-full bg-primary hover:bg-primary/90 text-white font-bold rounded-full h-14 flex items-center justify-center gap-2 shadow-lg shadow-primary/25 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    className="w-full bg-primary hover:bg-primary/90 text-white font-bold rounded-full h-14 flex items-center justify-center gap-2 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                     {loading ? (
                         <MdRefresh className="animate-spin" />

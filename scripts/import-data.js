@@ -22,6 +22,23 @@ async function importData() {
         await prisma.category.deleteMany({});
         console.log('Database cleaned.');
 
+        const rubyBrand = await prisma.brand.upsert({
+            where: { slug: 'ruby-beauty' },
+            update: {
+                group: 'MAIN',
+                isActive: true,
+                isFeatured: true,
+            },
+            create: {
+                id: 'brand-ruby-beauty',
+                name: 'Ruby Beauty',
+                slug: 'ruby-beauty',
+                group: 'MAIN',
+                isActive: true,
+                isFeatured: true,
+            },
+        });
+
         // 2. Extract unique categories (filter out undefined/empty, and add 'General')
         const uniqueCategoryNames = [...new Set(data.map(item => item.Category).filter(Boolean))];
         if (!uniqueCategoryNames.includes('General')) {
@@ -33,13 +50,20 @@ async function importData() {
 
         for (const catName of uniqueCategoryNames) {
             try {
-                const category = await prisma.category.upsert({
-                    where: { name: String(catName) },
-                    update: {},
-                    create: {
-                        name: String(catName),
-                        description: `Products for ${catName}`
-                    }
+                const name = String(catName);
+                const existingCategory = await prisma.category.findFirst({
+                    where: {
+                        brandId: rubyBrand.id,
+                        name,
+                    },
+                });
+                const category = existingCategory || await prisma.category.create({
+                    data: {
+                        name,
+                        slug: `${slugify(name, { lower: true, strict: true }) || 'category'}-${Math.random().toString(36).substring(2, 7)}`,
+                        description: `Products for ${catName}`,
+                        brandId: rubyBrand.id,
+                    },
                 });
                 categoryMap.set(catName, category.id);
             } catch (err) {
@@ -75,6 +99,7 @@ async function importData() {
                         stock: parseInt(item.Stock) || 0,
                         isTrending: String(item['Is Trending']).toLowerCase() === 'yes',
                         images: item.Images || '',
+                        brandId: rubyBrand.id,
                         categoryId: categoryId,
                         description: `Quality product from ${categoryName}`
                     }

@@ -105,7 +105,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                         {canManage && (
                             <button
                                 onClick={handleAdd}
-                                className="bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                                className="bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2"
                             >
                                 <MdAdd className="text-xl" />
                                 {t('admin.createNewAd')}

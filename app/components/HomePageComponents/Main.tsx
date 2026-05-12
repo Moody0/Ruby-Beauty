@@ -3,8 +3,9 @@ import dynamic from 'next/dynamic';
 import Categories from './Categories';
 import CollectionShowcase from './CollectionShowcase';
 import TrendingProducts from './TrendingProducts';
+import MainBrands from './MainBrands';
 import { getI18n } from '@/lib/i18n';
-import type { HomeCollectionSection } from '@/lib/admin-actions';
+import type { HomeBrand, HomeCollectionSection } from '@/lib/admin-actions';
 
 const HeroCarousel = dynamic(() => import('./HeroCarousel'), {
     ssr: true,
@@ -52,23 +53,32 @@ interface Product {
     category: {
         name: string;
     } | null;
+    brand?: {
+        id: string;
+        name: string;
+        slug: string;
+        group?: string;
+    } | null;
 }
 
 interface MainProps {
     banners: Banner[];
     categories: Category[];
     collectionSections: HomeCollectionSection[];
+    mainBrands: HomeBrand[];
     trendingProducts: Product[];
     onSaleProducts: Product[];
 }
 
-const Main = async ({ banners, categories, collectionSections, trendingProducts, onSaleProducts }: MainProps) => {
+const Main = async ({ banners, categories, collectionSections, mainBrands, trendingProducts, onSaleProducts }: MainProps) => {
     const { t, dir, language } = await getI18n();
 
     return (
         <main className="w-full flex flex-col gap-8">
             {/* Hero Carousel Section */}
             <HeroCarousel banners={banners} />
+
+            <MainBrands brands={mainBrands} t={t} dir={dir} />
 
             {/* On Sale Section */}
             <OnSaleProducts products={onSaleProducts} />

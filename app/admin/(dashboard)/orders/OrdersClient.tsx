@@ -416,7 +416,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                     <button className="size-8 flex items-center justify-center rounded-lg border border-[#e6dbdf] dark:border-gray-700 text-text-sub hover:bg-white dark:hover:bg-gray-800 transition-colors">
                                         <MdChevronLeft className={`text-[18px] ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                                     </button>
-                                    <button className="size-8 flex items-center justify-center rounded-lg bg-primary text-white text-xs font-bold shadow-sm shadow-primary/20">1</button>
+                                    <button className="size-8 flex items-center justify-center rounded-lg bg-primary text-white text-xs font-bold">1</button>
                                     <button className="size-8 flex items-center justify-center rounded-lg border border-[#e6dbdf] dark:border-gray-700 text-text-sub hover:bg-white dark:hover:bg-gray-800 transition-colors">
                                         <MdChevronRight className={`text-[18px] ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                                     </button>

@@ -14,6 +14,8 @@ interface User {
     id: string;
     username: string;
     role: string;
+    canManageBrands: boolean;
+    canDeleteBrands: boolean;
     canManageProducts: boolean;
     canDeleteProducts: boolean;
     canManageCategories: boolean;
@@ -106,7 +108,7 @@ export default function UsersClient({ users }: { users: User[] }) {
                                 setSelectedUser(null);
                                 setIsModalOpen(true);
                             }}
-                            className="bg-primary hover:bg-primary/90 text-white h-12 px-6 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                            className="bg-primary hover:bg-primary/90 text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
                         >
                             <MdPersonAdd className="text-[20px]" />
                             {t('admin.addNewUser')}
@@ -183,6 +185,7 @@ export default function UsersClient({ users }: { users: User[] }) {
                                                         <span className="text-xs text-text-sub dark:text-gray-400 italic">{t('admin.unlimitedAccess')}</span>
                                                     ) : (
                                                         <>
+                                                            {user.canManageBrands && <span className="text-[10px] bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-text-sub dark:text-gray-300">{t('admin.brands')}{!user.canDeleteBrands && " (No Delete)"}</span>}
                                                             {user.canManageProducts && <span className="text-[10px] bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-text-sub dark:text-gray-300">{t('admin.products')}{!user.canDeleteProducts && " (No Delete)"}</span>}
                                                             {user.canManageCategories && <span className="text-[10px] bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-text-sub dark:text-gray-300">{t('admin.categories')}{!user.canDeleteCategories && " (No Delete)"}</span>}
                                                             {user.canManageBanners && <span className="text-[10px] bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-text-sub dark:text-gray-300">{t('admin.banners')}{!user.canDeleteBanners && " (No Delete)"}</span>}

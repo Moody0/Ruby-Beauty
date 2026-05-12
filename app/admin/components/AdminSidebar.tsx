@@ -4,6 +4,7 @@ import Link from "next/link";
 import { 
     MdDashboard, 
     MdShoppingBag, 
+    MdStorefront,
     MdCategory, 
     MdViewCarousel, 
     MdInventory2, 
@@ -23,14 +24,31 @@ interface AdminSidebarProps {
     onClose: () => void;
 }
 
+type PermissionKey =
+    | "canManageBrands"
+    | "canManageProducts"
+    | "canManageCategories"
+    | "canManageBanners"
+    | "canManageOrders"
+    | "canManagePromoCodes";
+
+interface NavItem {
+    href: string;
+    icon: React.ComponentType<{ className?: string }>;
+    label: string;
+    permission?: PermissionKey;
+    superAdminOnly?: boolean;
+}
+
 export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
     const pathname = usePathname();
     const { data: session } = useSession();
     const { t, dir } = useLanguage();
     const isSuperAdmin = session?.user?.role === 'SUPER_ADMIN';
 
-    const navItems = [
+    const navItems: NavItem[] = [
         { href: "/admin/dashboard", icon: MdDashboard, label: t('admin.dashboard') },
+        { href: "/admin/brands", icon: MdStorefront, label: t('admin.brands'), permission: "canManageBrands" },
         { href: "/admin/products", icon: MdShoppingBag, label: t('admin.products'), permission: "canManageProducts" },
         { href: "/admin/categories", icon: MdCategory, label: t('admin.categories'), permission: "canManageCategories" },
         { href: "/admin/banners", icon: MdViewCarousel, label: t('admin.banners'), permission: "canManageBanners" },
@@ -90,12 +108,12 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 
                         {/* Navigation */}
                         <nav className="flex flex-col gap-2">
-                            {navItems.map((item: any) => {
+                            {navItems.map((item) => {
                                 // Filter based on superAdminOnly flag
                                 if (item.superAdminOnly && !isSuperAdmin) return null;
 
                                 // Filter based on granular permissions if not super admin
-                                if (item.permission && !isSuperAdmin && !(session?.user as any)?.[item.permission]) {
+                                if (item.permission && !isSuperAdmin && !session?.user?.[item.permission]) {
                                     return null;
                                 }
 

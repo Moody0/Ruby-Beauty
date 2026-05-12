@@ -41,6 +41,8 @@ export const authOptions: AuthOptions = {
                     name: user.username,
                     role: user.role,
                     rememberMe,
+                    canManageBrands: user.canManageBrands,
+                    canDeleteBrands: user.canDeleteBrands,
                     canManageProducts: user.canManageProducts,
                     canDeleteProducts: user.canDeleteProducts,
                     canManageCategories: user.canManageCategories,
@@ -64,6 +66,8 @@ export const authOptions: AuthOptions = {
                 token.id = user.id;
                 token.role = user.role;
                 token.rememberMe = (user as { rememberMe?: boolean }).rememberMe;
+                token.canManageBrands = user.canManageBrands;
+                token.canDeleteBrands = user.canDeleteBrands;
                 token.canManageProducts = user.canManageProducts;
                 token.canDeleteProducts = user.canDeleteProducts;
                 token.canManageCategories = user.canManageCategories;
@@ -86,6 +90,8 @@ export const authOptions: AuthOptions = {
             if (session.user) {
                 session.user.id = token.id as string;
                 session.user.role = token.role as string;
+                session.user.canManageBrands = token.canManageBrands as boolean;
+                session.user.canDeleteBrands = token.canDeleteBrands as boolean;
                 session.user.canManageProducts = token.canManageProducts as boolean;
                 session.user.canDeleteProducts = token.canDeleteProducts as boolean;
                 session.user.canManageCategories = token.canManageCategories as boolean;

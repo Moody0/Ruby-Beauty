@@ -59,7 +59,7 @@ const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
                 <div className="mt-16 flex justify-center">
                     <button
                         onClick={handleLoadMore}
-                        className="group relative px-10 py-4 bg-surface-light dark:bg-surface-dark border border-[#e6dbdf] dark:border-gray-700 rounded-full font-bold text-sm text-text-main-light dark:text-white hover:border-primary hover:text-primary transition-all duration-300 shadow-sm hover:shadow-md flex items-center gap-2"
+                        className="group relative px-10 py-4 bg-surface-light dark:bg-surface-dark border border-[#e6dbdf] dark:border-gray-700 rounded-full font-bold text-sm text-text-main-light dark:text-white hover:border-primary hover:text-primary transition-all duration-300 flex items-center gap-2"
                     >
                         {t('categoriesPage.loadMoreCategories')}
                         <MdExpandMore className="text-[18px] group-hover:translate-y-1 transition-transform" />

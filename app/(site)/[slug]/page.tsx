@@ -1,6 +1,7 @@
 import React from 'react';
 import { prisma } from "@/lib/prisma";
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import ProductGallery from '@/app/components/ProductDetailsComponents/ProductGallery';
 import ProductHeader from '@/app/components/ProductDetailsComponents/ProductHeader';
 import ProductPrice from '@/app/components/ProductDetailsComponents/ProductPrice';
@@ -12,9 +13,15 @@ import RelatedProducts from '@/app/components/ProductDetailsComponents/RelatedPr
 
 const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     const params = await props.params;
-    // Fetch product by slug using raw query to bypass potential client schema mismatch
-    const result = await prisma.$queryRaw<any[]>`SELECT * FROM "Product" WHERE slug = ${params.slug} LIMIT 1`;
-    const product = result[0];
+    const product = await prisma.product.findFirst({
+        where: {
+            slug: params.slug,
+            brand: { isActive: true },
+        },
+        include: {
+            brand: true,
+        },
+    });
 
     if (!product) {
         notFound();
@@ -24,7 +31,9 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     const relatedProducts = await prisma.product.findMany({
         where: {
             categoryId: product.categoryId,
+            brandId: product.brandId,
             id: { not: product.id },
+            brand: { isActive: true },
         },
         take: 4,
     });
@@ -57,6 +66,14 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                             name={product.name}
                             description={product.description}
                         />
+                        {product.brand && (
+                            <Link
+                                href={`/brands/${product.brand.slug}`}
+                                className="mb-4 mt-2 inline-flex w-fit rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary transition-colors hover:bg-primary/20"
+                            >
+                                {product.brand.name}
+                            </Link>
+                        )}
                     </div>
                     
                     <ProductPrice

@@ -46,6 +46,7 @@ const Header = ({ initialCategories = [], t }: HeaderProps) => {
                     <div className="flex items-center gap-2 md:gap-8">
                         <nav className="hidden lg:flex items-center gap-6">
                             <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('common.shop')}</Link>
+                            <Link href="/brands" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('common.brands')}</Link>
                             <Link href="/categories" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('common.categories')}</Link>
                             <Link href="/about-us" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('common.about')}</Link>
                         </nav>

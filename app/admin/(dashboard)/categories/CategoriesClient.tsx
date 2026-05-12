@@ -28,13 +28,28 @@ interface Category {
     name: string;
     description: string | null;
     image: string | null;
+    brandId: string;
+    brand: {
+        id: string;
+        name: string;
+        slug: string;
+        group: string;
+    } | null;
     isFeatured: boolean;
     _count: {
         products: number;
     };
 }
 
-export default function CategoriesClient({ categories }: { categories: Category[] }) {
+interface Brand {
+    id: string;
+    name: string;
+    slug: string;
+    group: string;
+    isActive: boolean;
+}
+
+export default function CategoriesClient({ categories, brands }: { categories: Category[], brands: Brand[] }) {
     const { data: session } = useSession();
     const { t, dir } = useLanguage();
     const canManage = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canManageCategories;
@@ -44,6 +59,7 @@ export default function CategoriesClient({ categories }: { categories: Category[
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
+    const [selectedBrand, setSelectedBrand] = useState("ALL");
     const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
 
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -140,10 +156,13 @@ export default function CategoriesClient({ categories }: { categories: Category[
         }
     };
 
-    const filteredCategories = categories.filter(category =>
-        category.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (category.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
-    );
+    const filteredCategories = categories.filter(category => {
+        const matchesSearch = category.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (category.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+            (category.brand?.name.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
+        const matchesBrand = selectedBrand === "ALL" || category.brandId === selectedBrand;
+        return matchesSearch && matchesBrand;
+    });
 
     const handleAdd = () => {
         setSelectedCategory(null);
@@ -260,10 +279,20 @@ export default function CategoriesClient({ categories }: { categories: Category[
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                             </div>
+                            <select
+                                value={selectedBrand}
+                                onChange={(e) => setSelectedBrand(e.target.value)}
+                                className="w-full md:w-52 px-4 py-3 bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-text-main dark:text-white"
+                            >
+                                <option value="ALL">{t('admin.allBrands')}</option>
+                                {brands.map((brand) => (
+                                    <option key={brand.id} value={brand.id}>{brand.name}</option>
+                                ))}
+                            </select>
                             {canManage && (
                                 <button
                                     onClick={handleAdd}
-                                    className="w-full md:w-auto bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 whitespace-nowrap"
+                                    className="w-full md:w-auto bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
                                 >
                                     <MdAdd className="text-xl" />
                                     {t('admin.addCategory')}
@@ -276,13 +305,14 @@ export default function CategoriesClient({ categories }: { categories: Category[
                         isOpen={isModalOpen}
                         onClose={() => setIsModalOpen(false)}
                         category={selectedCategory}
+                        brands={brands}
                     />
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {filteredCategories.map((category) => (
                             <div 
                                 key={category.id} 
-                                className={`bg-surface-light dark:bg-surface-dark rounded-xl border ${selectedIds.has(category.id) ? 'border-primary shadow-md shadow-primary/10' : 'border-border-color/50 dark:border-gray-700 shadow-sm'} hover:shadow-lg transition-all overflow-hidden group relative`}
+                                className={`bg-surface-light dark:bg-surface-dark rounded-xl border ${selectedIds.has(category.id) ? 'border-primary' : 'border-border-color/50 dark:border-gray-700 shadow-sm'} hover:shadow-lg transition-all overflow-hidden group relative`}
                             >
                                 {/* Selection Checkbox */}
                                 <button
@@ -305,6 +335,9 @@ export default function CategoriesClient({ categories }: { categories: Category[
                                 </div>
                                 <div className="p-6">
                                     <h3 className="text-lg font-bold text-text-main dark:text-white mb-2">{category.name}</h3>
+                                    <p className="mb-2 text-xs font-bold uppercase tracking-wider text-primary">
+                                        {category.brand?.name || 'Ruby Beauty'}
+                                    </p>
                                     <p className="text-sm text-text-sub dark:text-gray-400 line-clamp-2 mb-4">
                                         {category.description || t('admin.noDescription')}
                                     </p>

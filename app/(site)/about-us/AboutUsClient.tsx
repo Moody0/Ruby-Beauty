@@ -76,7 +76,7 @@ export default function AboutUsClient({ settings }: { settings: AboutUsSettings 
                         <div className="animate-fade-in-up animation-delay-400">
                             <Link
                                 href="/products"
-                                className="bg-primary hover:bg-[#d43a6b] text-white px-10 py-4 rounded-2xl font-bold transition-all shadow-xl hover:shadow-primary/40 active:scale-95 inline-block"
+                                className="bg-primary hover:bg-[#d43a6b] text-white px-10 py-4 rounded-2xl font-bold transition-all active:scale-95 inline-block"
                             >
                                 {t('aboutUsPage.hero.cta')}
                             </Link>

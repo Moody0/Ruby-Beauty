@@ -172,7 +172,7 @@ export default function ShippingReturnsContent({ siteSettings }: ShippingReturns
                                         {t('shippingReturnsPage.support.description')}
                                     </p>
                                 </div>
-                                <a className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full text-center text-sm font-bold transition-all shadow-md shadow-primary/10" target="_blank" href="https://wa.me/963933254796">
+                                <a className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full text-center text-sm font-bold transition-all" target="_blank" href="https://wa.me/963933254796">
                                     {t('shippingReturnsPage.support.cta')}
                                 </a>
                             </div>

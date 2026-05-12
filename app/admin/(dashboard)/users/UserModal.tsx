@@ -10,6 +10,8 @@ interface User {
     id: string;
     username: string;
     role: string;
+    canManageBrands: boolean;
+    canDeleteBrands: boolean;
     canManageProducts: boolean;
     canDeleteProducts: boolean;
     canManageCategories: boolean;
@@ -28,13 +30,35 @@ interface UserModalProps {
     user: User | null;
 }
 
+type PermissionKey =
+    | "canManageBrands"
+    | "canDeleteBrands"
+    | "canManageProducts"
+    | "canDeleteProducts"
+    | "canManageCategories"
+    | "canDeleteCategories"
+    | "canManageBanners"
+    | "canDeleteBanners"
+    | "canManageOrders"
+    | "canDeleteOrders"
+    | "canManagePromoCodes"
+    | "canDeletePromoCodes";
+
+type UserFormData = {
+    username: string;
+    password: string;
+    role: "ADMIN" | "SUPER_ADMIN";
+} & Record<PermissionKey, boolean>;
+
 export default function UserModal({ isOpen, onClose, user }: UserModalProps) {
     const { t, dir } = useLanguage();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<UserFormData>({
         username: "",
         password: "",
         role: "ADMIN",
+        canManageBrands: true,
+        canDeleteBrands: true,
         canManageProducts: true,
         canDeleteProducts: true,
         canManageCategories: true,
@@ -52,7 +76,9 @@ export default function UserModal({ isOpen, onClose, user }: UserModalProps) {
             setFormData({
                 username: user.username,
                 password: "", // Don't show password
-                role: user.role,
+                role: user.role === "SUPER_ADMIN" ? "SUPER_ADMIN" : "ADMIN",
+                canManageBrands: user.canManageBrands,
+                canDeleteBrands: user.canDeleteBrands,
                 canManageProducts: user.canManageProducts,
                 canDeleteProducts: user.canDeleteProducts,
                 canManageCategories: user.canManageCategories,
@@ -69,6 +95,8 @@ export default function UserModal({ isOpen, onClose, user }: UserModalProps) {
                 username: "",
                 password: "",
                 role: "ADMIN",
+                canManageBrands: true,
+                canDeleteBrands: true,
                 canManageProducts: true,
                 canDeleteProducts: true,
                 canManageCategories: true,
@@ -115,9 +143,9 @@ export default function UserModal({ isOpen, onClose, user }: UserModalProps) {
 
     if (!isOpen) return null;
 
-    const PermissionCheckbox = ({ name, label, dependsOn }: { name: string, label: string, dependsOn?: string }) => {
-        const isChecked = (formData as any)[name];
-        const isParentChecked = dependsOn ? (formData as any)[dependsOn] : true;
+    const PermissionCheckbox = ({ name, label, dependsOn }: { name: PermissionKey, label: string, dependsOn?: PermissionKey }) => {
+        const isChecked = formData[name];
+        const isParentChecked = dependsOn ? formData[dependsOn] : true;
 
         return (
             <label className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer ${!isParentChecked ? 'opacity-40 cursor-not-allowed bg-gray-50 dark:bg-gray-800/20 border-transparent' :
@@ -216,6 +244,12 @@ export default function UserModal({ isOpen, onClose, user }: UserModalProps) {
 
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div className="space-y-3">
+                                            <p className={`text-[10px] font-bold text-text-sub dark:text-gray-500 uppercase tracking-widest ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>{t('admin.brands')}</p>
+                                            <PermissionCheckbox name="canManageBrands" label={t('admin.canCreateEdit').replace('{resource}', t('admin.brands'))} />
+                                            <PermissionCheckbox name="canDeleteBrands" label={t('admin.canDelete').replace('{resource}', t('admin.brands'))} dependsOn="canManageBrands" />
+                                        </div>
+
+                                        <div className="space-y-3">
                                             <p className={`text-[10px] font-bold text-text-sub dark:text-gray-500 uppercase tracking-widest ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>{t('admin.products')}</p>
                                             <PermissionCheckbox name="canManageProducts" label={t('admin.canCreateEdit').replace('{resource}', t('admin.products'))} />
                                             <PermissionCheckbox name="canDeleteProducts" label={t('admin.canDelete').replace('{resource}', t('admin.products'))} dependsOn="canManageProducts" />
@@ -260,7 +294,7 @@ export default function UserModal({ isOpen, onClose, user }: UserModalProps) {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="flex-1 px-8 py-4 bg-primary text-white rounded-2xl font-bold hover:bg-primary-dark transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                className="flex-1 px-8 py-4 bg-primary text-white rounded-2xl font-bold hover:bg-primary-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
                                 {isSubmitting ? (
                                 <MdSync className="animate-spin text-[18px]" />

@@ -9,6 +9,14 @@ import { toast } from "react-hot-toast";
 interface Category {
     id: string;
     name: string;
+    brandId: string;
+}
+
+interface Brand {
+    id: string;
+    name: string;
+    group: string;
+    isActive?: boolean;
 }
 
 interface Product {
@@ -23,21 +31,24 @@ interface Product {
     stock: number;
     sku: string | null;
     images: string;
+    brandId: string;
 }
 
 interface AddProductModalProps {
     isOpen: boolean;
     onClose: () => void;
     categories: Category[];
+    brands: Brand[];
     product?: Product | null; // Optional product for editing
 }
 
-export default function AddProductModal({ isOpen, onClose, categories, product }: AddProductModalProps) {
+export default function AddProductModal({ isOpen, onClose, categories, brands, product }: AddProductModalProps) {
     const { t, language } = useLanguage();
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
         description: "",
+        brandId: brands[0]?.id || "",
         categoryId: "",
         price: "",
         discountType: "NONE", // NONE, PERCENTAGE, FIXED
@@ -55,6 +66,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
             setFormData({
                 name: product.name,
                 description: product.description || "",
+                brandId: product.brandId,
                 categoryId: product.categoryId,
                 price: product.price.toString(),
                 discountType: product.discountType || "NONE",
@@ -67,6 +79,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
             setFormData({
                 name: "",
                 description: "",
+                brandId: brands[0]?.id || "",
                 categoryId: "",
                 price: "",
                 discountType: "NONE",
@@ -76,13 +89,13 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                 images: "",
             });
         }
-    }, [product, isOpen]);
+    }, [product, isOpen, brands]);
 
     if (!isOpen) return null;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!formData.name || !formData.categoryId || !formData.price || !formData.images) {
+        if (!formData.name || !formData.brandId || !formData.categoryId || !formData.price || !formData.images) {
             toast.error(t("admin.addProductModal.fillRequiredFields"));
             return;
         }
@@ -138,6 +151,8 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
         const newImages = formData.images.split(',').filter((img: string) => img !== url).join(',');
         setFormData({ ...formData, images: newImages });
     };
+
+    const filteredCategories = categories.filter((category) => category.brandId === formData.brandId);
 
     return (
         <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
@@ -247,6 +262,24 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                         </div>
 
                         <div className="space-y-2">
+                            <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.brands")} <span className="text-primary">*</span></label>
+                            <div className="relative">
+                                <select
+                                    className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white appearance-none outline-none cursor-pointer"
+                                    required
+                                    value={formData.brandId}
+                                    onChange={(e) => setFormData({ ...formData, brandId: e.target.value, categoryId: "" })}
+                                >
+                                    <option value="">{t("admin.selectBrand")}</option>
+                                    {brands.map(brand => (
+                                        <option key={brand.id} value={brand.id}>{brand.name}</option>
+                                    ))}
+                                </select>
+                                <MdExpandMore className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-sub text-[20px]" />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
                             <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.category")} <span className="text-primary">*</span></label>
                             <div className="relative">
                                 <select
@@ -256,7 +289,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                                     onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
                                 >
                                     <option value="">{t("admin.addProductModal.selectCategory")}</option>
-                                    {categories.map(cat => (
+                                    {filteredCategories.map(cat => (
                                         <option key={cat.id} value={cat.id}>{cat.name}</option>
                                     ))}
                                 </select>
@@ -290,7 +323,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                                             type="button"
                                             onClick={() => setFormData({ ...formData, discountType: type, discountValue: type === "NONE" ? "" : formData.discountValue })}
                                             className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${formData.discountType === type
-                                                ? "bg-primary text-white shadow-soft shadow-primary/25"
+                                                ? "bg-primary text-white"
                                                 : "text-text-sub hover:bg-gray-50 dark:hover:bg-gray-900"
                                                 }`}
                                         >
@@ -365,7 +398,7 @@ export default function AddProductModal({ isOpen, onClose, categories, product }
                     <button
                         onClick={handleSubmit}
                         disabled={isLoading}
-                        className="bg-primary hover:bg-primary/90 disabled:opacity-50 text-white h-12 px-8 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                        className="bg-primary hover:bg-primary/90 disabled:opacity-50 text-white h-12 px-8 rounded-xl font-bold text-sm flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
                     >
                         {isLoading ? (
                             <MdSync className="animate-spin text-[20px]" />

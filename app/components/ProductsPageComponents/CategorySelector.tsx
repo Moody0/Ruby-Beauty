@@ -53,7 +53,7 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
     const pillClassName = (isActive: boolean) =>
         `inline-flex items-center rounded-full border px-4 py-2.5 text-sm font-semibold transition-all ${
             isActive
-                ? "border-primary bg-primary text-white shadow-lg shadow-primary/15"
+                ? "border-primary bg-primary text-white"
                 : "border-[#e7dadd] bg-white text-[#2b1d21] hover:border-primary/35 hover:text-primary dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:border-primary/40"
         }`;
 
@@ -168,7 +168,7 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                             onClick={() => setIsOpen(false)}
                             className={`flex items-center justify-between rounded-2xl border px-4 py-4 transition-all ${
                                 !activeCategory
-                                    ? "border-primary bg-primary text-white shadow-lg shadow-primary/15"
+                                    ? "border-primary bg-primary text-white"
                                     : "border-[#eadfe2] bg-white text-[#2b1d21] hover:border-primary/35 hover:text-primary dark:border-white/10 dark:bg-white/5 dark:text-white"
                             }`}
                         >
@@ -191,7 +191,7 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                                     onClick={() => setIsOpen(false)}
                                     className={`flex items-center justify-between rounded-2xl border px-4 py-4 transition-all ${
                                         isActive
-                                            ? "border-primary bg-primary text-white shadow-lg shadow-primary/15"
+                                            ? "border-primary bg-primary text-white"
                                             : "border-[#eadfe2] bg-white text-[#2b1d21] hover:border-primary/35 hover:text-primary dark:border-white/10 dark:bg-white/5 dark:text-white"
                                     }`}
                                 >

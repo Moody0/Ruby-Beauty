@@ -58,7 +58,7 @@ const ProductActions = ({ product }: ProductActionsProps) => {
             </div>
             <button
                 onClick={handleAddToCart}
-                className="flex-1 h-14 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-lg shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-all transform active:scale-95 hover:-translate-y-0.5 active:translate-y-0"
+                className="flex-1 h-14 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all transform active:scale-95 hover:-translate-y-0.5 active:translate-y-0"
             >
                 <MdShoppingBag className="text-[24px]" />
                 {t('products.addToCart')}

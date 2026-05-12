@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/app/context/LanguageContext';
-import { MdMenu, MdClose, MdHome, MdShoppingCart, MdCategory, MdExpandMore, MdInfo, MdSearch } from 'react-icons/md';
+import { MdMenu, MdClose, MdHome, MdShoppingCart, MdCategory, MdExpandMore, MdInfo, MdSearch, MdStorefront } from 'react-icons/md';
 import HeaderSearch from './HeaderSearch';
 
 interface MobileCategory {
@@ -122,6 +122,15 @@ const MobileMenu = ({ initialCategories }: MobileMenuProps) => {
                         >
                             <MdShoppingCart className="text-2xl opacity-70" />
                             <span className="text-xl font-medium">{t('common.shop')}</span>
+                        </Link>
+
+                        <Link
+                            href="/brands"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={`flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border ${isActive('/brands') ? 'bg-primary/10 text-primary border-primary/20' : 'border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20'}`}
+                        >
+                            <MdStorefront className="text-2xl opacity-70" />
+                            <span className="text-xl font-medium">{t('common.brands')}</span>
                         </Link>
 
                         <button

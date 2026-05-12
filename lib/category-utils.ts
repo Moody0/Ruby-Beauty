@@ -43,6 +43,7 @@ export async function findCategoryByIdentifier(identifier: string) {
 
     return prisma.category.findFirst({
         where: {
+            brand: { isActive: true },
             OR: [
                 { id: identifier },
                 { slug: { equals: identifier, mode: "insensitive" } },
@@ -55,6 +56,7 @@ export async function findCategoryByIdentifier(identifier: string) {
             slug: true,
             description: true,
             image: true,
+            brandId: true,
         },
     });
 }

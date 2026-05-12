@@ -18,6 +18,12 @@ interface Product {
     categoryId: string;
     isTrending: boolean;
     stock: number;
+    brand?: {
+        id: string;
+        name: string;
+        slug: string;
+        group?: string;
+    } | null;
 }
 
 interface OnSaleProductsProps {
@@ -63,7 +69,7 @@ const OnSaleProducts = ({ products }: OnSaleProductsProps) => {
 
                     {canScrollForward && (
                         <button
-                            className="hidden md:flex absolute ltr:right-[-20px] rtl:left-[-20px] top-[95px] md:top-[108px] -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main shadow-lg transition-all hover:bg-primary hover:text-white dark:bg-surface-dark"
+                            className="hidden md:flex absolute ltr:right-[-20px] rtl:left-[-20px] top-[95px] md:top-[108px] -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main transition-all hover:bg-primary hover:text-white dark:bg-surface-dark"
                             aria-label="Next"
                             onClick={scrollForward}
                             type="button"
@@ -73,7 +79,7 @@ const OnSaleProducts = ({ products }: OnSaleProductsProps) => {
                     )}
                     {canScrollBackward && (
                         <button
-                            className="hidden md:flex absolute ltr:left-[-20px] rtl:right-[-20px] top-[95px] md:top-[108px] -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main shadow-lg transition-all hover:bg-primary hover:text-white dark:bg-surface-dark"
+                            className="hidden md:flex absolute ltr:left-[-20px] rtl:right-[-20px] top-[95px] md:top-[108px] -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main transition-all hover:bg-primary hover:text-white dark:bg-surface-dark"
                             aria-label="Previous"
                             onClick={scrollBackward}
                             type="button"

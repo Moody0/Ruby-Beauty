@@ -15,11 +15,13 @@ model User {
   updatedAt           DateTime @updatedAt
   username            String   @unique
   canDeleteBanners    Boolean  @default(true)
+  canDeleteBrands     Boolean  @default(true)
   canDeleteCategories Boolean  @default(true)
   canDeleteOrders     Boolean  @default(true)
   canDeleteProducts   Boolean  @default(true)
   canDeletePromoCodes Boolean  @default(true)
   canManageBanners    Boolean  @default(true)
+  canManageBrands     Boolean  @default(true)
   canManageCategories Boolean  @default(true)
   canManageOrders     Boolean  @default(true)
   canManageProducts   Boolean  @default(true)
@@ -29,14 +31,19 @@ model User {
 
 model Category {
   id          String    @id @default(cuid())
-  name        String    @unique
+  name        String
   slug        String    @unique
   description String?
   image       String?
+  brandId     String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   isFeatured  Boolean   @default(false)
+  brand       Brand     @relation(fields: [brandId], references: [id])
   products    Product[]
+
+  @@unique([brandId, name])
+  @@index([brandId])
 }
 
 model Product {
@@ -51,15 +58,37 @@ model Product {
   discountType  String? // "PERCENTAGE" | "FIXED"
   discountValue Decimal?    @db.Decimal(10, 2)
   stock         Int         @default(0)
+  brandId       String
   categoryId    String
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   sku           String?
   orderItems    OrderItem[]
+  brand         Brand       @relation(fields: [brandId], references: [id])
   category      Category    @relation(fields: [categoryId], references: [id])
 
+  @@index([brandId])
   @@index([categoryId])
   @@index([name])
+}
+
+model Brand {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  slug        String     @unique
+  description String?
+  image       String?
+  group       BrandGroup @default(DIFFERENT)
+  isActive    Boolean    @default(true)
+  isFeatured  Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  categories  Category[]
+  products    Product[]
+
+  @@index([group])
+  @@index([isActive])
+  @@index([isFeatured])
 }
 
 model Order {
@@ -255,4 +284,9 @@ enum OrderStatus {
 enum Role {
   SUPER_ADMIN
   ADMIN
+}
+
+enum BrandGroup {
+  MAIN
+  DIFFERENT
 }

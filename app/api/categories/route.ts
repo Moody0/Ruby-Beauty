@@ -7,11 +7,16 @@ export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
         const limitParam = searchParams.get("limit");
+        const brandId = searchParams.get("brandId");
 
         const take = limitParam ? parseInt(limitParam) : undefined;
 
         const categories = await prisma.category.findMany({
             ...(take && { take }),
+            where: {
+                brand: { isActive: true },
+                ...(brandId ? { brandId } : {}),
+            },
             orderBy: [
                 { isFeatured: "desc" },
                 { name: "asc" },
@@ -22,6 +27,15 @@ export async function GET(request: Request) {
                 slug: true,
                 description: true,
                 image: true,
+                brandId: true,
+                brand: {
+                    select: {
+                        id: true,
+                        name: true,
+                        slug: true,
+                        group: true,
+                    }
+                }
             },
         });
 

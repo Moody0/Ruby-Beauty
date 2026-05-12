@@ -46,6 +46,13 @@ interface Product {
     stock: number;
     images: string;
     isTrending: boolean;
+    brandId: string;
+    brand: {
+        id: string;
+        name: string;
+        slug: string;
+        group: string;
+    } | null;
     category: {
         id: string;
         name: string;
@@ -55,9 +62,20 @@ interface Product {
 interface Category {
     id: string;
     name: string;
+    brandId: string;
 }
 
-export default function ProductsClient({ products, categories }: { products: Product[], categories: Category[] }) {
+interface Brand {
+    id: string;
+    name: string;
+    slug: string;
+    group: string;
+    isActive: boolean;
+}
+
+type ImportRow = Record<string, string | number | boolean | null | undefined>;
+
+export default function ProductsClient({ products, categories, brands }: { products: Product[], categories: Category[], brands: Brand[] }) {
     const { data: session } = useSession();
     const { t, dir } = useLanguage();
     const canDelete = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canDeleteProducts;
@@ -67,6 +85,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
+    const [selectedBrand, setSelectedBrand] = useState("All Brands");
     const [selectedCategory, setSelectedCategory] = useState("All Categories");
     const [selectedStockStatus, setSelectedStockStatus] = useState("Stock Status");
     const [showTrendingOnly, setShowTrendingOnly] = useState(false);
@@ -144,15 +163,17 @@ export default function ProductsClient({ products, categories }: { products: Pro
     // Reset to first page when filtering
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchQuery, selectedCategory, selectedStockStatus, showTrendingOnly, showOnSaleOnly]);
+    }, [searchQuery, selectedBrand, selectedCategory, selectedStockStatus, showTrendingOnly, showOnSaleOnly]);
 
     // Filter products
     const filteredProducts = useMemo(() => {
         return products.filter(p => {
             const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 (p.sku?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+                (p.brand?.name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
                 (p.category?.name?.toLowerCase() || "").includes(searchQuery.toLowerCase());
 
+            const matchesBrand = selectedBrand === "All Brands" || selectedBrand === t('admin.allBrands') || p.brand?.name === selectedBrand;
             // Handle "All Categories" for translations (this check might need to be robust)
             // Ideally we check against the translation key or value? For now let's assume "All Categories" is the default state value.
             const matchesCategory = selectedCategory === "All Categories" || selectedCategory === t('admin.allCategories') || p.category?.name === selectedCategory;
@@ -165,7 +186,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
             const matchesTrending = !showTrendingOnly || p.isTrending;
             const matchesOnSale = !showOnSaleOnly || p.discountPrice !== null;
 
-            return matchesSearch && matchesCategory && matchesStock && matchesTrending && matchesOnSale;
+            return matchesSearch && matchesBrand && matchesCategory && matchesStock && matchesTrending && matchesOnSale;
         }).sort((a, b) => {
             const { key, direction } = sortConfig;
 
@@ -186,6 +207,10 @@ export default function ProductsClient({ products, categories }: { products: Pro
                 const valA = String(a.category?.name || '').toLowerCase();
                 const valB = String(b.category?.name || '').toLowerCase();
                 comparison = valA.localeCompare(valB);
+            } else if (key === 'brand') {
+                const valA = String(a.brand?.name || '').toLowerCase();
+                const valB = String(b.brand?.name || '').toLowerCase();
+                comparison = valA.localeCompare(valB);
             } else if (key === 'status') {
                 // Determine status value: stock > 0 => 1 (active), stock <= 0 => 0 (draft/inactive)
                 const valA = Number(a.stock) > 0 ? 1 : 0;
@@ -200,7 +225,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
 
             return direction === 'asc' ? comparison : -comparison;
         });
-    }, [products, searchQuery, selectedCategory, selectedStockStatus, showTrendingOnly, showOnSaleOnly, t, sortConfig]);
+    }, [products, searchQuery, selectedBrand, selectedCategory, selectedStockStatus, showTrendingOnly, showOnSaleOnly, t, sortConfig]);
 
     const handleSort = (key: string) => {
         setSortConfig(current => ({
@@ -358,12 +383,13 @@ export default function ProductsClient({ products, categories }: { products: Pro
     const handleExportCSV = () => {
         try {
             // Prepare headers
-            const headers = ["Name", "SKU", "Category", "Price", "Stock", "Status", "Is Trending", "Images"];
+            const headers = ["Name", "SKU", "Brand", "Category", "Price", "Stock", "Status", "Is Trending", "Images"];
 
             // Prepare data rows
-            const rows = products.map((p: any) => [
+            const rows = products.map((p) => [
                 `"${p.name.replace(/"/g, '""')}"`,
                 `"${(p.sku || '').replace(/"/g, '""')}"`,
+                `"${(p.brand?.name || 'Ruby Beauty').replace(/"/g, '""')}"`,
                 `"${(p.category?.name || 'Uncategorized').replace(/"/g, '""')}"`,
                 p.price,
                 p.stock,
@@ -404,9 +430,10 @@ export default function ProductsClient({ products, categories }: { products: Pro
             const XLSX = await import('xlsx');
 
             // Prepare data
-            const data = products.map((p: any) => ({
+            const data = products.map((p) => ({
                 Name: p.name,
                 SKU: p.sku || '',
+                Brand: p.brand?.name || 'Ruby Beauty',
                 Category: p.category?.name || 'Uncategorized',
                 Price: p.price,
                 Stock: p.stock,
@@ -438,7 +465,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
         const reader = new FileReader();
         reader.onload = async (event) => {
             try {
-                let data: any[] = [];
+                let data: ImportRow[] = [];
                 const fileName = file.name.toLowerCase();
 
                 if (fileName.endsWith('.csv')) {
@@ -452,7 +479,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                     const headers = lines[0].split(',').map(h => h.trim());
                     data = lines.slice(1).filter(line => line.trim()).map(line => {
                         const values = line.split(',').map(v => v.replace(/^"|"$/g, '').trim());
-                        const obj: any = {};
+                        const obj: ImportRow = {};
                         headers.forEach((header, i) => {
                             obj[header] = values[i];
                         });
@@ -464,7 +491,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                     const wb = XLSX.read(bstr, { type: 'binary' });
                     const wsname = wb.SheetNames[0];
                     const ws = wb.Sheets[wsname];
-                    data = XLSX.utils.sheet_to_json(ws);
+                    data = XLSX.utils.sheet_to_json<ImportRow>(ws);
                 }
 
                 if (data.length === 0) {
@@ -564,7 +591,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                         setSelectedProduct(null);
                                         setIsAddModalOpen(true);
                                     }}
-                                    className="bg-primary hover:bg-primary/90 text-white h-12 px-6 rounded-xl font-bold text-sm shadow-lg shadow-primary/25 flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                                    className="bg-primary hover:bg-primary/90 text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
                                 >
                                     <MdAdd className="text-[20px]" />
                                     {t('admin.addNewProduct')}
@@ -580,6 +607,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                             setSelectedProduct(null);
                         }}
                         categories={categories}
+                        brands={brands}
                         product={selectedProduct}
                     />
 
@@ -628,6 +656,20 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                 />
                             </div>
                             <div className="flex flex-wrap items-center gap-3">
+                                {/* Brand Filter */}
+                                <div className="relative flex-1 sm:flex-initial">
+                                    <select
+                                        className={`appearance-none w-full ${dir === 'rtl' ? 'pr-3 pl-10' : 'pl-3 pr-10'} py-2.5 bg-background-light dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 rounded-xl text-sm font-medium text-text-main dark:text-white focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer min-w-[140px] outline-none`}
+                                        value={selectedBrand}
+                                        onChange={(e) => setSelectedBrand(e.target.value)}
+                                    >
+                                        <option>{t('admin.allBrands')}</option>
+                                        {brands.map(brand => <option key={brand.id} value={brand.name}>{brand.name}</option>)}
+                                    </select>
+                                    <div className={`absolute inset-y-0 ${dir === 'rtl' ? 'left-0 pl-2' : 'right-0 pr-2'} flex items-center pointer-events-none text-text-sub dark:text-gray-400`}>
+                                        <MdExpandMore className="text-[20px]" />
+                                    </div>
+                                </div>
                                 {/* Category Filter */}
                                 <div className="relative flex-1 sm:flex-initial">
                                     <select
@@ -767,6 +809,15 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                 </span>
                                             </div>
                                         </th>
+                                        <th className={`p-3 sm:p-5 cursor-pointer select-none group`} onClick={() => handleSort('brand')}>
+                                            <div className="flex items-center">
+                                                {t('admin.brands')}
+                                                <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'brand' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                    <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'brand' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                </span>
+                                            </div>
+                                        </th>
                                         <th className={`p-3 sm:p-5 cursor-pointer select-none group`} onClick={() => handleSort('category')}>
                                             <div className="flex items-center">
                                                 {t('admin.categoryName')}
@@ -842,6 +893,11 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                             <span className="text-[10px] sm:text-xs text-text-sub dark:text-gray-500">{t('admin.sku')}: {product.sku || 'N/A'}</span>
                                                         </div>
                                                     </div>
+                                                </td>
+                                                <td className="p-3 sm:p-5">
+                                                    <span className="inline-flex items-center px-2 py-0.5 sm:px-2.5 rounded-full text-[10px] sm:text-xs font-medium bg-gray-100 text-text-main dark:bg-gray-800 dark:text-white whitespace-nowrap">
+                                                        {product.brand?.name || 'Ruby Beauty'}
+                                                    </span>
                                                 </td>
                                                 <td className="p-3 sm:p-5">
                                                     <span className="inline-flex items-center px-2 py-0.5 sm:px-2.5 rounded-full text-[10px] sm:text-xs font-medium bg-primary/10 text-primary whitespace-nowrap">
@@ -958,7 +1014,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan={7} className="p-10 text-center text-text-sub dark:text-gray-500 italic">
+                                            <td colSpan={9} className="p-10 text-center text-text-sub dark:text-gray-500 italic">
                                                 {t('admin.noProductsMatch')}
                                             </td>
                                         </tr>
@@ -995,7 +1051,7 @@ export default function ProductsClient({ products, categories }: { products: Pro
                                                 key={pageNum}
                                                 onClick={() => handlePageChange(pageNum)}
                                                 className={`size-8 sm:size-9 flex items-center justify-center rounded-lg text-xs sm:text-sm font-bold transition-all ${currentPage === pageNum
-                                                    ? 'bg-primary text-white shadow-soft shadow-primary/40'
+                                                    ? 'bg-primary text-white'
                                                     : 'border border-[#e6dbdf] dark:border-gray-700 text-text-sub dark:text-gray-400 hover:bg-background-light dark:hover:bg-gray-800'
                                                     }`}
                                             >

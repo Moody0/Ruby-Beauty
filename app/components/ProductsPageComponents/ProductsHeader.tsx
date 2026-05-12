@@ -12,13 +12,18 @@ interface ProductsHeaderProps {
         description: string | null;
         image: string | null;
     } | null;
+    activeBrand?: {
+        name: string;
+        description: string | null;
+        group: string;
+    } | null;
 }
 
-const ProductsHeader = ({ sort, setSort, activeCategory = null }: ProductsHeaderProps) => {
+const ProductsHeader = ({ sort, setSort, activeCategory = null, activeBrand = null }: ProductsHeaderProps) => {
     const { t } = useLanguage();
-    const title = activeCategory?.name || t('products.allProducts');
-    const description = activeCategory?.description || (activeCategory ? t('products.categoryDescriptionFallback') : t('products.allProductsDescription'));
-    const eyebrow = activeCategory ? t('products.categoryCollection') : t('products.catalogEyebrow');
+    const title = activeCategory?.name || activeBrand?.name || t('products.allProducts');
+    const description = activeCategory?.description || activeBrand?.description || (activeCategory ? t('products.categoryDescriptionFallback') : t('products.allProductsDescription'));
+    const eyebrow = activeCategory ? t('products.categoryCollection') : activeBrand ? t('brands.brandCollection') : t('products.catalogEyebrow');
 
     return (
         <div className="mb-8 flex flex-col gap-6 border-b border-[#ece2e5] pb-6 dark:border-white/10 lg:flex-row lg:items-end lg:justify-between">
@@ -29,6 +34,11 @@ const ProductsHeader = ({ sort, setSort, activeCategory = null }: ProductsHeader
                 <h1 className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-[#171214] dark:text-white md:text-5xl">
                     {title}
                 </h1>
+                {description && (
+                    <p className="mt-3 max-w-2xl text-sm leading-6 text-[#7b676f] dark:text-white/55">
+                        {description}
+                    </p>
+                )}
             </div>
 
             <div className="flex items-center gap-3 self-start lg:self-end">

@@ -2,8 +2,9 @@
 
 import { prisma } from "./prisma";
 import { revalidatePath } from "next/cache";
-import { OrderStatus, Prisma } from "@prisma/client";
+import { BrandGroup, OrderStatus } from "@prisma/client";
 import { generateUniqueCategorySlug } from "./category-utils";
+import { generateUniqueBrandSlug, getRubyBeautyBrandId } from "./brand-utils";
 
 interface ProductInput {
     name: string;
@@ -15,6 +16,7 @@ interface ProductInput {
     stock: string | number;
     sku?: string;
     images: string;
+    brandId: string;
     categoryId: string;
 }
 
@@ -23,7 +25,19 @@ interface CategoryInput {
     description?: string;
     image?: string;
     isFeatured?: boolean;
+    brandId?: string;
 }
+
+interface BrandInput {
+    name: string;
+    description?: string;
+    image?: string;
+    group?: BrandGroup | "MAIN" | "DIFFERENT";
+    isActive?: boolean;
+    isFeatured?: boolean;
+}
+
+type ProductImportRow = Record<string, string | number | boolean | null | undefined>;
 
 export interface HomeCollectionSectionProduct {
     id: string;
@@ -36,6 +50,12 @@ export interface HomeCollectionSectionProduct {
     categoryId: string;
     stock: number;
     isTrending: boolean;
+    brand?: {
+        id: string;
+        name: string;
+        slug: string;
+        group: BrandGroup;
+    } | null;
 }
 
 export interface HomeCollectionSection {
@@ -48,6 +68,19 @@ export interface HomeCollectionSection {
         productCount: number;
     };
     products: HomeCollectionSectionProduct[];
+}
+
+export interface HomeBrand {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+    image: string | null;
+    group: BrandGroup;
+    _count: {
+        products: number;
+        categories: number;
+    };
 }
 
 export async function getDashboardStats() {
@@ -148,6 +181,168 @@ function getStatusColor(status: string) {
     }
 }
 
+export async function getAdminBrands() {
+    try {
+        const brands = await prisma.brand.findMany({
+            orderBy: [
+                { group: "asc" },
+                { name: "asc" },
+            ],
+            include: {
+                _count: {
+                    select: {
+                        categories: true,
+                        products: true,
+                    },
+                },
+            },
+        });
+
+        return brands.map((brand) => ({
+            ...brand,
+            createdAt: brand.createdAt.toISOString(),
+            updatedAt: brand.updatedAt.toISOString(),
+        }));
+    } catch (error) {
+        console.error("Failed to fetch brands:", error);
+        return [];
+    }
+}
+
+export async function createBrand(data: BrandInput) {
+    try {
+        const slug = await generateUniqueBrandSlug(data.name);
+        const group = data.group === "MAIN" ? BrandGroup.MAIN : BrandGroup.DIFFERENT;
+
+        const brand = await prisma.brand.create({
+            data: {
+                name: data.name.trim(),
+                slug,
+                description: data.description,
+                image: data.image,
+                group,
+                isActive: data.isActive ?? true,
+                isFeatured: group === BrandGroup.MAIN ? (data.isFeatured ?? false) : false,
+            },
+        });
+
+        revalidatePath("/");
+        revalidatePath("/brands");
+        revalidatePath("/admin/brands");
+
+        return {
+            success: true,
+            brand: {
+                ...brand,
+                createdAt: brand.createdAt.toISOString(),
+                updatedAt: brand.updatedAt.toISOString(),
+            },
+        };
+    } catch (error) {
+        console.error("Failed to create brand:", error);
+        return { success: false, error: "Failed to create brand" };
+    }
+}
+
+export async function updateBrand(id: string, data: BrandInput) {
+    try {
+        const slug = await generateUniqueBrandSlug(data.name, id);
+        const group = data.group === "MAIN" ? BrandGroup.MAIN : BrandGroup.DIFFERENT;
+
+        const brand = await prisma.brand.update({
+            where: { id },
+            data: {
+                name: data.name.trim(),
+                slug,
+                description: data.description,
+                image: data.image,
+                group,
+                isActive: data.isActive ?? true,
+                isFeatured: group === BrandGroup.MAIN ? (data.isFeatured ?? false) : false,
+            },
+        });
+
+        revalidatePath("/");
+        revalidatePath("/brands");
+        revalidatePath(`/brands/${brand.slug}`);
+        revalidatePath("/admin/brands");
+        revalidatePath("/admin/products");
+        revalidatePath("/admin/categories");
+
+        return {
+            success: true,
+            brand: {
+                ...brand,
+                createdAt: brand.createdAt.toISOString(),
+                updatedAt: brand.updatedAt.toISOString(),
+            },
+        };
+    } catch (error) {
+        console.error("Failed to update brand:", error);
+        return { success: false, error: "Failed to update brand" };
+    }
+}
+
+export async function deleteBrand(id: string) {
+    try {
+        const [productCount, categoryCount] = await Promise.all([
+            prisma.product.count({ where: { brandId: id } }),
+            prisma.category.count({ where: { brandId: id } }),
+        ]);
+
+        if (productCount > 0 || categoryCount > 0) {
+            return { success: false, error: "deleteBrandWithCatalog" };
+        }
+
+        await prisma.brand.delete({ where: { id } });
+
+        revalidatePath("/");
+        revalidatePath("/brands");
+        revalidatePath("/admin/brands");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to delete brand:", error);
+        return { success: false, error: "deleteBrandError" };
+    }
+}
+
+export async function toggleBrandActive(id: string, isActive: boolean) {
+    try {
+        await prisma.brand.update({
+            where: { id },
+            data: { isActive },
+        });
+
+        revalidatePath("/");
+        revalidatePath("/brands");
+        revalidatePath("/admin/brands");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to toggle brand active status:", error);
+        return { success: false, error: "Failed to toggle brand active status" };
+    }
+}
+
+export async function toggleBrandFeatured(id: string, isFeatured: boolean) {
+    try {
+        await prisma.brand.update({
+            where: {
+                id,
+                group: BrandGroup.MAIN,
+            },
+            data: { isFeatured },
+        });
+
+        revalidatePath("/");
+        revalidatePath("/brands");
+        revalidatePath("/admin/brands");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to toggle brand featured status:", error);
+        return { success: false, error: "Failed to toggle brand featured status" };
+    }
+}
+
 export async function getAdminProducts() {
     try {
         const products = await prisma.product.findMany({
@@ -155,7 +350,8 @@ export async function getAdminProducts() {
                 createdAt: 'desc'
             },
             include: {
-                category: true
+                category: true,
+                brand: true,
             }
         });
 
@@ -171,7 +367,14 @@ export async function getAdminProducts() {
             discountType: product.discountType,
             discountValue: product.discountValue ? Number(product.discountValue) : null,
             stock: Number(product.stock),
+            brandId: product.brandId,
             categoryId: product.categoryId,
+            brand: product.brand ? {
+                id: product.brand.id,
+                name: product.brand.name,
+                slug: product.brand.slug,
+                group: product.brand.group,
+            } : null,
             category: {
                 id: product.category.id,
                 name: product.category.name
@@ -196,9 +399,18 @@ export async function getAdminCategories(page = 1, limit = 500) {
                     name: true,
                     description: true,
                     image: true,
+                    brandId: true,
                     isFeatured: true,
                     createdAt: true,
                     updatedAt: true,
+                    brand: {
+                        select: {
+                            id: true,
+                            name: true,
+                            slug: true,
+                            group: true,
+                        }
+                    },
                     _count: {
                         select: { products: true }
                     }
@@ -306,6 +518,15 @@ export async function getAdminOrders(page = 1, limit = 50) {
 
 export async function createProduct(data: ProductInput) {
     try {
+        const category = await prisma.category.findUnique({
+            where: { id: data.categoryId },
+            select: { brandId: true },
+        });
+
+        if (!category || category.brandId !== data.brandId) {
+            return { success: false, error: "Product category must belong to the selected brand" };
+        }
+
         let slug = data.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
         
         // Check for slug collision
@@ -329,6 +550,7 @@ export async function createProduct(data: ProductInput) {
                 stock: parseInt(data.stock as string),
                 sku: data.sku,
                 images: data.images,
+                brandId: data.brandId,
                 categoryId: data.categoryId,
             }
         });
@@ -350,6 +572,7 @@ export async function createProduct(data: ProductInput) {
                 discountType: product.discountType,
                 discountValue: product.discountValue ? Number(product.discountValue) : null,
                 stock: Number(product.stock),
+                brandId: product.brandId,
                 categoryId: product.categoryId,
                 createdAt: product.createdAt.toISOString(),
                 updatedAt: product.updatedAt.toISOString(),
@@ -363,6 +586,15 @@ export async function createProduct(data: ProductInput) {
 
 export async function updateProduct(id: string, data: ProductInput & { isTrending?: boolean }) {
     try {
+        const category = await prisma.category.findUnique({
+            where: { id: data.categoryId },
+            select: { brandId: true },
+        });
+
+        if (!category || category.brandId !== data.brandId) {
+            return { success: false, error: "Product category must belong to the selected brand" };
+        }
+
         let slug = data.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
         
         // Check if this slug is used by ANOTHER product
@@ -390,6 +622,7 @@ export async function updateProduct(id: string, data: ProductInput & { isTrendin
                 stock: parseInt(data.stock as string),
                 sku: data.sku,
                 images: data.images,
+                brandId: data.brandId,
                 categoryId: data.categoryId,
                 isTrending: data.isTrending,
             }
@@ -412,6 +645,7 @@ export async function updateProduct(id: string, data: ProductInput & { isTrendin
                 discountType: product.discountType,
                 discountValue: product.discountValue ? Number(product.discountValue) : null,
                 stock: Number(product.stock),
+                brandId: product.brandId,
                 categoryId: product.categoryId,
                 createdAt: product.createdAt.toISOString(),
                 updatedAt: product.updatedAt.toISOString(),
@@ -431,9 +665,9 @@ export async function deleteProduct(id: string) {
 
         revalidatePath('/admin/products');
         return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Failed to delete product:", error);
-        if (error.code === 'P2003') {
+        if (typeof error === "object" && error !== null && "code" in error && error.code === 'P2003') {
             return { success: false, error: "deleteProductWithOrders" };
         }
         return { success: false, error: "deleteProductError" };
@@ -442,7 +676,7 @@ export async function deleteProduct(id: string) {
 
 export async function updateOrderStatus(id: string, status: OrderStatus) {
     try {
-        const result = await prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx) => {
             // Get current order and its status
             const order = await tx.order.findUnique({
                 where: { id },
@@ -512,6 +746,7 @@ export async function deleteOrder(id: string) {
 
 export async function createCategory(data: CategoryInput) {
     try {
+        const brandId = data.brandId || await getRubyBeautyBrandId();
         const slug = await generateUniqueCategorySlug(data.name);
 
         const category = await prisma.category.create({
@@ -520,6 +755,7 @@ export async function createCategory(data: CategoryInput) {
                 slug,
                 description: data.description,
                 image: data.image,
+                brandId,
                 isFeatured: data.isFeatured ?? false,
             }
         });
@@ -546,6 +782,7 @@ export async function createCategory(data: CategoryInput) {
 
 export async function updateCategory(id: string, data: CategoryInput) {
     try {
+        const brandId = data.brandId || await getRubyBeautyBrandId();
         const slug = await generateUniqueCategorySlug(data.name, id);
 
         const category = await prisma.category.update({
@@ -555,6 +792,7 @@ export async function updateCategory(id: string, data: CategoryInput) {
                 slug,
                 description: data.description,
                 image: data.image,
+                brandId,
                 isFeatured: data.isFeatured,
             }
         });
@@ -626,7 +864,10 @@ export async function toggleCategoryFeatured(id: string, isFeatured: boolean) {
 export async function getFeaturedCategories() {
     try {
         const categories = await prisma.category.findMany({
-            where: { isFeatured: true },
+            where: {
+                isFeatured: true,
+                brand: { isActive: true },
+            },
             take: 8,
             orderBy: { updatedAt: 'desc' }
         });
@@ -641,12 +882,49 @@ export async function getFeaturedCategories() {
     }
 }
 
+export async function getFeaturedMainBrands(): Promise<HomeBrand[]> {
+    try {
+        return await prisma.brand.findMany({
+            where: {
+                group: BrandGroup.MAIN,
+                isActive: true,
+                isFeatured: true,
+            },
+            take: 18,
+            orderBy: [
+                { updatedAt: "desc" },
+                { name: "asc" },
+            ],
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                description: true,
+                image: true,
+                group: true,
+                _count: {
+                    select: {
+                        products: true,
+                        categories: true,
+                    },
+                },
+            },
+        });
+    } catch (error) {
+        console.error("Failed to fetch featured main brands:", error);
+        return [];
+    }
+}
+
 export async function getHomeCollectionSections(): Promise<HomeCollectionSection[]> {
     const productsPerSection = 18;
 
     try {
         const featuredCategories = await prisma.category.findMany({
-            where: { isFeatured: true },
+            where: {
+                isFeatured: true,
+                brand: { isActive: true },
+            },
             orderBy: { updatedAt: "desc" },
             select: {
                 id: true,
@@ -667,6 +945,7 @@ export async function getHomeCollectionSections(): Promise<HomeCollectionSection
             where: {
                 categoryId: { in: featuredCategoryIds },
                 stock: { gt: 0 },
+                brand: { isActive: true },
             },
             _count: {
                 _all: true,
@@ -696,6 +975,17 @@ export async function getHomeCollectionSections(): Promise<HomeCollectionSection
                     where: {
                         categoryId: category.id,
                         stock: { gt: 0 },
+                        brand: { isActive: true },
+                    },
+                    include: {
+                        brand: {
+                            select: {
+                                id: true,
+                                name: true,
+                                slug: true,
+                                group: true,
+                            },
+                        },
                     },
                     take: productsPerSection,
                     orderBy: [
@@ -724,6 +1014,7 @@ export async function getHomeCollectionSections(): Promise<HomeCollectionSection
                         categoryId: product.categoryId,
                         stock: Number(product.stock),
                         isTrending: product.isTrending,
+                        brand: product.brand,
                     })),
                 };
             })
@@ -755,9 +1046,12 @@ export async function toggleProductTrending(id: string, isTrending: boolean) {
 export async function getTrendingProducts() {
     try {
         const products = await prisma.product.findMany({
-            where: { isTrending: true },
+            where: {
+                isTrending: true,
+                brand: { isActive: true },
+            },
             // Removed limit to allow carousel to show all trending products
-            include: { category: true },
+            include: { category: true, brand: true },
             orderBy: { updatedAt: 'desc' }
         });
 
@@ -774,7 +1068,13 @@ export async function getTrendingProducts() {
                 ...product.category,
                 createdAt: product.category.createdAt.toISOString(),
                 updatedAt: product.category.updatedAt.toISOString(),
-            } : null
+            } : null,
+            brand: product.brand ? {
+                id: product.brand.id,
+                name: product.brand.name,
+                slug: product.brand.slug,
+                group: product.brand.group,
+            } : null,
         }));
     } catch (error) {
         console.error("Failed to fetch trending products:", error);
@@ -786,12 +1086,13 @@ export async function getOnSaleProducts() {
     try {
         const products = await prisma.product.findMany({
             where: {
+                brand: { isActive: true },
                 discountPrice: {
                     not: null
                 }
             },
             take: 10,
-            include: { category: true },
+            include: { category: true, brand: true },
             orderBy: { updatedAt: 'desc' }
         });
 
@@ -808,7 +1109,13 @@ export async function getOnSaleProducts() {
                 ...product.category,
                 createdAt: product.category.createdAt.toISOString(),
                 updatedAt: product.category.updatedAt.toISOString(),
-            } : null
+            } : null,
+            brand: product.brand ? {
+                id: product.brand.id,
+                name: product.brand.name,
+                slug: product.brand.slug,
+                group: product.brand.group,
+            } : null,
         }));
     } catch (error) {
         console.error("Failed to fetch on sale products:", error);
@@ -844,36 +1151,62 @@ export async function bulkFixCategoryNames(mapping: { id: string, newName: strin
     }
 }
 
-export async function bulkCreateProducts(products: any[]) {
+export async function bulkCreateProducts(products: ProductImportRow[]) {
     try {
+        const rubyBeautyBrandId = await getRubyBeautyBrandId();
+        const brands = await prisma.brand.findMany();
+        const brandMap = new Map(brands.map((brand) => [brand.name.trim().toLowerCase(), brand]));
         const categories = await prisma.category.findMany();
-        const categoryMap = new Map(categories.map(c => [c.name.toLowerCase(), c.id]));
+        const categoryMap = new Map(categories.map(c => [`${c.brandId}:${c.name.trim().toLowerCase()}`, c.id]));
 
         const results = await Promise.all(products.map(async (p) => {
-            const categoryName = (p.Category || 'Uncategorized').toLowerCase();
-            let categoryId = categoryMap.get(categoryName);
+            const productName = String(p.Name || "").trim();
+            if (!productName) {
+                throw new Error("Product name is required");
+            }
+            const brandLabel = String(p.Brand || "Ruby Beauty").trim() || "Ruby Beauty";
+            const brandKey = brandLabel.toLowerCase();
+            let brand = brandMap.get(brandKey);
+
+            if (!brand) {
+                brand = await prisma.brand.create({
+                    data: {
+                        name: brandLabel,
+                        slug: await generateUniqueBrandSlug(brandLabel),
+                        group: BrandGroup.DIFFERENT,
+                        isActive: true,
+                    }
+                });
+                brandMap.set(brandKey, brand);
+            }
+
+            const brandId = brand?.id || rubyBeautyBrandId;
+            const categoryLabel = String(p.Category || 'Uncategorized').trim() || 'Uncategorized';
+            const categoryKey = `${brandId}:${categoryLabel.toLowerCase()}`;
+            let categoryId = categoryMap.get(categoryKey);
 
             if (!categoryId) {
-                const categoryLabel = p.Category || 'Uncategorized';
                 const newCat = await prisma.category.create({
                     data: {
                         name: categoryLabel,
                         slug: await generateUniqueCategorySlug(categoryLabel),
+                        brandId,
                     }
                 });
-                categoryMap.set(categoryName, newCat.id);
+                categoryMap.set(categoryKey, newCat.id);
                 categoryId = newCat.id;
             }
 
             return prisma.product.create({
                 data: {
-                    name: p.Name,
-                    slug: p.Name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') + '-' + Math.random().toString(36).substr(2, 5),
-                    description: p.Description || "",
-                    price: parseFloat(p.Price || "0"),
-                    stock: parseInt(p.Stock || "0"),
-                    sku: p.SKU || "",
-                    images: p.Images || "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800",
+                    name: productName,
+                    slug: productName.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') + '-' + Math.random().toString(36).substr(2, 5),
+                    description: String(p.Description || ""),
+                    price: parseFloat(String(p.Price || "0")),
+                    stock: parseInt(String(p.Stock || "0")),
+                    sku: String(p.SKU || ""),
+                    images: String(p.Images || "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800"),
+                    brandId,
                     categoryId: categoryId,
                     isTrending: p["Is Trending"] === "Yes"
                 }
@@ -881,6 +1214,8 @@ export async function bulkCreateProducts(products: any[]) {
         }));
 
         revalidatePath('/admin/products');
+        revalidatePath('/admin/brands');
+        revalidatePath('/admin/categories');
         revalidatePath('/');
         return { success: true, count: results.length };
     } catch (error) {
@@ -1573,7 +1908,7 @@ export async function bulkDeleteProducts(ids: string[]) {
         }
 
         return { success: true, count: idsToDelete.length };
-    } catch (error: any) {
+    } catch (error) {
         console.error("Detailed Bulk Delete Error:", error);
         return { success: false, error: "bulkDeleteProductsError" };
     }
@@ -1616,7 +1951,7 @@ export async function bulkDeleteCategories(ids: string[]) {
         }
 
         return { success: true, count: idsToDelete.length };
-    } catch (error: any) {
+    } catch (error) {
         console.error("Detailed Bulk Delete Categories Error:", error);
         return { success: false, error: "bulkDeleteCategoriesError" };
     }

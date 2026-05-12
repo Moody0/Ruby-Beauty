@@ -14,15 +14,21 @@ interface CategoryModalProps {
         name: string;
         description: string | null;
         image: string | null;
+        brandId?: string;
         isFeatured?: boolean;
     } | null;
+    brands: {
+        id: string;
+        name: string;
+    }[];
 }
 
-export default function CategoryModal({ isOpen, onClose, category }: CategoryModalProps) {
+export default function CategoryModal({ isOpen, onClose, category, brands }: CategoryModalProps) {
     const { t, dir } = useLanguage();
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [image, setImage] = useState("");
+    const [brandId, setBrandId] = useState("");
     const [isFeatured, setIsFeatured] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -31,14 +37,16 @@ export default function CategoryModal({ isOpen, onClose, category }: CategoryMod
             setName(category.name);
             setDescription(category.description || "");
             setImage(category.image || "");
+            setBrandId(category.brandId || brands[0]?.id || "");
             setIsFeatured(category.isFeatured ?? false);
         } else {
             setName("");
             setDescription("");
             setImage("");
+            setBrandId(brands[0]?.id || "");
             setIsFeatured(false);
         }
-    }, [category, isOpen]);
+    }, [category, isOpen, brands]);
 
     if (!isOpen) return null;
 
@@ -47,7 +55,7 @@ export default function CategoryModal({ isOpen, onClose, category }: CategoryMod
         setIsSubmitting(true);
 
         try {
-            const data = { name, description, image, isFeatured };
+            const data = { name, description, image, isFeatured, brandId };
             let result;
 
             if (category) {
@@ -103,6 +111,23 @@ export default function CategoryModal({ isOpen, onClose, category }: CategoryMod
                             required
                             className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                         />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                            {t('admin.brands')}
+                        </label>
+                        <select
+                            value={brandId}
+                            onChange={(e) => setBrandId(e.target.value)}
+                            required
+                            className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                        >
+                            <option value="">{t('admin.selectBrand')}</option>
+                            {brands.map((brand) => (
+                                <option key={brand.id} value={brand.id}>{brand.name}</option>
+                            ))}
+                        </select>
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -174,7 +199,7 @@ export default function CategoryModal({ isOpen, onClose, category }: CategoryMod
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="flex-2 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50"
+                            className="flex-2 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                         >
                             {isSubmitting ? (
                                 <>

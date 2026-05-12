@@ -32,7 +32,7 @@ export default async function NotFound() {
           <div className={`flex flex-col sm:flex-row gap-4 justify-center ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
             <Link 
               href="/" 
-              className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg"
+              className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-semibold rounded-lg transition-all duration-300"
             >
               {t('notFound.homeCta')}
             </Link>

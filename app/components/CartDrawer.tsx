@@ -142,7 +142,7 @@ const CartDrawer = () => {
                         <Link
                             href="/cart"
                             onClick={closeDrawer}
-                            className="block w-full bg-primary text-white text-center py-3.5 rounded-xl font-bold hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20"
+                            className="block w-full bg-primary text-white text-center py-3.5 rounded-xl font-bold hover:bg-primary-dark transition-colors"
                         >
                             {t('cart.checkout') || 'Checkout'}
                         </Link>

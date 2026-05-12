@@ -15,6 +15,12 @@ interface Product {
     categoryId: string;
     stock: number;
     isTrending: boolean;
+    brand?: {
+        id: string;
+        name: string;
+        slug: string;
+        group?: string;
+    } | null;
 }
 
 interface ProductCardProps {
@@ -54,6 +60,14 @@ const ProductCard = ({ product, t, language, variant = 'default' }: ProductCardP
                         <h3 className="text-[13px] md:text-sm font-medium text-text-main-light dark:text-white group-hover:text-primary transition-colors cursor-pointer line-clamp-2 leading-tight" title={product.name}>{product.name}</h3>
                     </Link>
                 </div>
+                {product.brand && (
+                    <Link
+                        href={`/brands/${product.brand.slug}`}
+                        className="truncate text-[10px] font-semibold uppercase tracking-wide text-primary/80 hover:text-primary"
+                    >
+                        {product.brand.name}
+                    </Link>
+                )}
                 <div className="flex flex-col md:flex-row md:items-baseline gap-0.5 md:gap-2">
                     {product.discountPrice ? (
                         <>

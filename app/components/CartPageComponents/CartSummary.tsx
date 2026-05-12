@@ -31,7 +31,7 @@ const CartSummary = ({ subtotal }: CartSummaryProps) => {
                     <span className="text-3xl font-black text-primary">${subtotal.toFixed(2)}</span>
                 </div>
 
-                <Link href="/place-order" className="w-full bg-primary hover:bg-primary/90 text-white font-bold rounded-full h-14 flex items-center justify-center gap-2 shadow-lg shadow-primary/25 transition-all transform hover:scale-[1.02]">
+                <Link href="/place-order" className="w-full bg-primary hover:bg-primary/90 text-white font-bold rounded-full h-14 flex items-center justify-center gap-2 transition-all transform hover:scale-[1.02]">
                     <span>{t('cart.proceedToCheckout')}</span>
                     <MdArrowForward className={`text-sm ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                 </Link>

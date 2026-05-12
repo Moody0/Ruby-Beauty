@@ -320,7 +320,7 @@ export default function SiteContentClient({
                                 <button
                                     type="submit"
                                     disabled={isSubmittingSettings}
-                                    className="min-w-[200px] rounded-xl bg-primary px-8 py-3 font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+                                    className="min-w-[200px] rounded-xl bg-primary px-8 py-3 font-bold text-white transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
                                 >
                                     {isSubmittingSettings ? (
                                         <span className="flex items-center justify-center gap-2">
@@ -453,7 +453,7 @@ export default function SiteContentClient({
                                     <button
                                         type="submit"
                                         disabled={isSubmittingSettings}
-                                        className="px-8 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed min-w-[200px]"
+                                        className="px-8 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed min-w-[200px]"
                                     >
                                         {isSubmittingSettings ? (
                                             <span className="flex items-center justify-center gap-2">
@@ -851,7 +851,7 @@ export default function SiteContentClient({
                                     <button
                                         type="submit"
                                         disabled={isSubmittingSettings}
-                                        className="px-8 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed min-w-[200px]"
+                                        className="px-8 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed min-w-[200px]"
                                     >
                                         {isSubmittingSettings ? (
                                             <span className="flex items-center justify-center gap-2">
@@ -1118,7 +1118,7 @@ export default function SiteContentClient({
                                     <button
                                         type="submit"
                                         disabled={isSubmittingSettings}
-                                        className="px-8 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed min-w-[200px]"
+                                        className="px-8 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed min-w-[200px]"
                                     >
                                         {isSubmittingSettings ? (
                                             <span className="flex items-center justify-center gap-2">

@@ -3,8 +3,24 @@
 import { prisma } from "./prisma";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth"; // Wait, I need to export authOptions
+
+interface UserInput {
+    username: string;
+    password?: string;
+    role?: "ADMIN" | "SUPER_ADMIN";
+    canManageBrands: boolean;
+    canDeleteBrands: boolean;
+    canManageProducts: boolean;
+    canDeleteProducts: boolean;
+    canManageCategories: boolean;
+    canDeleteCategories: boolean;
+    canManageBanners: boolean;
+    canDeleteBanners: boolean;
+    canManageOrders: boolean;
+    canDeleteOrders: boolean;
+    canManagePromoCodes: boolean;
+    canDeletePromoCodes: boolean;
+}
 
 export async function getUsers() {
     try {
@@ -14,7 +30,7 @@ export async function getUsers() {
             }
         });
         return users.map(user => {
-            const { password, ...userWithoutPassword } = user;
+            const { password: _password, ...userWithoutPassword } = user;
             return userWithoutPassword;
         });
     } catch (error) {
@@ -23,14 +39,16 @@ export async function getUsers() {
     }
 }
 
-export async function createUser(data: any) {
+export async function createUser(data: UserInput) {
     try {
-        const hashedPassword = await bcrypt.hash(data.password, 10);
+        const hashedPassword = await bcrypt.hash(data.password || "", 10);
         await prisma.user.create({
             data: {
                 username: data.username,
                 password: hashedPassword,
                 role: data.role || 'ADMIN',
+                canManageBrands: data.canManageBrands,
+                canDeleteBrands: data.canDeleteBrands,
                 canManageProducts: data.canManageProducts,
                 canDeleteProducts: data.canDeleteProducts,
                 canManageCategories: data.canManageCategories,
@@ -45,20 +63,22 @@ export async function createUser(data: any) {
         });
         revalidatePath('/admin/users');
         return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Failed to create user:", error);
-        if (error.code === 'P2002') {
+        if (typeof error === "object" && error !== null && "code" in error && error.code === 'P2002') {
             return { success: false, error: "Username already exists" };
         }
         return { success: false, error: "Failed to create user" };
     }
 }
 
-export async function updateUser(id: string, data: any) {
+export async function updateUser(id: string, data: UserInput) {
     try {
-        const updateData: any = {
+        const updateData: Partial<UserInput> & { password?: string } = {
             username: data.username,
             role: data.role,
+            canManageBrands: data.canManageBrands,
+            canDeleteBrands: data.canDeleteBrands,
             canManageProducts: data.canManageProducts,
             canDeleteProducts: data.canDeleteProducts,
             canManageCategories: data.canManageCategories,

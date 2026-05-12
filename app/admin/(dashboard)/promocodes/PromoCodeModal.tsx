@@ -177,7 +177,7 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="flex-2 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50"
+                            className="flex-2 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                         >
                             {isSubmitting ? (
                                 <>

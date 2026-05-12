@@ -26,9 +26,20 @@ interface Product {
     price: string;
     discountPrice?: string | null;
     images: string;
+    brandId: string;
     categoryId: string;
     stock: number;
     isTrending: boolean;
+    brand?: Brand | null;
+}
+
+interface Brand {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+    image: string | null;
+    group: string;
 }
 
 interface ProductsClientProps {
@@ -36,6 +47,7 @@ interface ProductsClientProps {
     initialProducts: Product[];
     initialTotal: number;
     activeCategory?: Category | null;
+    activeBrand?: Brand | null;
 }
 
 const ProductsClient = ({
@@ -43,6 +55,7 @@ const ProductsClient = ({
     initialProducts,
     initialTotal,
     activeCategory = null,
+    activeBrand = null,
 }: ProductsClientProps) => {
     const { t, language } = useLanguage();
     const [products, setProducts] = useState<Product[]>(initialProducts);
@@ -59,13 +72,14 @@ const ProductsClient = ({
         try {
             const currentPage = reset ? 1 : page;
             const categoryQuery = activeCategory ? `&categoryIds=${activeCategory.id}` : "";
+            const brandQuery = activeBrand ? `&brandIds=${activeBrand.id}` : "";
 
             let sortQuery = "";
             if (sort === "Price: Low to High") sortQuery = "&sort=price_asc";
             else if (sort === "Price: High to Low") sortQuery = "&sort=price_desc";
             else if (sort === "Newest Arrivals") sortQuery = "&sort=newest";
 
-            const response = await fetch(`/api/products?page=${currentPage}&limit=12${categoryQuery}${sortQuery}`);
+            const response = await fetch(`/api/products?page=${currentPage}&limit=12${categoryQuery}${brandQuery}${sortQuery}`);
 
             if (response.ok) {
                 const data = await response.json();
@@ -113,7 +127,7 @@ const ProductsClient = ({
         <div className="flex-1 container-custom py-8 md:py-10">
             <ProductsBreadcrumbs activeCategory={activeCategory} />
 
-            <ProductsHeader sort={sort} setSort={setSort} activeCategory={activeCategory} />
+            <ProductsHeader sort={sort} setSort={setSort} activeCategory={activeCategory} activeBrand={activeBrand} />
 
             <CategorySelector categories={initialCategories} activeCategory={activeCategory} />
 
