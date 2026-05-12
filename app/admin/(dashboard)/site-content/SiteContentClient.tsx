@@ -224,6 +224,20 @@ export default function SiteContentClient({
 
     const [exchangeRate, setExchangeRate] = useState(initialSettings?.exchangeRate || 135);
 
+    // Middle Banner 1
+    const [middleBanner1Image, setMiddleBanner1Image] = useState(initialSettings?.middleBanner1Image || "");
+    const [middleBanner1Link, setMiddleBanner1Link] = useState(initialSettings?.middleBanner1Link || "");
+
+    // Middle Banner 2
+    const [middleBanner2Image, setMiddleBanner2Image] = useState(initialSettings?.middleBanner2Image || "");
+    const [middleBanner2Link, setMiddleBanner2Link] = useState(initialSettings?.middleBanner2Link || "");
+    const [middleBanner2Title, setMiddleBanner2Title] = useState(initialSettings?.middleBanner2Title || "");
+    const [middleBanner2TitleAr, setMiddleBanner2TitleAr] = useState(initialSettings?.middleBanner2TitleAr || "");
+    const [middleBanner2Subtitle, setMiddleBanner2Subtitle] = useState(initialSettings?.middleBanner2Subtitle || "");
+    const [middleBanner2SubtitleAr, setMiddleBanner2SubtitleAr] = useState(initialSettings?.middleBanner2SubtitleAr || "");
+    const [middleBanner2ButtonText, setMiddleBanner2ButtonText] = useState(initialSettings?.middleBanner2ButtonText || "");
+    const [middleBanner2ButtonTextAr, setMiddleBanner2ButtonTextAr] = useState(initialSettings?.middleBanner2ButtonTextAr || "");
+
     const [isSubmittingSettings, setIsSubmittingSettings] = useState(false);
     const [isSubmittingCurrency, setIsSubmittingCurrency] = useState(false);
 
@@ -289,6 +303,16 @@ export default function SiteContentClient({
                 aboutNarrativeQuote,
                 aboutNarrativeQuoteAr,
                 aboutNarrativeImage,
+                middleBanner1Image,
+                middleBanner1Link,
+                middleBanner2Image,
+                middleBanner2Link,
+                middleBanner2Title,
+                middleBanner2TitleAr,
+                middleBanner2Subtitle,
+                middleBanner2SubtitleAr,
+                middleBanner2ButtonText,
+                middleBanner2ButtonTextAr,
                 exchangeRate: Number(exchangeRate),
             });
 
@@ -362,6 +386,16 @@ export default function SiteContentClient({
                 aboutNarrativeQuote,
                 aboutNarrativeQuoteAr,
                 aboutNarrativeImage,
+                middleBanner1Image,
+                middleBanner1Link,
+                middleBanner2Image,
+                middleBanner2Link,
+                middleBanner2Title,
+                middleBanner2TitleAr,
+                middleBanner2Subtitle,
+                middleBanner2SubtitleAr,
+                middleBanner2ButtonText,
+                middleBanner2ButtonTextAr,
             });
 
             if (result.success) {
@@ -437,6 +471,178 @@ export default function SiteContentClient({
                                 onFieldChange={handleFooterFieldChange}
                                 t={t}
                             />
+
+                            {/* Middle Banner 1 Section */}
+                            <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#e6dbdf] dark:border-gray-700 p-8">
+                                <div className="mb-6">
+                                    <h2 className="text-2xl font-bold text-text-main dark:text-white mb-2">
+                                        {t('admin.middleBanner1') || "Middle Banner 1 (After Trending)"}
+                                    </h2>
+                                    <p className="text-text-sub dark:text-gray-400">
+                                        {t('admin.middleBanner1Desc') || "Control the banner that appears after the Trending Products section."}
+                                    </p>
+                                </div>
+                                <div className="space-y-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-text-main dark:text-white">
+                                                {t('admin.imageUrl')}
+                                                <span className="block text-[10px] text-primary/70 font-normal">
+                                                    {t('admin.recommendedResolution')}: {t('admin.res21_6')}
+                                                </span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={middleBanner1Image}
+                                                onChange={(e) => setMiddleBanner1Image(e.target.value)}
+                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                placeholder="https://..."
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-text-main dark:text-white">
+                                                {t('admin.linkUrl')} ({t('admin.optional') || "Optional"})
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={middleBanner1Link}
+                                                onChange={(e) => setMiddleBanner1Link(e.target.value)}
+                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                placeholder="/products/..."
+                                            />
+                                        </div>
+                                    </div>
+                                    {middleBanner1Image && (
+                                        <div className="relative aspect-[21/9] md:aspect-[21/6] rounded-xl overflow-hidden border border-[#e6dbdf] dark:border-gray-700">
+                                            <img src={middleBanner1Image} alt="Preview" className="w-full h-full object-cover" />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Middle Banner 2 Section */}
+                            <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#e6dbdf] dark:border-gray-700 p-8">
+                                <div className="mb-6">
+                                    <h2 className="text-2xl font-bold text-text-main dark:text-white mb-2">
+                                        {t('admin.middleBanner2') || "Middle Banner 2 (After Brands)"}
+                                    </h2>
+                                    <p className="text-text-sub dark:text-gray-400">
+                                        {t('admin.middleBanner2Desc') || "Control the banner that appears after the Brands section. This banner supports text overlays."}
+                                    </p>
+                                </div>
+                                <div className="space-y-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-text-main dark:text-white">
+                                                {t('admin.imageUrl')}
+                                                <span className="block text-[10px] text-primary/70 font-normal">
+                                                    {t('admin.recommendedResolution')}: {t('admin.res21_6')}
+                                                </span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={middleBanner2Image}
+                                                onChange={(e) => setMiddleBanner2Image(e.target.value)}
+                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                placeholder="https://..."
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-text-main dark:text-white">
+                                                {t('admin.linkUrl')} ({t('admin.optional') || "Optional"})
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={middleBanner2Link}
+                                                onChange={(e) => setMiddleBanner2Link(e.target.value)}
+                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                placeholder="/products/..."
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.englishLabel')} - {t('admin.title')}</label>
+                                            <input
+                                                type="text"
+                                                value={middleBanner2Title}
+                                                onChange={(e) => setMiddleBanner2Title(e.target.value)}
+                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.arabicLabel')} - {t('admin.title')}</label>
+                                            <input
+                                                type="text"
+                                                value={middleBanner2TitleAr}
+                                                onChange={(e) => setMiddleBanner2TitleAr(e.target.value)}
+                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                dir="rtl"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.englishLabel')} - {t('admin.description')}</label>
+                                            <textarea
+                                                value={middleBanner2Subtitle}
+                                                onChange={(e) => setMiddleBanner2Subtitle(e.target.value)}
+                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none min-h-[80px]"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.arabicLabel')} - {t('admin.description')}</label>
+                                            <textarea
+                                                value={middleBanner2SubtitleAr}
+                                                onChange={(e) => setMiddleBanner2SubtitleAr(e.target.value)}
+                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none min-h-[80px]"
+                                                dir="rtl"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.englishLabel')} - {t('admin.buttonText')}</label>
+                                            <input
+                                                type="text"
+                                                value={middleBanner2ButtonText}
+                                                onChange={(e) => setMiddleBanner2ButtonText(e.target.value)}
+                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.arabicLabel')} - {t('admin.buttonText')}</label>
+                                            <input
+                                                type="text"
+                                                value={middleBanner2ButtonTextAr}
+                                                onChange={(e) => setMiddleBanner2ButtonTextAr(e.target.value)}
+                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                dir="rtl"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {middleBanner2Image && (
+                                        <div className="relative aspect-[21/9] md:aspect-[21/6] rounded-xl overflow-hidden border border-[#e6dbdf] dark:border-gray-700 group">
+                                            <img src={middleBanner2Image} alt="Preview" className="w-full h-full object-cover" />
+                                            {(middleBanner2Title || middleBanner2Subtitle) && (
+                                                <div className="absolute inset-0 bg-black/40 flex flex-col justify-center px-8 text-white">
+                                                    <h3 className="text-xl font-bold">{middleBanner2Title}</h3>
+                                                    <p className="text-xs text-white/80">{middleBanner2Subtitle}</p>
+                                                    {middleBanner2ButtonText && (
+                                                        <span className="mt-2 inline-block bg-primary text-white text-[10px] px-3 py-1 rounded-full w-fit">
+                                                            {middleBanner2ButtonText}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
 
                             <div className="flex justify-end">
                                 <button
@@ -532,7 +738,12 @@ export default function SiteContentClient({
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                                         <div className="space-y-4">
                                             <div className="space-y-2">
-                                                <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.imageUrl')}</label>
+                                                <label className="text-sm font-bold text-text-main dark:text-white">
+                                                    {t('admin.imageUrl')}
+                                                    <span className="block text-[10px] text-primary/70 font-normal">
+                                                        {t('admin.recommendedResolution')}: {t('admin.res3_2')}
+                                                    </span>
+                                                </label>
                                                 <input
                                                     type="text"
                                                     value={ctaImage}
@@ -612,7 +823,12 @@ export default function SiteContentClient({
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                                         <div className="space-y-4">
                                             <div className="space-y-2">
-                                                <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.imageUrl')}</label>
+                                                <label className="text-sm font-bold text-text-main dark:text-white">
+                                                    {t('admin.imageUrl')}
+                                                    <span className="block text-[10px] text-primary/70 font-normal">
+                                                        {t('admin.recommendedResolution')}: {t('admin.resWide')}
+                                                    </span>
+                                                </label>
                                                 <input
                                                     type="text"
                                                     value={shippingReturnsImage}
@@ -1061,7 +1277,12 @@ export default function SiteContentClient({
                                     {/* Hero Image */}
                                     <div className="pt-4">
                                         <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.heroImage')}</label>
+                                            <label className="text-sm font-bold text-text-main dark:text-white">
+                                                {t('admin.heroImage')}
+                                                <span className="block text-[10px] text-primary/70 font-normal">
+                                                    {t('admin.recommendedResolution')}: {t('admin.resHero')}
+                                                </span>
+                                            </label>
                                             <div className="flex gap-4 items-start">
                                                 <div className="flex-1 space-y-2">
                                                     <input
@@ -1206,7 +1427,12 @@ export default function SiteContentClient({
                                     {/* Narrative Image */}
                                     <div className="pt-4">
                                         <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.narrativeImage')}</label>
+                                            <label className="text-sm font-bold text-text-main dark:text-white">
+                                                {t('admin.narrativeImage')}
+                                                <span className="block text-[10px] text-primary/70 font-normal">
+                                                    {t('admin.recommendedResolution')}: {t('admin.res3_2')}
+                                                </span>
+                                            </label>
                                             <div className="flex gap-4 items-start">
                                                 <div className="flex-1 space-y-2">
                                                     <input

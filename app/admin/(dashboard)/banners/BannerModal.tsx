@@ -134,9 +134,7 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
                                 placeholder="e.g. New Collection"
                                 className="w-full px-4 py-2.5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                             />
-                            <p className="text-xs text-text-sub dark:text-gray-400 mt-1">
-                                Hint: Use <strong>middle1</strong> or <strong>middle2</strong> for homepage ad banners.
-                            </p>
+
                         </div>
                         <div className="flex flex-col gap-2">
                             <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
@@ -216,6 +214,9 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
                     <div className="flex flex-col gap-2">
                         <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
                             {t('admin.imageUrl')}
+                            <span className="block text-[10px] text-primary/70 font-normal">
+                                {t('admin.recommendedResolution')}: {t('admin.resHero')}
+                            </span>
                         </label>
                         <input
                             type="text"

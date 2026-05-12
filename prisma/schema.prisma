@@ -270,6 +270,20 @@ model Settings {
   aboutValue3Desc      String? @default("Eco-friendly packaging and responsibly sourced ingredients.")
   aboutValue3DescAr    String? @default("تغليف صديق للبيئة ومكونات من مصادر مسؤولة.")
 
+  // Middle Banner 1
+  middleBanner1Image     String? @default("https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1200")
+  middleBanner1Link      String? @default("/products")
+  
+  // Middle Banner 2
+  middleBanner2Image     String? @default("https://images.unsplash.com/photo-1547887538-e3a2f32cb1cc?w=1200")
+  middleBanner2Link      String? @default("/products")
+  middleBanner2Title     String? @default("Luxury Fragrances")
+  middleBanner2TitleAr   String? @default("عطور فاخرة")
+  middleBanner2Subtitle  String? @default("Discover scents that last all day and leave a mark.")
+  middleBanner2SubtitleAr String? @default("اكتشف الروائح التي تدوم طوال اليوم وتترك أثراً.")
+  middleBanner2ButtonText String? @default("Shop Perfumes")
+  middleBanner2ButtonTextAr String? @default("تسوق العطور")
+
   exchangeRate         Decimal @default(135) @db.Decimal(10, 2)
 
   updatedAt           DateTime @updatedAt

@@ -184,6 +184,9 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                     <div className="space-y-4">
                         <label className="text-sm font-bold text-text-main dark:text-white">
                             {t("admin.addProductModal.productImages")}
+                            <span className="block text-[10px] text-primary/70 font-normal">
+                                {t('admin.recommendedResolution')}: {t('admin.resProduct')}
+                            </span>
                         </label>
 
                         {/* Image Gallery */}

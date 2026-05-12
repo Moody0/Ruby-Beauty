@@ -1,17 +1,24 @@
+'use client';
+
+import React from 'react';
 import Link from "next/link";
-import { MdChevronRight } from "react-icons/md";
+import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import ResilientImage from "@/app/components/ResilientImage";
 import type { HomeBrand } from "@/lib/admin-actions";
+import { useProductRail } from './useProductRail';
+
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface MainBrandsProps {
     brands: HomeBrand[];
-    t: (key: string) => string;
-    dir: "ltr" | "rtl";
 }
 
 const fallbackImage = "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800";
 
-export default function MainBrands({ brands, t, dir }: MainBrandsProps) {
+export default function MainBrands({ brands }: MainBrandsProps) {
+    const { t, dir } = useLanguage();
+    const { railRef, canScrollForward, canScrollBackward, scrollForward, scrollBackward } = useProductRail(dir);
+
     if (!brands.length) return null;
 
     return (
@@ -27,33 +34,60 @@ export default function MainBrands({ brands, t, dir }: MainBrandsProps) {
                 </Link>
             </div>
 
-            <div className="overflow-x-auto px-2 scrollbar-hide">
-                <div className="flex gap-3 md:gap-4 pb-2">
-                    {brands.map((brand) => (
-                        <Link
-                            key={brand.id}
-                            href={`/brands/${brand.slug}`}
-                            className="group flex flex-col items-center justify-between w-[140px] min-w-[140px] h-[150px] rounded-xl border border-gray-200 bg-white p-3 transition-all hover:border-primary/40 hover:shadow-md dark:border-white/10 dark:bg-white/5 md:w-[170px] md:min-w-[170px] md:h-[180px]"
-                        >
-                            <div className="flex-1 flex items-center justify-center w-full h-[80px] md:h-[100px]">
-                                <ResilientImage
-                                    src={brand.image || fallbackImage}
-                                    alt={brand.name}
-                                    className="w-full h-full object-contain mx-auto transition-transform duration-500 group-hover:scale-105"
-                                />
-                            </div>
-                            <div className="flex flex-col items-center justify-end w-full mt-2">
-                                <p className="text-sm font-bold text-text-main-light transition-colors group-hover:text-primary dark:text-white truncate w-full text-center">
-                                    {brand.name}
-                                </p>
-                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
-                                    {brand._count.products} {t("home.productsLabel") || "منتج"}
-                                </p>
-                            </div>
-                        </Link>
-                    ))}
+            <div className="relative">
+                <div 
+                    ref={railRef}
+                    className="overflow-x-auto px-2 scrollbar-hide"
+                >
+                    <div className="flex gap-3 md:gap-4 pb-2">
+                        {brands.map((brand) => (
+                            <Link
+                                key={brand.id}
+                                href={`/brands/${brand.slug}`}
+                                className="group flex flex-col items-center justify-between w-[140px] min-w-[140px] h-[150px] rounded-xl border border-gray-200 bg-white p-3 transition-all hover:border-primary/40 hover:shadow-md dark:border-white/10 dark:bg-white/5 md:w-[170px] md:min-w-[170px] md:h-[180px]"
+                            >
+                                <div className="flex-1 flex items-center justify-center w-full h-[80px] md:h-[100px]">
+                                    <ResilientImage
+                                        src={brand.image || fallbackImage}
+                                        alt={brand.name}
+                                        className="w-full h-full object-contain mx-auto transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                </div>
+                                <div className="flex flex-col items-center justify-end w-full mt-2">
+                                    <p className="text-sm font-bold text-text-main-light transition-colors group-hover:text-primary dark:text-white truncate w-full text-center">
+                                        {brand.name}
+                                    </p>
+                                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
+                                        {brand._count.products} {t("home.productsLabel") || "منتج"}
+                                    </p>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
                 </div>
+
+                {canScrollForward && (
+                    <button
+                        className="hidden md:flex absolute ltr:right-[-20px] rtl:left-[-20px] top-[75px] md:top-[90px] -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main shadow-lg border border-gray-100 transition-all hover:bg-primary hover:text-white dark:bg-surface-dark dark:border-white/10"
+                        aria-label="Next"
+                        onClick={scrollForward}
+                        type="button"
+                    >
+                        {dir === 'rtl' ? <MdChevronLeft className="text-2xl" /> : <MdChevronRight className="text-2xl" />}
+                    </button>
+                )}
+                {canScrollBackward && (
+                    <button
+                        className="hidden md:flex absolute ltr:left-[-20px] rtl:right-[-20px] top-[75px] md:top-[90px] -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main shadow-lg border border-gray-100 transition-all hover:bg-primary hover:text-white dark:bg-surface-dark dark:border-white/10"
+                        aria-label="Previous"
+                        onClick={scrollBackward}
+                        type="button"
+                    >
+                        {dir === 'rtl' ? <MdChevronRight className="text-2xl" /> : <MdChevronLeft className="text-2xl" />}
+                    </button>
+                )}
             </div>
         </section>
     );
 }
+

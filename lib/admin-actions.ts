@@ -1677,6 +1677,16 @@ export async function getSiteSettings() {
                 aboutHeroTitleAr: "قصتنا",
                 aboutHeroSubtitle: "Redefining beauty with clean, conscious care that honors your skin and the earth.",
                 aboutHeroSubtitleAr: "إعادة تعريف الجمال بعناية نظيفة وواعية تكرم بشرتك والأرض.",
+                middleBanner1Image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1200",
+                middleBanner1Link: "/products",
+                middleBanner2Image: "https://images.unsplash.com/photo-1547887538-e3a2f32cb1cc?w=1200",
+                middleBanner2Link: "/products",
+                middleBanner2Title: "Luxury Fragrances",
+                middleBanner2TitleAr: "عطور فاخرة",
+                middleBanner2Subtitle: "Discover scents that last all day and leave a mark.",
+                middleBanner2SubtitleAr: "اكتشف الروائح التي تدوم طوال اليوم وتترك أثراً.",
+                middleBanner2ButtonText: "Shop Perfumes",
+                middleBanner2ButtonTextAr: "تسوق العطور",
                 exchangeRate: 135,
                 aboutHeroImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAz8qN2iAHz-UZeEQfqOY49U5OCZ5z4ejVm7ILFjFSl9S5xg_6UuBa61qOmrkMPrBa4CuXDzHa9EN3-LNyUxi5IDK5A9TvJWkNuG-tt_RRyvJH8LvynO1daOEkTk47KDtkW3Md2ugZYShZJdxolsjiJUtDdOOz4Q7-6TNrexIvyClP0ADf1TWdbCUk1kBn8bfzhTC1cn8s9jG3yt0tDDht7__J5YKKf690SmKN4WIJX_pc2LOj3x1CnYk5JuqEu0Bzp2vGwsrYLaJWb",
                 
@@ -1805,6 +1815,16 @@ export async function updateSiteSettings(data: {
     aboutNarrativeQuote?: string;
     aboutNarrativeQuoteAr?: string;
     aboutNarrativeImage?: string;
+    middleBanner1Image?: string;
+    middleBanner1Link?: string;
+    middleBanner2Image?: string;
+    middleBanner2Link?: string;
+    middleBanner2Title?: string;
+    middleBanner2TitleAr?: string;
+    middleBanner2Subtitle?: string;
+    middleBanner2SubtitleAr?: string;
+    middleBanner2ButtonText?: string;
+    middleBanner2ButtonTextAr?: string;
     exchangeRate?: number;
 }) {
     try {
