@@ -17,13 +17,10 @@ export default function MainBrands({ brands, t, dir }: MainBrandsProps) {
     return (
         <section className="container-custom py-4 md:py-8">
             <div className="mb-6 flex items-center justify-between px-2">
-                <div>
-                    <h2 className="text-2xl font-bold text-text-main-light dark:text-text-main-dark">
-                        {t("brands.mainBrands")}
+                <div className="flex items-center gap-2">
+                    <h2 className="text-xl sm:text-2xl font-bold text-text-main-light dark:text-text-main-dark flex items-center gap-2">
+                        {t("brands.mainBrands") || "الماركات العالمية"}
                     </h2>
-                    <p className="mt-1 text-sm text-text-muted-light dark:text-text-muted-dark">
-                        {t("brands.homeDescription")}
-                    </p>
                 </div>
                 <Link className="flex items-center gap-1 text-sm font-medium text-primary" href="/brands">
                     {t("common.viewAll")} <MdChevronRight className={`text-sm ${dir === "rtl" ? "rotate-180" : ""}`} />
@@ -31,26 +28,28 @@ export default function MainBrands({ brands, t, dir }: MainBrandsProps) {
             </div>
 
             <div className="overflow-x-auto px-2 scrollbar-hide">
-                <div className="flex gap-4">
+                <div className="flex gap-3 md:gap-4 pb-2">
                     {brands.map((brand) => (
                         <Link
                             key={brand.id}
                             href={`/brands/${brand.slug}`}
-                            className="group w-[152px] min-w-[152px] rounded-xl border border-[#e6dbdf] bg-white p-3 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg dark:border-white/10 dark:bg-white/5 md:w-[180px] md:min-w-[180px]"
+                            className="group flex flex-col items-center justify-between w-[140px] min-w-[140px] h-[150px] rounded-xl border border-gray-200 bg-white p-3 transition-all hover:border-primary/40 hover:shadow-md dark:border-white/10 dark:bg-white/5 md:w-[170px] md:min-w-[170px] md:h-[180px]"
                         >
-                            <div className="aspect-square overflow-hidden rounded-lg bg-[#faf4f6] dark:bg-white/5">
+                            <div className="flex-1 flex items-center justify-center w-full h-[80px] md:h-[100px]">
                                 <ResilientImage
                                     src={brand.image || fallbackImage}
                                     alt={brand.name}
-                                    className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
+                                    className="w-full h-full object-contain mx-auto transition-transform duration-500 group-hover:scale-105"
                                 />
                             </div>
-                            <p className="mt-3 truncate text-sm font-bold text-text-main-light transition-colors group-hover:text-primary dark:text-white">
-                                {brand.name}
-                            </p>
-                            <p className="mt-1 text-xs text-text-muted-light dark:text-white/50">
-                                {brand._count.products} {t("home.productsLabel")}
-                            </p>
+                            <div className="flex flex-col items-center justify-end w-full mt-2">
+                                <p className="text-sm font-bold text-text-main-light transition-colors group-hover:text-primary dark:text-white truncate w-full text-center">
+                                    {brand.name}
+                                </p>
+                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
+                                    {brand._count.products} {t("home.productsLabel") || "منتج"}
+                                </p>
+                            </div>
                         </Link>
                     ))}
                 </div>

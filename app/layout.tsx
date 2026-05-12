@@ -6,6 +6,7 @@ import InitialLoadGate from "./components/InitialLoadGate";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getI18n } from "@/lib/i18n";
+import { prisma } from "@/lib/prisma";
 
 const rubik = Rubik({
   variable: "--font-rubik",
@@ -62,6 +63,11 @@ export default async function RootLayout({
 }>) {
   const session = await getServerSession(authOptions);
   const { language, dir } = await getI18n();
+  const settings = await prisma.settings.findUnique({
+      where: { id: "site-settings" },
+      select: { exchangeRate: true }
+  });
+  const exchangeRate = settings?.exchangeRate ? Number(settings.exchangeRate) : 135;
 
   return (
     <html lang={language} dir={dir} suppressHydrationWarning className={rubik.variable}>
@@ -95,7 +101,7 @@ export default async function RootLayout({
         </div>
         <div id="app-shell">
           <InitialLoadGate />
-          <Providers session={session}>
+          <Providers session={session} initialExchangeRate={exchangeRate}>
             {children}
           </Providers>
         </div>

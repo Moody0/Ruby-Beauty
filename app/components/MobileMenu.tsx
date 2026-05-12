@@ -6,6 +6,9 @@ import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { MdMenu, MdClose, MdHome, MdShoppingCart, MdCategory, MdExpandMore, MdInfo, MdSearch, MdStorefront } from 'react-icons/md';
 import HeaderSearch from './HeaderSearch';
+import ThemeToggle from './ThemeToggle';
+import LanguageToggle from './LanguageToggle';
+import CurrencyToggle from './CurrencyToggle';
 
 interface MobileCategory {
     id: string;
@@ -190,6 +193,13 @@ const MobileMenu = ({ initialCategories }: MobileMenuProps) => {
                             <span className="text-xl font-medium">{t('common.aboutUs')}</span>
                         </Link>
                     </nav>
+
+                    {/* Mobile Settings Row */}
+                    <div className="border-t border-[#f4f0f2] dark:border-white/5 p-6 flex items-center justify-between mt-auto">
+                        <CurrencyToggle />
+                        <LanguageToggle />
+                        <ThemeToggle />
+                    </div>
                 </div>
             </div>
 

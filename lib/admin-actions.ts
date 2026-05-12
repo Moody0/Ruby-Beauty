@@ -1677,6 +1677,7 @@ export async function getSiteSettings() {
                 aboutHeroTitleAr: "قصتنا",
                 aboutHeroSubtitle: "Redefining beauty with clean, conscious care that honors your skin and the earth.",
                 aboutHeroSubtitleAr: "إعادة تعريف الجمال بعناية نظيفة وواعية تكرم بشرتك والأرض.",
+                exchangeRate: 135,
                 aboutHeroImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAz8qN2iAHz-UZeEQfqOY49U5OCZ5z4ejVm7ILFjFSl9S5xg_6UuBa61qOmrkMPrBa4CuXDzHa9EN3-LNyUxi5IDK5A9TvJWkNuG-tt_RRyvJH8LvynO1daOEkTk47KDtkW3Md2ugZYShZJdxolsjiJUtDdOOz4Q7-6TNrexIvyClP0ADf1TWdbCUk1kBn8bfzhTC1cn8s9jG3yt0tDDht7__J5YKKf690SmKN4WIJX_pc2LOj3x1CnYk5JuqEu0Bzp2vGwsrYLaJWb",
                 
                 aboutNarrativeTitle: "Our Mission for Clean Beauty",
@@ -1804,6 +1805,7 @@ export async function updateSiteSettings(data: {
     aboutNarrativeQuote?: string;
     aboutNarrativeQuoteAr?: string;
     aboutNarrativeImage?: string;
+    exchangeRate?: number;
 }) {
     try {
         await prisma.settings.upsert({

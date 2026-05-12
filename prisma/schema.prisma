@@ -270,6 +270,8 @@ model Settings {
   aboutValue3Desc      String? @default("Eco-friendly packaging and responsibly sourced ingredients.")
   aboutValue3DescAr    String? @default("تغليف صديق للبيئة ومكونات من مصادر مسؤولة.")
 
+  exchangeRate         Decimal @default(135) @db.Decimal(10, 2)
+
   updatedAt           DateTime @updatedAt
 }
 

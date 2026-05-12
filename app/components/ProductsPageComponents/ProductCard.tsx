@@ -1,8 +1,11 @@
+"use client";
+
 import Link from 'next/link';
 import React from 'react';
 import AddToCartButton from './AddToCartButton';
 import ResilientImage from '@/app/components/ResilientImage';
 import { getPrimaryImage } from '@/lib/image-utils';
+import { useCurrency } from '@/app/context/CurrencyContext';
 
 interface Product {
     id: string;
@@ -23,16 +26,18 @@ interface Product {
     } | null;
 }
 
+import { useLanguage } from '@/app/context/LanguageContext';
+
 interface ProductCardProps {
     product: Product;
-    t: (key: string) => string;
-    language: 'en' | 'ar';
     variant?: 'default' | 'compact';
 }
 
-const ProductCard = ({ product, t, language, variant = 'default' }: ProductCardProps) => {
+const ProductCard = ({ product, variant = 'default' }: ProductCardProps) => {
+    const { t, language } = useLanguage();
     const primaryImage = getPrimaryImage(product.images);
     const isCompact = variant === 'compact';
+    const { formatPrice } = useCurrency();
 
     return (
         <div className={`group relative flex flex-col gap-3 rounded-2xl p-2 transition-all duration-300 hover:bg-white dark:hover:bg-white/5 premium-shadow-hover ${isCompact ? 'w-[189px] max-w-[189px] md:w-[216px] md:max-w-[216px]' : 'w-full md:max-w-none'}`}>
@@ -68,14 +73,14 @@ const ProductCard = ({ product, t, language, variant = 'default' }: ProductCardP
                         {product.brand.name}
                     </Link>
                 )}
-                <div className="flex flex-col md:flex-row md:items-baseline gap-0.5 md:gap-2">
+                <div className="w-full flex flex-col items-end md:flex-row md:items-baseline gap-0.5 md:gap-2">
                     {product.discountPrice ? (
                         <>
-                            <p className="font-bold text-primary text-sm md:text-sm">${Number(product.discountPrice).toFixed(2)}</p>
-                            <p className="text-[10px] md:text-xs text-text-sub line-through decoration-red-400/50">${Number(product.price).toFixed(2)}</p>
+                            <p className="font-bold text-primary text-sm md:text-sm w-full text-right" dir="ltr">{formatPrice(Number(product.discountPrice))}</p>
+                            <p className="text-[10px] md:text-xs text-text-sub line-through decoration-red-400/50 w-full text-right" dir="ltr">{formatPrice(Number(product.price))}</p>
                         </>
                     ) : (
-                        <p className="font-bold text-primary text-sm md:text-sm">${Number(product.price).toFixed(2)}</p>
+                        <p className="font-bold text-primary text-sm md:text-sm w-full text-right" dir="ltr">{formatPrice(Number(product.price))}</p>
                     )}
                 </div>
             </div>

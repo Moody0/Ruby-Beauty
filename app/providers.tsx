@@ -4,10 +4,11 @@ import { ThemeProvider } from "next-themes";
 import { useEffect, useState } from "react";
 import { CartProvider } from "./context/CartContext";
 import { LanguageProvider } from "./context/LanguageContext";
+import { CurrencyProvider } from "./context/CurrencyContext";
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 
-export function Providers({ children, session }: { children: React.ReactNode, session?: any }) {
+export function Providers({ children, session, initialExchangeRate = 135 }: { children: React.ReactNode, session?: any, initialExchangeRate?: number }) {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -17,10 +18,11 @@ export function Providers({ children, session }: { children: React.ReactNode, se
     return (
         <SessionProvider session={session}>
             <LanguageProvider>
-                <CartProvider>
-                    {mounted ? (
-                        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-                            {children}
+                <CurrencyProvider initialExchangeRate={initialExchangeRate}>
+                    <CartProvider>
+                        {mounted ? (
+                            <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
+                                {children}
                             <Toaster
                                 position="bottom-right"
                                 toastOptions={{
@@ -59,8 +61,9 @@ export function Providers({ children, session }: { children: React.ReactNode, se
                         </ThemeProvider>
                     ) : (
                         <>{children}</>
-                    )}
-                </CartProvider>
+                        )}
+                    </CartProvider>
+                </CurrencyProvider>
             </LanguageProvider>
         </SessionProvider>
     );

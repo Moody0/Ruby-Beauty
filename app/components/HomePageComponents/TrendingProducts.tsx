@@ -60,7 +60,7 @@ const TrendingProducts = ({ products }: TrendingProductsProps) => {
                                 key={product.id}
                                 className="w-[189px] min-w-[189px] flex-none snap-start md:w-[216px] md:min-w-[216px]"
                             >
-                                <ProductCard product={product} t={t} language={language} variant="compact" />
+                                <ProductCard product={product} variant="compact" />
                             </div>
                         ))}
                     </div>

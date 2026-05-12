@@ -1,5 +1,7 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { MdChevronLeft } from 'react-icons/md';
 import Categories from './Categories';
 import CollectionShowcase from './CollectionShowcase';
 import TrendingProducts from './TrendingProducts';
@@ -70,21 +72,62 @@ interface MainProps {
     onSaleProducts: Product[];
 }
 
+const MiddleBanner1 = ({ banners }: { banners: Banner[] }) => {
+    const banner = banners.find(b => 
+        (b.badge?.toLowerCase().includes('middle') && b.badge?.includes('1')) || 
+        (b.title?.toLowerCase().includes('middle') && b.title?.includes('1'))
+    );
+    if (!banner) return null;
+    return (
+        <div className="container-custom py-4">
+            <Link href={banner.link || '#'}>
+                <div className="relative w-full rounded-2xl overflow-hidden aspect-[21/9] md:aspect-[4/1] shadow-sm">
+                    <img src={banner.image} alt={banner.title || 'Ad Banner'} className="w-full h-full object-cover" />
+                </div>
+            </Link>
+        </div>
+    );
+};
+
+const MiddleBanner2 = ({ banners }: { banners: Banner[] }) => {
+    const banner = banners.find(b => 
+        (b.badge?.toLowerCase().includes('middle') && b.badge?.includes('2')) || 
+        (b.title?.toLowerCase().includes('middle') && b.title?.includes('2'))
+    );
+    if (!banner) return null;
+    return (
+        <div className="container-custom py-4">
+            <Link href={banner.link || '#'}>
+                <div className="relative w-full rounded-2xl overflow-hidden aspect-[21/9] md:aspect-[4/1] shadow-sm">
+                    <img src={banner.image} alt={banner.title || 'Ad Banner'} className="w-full h-full object-cover" />
+                </div>
+            </Link>
+        </div>
+    );
+};
+
 const Main = async ({ banners, categories, collectionSections, mainBrands, trendingProducts, onSaleProducts }: MainProps) => {
     const { t, dir, language } = await getI18n();
 
     return (
-        <main className="w-full flex flex-col gap-8">
+        <main className="w-full flex flex-col gap-2 md:gap-4 pb-12">
             {/* Hero Carousel Section */}
             <HeroCarousel banners={banners} />
 
-            <MainBrands brands={mainBrands} t={t} dir={dir} />
-
-            {/* On Sale Section */}
-            <OnSaleProducts products={onSaleProducts} />
-
             {/* Trending Products Section */}
             <TrendingProducts products={trendingProducts} />
+
+            {/* Middle Banner 1 */}
+            <MiddleBanner1 banners={banners} />
+
+            {/* Main Brands Section */}
+            <MainBrands brands={mainBrands} t={t} dir={dir} />
+
+            {/* Middle Banner 2 */}
+            <MiddleBanner2 banners={banners} />
+
+            {/* On Sale Section / Daily Offers */}
+            <OnSaleProducts products={onSaleProducts} />
 
             {/* Collection Showcase / Categories Fallback */}
             {collectionSections.length > 0 ? (

@@ -154,7 +154,7 @@ const ProductsClient = ({
 
                 <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
                     {products.map((product) => (
-                        <ProductCard key={product.id} product={product} t={t} language={language} />
+                        <ProductCard key={product.id} product={product} />
                     ))}
                     {/* Removed ProductSkeleton per user request */}
                 </div>

@@ -113,6 +113,7 @@ interface SiteSettings {
     aboutValue3TitleAr: string | null;
     aboutValue3Desc: string | null;
     aboutValue3DescAr: string | null;
+    exchangeRate?: any;
 }
 
 export default function SiteContentClient({ 
@@ -221,7 +222,10 @@ export default function SiteContentClient({
 
     const [shippingReturnsImage, setShippingReturnsImage] = useState(initialSettings?.shippingReturnsImage || "");
 
+    const [exchangeRate, setExchangeRate] = useState(initialSettings?.exchangeRate || 135);
+
     const [isSubmittingSettings, setIsSubmittingSettings] = useState(false);
+    const [isSubmittingCurrency, setIsSubmittingCurrency] = useState(false);
 
     const handleFooterFieldChange = (field: string, value: string) => {
         setFooterContent((current) => ({
@@ -285,6 +289,7 @@ export default function SiteContentClient({
                 aboutNarrativeQuote,
                 aboutNarrativeQuoteAr,
                 aboutNarrativeImage,
+                exchangeRate: Number(exchangeRate),
             });
 
             if (result.success) {
@@ -300,12 +305,129 @@ export default function SiteContentClient({
         }
     };
 
+    const handleCurrencySubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmittingCurrency(true);
+
+        try {
+            const result = await updateSiteSettings({
+                exchangeRate: Number(exchangeRate),
+                // Pass current values for other fields to prevent overriding them with null/empty
+                categoriesCtaTitle: ctaTitle,
+                categoriesCtaDesc: ctaDesc,
+                categoriesCtaTitleAr: ctaTitleAr,
+                categoriesCtaDescAr: ctaDescAr,
+                categoriesCtaImage: ctaImage,
+                ...footerContent,
+                footerCategory1Id: footerContent.footerCategory1Id || null,
+                footerCategory2Id: footerContent.footerCategory2Id || null,
+                footerCategory3Id: footerContent.footerCategory3Id || null,
+                footerCategory4Id: footerContent.footerCategory4Id || null,
+                shippingTitle,
+                shippingDesc,
+                shippingTitleAr,
+                shippingDescAr,
+                verificationTitle,
+                verificationDesc,
+                verificationTitleAr,
+                verificationDescAr,
+                standardShippingTime,
+                expressShippingTime,
+                returnsTitle,
+                returnsDesc,
+                returnsTitleAr,
+                returnsDescAr,
+                finalSaleTitle,
+                finalSaleDesc,
+                finalSaleTitleAr,
+                finalSaleDescAr,
+                hygieneTitle,
+                hygieneDesc,
+                hygieneTitleAr,
+                hygieneDescAr,
+                shippingReturnsImage,
+                aboutHeroTitle,
+                aboutHeroTitleAr,
+                aboutHeroSubtitle,
+                aboutHeroSubtitleAr,
+                aboutHeroImage,
+                aboutNarrativeTitle,
+                aboutNarrativeTitleAr,
+                aboutNarrativeFounded,
+                aboutNarrativeFoundedAr,
+                aboutNarrativeDesc1,
+                aboutNarrativeDesc1Ar,
+                aboutNarrativeDesc2,
+                aboutNarrativeDesc2Ar,
+                aboutNarrativeQuote,
+                aboutNarrativeQuoteAr,
+                aboutNarrativeImage,
+            });
+
+            if (result.success) {
+                toast.success(t('admin.settingsUpdated') || "Currency settings updated successfully");
+            } else {
+                toast.error(result.error || t('admin.failedToUpdate') || "Failed to update currency settings");
+            }
+        } catch (error) {
+            console.error("Error updating currency settings:", error);
+            toast.error(t('admin.failedToUpdate') || "Failed to update");
+        } finally {
+            setIsSubmittingCurrency(false);
+        }
+    };
+
     return (
         <div className="flex-1 flex flex-col overflow-hidden">
             <AdminHeader title={t('admin.siteContent')} onMenuClick={openSidebar} />
 
             <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
                 <div className="max-w-4xl mx-auto">
+                    {/* Currency Settings Section - Now First */}
+                    <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#e6dbdf] dark:border-gray-700 p-8 mb-8">
+                        <div className="mb-6">
+                            <h2 className="text-2xl font-bold text-text-main dark:text-white mb-2">
+                                {t('admin.currencySettings')}
+                            </h2>
+                            <p className="text-text-sub dark:text-gray-400">
+                                {t('admin.currencySettingsDesc')}
+                            </p>
+                        </div>
+                        <form onSubmit={handleCurrencySubmit} className="space-y-6">
+                            <div className="space-y-4 max-w-md">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-bold text-text-main dark:text-white">
+                                        {t('admin.exchangeRate')}
+                                    </label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        step="0.01"
+                                        value={exchangeRate}
+                                        onChange={(e) => setExchangeRate(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex justify-end">
+                                <button
+                                    type="submit"
+                                    disabled={isSubmittingCurrency}
+                                    className="min-w-[160px] rounded-xl bg-primary px-6 py-2.5 font-bold text-white transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    {isSubmittingCurrency ? (
+                                        <span className="flex items-center justify-center gap-2">
+                                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                            {t('admin.saving')}
+                                        </span>
+                                    ) : (
+                                        t('admin.saveChanges')
+                                    )}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
                     {/* Site Content Settings */}
                     <div className="space-y-8">
                         <form onSubmit={handleSiteSettingsSubmit} className="space-y-6">

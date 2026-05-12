@@ -30,6 +30,12 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         const savedLang = localStorage.getItem('language') as Language;
         if (savedLang && (savedLang === 'en' || savedLang === 'ar')) {
             setLanguageState(savedLang);
+        } else {
+            // Check browser language as fallback
+            const browserLang = typeof navigator !== 'undefined' ? navigator.language.split('-')[0] : 'ar';
+            if (browserLang === 'en' || browserLang === 'ar') {
+                setLanguageState(browserLang as Language);
+            }
         }
         setMounted(true);
     }, []);

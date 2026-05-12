@@ -42,12 +42,56 @@ const OnSaleProducts = ({ products }: OnSaleProductsProps) => {
         <section className="container-custom py-8 md:py-10 transition-all duration-300 relative group/section">
             <div className="w-full">
                 <div className="flex items-center justify-between mb-6 px-2">
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-text-main-light dark:text-text-main-dark">
-                        {t('home.onSale') || 'On Sale Now'}
-                    </h3>
+                    <div className="flex items-center gap-2">
+                        <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-text-main-light dark:text-text-main-dark flex items-center gap-1 md:gap-2">
+                            {t('home.dailyOffers') || 'عروض اليوم'}
+                        </h3>
+                        <span className="text-primary text-xl md:text-2xl">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" fill="currentColor"/>
+                            </svg>
+                        </span>
+                    </div>
+
+                    {/* Timer */}
+                    <div className="hidden sm:flex bg-primary text-white rounded-xl px-4 py-2 items-center gap-4 dir-ltr">
+                        <div className="flex flex-col items-center">
+                            <span className="text-lg font-bold">06</span>
+                            <span className="text-[10px]">ساعة</span>
+                        </div>
+                        <span className="text-lg font-bold mb-3">:</span>
+                        <div className="flex flex-col items-center">
+                            <span className="text-lg font-bold">24</span>
+                            <span className="text-[10px]">دقيقة</span>
+                        </div>
+                        <span className="text-lg font-bold mb-3">:</span>
+                        <div className="flex flex-col items-center">
+                            <span className="text-lg font-bold">35</span>
+                            <span className="text-[10px]">ثانية</span>
+                        </div>
+                    </div>
+
                     <Link className="text-primary font-medium text-sm flex items-center gap-1 hover:gap-2 transition-all" href="/products">
                         {t('common.viewAll')} <MdChevronRight className={`text-sm ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                     </Link>
+                </div>
+                
+                {/* Mobile Timer */}
+                <div className="flex sm:hidden bg-primary text-white rounded-xl px-4 py-2 items-center justify-center gap-4 dir-ltr mb-4 mx-2">
+                    <div className="flex flex-col items-center">
+                        <span className="text-lg font-bold">06</span>
+                        <span className="text-[10px]">ساعة</span>
+                    </div>
+                    <span className="text-lg font-bold mb-3">:</span>
+                    <div className="flex flex-col items-center">
+                        <span className="text-lg font-bold">24</span>
+                        <span className="text-[10px]">دقيقة</span>
+                    </div>
+                    <span className="text-lg font-bold mb-3">:</span>
+                    <div className="flex flex-col items-center">
+                        <span className="text-lg font-bold">35</span>
+                        <span className="text-[10px]">ثانية</span>
+                    </div>
                 </div>
 
                 <div className="relative">
@@ -61,7 +105,7 @@ const OnSaleProducts = ({ products }: OnSaleProductsProps) => {
                                 key={product.id}
                                 className="w-[189px] min-w-[189px] flex-none snap-start md:w-[216px] md:min-w-[216px]"
                             >
-                                <ProductCard product={product} t={t} language={language} variant="compact" />
+                                <ProductCard product={product} variant="compact" />
                             </div>
                         ))}
                         </div>

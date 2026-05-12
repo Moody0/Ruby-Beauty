@@ -21,7 +21,7 @@ const RelatedProducts = ({ products }: RelatedProductsProps) => {
                 {products.map(related => (
                     // Cast to any to bypass stale Prisma types (isTrending/slug missing in generated client)
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    <ProductCard key={related.id} product={related as any} t={t} language={language} />
+                    <ProductCard key={related.id} product={related as any} />
                 ))}
             </div>
         </section>
