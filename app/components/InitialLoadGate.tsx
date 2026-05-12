@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-const LOADER_TIMEOUT_MS = 12000;
+const LOADER_TIMEOUT_MS = 2000;
 
 const finishInitialLoad = () => {
     const root = document.documentElement;

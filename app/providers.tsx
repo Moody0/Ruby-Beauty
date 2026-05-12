@@ -9,20 +9,13 @@ import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 
 export function Providers({ children, session, initialExchangeRate = 135 }: { children: React.ReactNode, session?: any, initialExchangeRate?: number }) {
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
-
     return (
         <SessionProvider session={session}>
             <LanguageProvider>
                 <CurrencyProvider initialExchangeRate={initialExchangeRate}>
                     <CartProvider>
-                        {mounted ? (
-                            <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
-                                {children}
+                        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+                            {children}
                             <Toaster
                                 position="bottom-right"
                                 toastOptions={{
@@ -59,9 +52,6 @@ export function Providers({ children, session, initialExchangeRate = 135 }: { ch
                                 }}
                             />
                         </ThemeProvider>
-                    ) : (
-                        <>{children}</>
-                        )}
                     </CartProvider>
                 </CurrencyProvider>
             </LanguageProvider>
