@@ -6,7 +6,7 @@ import { MdLocalShipping, MdAssignmentReturn, MdVerifiedUser, MdCheckCircle, MdL
 import { Settings } from "@prisma/client";
 
 interface ShippingReturnsContentProps {
-    siteSettings: Settings | null;
+    siteSettings: any | null;
 }
 
 export default function ShippingReturnsContent({ siteSettings }: ShippingReturnsContentProps) {

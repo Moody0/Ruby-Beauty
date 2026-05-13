@@ -1726,7 +1726,10 @@ export async function getSiteSettings() {
             };
         }
         
-        return settings;
+        return {
+            ...settings,
+            exchangeRate: Number(settings.exchangeRate),
+        };
     } catch (error) {
         console.error("Failed to fetch site settings:", error);
         return null;

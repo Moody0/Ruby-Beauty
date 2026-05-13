@@ -18,7 +18,7 @@ interface Category {
 
 interface CategoriesContentProps {
     categories: Category[];
-    siteSettings: Settings | null;
+    siteSettings: any | null;
 }
 
 export default function CategoriesContent({ categories, siteSettings }: CategoriesContentProps) {

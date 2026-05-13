@@ -113,7 +113,17 @@ interface SiteSettings {
     aboutValue3TitleAr: string | null;
     aboutValue3Desc: string | null;
     aboutValue3DescAr: string | null;
-    exchangeRate?: any;
+    middleBanner1Image: string | null;
+    middleBanner1Link: string | null;
+    middleBanner2Image: string | null;
+    middleBanner2Link: string | null;
+    middleBanner2Title: string | null;
+    middleBanner2TitleAr: string | null;
+    middleBanner2Subtitle: string | null;
+    middleBanner2SubtitleAr: string | null;
+    middleBanner2ButtonText: string | null;
+    middleBanner2ButtonTextAr: string | null;
+    exchangeRate: number;
 }
 
 export default function SiteContentClient({ 
@@ -438,7 +448,7 @@ export default function SiteContentClient({
                                         min="0"
                                         step="0.01"
                                         value={exchangeRate}
-                                        onChange={(e) => setExchangeRate(e.target.value)}
+                                        onChange={(e) => setExchangeRate(Number(e.target.value))}
                                         className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                     />
                                 </div>
