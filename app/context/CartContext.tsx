@@ -19,6 +19,7 @@ interface CartContextType {
     updateQuantity: (id: string, quantity: number) => void;
     clearCart: () => void;
     cartCount: number;
+    totalItems: number;
     subtotal: number;
     isDrawerOpen: boolean;
     openDrawer: () => void;
@@ -90,7 +91,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
     return (
-        <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, cartCount, subtotal, isDrawerOpen, openDrawer, closeDrawer, toggleDrawer }}>
+        <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, cartCount, totalItems: cartCount, subtotal, isDrawerOpen, openDrawer, closeDrawer, toggleDrawer }}>
             {children}
         </CartContext.Provider>
     );

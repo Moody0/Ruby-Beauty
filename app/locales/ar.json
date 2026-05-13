@@ -22,8 +22,22 @@
         "categories": "الاقسام",
         "continueShopping": "متابعة التسوق"
     },
+    "announcement": {
+        "freeShipping": "شحن مجاني للطلبات فوق 299 ريال"
+    },
     "header": {
         "brandName": "Ruby Beauty"
+    },
+    "nav": {
+        "rubyBeauty": "روبي بيوتي",
+        "makeup": "مكياج",
+        "perfumes": "عطور",
+        "accessories": "اكسسوارات",
+        "offers": "عروض",
+        "newArrivals": "جديدنا",
+        "categories": "التصنيفات",
+        "favorites": "المفضلة",
+        "account": "حسابي"
     },
     "footer": {
         "brandDescription": "منتجات عناية بالبشرة نباتية فاخرة مصممة لإظهار إشراقتك الطبيعية. خالية من القسوة، نباتية ومستدامة.",
@@ -52,6 +66,17 @@
         "bestSeller": "الأكثر مبيعاً",
         "onSale": "المنتجات المخفضة",
         "specialOffers": "عروض خاصة",
+        "shopByCategory": "تسوقي حسب الفئة",
+        "bestSellers": "الأكثر مبيعًا",
+        "shopNowCta": "تسوقي الآن",
+        "customerSupport": "دعم العملاء",
+        "customerSupport247": "24/7",
+        "easyReturns": "إرجاع سهل",
+        "easyReturnsDesc": "خلال 7 أيام",
+        "authenticProducts": "منتجات أصلية",
+        "authenticProductsDesc": "100% مضمونة",
+        "fastShipping": "شحن سريع",
+        "fastShippingDesc": "توصيل خلال 2-5 أيام",
         "brandValues": {
             "vegan": "نباتي 100٪",
             "crueltyFree": "خالٍ من القسوة",
@@ -64,7 +89,16 @@
         "newsletterTitle": "انضم إلى نادينا",
         "newsletterSubtitle": "اشترك للحصول على خصم 10% على طلبك الأول وحصرياً على أحدث المنتجات.",
         "newsletterPlaceholder": "أدخل بريدك الإلكتروني",
-        "newsletterButton": "اشتراك"
+        "newsletterButton": "اشتراك",
+        "dailyOffers": "عروض اليوم",
+        "footerInfoNewsletter": "اشتركي بنشرتنا البريدية",
+        "footerInfoNewsletterDesc": "للحصول على أحدث العروض",
+        "footerInfoInstagram": "تابعينا على انستقرام",
+        "footerInfoInstagramDesc": "@ruby.beauty",
+        "footerInfoDiscount": "كود خصم جديد؟",
+        "footerInfoDiscountDesc": "اشتركي الآن",
+        "footerInfoExclusive": "عروض حصرية",
+        "footerInfoExclusiveDesc": "للمشتركين فقط"
     },
     "products": {
         "allProducts": "جميع المنتجات",

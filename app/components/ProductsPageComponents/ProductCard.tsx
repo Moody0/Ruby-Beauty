@@ -2,10 +2,12 @@
 
 import Link from 'next/link';
 import React from 'react';
+import { MdFavoriteBorder, MdStar } from 'react-icons/md';
 import AddToCartButton from './AddToCartButton';
 import ResilientImage from '@/app/components/ResilientImage';
 import { getPrimaryImage } from '@/lib/image-utils';
 import { useCurrency } from '@/app/context/CurrencyContext';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 interface Product {
     id: string;
@@ -26,63 +28,103 @@ interface Product {
     } | null;
 }
 
-import { useLanguage } from '@/app/context/LanguageContext';
-
 interface ProductCardProps {
     product: Product;
     variant?: 'default' | 'compact';
 }
 
 const ProductCard = ({ product, variant = 'default' }: ProductCardProps) => {
-    const { t, language } = useLanguage();
+    const { t, language, dir } = useLanguage();
     const primaryImage = getPrimaryImage(product.images);
     const isCompact = variant === 'compact';
     const { formatPrice } = useCurrency();
 
+    // Mock rating for design matching
+    const rating = 4.8;
+    const reviewCount = 120;
+
     return (
-        <div className={`group relative flex flex-col gap-3 rounded-2xl p-2 transition-all duration-300 hover:bg-white dark:hover:bg-white/5 premium-shadow-hover ${isCompact ? 'w-[189px] max-w-[189px] md:w-[216px] md:max-w-[216px]' : 'w-full md:max-w-none'}`}>
-            <Link href={`/products/${product.slug}`} className={`relative overflow-hidden rounded-xl !bg-white block border border-[#e6dbdf] dark:border-gray-800/50 shadow-sm ${isCompact ? 'h-[190px] w-[173px] md:h-[216px] md:w-[200px]' : 'aspect-4/4 w-full'}`}>
+        <div className={`group relative flex flex-col gap-2 transition-all duration-300 ${isCompact ? 'w-full' : 'w-full'}`}>
+            {/* Image Container */}
+            <div className={`relative overflow-hidden rounded-2xl bg-[#f8f5f6] dark:bg-white/5 border border-transparent group-hover:border-primary/20 transition-all ${isCompact ? 'aspect-[4/5]' : 'aspect-square'}`}>
+                {/* Wishlist Button */}
+                <button className={`absolute top-3 ${dir === 'rtl' ? 'left-3' : 'right-3'} z-10 p-1.5 rounded-full bg-white/80 hover:bg-white text-gray-400 hover:text-primary transition-all shadow-sm`}>
+                    <MdFavoriteBorder className="text-lg" />
+                </button>
+
+                {/* Trending Badge */}
                 {product.isTrending && (
-                    <span className="absolute ltr:left-2 rtl:right-2 top-2 z-10 rounded bg-white px-1.5 py-0.5 text-[10px]  font-bold uppercase tracking-wider text-black shadow-sm">{t('home.trendingNow')}</span>
+                    <span className={`absolute top-3 ${dir === 'rtl' ? 'right-3' : 'left-3'} z-10 rounded-md bg-white px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-black shadow-sm`}>
+                        {t('home.trendingNow')}
+                    </span>
                 )}
+
+                {/* Discount Badge */}
                 {product.discountPrice && (
-                    <span className="absolute ltr:right-2 rtl:left-2 top-2 z-10 rounded bg-red-500 px-1.5 py-0.5 text-[10px]  font-bold uppercase tracking-wider text-white shadow-sm">
+                    <span className={`absolute bottom-3 ${dir === 'rtl' ? 'right-3' : 'left-3'} z-10 rounded-md bg-red-500 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white shadow-sm`}>
                         -{Math.round((1 - Number(product.discountPrice) / Number(product.price)) * 100)}%
                     </span>
                 )}
-                <ResilientImage
-                    alt={product.name}
-                    className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
-                    src={primaryImage}
-                    loading={product.isTrending ? "eager" : "lazy"}
-                />
-                <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="desktop" />
-                <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="mobile" />
-            </Link>
-            <div className={`flex flex-col gap-1 p-0.5 ${isCompact ? 'w-[173px] md:w-[200px]' : ''}`}>
-                <div className="flex items-start justify-between gap-2">
-                    <Link href={`/products/${product.slug}`}>
-                        <h3 className="text-[13px] md:text-sm font-medium text-text-main-light dark:text-white group-hover:text-primary transition-colors cursor-pointer line-clamp-2 leading-tight" title={product.name}>{product.name}</h3>
-                    </Link>
+
+                <Link href={`/products/${product.slug}`} className="block w-full h-full">
+                    <ResilientImage
+                        alt={product.name}
+                        className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal transition-transform duration-500 group-hover:scale-110 p-4"
+                        src={primaryImage}
+                        loading={product.isTrending ? "eager" : "lazy"}
+                    />
+                </Link>
+
+                {/* Quick Add to Cart (Desktop Hover) */}
+                <div className="absolute inset-x-0 bottom-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 hidden md:block">
+                    <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="desktop" />
                 </div>
+            </div>
+
+            {/* Product Info */}
+            <div className="flex flex-col gap-1 px-1">
+                {/* Brand */}
                 {product.brand && (
                     <Link
                         href={`/brands/${product.brand.slug}`}
-                        className="truncate text-[10px] font-semibold uppercase tracking-wide text-primary/80 hover:text-primary"
+                        className="text-[10px] font-bold uppercase tracking-wider text-primary/70 hover:text-primary transition-colors"
                     >
                         {product.brand.name}
                     </Link>
                 )}
-                <div className="w-full flex flex-col items-end md:flex-row md:items-baseline gap-0.5 md:gap-2">
+
+                {/* Name */}
+                <Link href={`/products/${product.slug}`}>
+                    <h3 className="text-sm md:text-base font-medium text-text-main-light dark:text-white line-clamp-1 group-hover:text-primary transition-colors">
+                        {product.name}
+                    </h3>
+                </Link>
+
+                {/* Rating */}
+                <div className="flex items-center gap-1">
+                    <div className="flex items-center text-amber-400">
+                        <MdStar className="text-sm" />
+                    </div>
+                    <span className="text-[11px] font-bold text-gray-700 dark:text-gray-300">{rating}</span>
+                    <span className="text-[11px] text-gray-400">({reviewCount})</span>
+                </div>
+
+                {/* Price */}
+                <div className={`flex items-center gap-2 ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
                     {product.discountPrice ? (
                         <>
-                            <p className="font-bold text-primary text-sm md:text-sm w-full text-right" dir="ltr">{formatPrice(Number(product.discountPrice))}</p>
-                            <p className="text-[10px] md:text-xs text-text-sub line-through decoration-red-400/50 w-full text-right" dir="ltr">{formatPrice(Number(product.price))}</p>
+                            <span className="text-base font-bold text-primary" dir="ltr">{formatPrice(Number(product.discountPrice))}</span>
+                            <span className="text-xs text-gray-400 line-through" dir="ltr">{formatPrice(Number(product.price))}</span>
                         </>
                     ) : (
-                        <p className="font-bold text-primary text-sm md:text-sm w-full text-right" dir="ltr">{formatPrice(Number(product.price))}</p>
+                        <span className="text-base font-bold text-primary" dir="ltr">{formatPrice(Number(product.price))}</span>
                     )}
                 </div>
+            </div>
+
+            {/* Mobile Add Button */}
+            <div className="md:hidden mt-1">
+                <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="mobile" />
             </div>
         </div>
     );

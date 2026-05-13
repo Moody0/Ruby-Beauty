@@ -1123,6 +1123,78 @@ export async function getOnSaleProducts() {
     }
 }
 
+export async function getMainCategoryBrands(): Promise<HomeBrand[]> {
+    try {
+        return await prisma.brand.findMany({
+            where: {
+                group: BrandGroup.MAIN,
+                isActive: true,
+            },
+            take: 4,
+            orderBy: [
+                { name: 'asc' },
+            ],
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                description: true,
+                image: true,
+                group: true,
+                _count: {
+                    select: {
+                        products: true,
+                        categories: true,
+                    },
+                },
+            },
+        });
+    } catch (error) {
+        console.error("Failed to fetch main category brands:", error);
+        return [];
+    }
+}
+
+export async function getBestSellerProducts() {
+    try {
+        const products = await prisma.product.findMany({
+            where: {
+                isTrending: true,
+                brand: { isActive: true },
+                stock: { gt: 0 },
+            },
+            take: 10,
+            include: { category: true, brand: true },
+            orderBy: { updatedAt: 'desc' }
+        });
+
+        return products.map(product => ({
+            ...product,
+            price: Number(product.price),
+            discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
+            discountType: product.discountType,
+            discountValue: product.discountValue ? Number(product.discountValue) : null,
+            stock: Number(product.stock),
+            createdAt: product.createdAt.toISOString(),
+            updatedAt: product.updatedAt.toISOString(),
+            category: product.category ? {
+                ...product.category,
+                createdAt: product.category.createdAt.toISOString(),
+                updatedAt: product.category.updatedAt.toISOString(),
+            } : null,
+            brand: product.brand ? {
+                id: product.brand.id,
+                name: product.brand.name,
+                slug: product.brand.slug,
+                group: product.brand.group,
+            } : null,
+        }));
+    } catch (error) {
+        console.error("Failed to fetch best seller products:", error);
+        return [];
+    }
+}
+
 export async function getCategoriesForCleanup() {
     try {
         return await prisma.category.findMany({
@@ -1167,14 +1239,17 @@ export async function bulkCreateProducts(products: ProductImportRow[]) {
             const brandLabel = String(p.Brand || "Ruby Beauty").trim() || "Ruby Beauty";
             const brandKey = brandLabel.toLowerCase();
             let brand = brandMap.get(brandKey);
+            const brandGroup = String(p["Brand Group"] || "").trim().toUpperCase();
 
             if (!brand) {
+                const isMainGroup = brandGroup === "MAIN";
                 brand = await prisma.brand.create({
                     data: {
                         name: brandLabel,
                         slug: await generateUniqueBrandSlug(brandLabel),
-                        group: BrandGroup.DIFFERENT,
+                        group: isMainGroup ? BrandGroup.MAIN : BrandGroup.DIFFERENT,
                         isActive: true,
+                        isFeatured: isMainGroup,
                     }
                 });
                 brandMap.set(brandKey, brand);

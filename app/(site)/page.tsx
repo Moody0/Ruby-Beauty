@@ -1,25 +1,19 @@
 import Main from "../components/HomePageComponents/Main";
 import {
     getActiveBanners,
-    getFeaturedCategories,
-    getFeaturedMainBrands,
-    getHomeCollectionSections,
-    getOnSaleProducts,
-    getTrendingProducts,
+    getMainCategoryBrands,
+    getBestSellerProducts,
     getSiteSettings,
 } from "../../lib/admin-actions";
 
 export const revalidate = 86400; // Revalidate every 24 hours
 
 export default async function Home() {
-    const [banners, categories, collectionSections, mainBrands, trendingProducts, onSaleProducts, settings] =
+    const [banners, mainBrands, bestSellerProducts, settings] =
         await Promise.all([
             getActiveBanners(),
-            getFeaturedCategories(),
-            getHomeCollectionSections(),
-            getFeaturedMainBrands(),
-            getTrendingProducts(),
-            getOnSaleProducts(),
+            getMainCategoryBrands(),
+            getBestSellerProducts(),
             getSiteSettings(),
         ]);
 
@@ -27,11 +21,8 @@ export default async function Home() {
         <section>
             <Main
                 banners={banners}
-                categories={categories}
-                collectionSections={collectionSections}
                 mainBrands={mainBrands}
-                trendingProducts={trendingProducts}
-                onSaleProducts={onSaleProducts}
+                bestSellerProducts={bestSellerProducts}
                 settings={settings}
             />
         </section>

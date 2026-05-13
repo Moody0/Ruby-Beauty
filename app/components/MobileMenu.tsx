@@ -119,66 +119,45 @@ const MobileMenu = ({ initialCategories }: MobileMenuProps) => {
                             <span className="text-xl font-medium">{t('common.home')}</span>
                         </Link>
                         <Link
+                            href="/brands/ruby-beauty"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={`flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border ${isActive('/brands/ruby-beauty') ? 'bg-primary/10 text-primary border-primary/20' : 'border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20'}`}
+                        >
+                            <MdStorefront className="text-2xl opacity-70" />
+                            <span className="text-xl font-medium">{t('nav.rubyBeauty')}</span>
+                        </Link>
+                        <Link
+                            href="/brands/makeup"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={`flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border ${isActive('/brands/makeup') ? 'bg-primary/10 text-primary border-primary/20' : 'border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20'}`}
+                        >
+                            <MdStorefront className="text-2xl opacity-70" />
+                            <span className="text-xl font-medium">{t('nav.makeup')}</span>
+                        </Link>
+                        <Link
+                            href="/brands/perfumes"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={`flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border ${isActive('/brands/perfumes') ? 'bg-primary/10 text-primary border-primary/20' : 'border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20'}`}
+                        >
+                            <MdStorefront className="text-2xl opacity-70" />
+                            <span className="text-xl font-medium">{t('nav.perfumes')}</span>
+                        </Link>
+                        <Link
+                            href="/brands/accessories"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={`flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border ${isActive('/brands/accessories') ? 'bg-primary/10 text-primary border-primary/20' : 'border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20'}`}
+                        >
+                            <MdStorefront className="text-2xl opacity-70" />
+                            <span className="text-xl font-medium">{t('nav.accessories')}</span>
+                        </Link>
+                        <Link
                             href="/products"
                             onClick={() => setIsMobileMenuOpen(false)}
                             className={`flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border ${isActive('/products') ? 'bg-primary/10 text-primary border-primary/20' : 'border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20'}`}
                         >
                             <MdShoppingCart className="text-2xl opacity-70" />
-                            <span className="text-xl font-medium">{t('common.shop')}</span>
+                            <span className="text-xl font-medium">{t('nav.offers')}</span>
                         </Link>
-
-                        <Link
-                            href="/brands"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className={`flex items-center gap-4 py-4 px-6 rounded-2xl transition-all border ${isActive('/brands') ? 'bg-primary/10 text-primary border-primary/20' : 'border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20'}`}
-                        >
-                            <MdStorefront className="text-2xl opacity-70" />
-                            <span className="text-xl font-medium">{t('common.brands')}</span>
-                        </Link>
-
-                        <button
-                            onClick={() => setIsCategoriesExpanded(!isCategoriesExpanded)}
-                            className="flex items-center justify-between gap-4 py-4 px-6 rounded-2xl transition-all border border-transparent text-text-main-light dark:text-white/90 hover:bg-primary/5 hover:text-primary hover:border-primary/20"
-                        >
-                            <div className="flex items-center gap-4">
-                                <MdCategory className="text-2xl opacity-70" />
-                                <span className="text-xl font-medium">{t('common.categories')}</span>
-                            </div>
-                            <MdExpandMore className={`transition-transform ${isCategoriesExpanded ? 'rotate-180' : ''}`} />
-                        </button>
-
-                        {isCategoriesExpanded && (
-                            <div className="flex flex-col gap-2 pl-6">
-                                <input
-                                    type="search"
-                                    value={categorySearch}
-                                    onChange={(e) => setCategorySearch(e.target.value)}
-                                    placeholder={t('common.search')}
-                                    className="w-full mb-2 px-3 py-2 rounded-lg border border-[#eae6e8] dark:border-white/10 bg-white dark:bg-surface-dark"
-                                />
-                                {filteredCategories.map((category) => (
-                                    <Link
-                                        key={category.id}
-                                        href={`/categories/${category.slug}`}
-                                        onClick={() => {
-                                            setIsMobileMenuOpen(false);
-                                            setIsCategoriesExpanded(false);
-                                        }}
-                                        className="py-3 px-4 rounded-xl transition-all border border-transparent text-text-main-light dark:text-white/80 hover:bg-primary/5 hover:text-primary hover:border-primary/20"
-                                    >
-                                        {category.name}
-                                    </Link>
-                                ))}
-
-                                <Link
-                                    href="/categories"
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="mt-2 text-sm text-primary font-medium"
-                                >
-                                    {t('common.viewAllCategories') || 'View all categories'}
-                                </Link>
-                            </div>
-                        )}
 
                         <Link
                             href="/about-us"

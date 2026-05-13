@@ -8,7 +8,7 @@ export default async function NotFound() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header t={t} dir={dir} language={language} />
+      <Header initialCategories={[]} dir={dir} language={language} />
 
       <main className="flex-grow flex items-center justify-center px-4 py-16">
         <div className="max-w-xl text-center">

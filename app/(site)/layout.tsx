@@ -1,5 +1,8 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import FooterInfoBar from "../components/FooterInfoBar";
+import AnnouncementBar from "../components/AnnouncementBar";
+import BottomNav from "../components/BottomNav";
 import { getI18n } from "@/lib/i18n";
 import { getCatalogCategories } from "@/lib/catalog";
 
@@ -22,11 +25,19 @@ export default async function SiteLayout({
 
     return (
         <div className="min-h-screen flex flex-col" dir={dir}>
-            <Header initialCategories={categories} t={t} dir={dir} language={language} />
-            <main className="flex-1">
+            {/* Header */}
+            <Header initialCategories={categories} dir={dir} language={language} />
+
+            {/* Main Content */}
+            <main className="flex-1 pb-16 md:pb-0">
                 {children}
             </main>
+
+            {/* Footer */}
             <Footer t={t} language={language} />
+
+            {/* Bottom Mobile Navigation */}
+            <BottomNav />
         </div>
     );
 }

@@ -1,11 +1,15 @@
+'use client';
+
 import Link from 'next/link';
 import React from 'react';
-import ThemeToggle from './ThemeToggle';
+import { MdSearch, MdOutlineShoppingBag, MdFavoriteBorder, MdPersonOutline, MdMenu } from 'react-icons/md';
+import { useLanguage } from '@/app/context/LanguageContext';
+import { useCart } from '@/app/context/CartContext';
 import HeaderSearch from './HeaderSearch';
-import LanguageToggle from './LanguageToggle';
-import CurrencyToggle from './CurrencyToggle';
 import MobileMenu from './MobileMenu';
 import CartTrigger from './CartTrigger';
+import ThemeToggle from './ThemeToggle';
+import LanguageToggle from './LanguageToggle';
 
 interface HeaderCategory {
     id: string;
@@ -17,62 +21,84 @@ interface HeaderCategory {
 
 interface HeaderProps {
     initialCategories?: HeaderCategory[];
-    t: (key: string) => string;
     dir: 'ltr' | 'rtl';
     language: 'en' | 'ar';
 }
 
-const Header = ({ initialCategories = [], t }: HeaderProps) => {
+const Header = ({ initialCategories = [], dir }: HeaderProps) => {
+    const { t } = useLanguage();
+    const { totalItems } = useCart();
+    const [isSearchOpen, setIsSearchOpen] = React.useState(false);
+
     return (
-        <header className="sticky top-0 z-50 w-full bg-surface-light dark:bg-surface-dark border-b border-[#f4f0f2] dark:border-white/10 transition-all duration-300">
-            <div className="container-custom py-4">
-                <div className="flex items-center justify-between gap-4 relative">
-                    {/* Left side: Mobile Menu (Ham + Search) on mobile, Logo on desktop */}
-                    <div className="flex items-center gap-2 md:gap-4 h-10 z-10">
-                        <MobileMenu initialCategories={initialCategories} />
-
-                        <Link href="/" className="hidden md:flex items-center gap-2 md:gap-4 shrink-0 h-full">
-                            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-text-main-light dark:text-text-main-dark sm:block leading-none">
-                                {t('header.brandName')}
-                            </h1>
-                        </Link>
-                    </div>
-
-                    {/* Center Logo (Mobile only) */}
-                    <div className="absolute inset-0 flex items-center justify-center md:hidden pointer-events-none">
-                        <Link href="/" className="pointer-events-auto">
-                            <h1 className="text-xl font-bold tracking-tight text-text-main-light dark:text-text-main-dark leading-none">
-                                {t('header.brandName')}
-                            </h1>
-                        </Link>
-                    </div>
-
-                    {/* Search Bar (Desktop) */}
-                    <div className="hidden md:flex max-w-md w-full mx-8">
-                        <HeaderSearch />
-                    </div>
-
-                    {/* Navigation Links & Icons */}
-                    <div className="flex items-center gap-2 md:gap-8 z-10">
-                        <nav className="hidden lg:flex items-center gap-6">
-                            <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('common.shop')}</Link>
-                            <Link href="/brands" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('common.brands')}</Link>
-                            <Link href="/categories" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('common.categories')}</Link>
-                            <Link href="/about-us" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('common.about')}</Link>
-                        </nav>
-                        <div className="flex items-center gap-1 md:gap-2">
-                            <CurrencyToggle />
-                            <CartTrigger />
-                            <div className="hidden md:flex items-center gap-1 md:gap-2">
-                                <LanguageToggle />
-                                <div className="block">
-                                    <ThemeToggle />
-                                </div>
-                            </div>
+        <header className="sticky top-0 z-50 w-full bg-white dark:bg-surface-dark border-b border-[#f4f0f2] dark:border-white/10 transition-all duration-300">
+            <div className="container-custom">
+                {/* Main Header Row */}
+                <div className="flex items-center justify-between py-4 relative">
+                    {/* Left: Cart, Favorites, User */}
+                    <div className="flex items-center gap-3 md:gap-5 order-1 md:w-1/3">
+                        <div className="relative">
+                            <Link href="/cart" className="text-2xl text-text-main-light dark:text-white hover:text-primary transition-colors">
+                                <MdOutlineShoppingBag />
+                                {totalItems > 0 && (
+                                    <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                                        {totalItems}
+                                    </span>
+                                )}
+                            </Link>
                         </div>
+                        <Link href="/products?favorites=true" className="text-2xl text-text-main-light dark:text-white hover:text-primary transition-colors hidden sm:block">
+                            <MdFavoriteBorder />
+                        </Link>
+                        <Link href="/about-us" className="text-2xl text-text-main-light dark:text-white hover:text-primary transition-colors">
+                            <MdPersonOutline />
+                        </Link>
+                    </div>
+
+                    {/* Center: Logo */}
+                    <div className="flex justify-center order-2 md:w-1/3">
+                        <Link href="/" className="flex flex-col items-center">
+                            <span className="text-2xl md:text-3xl font-bold tracking-tight text-text-main-light dark:text-white">
+                                Ruby Beauty
+                            </span>
+                            <span className="text-[10px] text-text-muted-light dark:text-text-muted-dark tracking-[0.2em] font-medium uppercase mt-[-4px]">
+                                {dir === 'rtl' ? 'جمالك يليق بك' : 'Your beauty deserves it'}
+                            </span>
+                        </Link>
+                    </div>
+
+                    {/* Right: Search, Hamburger */}
+                    <div className="flex items-center justify-end gap-3 md:gap-5 order-3 md:w-1/3">
+                        <button 
+                            onClick={() => setIsSearchOpen(!isSearchOpen)}
+                            className="text-2xl text-text-main-light dark:text-white hover:text-primary transition-colors"
+                        >
+                            <MdSearch />
+                        </button>
+                        <MobileMenu initialCategories={initialCategories} />
                     </div>
                 </div>
+
+                {/* Navigation Links Row - Desktop only */}
+                <nav className="hidden md:flex items-center justify-center gap-8 py-2 border-t border-gray-50 dark:border-white/5">
+                    <Link href="/" className="text-sm font-bold text-primary border-b-2 border-primary pb-1">{t('common.home')}</Link>
+                    <Link href="/brands/ruby-beauty" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.rubyBeauty')}</Link>
+                    <Link href="/brands/makeup" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.makeup')}</Link>
+                    <Link href="/brands/perfumes" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.perfumes')}</Link>
+                    <Link href="/brands/accessories" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.accessories')}</Link>
+                    <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.offers')}</Link>
+                    <Link href="/products?sort=newest" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.newArrivals')}</Link>
+                </nav>
             </div>
+
+            {/* Expandable Search Bar */}
+            {isSearchOpen && (
+                <div className="absolute top-full left-0 w-full bg-white dark:bg-surface-dark border-b border-gray-100 dark:border-white/10 p-4 animate-fadeIn">
+                    <div className="container-custom">
+                        <HeaderSearch />
+                    </div>
+                </div>
+            )}
         </header>
     );
 };

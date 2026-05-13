@@ -22,8 +22,22 @@
         "categories": "Categories",
         "continueShopping": "Continue Shopping"
     },
+    "announcement": {
+        "freeShipping": "Free shipping on orders above 299 SAR"
+    },
     "header": {
         "brandName": "Ruby Beauty"
+    },
+    "nav": {
+        "rubyBeauty": "Ruby Beauty",
+        "makeup": "Makeup",
+        "perfumes": "Perfumes",
+        "accessories": "Accessories",
+        "offers": "Offers",
+        "newArrivals": "New Arrivals",
+        "categories": "Categories",
+        "favorites": "Favorites",
+        "account": "Account"
     },
     "footer": {
         "brandDescription": "Premium botanical skincare designed to reveal your natural radiance. Cruelty-free, vegan, and sustainable.",
@@ -52,6 +66,17 @@
         "bestSeller": "Best Seller",
         "onSale": "On Sale Now",
         "specialOffers": "Special Offers",
+        "shopByCategory": "Shop by Category",
+        "bestSellers": "Best Sellers",
+        "shopNowCta": "Shop Now",
+        "customerSupport": "Customer Support",
+        "customerSupport247": "24/7",
+        "easyReturns": "Easy Returns",
+        "easyReturnsDesc": "Within 7 days",
+        "authenticProducts": "Authentic Products",
+        "authenticProductsDesc": "100% Guaranteed",
+        "fastShipping": "Fast Shipping",
+        "fastShippingDesc": "Delivery in 2-5 days",
         "brandValues": {
             "vegan": "100% Vegan",
             "crueltyFree": "Cruelty-Free",
@@ -59,7 +84,16 @@
             "sustainable": "Sustainable Packaging"
         },
         "collectionSpotlight": "Collection Spotlight",
-        "productsLabel": "Products"
+        "productsLabel": "Products",
+        "dailyOffers": "Daily Offers",
+        "footerInfoNewsletter": "Subscribe to our newsletter",
+        "footerInfoNewsletterDesc": "Get the latest offers",
+        "footerInfoInstagram": "Follow us on Instagram",
+        "footerInfoInstagramDesc": "@ruby.beauty",
+        "footerInfoDiscount": "New discount code?",
+        "footerInfoDiscountDesc": "Subscribe now",
+        "footerInfoExclusive": "Exclusive offers",
+        "footerInfoExclusiveDesc": "For subscribers only"
     },
     "products": {
         "allProducts": "All Products",
