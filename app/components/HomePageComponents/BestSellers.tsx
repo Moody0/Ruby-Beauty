@@ -33,7 +33,7 @@ interface BestSellersProps {
 
 const BestSellers = ({ products }: BestSellersProps) => {
     const { t, dir } = useLanguage();
-    const { railRef, canScrollForward, canScrollBackward, scrollForward, scrollBackward } = useProductRail(dir);
+    const { railRef, progressBarRef, canScrollForward, canScrollBackward, scrollForward, scrollBackward } = useProductRail(dir);
 
     if (!products || products.length === 0) {
         return null;
@@ -43,7 +43,7 @@ const BestSellers = ({ products }: BestSellersProps) => {
         <section className="container-custom py-8 md:py-10">
             <div className="w-full">
                 <div className="flex items-center justify-between mb-6 px-2">
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-text-main-light dark:text-text-main-dark">{t('home.bestSellers')}</h3>
+                    <h3 className="text-lg sm:text-xl md:text-[32px] font-semibold text-[#2e2e2e] dark:text-text-main-dark">{t('home.bestSellers')}</h3>
                     <Link className="text-primary font-medium text-sm flex items-center gap-1 hover:gap-2 transition-all" href="/products">
                         {t('common.viewAll')} <MdChevronRight className={`text-sm ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                     </Link>
@@ -54,38 +54,58 @@ const BestSellers = ({ products }: BestSellersProps) => {
                         ref={railRef}
                         className="-mx-4 overflow-x-auto px-4 scrollbar-hide sm:mx-0 sm:px-0"
                     >
-                    <div className="flex snap-x snap-mandatory gap-4 pb-2 md:gap-5">
-                        {products.map((product) => (
-                            <div
-                                key={product.id}
-                                className="w-[calc((100%-48px)/4)] md:w-[calc((100%-60px)/4)] lg:w-[calc((100%-80px)/5)] flex-none snap-start"
-                            >
-                                <ProductCard product={product} variant="compact" />
-                            </div>
-                        ))}
-                    </div>
+                        <div className="flex snap-x snap-mandatory gap-4 pb-2 md:gap-5">
+                            {products.map((product) => (
+                                <div
+                                    key={product.id}
+                                    className="w-[180px] md:w-[calc((100%-60px)/4)] lg:w-[calc((100%-80px)/5)] flex-none snap-start"
+                                >
+                                    <ProductCard product={product} variant="compact" />
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
-                    {canScrollForward && (
-                        <button
-                            className="hidden md:flex absolute ltr:right-[-20px] rtl:left-[-20px] top-[95px] md:top-[108px] -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main transition-all hover:bg-primary hover:text-white dark:bg-surface-dark"
-                            aria-label="Next"
-                            onClick={scrollForward}
-                            type="button"
-                        >
-                            {dir === 'rtl' ? <MdChevronLeft className="text-2xl" /> : <MdChevronRight className="text-2xl" />}
-                        </button>
-                    )}
-                    {canScrollBackward && (
-                        <button
-                            className="hidden md:flex absolute ltr:left-[-20px] rtl:right-[-20px] top-[95px] md:top-[108px] -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main transition-all hover:bg-primary hover:text-white dark:bg-surface-dark"
-                            aria-label="Previous"
-                            onClick={scrollBackward}
-                            type="button"
-                        >
-                            {dir === 'rtl' ? <MdChevronRight className="text-2xl" /> : <MdChevronLeft className="text-2xl" />}
-                        </button>
-                    )}
+                </div>
+                
+                {/* Bottom Navigation and Progress Bar */}
+                <div className="mt-8 flex items-center gap-4 px-2 w-full">
+                    {/* Previous Button (White -> Dark Hover) */}
+                    <button
+                        onClick={scrollBackward}
+                        disabled={!canScrollBackward}
+                        className="hidden md:flex w-10 h-10 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#2e2e2e] transition-colors hover:bg-[#2e2e2e] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed order-2"
+                        aria-label="Previous slide"
+                    >
+                        <svg className={`w-5 h-5 ${dir === 'rtl' ? '-scale-x-100' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12.5 16.25L6.25 10L12.5 3.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                        </svg>
+                    </button>
+                    
+                    {/* Progress Bar */}
+                    <div className="flex-1 h-[2px] bg-gray-200 dark:bg-gray-800 relative overflow-hidden rounded-full order-1">
+                        <div 
+                            ref={progressBarRef}
+                            className="absolute top-0 bottom-0 bg-[#2e2e2e] dark:bg-gray-300 rounded-full"
+                            style={{ 
+                                width: '100%',
+                                transformOrigin: dir === 'rtl' ? 'right' : 'left',
+                                transform: 'scaleX(0)'
+                            }}
+                        />
+                    </div>
+
+                    {/* Next Button (White -> Dark Hover) */}
+                    <button
+                        onClick={scrollForward}
+                        disabled={!canScrollForward}
+                        className="hidden md:flex w-10 h-10 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#2e2e2e] transition-colors hover:bg-[#2e2e2e] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed order-3"
+                        aria-label="Next slide"
+                    >
+                        <svg className={`w-5 h-5 ${dir === 'rtl' ? '-scale-x-100' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7.5 3.75L13.75 10L7.5 16.25" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </section>

@@ -48,12 +48,13 @@ const getTargetScrollLeft = (element: HTMLDivElement, dir: Direction, logical: n
 
 export const useProductRail = (dir: Direction, scrollStep?: number) => {
     const railRef = useRef<HTMLDivElement | null>(null);
+    const progressBarRef = useRef<HTMLDivElement | null>(null);
+    
     const [scrollState, setScrollState] = useState({
         canScrollForward: false,
         canScrollBackward: false,
     });
 
-    // We use a ref to track if we're currently animating to avoid sync conflicts
     const isAnimating = useRef(false);
 
     const syncScrollState = useCallback(() => {
@@ -62,10 +63,20 @@ export const useProductRail = (dir: Direction, scrollStep?: number) => {
 
         const { max, logical } = getScrollMetrics(rail, dir);
 
-        setScrollState({
-            canScrollBackward: logical > SCROLL_EPSILON,
-            canScrollForward: logical < max - SCROLL_EPSILON,
+        setScrollState((prev) => {
+            const canScrollBackward = logical > SCROLL_EPSILON;
+            const canScrollForward = logical < max - SCROLL_EPSILON;
+            
+            if (prev.canScrollBackward !== canScrollBackward || prev.canScrollForward !== canScrollForward) {
+                return { canScrollBackward, canScrollForward };
+            }
+            return prev;
         });
+
+        if (progressBarRef.current) {
+            const progress = max > 0 ? clamp(logical / max, 0, 1) : 1;
+            progressBarRef.current.style.transform = `scaleX(${progress})`;
+        }
     }, [dir]);
 
     const scrollLogical = useCallback(
@@ -73,46 +84,44 @@ export const useProductRail = (dir: Direction, scrollStep?: number) => {
             const rail = railRef.current;
             if (!rail || isAnimating.current) return;
 
-            isAnimating.current = true;
-            const firstChild = rail.firstElementChild?.firstElementChild as HTMLElement; // The items are wrapped in a flex container
+            const { logical, max } = getScrollMetrics(rail, dir);
+            const firstChild = rail.firstElementChild?.firstElementChild as HTMLElement;
             const gap = parseFloat(getComputedStyle(rail.firstElementChild as HTMLElement).gap) || 0;
             const itemWidth = firstChild ? firstChild.offsetWidth + gap : 320;
             const amount = scrollStep ?? itemWidth;
-            const { logical, max } = getScrollMetrics(rail, dir);
             const delta = direction === "forward" ? amount : -amount;
 
             const nextLogical = clamp(logical + delta, 0, max);
-            const targetLeft = getTargetScrollLeft(rail, dir, nextLogical);
+            
+            if (nextLogical === logical) return;
 
+            isAnimating.current = true;
+
+            const targetLeft = getTargetScrollLeft(rail, dir, nextLogical);
             rail.scrollTo({
                 left: targetLeft,
                 behavior: "smooth",
             });
 
-            // Allow syncing once animation is roughly done
             setTimeout(() => {
                 isAnimating.current = false;
                 syncScrollState();
-            }, 600);
+            }, 500);
         },
-        [dir, syncScrollState]
+        [dir, syncScrollState, scrollStep]
     );
 
     useEffect(() => {
         const rail = railRef.current;
         if (!rail) return;
 
-        // Reset scroll position on dir/mount
         const resetTarget = getTargetScrollLeft(rail, dir, 0);
         rail.scrollTo({ left: resetTarget, behavior: "auto" });
 
-        let timeoutId: NodeJS.Timeout;
+        let rafId: number;
         const handleScroll = () => {
-            // Only sync immediately if not animating, otherwise debounce
-            if (!isAnimating.current) {
-                clearTimeout(timeoutId);
-                timeoutId = setTimeout(syncScrollState, 50);
-            }
+            cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(syncScrollState);
         };
 
         const handleResize = () => syncScrollState();
@@ -129,12 +138,13 @@ export const useProductRail = (dir: Direction, scrollStep?: number) => {
             rail.removeEventListener("scroll", handleScroll);
             window.removeEventListener("resize", handleResize);
             resizeObserver.disconnect();
-            clearTimeout(timeoutId);
+            cancelAnimationFrame(rafId);
         };
     }, [dir, syncScrollState]);
 
     return {
         railRef,
+        progressBarRef,
         canScrollForward: scrollState.canScrollForward,
         canScrollBackward: scrollState.canScrollBackward,
         scrollForward: () => scrollLogical("forward"),

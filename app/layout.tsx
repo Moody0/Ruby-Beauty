@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Figtree } from "next/font/google";
+import { Figtree, Noto_Sans_Arabic } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import InitialLoadGate from "./components/InitialLoadGate";
@@ -11,6 +11,12 @@ import { prisma } from "@/lib/prisma";
 const figtree = Figtree({
   variable: "--font-figtree",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+});
+
+const noto_sans_arabic = Noto_Sans_Arabic({
+  variable: "--font-noto-sans-arabic",
+  subsets: ["arabic"],
   weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
@@ -70,7 +76,7 @@ export default async function RootLayout({
   const exchangeRate = settings?.exchangeRate ? Number(settings.exchangeRate) : 135;
 
   return (
-    <html lang={language} dir={dir} suppressHydrationWarning className={figtree.variable}>
+    <html lang={language} dir={dir} suppressHydrationWarning className={`${figtree.variable} ${noto_sans_arabic.variable}`}>
       <head>
         <script
           suppressHydrationWarning
@@ -91,7 +97,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${figtree.className} antialiased`}
+        className={`${figtree.className} ${noto_sans_arabic.className} antialiased`}
         suppressHydrationWarning
       >
         <div id="initial-page-loader" aria-hidden="true">

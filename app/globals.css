@@ -23,9 +23,8 @@
   --color-text-main: var(--text-main);
   --color-text-sub: var(--text-sub);
 
-  --font-display: var(--font-plus-jakarta);
-  --font-sans: var(--font-rubik), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-rubik), ui-serif, system-ui, serif;
+  --font-display: var(--font-figtree), var(--font-noto-sans-arabic), sans-serif;
+  --font-sans: var(--font-figtree), var(--font-noto-sans-arabic), ui-sans-serif, system-ui, sans-serif;
 
   --radius-lg: 1rem;
   --radius-xl: 1.5rem;

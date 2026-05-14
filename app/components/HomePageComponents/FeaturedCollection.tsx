@@ -45,7 +45,7 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
     const { t, dir } = useLanguage();
     const [activeTab, setActiveTab] = useState(0);
 
-    const { railRef, canScrollForward, canScrollBackward, scrollForward, scrollBackward } = useProductRail(dir);
+    const { railRef, progressBarRef, canScrollForward, canScrollBackward, scrollForward, scrollBackward } = useProductRail(dir);
 
     const tabs: TabData[] = useMemo(() => [
         { key: 'new-arrivals', labelKey: 'home.featuredTabNewArrivals', products: newArrivals },
@@ -63,27 +63,26 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
         <section className="container-custom py-8 md:py-10">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6 px-2">
                 <div className="flex-1">
-                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-text-main-light dark:text-text-main-dark">
+                    <h2 className="text-lg sm:text-xl md:text-[32px] font-semibold text-[#2e2e2e] dark:text-text-main-dark">
                         {t('home.featuredCollection')}
                     </h2>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-[15px] text-black mt-1">
                         {t('home.featuredCollectionSubtitle')}
                     </p>
                 </div>
 
                 <div className="tabs-nav overflow-x-auto scrollbar-hide" role="tablist">
-                    <div className="flex md:justify-end gap-1">
+                    <div className="flex md:justify-end gap-4 md:gap-2">
                         {tabs.map((tab, index) => (
                             <button
                                 key={tab.key}
                                 role="tab"
                                 aria-selected={activeTab === index}
                                 onClick={() => setActiveTab(index)}
-                                className={`tabs__btn whitespace-nowrap px-4 py-2 text-sm font-medium transition-all border-b-2 ${
-                                    activeTab === index
-                                        ? 'border-primary text-primary'
-                                        : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
-                                }`}
+                                className={`tabs__btn whitespace-nowrap px-4 py-2 text-[15px] font-medium transition-all border-b-2 ${activeTab === index
+                                    ? 'border-[#2e2e2e] text-[#2e2e2e]'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                                    }`}
                             >
                                 {t(tab.labelKey)}
                             </button>
@@ -98,41 +97,61 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
                     className="-mx-4 overflow-x-auto px-4 scrollbar-hide sm:mx-0 sm:px-0"
                 >
                     <div className="flex snap-x snap-mandatory gap-4 pb-2 md:gap-5">
-                            {activeProducts.map((product) => (
-                                <div
-                                    key={product.id}
-                                    className="w-[calc((100%-48px)/4)] md:w-[calc((100%-60px)/4)] lg:w-[calc((100%-80px)/5)] flex-none snap-start"
-                                >
-                                    <ProductCard
-                                        product={product}
-                                        variant="compact"
-                                        badge={activeTab === 0 ? t('home.newArrival') : undefined}
-                                    />
-                                </div>
-                            ))}
+                        {activeProducts.map((product) => (
+                            <div
+                                key={product.id}
+                                className="w-[180px] md:w-[calc((100%-60px)/4)] lg:w-[calc((100%-80px)/5)] flex-none snap-start"
+                            >
+                                <ProductCard
+                                    product={product}
+                                    variant="compact"
+                                    showBadge={activeTab !== 2}
+                                    badge={activeTab === 0 ? t('home.newArrival') : undefined}
+                                />
+                            </div>
+                        ))}
                     </div>
                 </div>
-
-                {canScrollBackward && (
+                
+                {/* Bottom Navigation and Progress Bar */}
+                <div className="mt-8 flex items-center gap-4 px-2 w-full">
+                    {/* Previous Button (White -> Dark Hover) */}
                     <button
-                        className="hidden md:flex absolute ltr:left-[-20px] rtl:right-[-20px] top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main transition-all hover:bg-primary hover:text-white dark:bg-surface-dark shadow-md"
-                        aria-label="Previous"
                         onClick={scrollBackward}
-                        type="button"
+                        disabled={!canScrollBackward}
+                        className="hidden md:flex w-10 h-10 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#2e2e2e] transition-colors hover:bg-[#2e2e2e] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed order-2"
+                        aria-label="Previous slide"
                     >
-                        {dir === 'rtl' ? <MdChevronRight className="text-2xl" /> : <MdChevronLeft className="text-2xl" />}
+                        <svg className={`w-5 h-5 ${dir === 'rtl' ? '-scale-x-100' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12.5 16.25L6.25 10L12.5 3.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                        </svg>
                     </button>
-                )}
-                {canScrollForward && (
+                    
+                    {/* Progress Bar */}
+                    <div className="flex-1 h-[2px] bg-gray-200 dark:bg-gray-800 relative overflow-hidden rounded-full order-1">
+                        <div 
+                            ref={progressBarRef}
+                            className="absolute top-0 bottom-0 bg-[#2e2e2e] dark:bg-gray-300 rounded-full"
+                            style={{ 
+                                width: '100%',
+                                transformOrigin: dir === 'rtl' ? 'right' : 'left',
+                                transform: 'scaleX(0)'
+                            }}
+                        />
+                    </div>
+
+                    {/* Next Button (White -> Dark Hover) */}
                     <button
-                        className="hidden md:flex absolute ltr:right-[-20px] rtl:left-[-20px] top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-white/95 text-text-main transition-all hover:bg-primary hover:text-white dark:bg-surface-dark shadow-md"
-                        aria-label="Next"
                         onClick={scrollForward}
-                        type="button"
+                        disabled={!canScrollForward}
+                        className="hidden md:flex w-10 h-10 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#2e2e2e] transition-colors hover:bg-[#2e2e2e] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed order-3"
+                        aria-label="Next slide"
                     >
-                        {dir === 'rtl' ? <MdChevronLeft className="text-2xl" /> : <MdChevronRight className="text-2xl" />}
+                        <svg className={`w-5 h-5 ${dir === 'rtl' ? '-scale-x-100' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7.5 3.75L13.75 10L7.5 16.25" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                        </svg>
                     </button>
-                )}
+                </div>
             </div>
         </section>
     );
