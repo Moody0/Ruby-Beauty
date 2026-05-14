@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 import type { HomeBrand } from '@/lib/admin-actions';
 import FeatureBar from './FeatureBar';
 import ShopByCategory from './ShopByCategory';
-import BestSellers from './BestSellers';
+import FeaturedCollection from './FeaturedCollection';
 import PromoBanner from './PromoBanner';
 
 const HeroCarousel = dynamic(() => import('./HeroCarousel'), {
@@ -48,11 +48,13 @@ interface Product {
 interface MainProps {
     banners: Banner[];
     mainBrands: HomeBrand[];
-    bestSellerProducts: Product[];
+    featuredNewArrivals: Product[];
+    featuredBundles: Product[];
+    featuredBestSellers: Product[];
     settings: any;
 }
 
-const Main = async ({ banners, mainBrands, bestSellerProducts, settings }: MainProps) => {
+const Main = async ({ banners, mainBrands, featuredNewArrivals, featuredBundles, featuredBestSellers, settings }: MainProps) => {
     return (
         <main className="w-full flex flex-col pb-12">
             {/* 1. Hero Carousel Section */}
@@ -64,8 +66,12 @@ const Main = async ({ banners, mainBrands, bestSellerProducts, settings }: MainP
             {/* 3. Shop by Category - 4 cards (Ruby Beauty, Makeup, Perfumes, Accessories) */}
             <ShopByCategory mainBrands={mainBrands} />
 
-            {/* 4. Best Sellers (الأكثر مبيعاً) */}
-            <BestSellers products={bestSellerProducts} />
+            {/* 4. Featured Collection - الجديد و المحبوب (New Arrivals, Bundles, Best Sellers) */}
+            <FeaturedCollection
+                newArrivals={featuredNewArrivals}
+                bundles={featuredBundles}
+                bestSellers={featuredBestSellers}
+            />
 
             {/* 5. Promo Banner (خصومات تصل إلى 30%) */}
             <PromoBanner />

@@ -82,7 +82,7 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                                 onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                                 onKeyDown={handleKeyDown}
                                 placeholder={t('checkout.promoCode')}
-                                className="flex-1 px-4 py-2 rounded-lg border border-[#e6dbdf] dark:border-gray-700 bg-[#fcfafa] dark:bg-[#341a22] text-sm focus:outline-none focus:ring-1 focus:ring-primary uppercase font-medium placeholder:normal-case"
+                                className="flex-1 px-4 py-2 rounded-lg border border-[#e6dbdf] dark:border-gray-700 bg-[#FFFFFF] dark:bg-[#341a22] text-sm focus:outline-none focus:ring-1 focus:ring-primary uppercase font-medium placeholder:normal-case"
                             />
                             <button
                                 type="button"
@@ -118,7 +118,7 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                     </div>
                 </div>
 
-                <div className="bg-[#f8f6f6] dark:bg-[#341a22] rounded-xl p-4 mb-8">
+                <div className="bg-[#FFFFFF] dark:bg-[#341a22] rounded-xl p-4 mb-8">
                     <div className="flex items-center justify-between mb-1">
                         <span className="text-xs font-bold text-[#89616f] dark:text-[#a08590] uppercase tracking-wider">{t('checkout.paymentMethod')}</span>
                         <MdPayments className="text-primary text-sm" />
@@ -148,7 +148,7 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                 <p className="text-[10px] text-center text-[#89616f] dark:text-[#a08590] mt-4 uppercase tracking-widest font-bold">{t('checkout.secureCheckout')}</p>
             </div>
 
-            <div className="bg-[#fcfafa] dark:bg-[#2a161d]/50 p-5 rounded-xl border border-dashed border-[#f4f0f2] dark:border-[#3a2228] flex items-center gap-4">
+            <div className="bg-[#FFFFFF] dark:bg-[#2a161d]/50 p-5 rounded-xl border border-dashed border-[#f4f0f2] dark:border-[#3a2228] flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-white dark:bg-[#341a22] flex items-center justify-center shadow-sm">
                     <MdSupportAgent className="text-primary text-xl" />
                 </div>

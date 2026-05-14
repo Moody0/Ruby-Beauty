@@ -3,17 +3,21 @@ import {
     getActiveBanners,
     getMainCategoryBrands,
     getBestSellerProducts,
+    getOnSaleProducts,
+    getNewArrivalProducts,
     getSiteSettings,
 } from "../../lib/admin-actions";
 
 export const revalidate = 86400; // Revalidate every 24 hours
 
 export default async function Home() {
-    const [banners, mainBrands, bestSellerProducts, settings] =
+    const [banners, mainBrands, featuredBestSellers, featuredNewArrivals, featuredBundles, settings] =
         await Promise.all([
             getActiveBanners(),
             getMainCategoryBrands(),
             getBestSellerProducts(),
+            getNewArrivalProducts(),
+            getOnSaleProducts(),
             getSiteSettings(),
         ]);
 
@@ -22,7 +26,9 @@ export default async function Home() {
             <Main
                 banners={banners}
                 mainBrands={mainBrands}
-                bestSellerProducts={bestSellerProducts}
+                featuredNewArrivals={featuredNewArrivals}
+                featuredBundles={featuredBundles}
+                featuredBestSellers={featuredBestSellers}
                 settings={settings}
             />
         </section>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Rubik } from "next/font/google";
+import { Figtree } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import InitialLoadGate from "./components/InitialLoadGate";
@@ -8,9 +8,9 @@ import { authOptions } from "@/lib/auth";
 import { getI18n } from "@/lib/i18n";
 import { prisma } from "@/lib/prisma";
 
-const rubik = Rubik({
-  variable: "--font-rubik",
-  subsets: ["latin", "arabic"],
+const figtree = Figtree({
+  variable: "--font-figtree",
+  subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
@@ -70,9 +70,10 @@ export default async function RootLayout({
   const exchangeRate = settings?.exchangeRate ? Number(settings.exchangeRate) : 135;
 
   return (
-    <html lang={language} dir={dir} suppressHydrationWarning className={rubik.variable}>
+    <html lang={language} dir={dir} suppressHydrationWarning className={figtree.variable}>
       <head>
         <script
+          suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: `
               (function () {
@@ -90,7 +91,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${rubik.className} antialiased`}
+        className={`${figtree.className} antialiased`}
         suppressHydrationWarning
       >
         <div id="initial-page-loader" aria-hidden="true">

@@ -10,7 +10,7 @@ module.exports = {
       colors: {
         primary: '#ee2b6c',
         background: {
-          light: '#f8f6f6',
+          light: '#ffffff',
           dark: '#221016',
         },
         surface: {
@@ -28,8 +28,6 @@ module.exports = {
           },
         },
       },
-      maxWidth: {
-        container: '1400px',
       },
     },
   },

@@ -37,7 +37,7 @@ const CartSummary = ({ subtotal }: CartSummaryProps) => {
                 </Link>
 
             </div>
-            <div className="bg-[#fcfafa] dark:bg-[#2a161d]/50 p-4 rounded-xl border border-dashed border-gray-200 dark:border-[#3a2228] text-center">
+            <div className="bg-[#FFFFFF] dark:bg-[#2a161d]/50 p-4 rounded-xl border border-dashed border-gray-200 dark:border-[#3a2228] text-center">
                 <p className="text-sm text-[#89616f]">{t('footer.contactUs')}</p>
                 <a 
                     className="text-sm font-bold text-primary hover:underline mt-1 block" 

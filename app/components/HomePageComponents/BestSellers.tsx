@@ -58,7 +58,7 @@ const BestSellers = ({ products }: BestSellersProps) => {
                         {products.map((product) => (
                             <div
                                 key={product.id}
-                                className="w-[189px] min-w-[189px] flex-none snap-start md:w-[216px] md:min-w-[216px]"
+                                className="w-[calc((100%-48px)/4)] md:w-[calc((100%-60px)/4)] lg:w-[calc((100%-80px)/5)] flex-none snap-start"
                             >
                                 <ProductCard product={product} variant="compact" />
                             </div>

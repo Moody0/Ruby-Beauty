@@ -43,7 +43,7 @@ const CartItem = ({ item, removeItem, updateQuantity }: CartItemProps) => {
                     {/* {item.description && <p className="text-[#89616f] text-sm mt-1">{item.description}</p>} */}
                 </div>
                 <div className="flex items-center justify-between mt-4">
-                    <div className="flex items-center bg-[#f8f6f6] dark:bg-[#341a22] rounded-lg p-1">
+                    <div className="flex items-center bg-[#FFFFFF] dark:bg-[#341a22] rounded-lg p-1 border border-gray-100">
                         <button
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
                             className="w-8 h-8 flex items-center justify-center text-[#181113] dark:text-white hover:bg-white dark:hover:bg-[#4a2e36] rounded-md transition-colors font-bold text-lg"

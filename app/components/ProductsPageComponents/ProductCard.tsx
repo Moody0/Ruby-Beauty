@@ -1,12 +1,14 @@
 "use client";
 
 import Link from 'next/link';
-import React from 'react';
-import AddToCartButton from './AddToCartButton';
+import React, { useState } from 'react';
 import ResilientImage from '@/app/components/ResilientImage';
-import { getPrimaryImage } from '@/lib/image-utils';
 import { useCurrency } from '@/app/context/CurrencyContext';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { useCart } from '@/app/context/CartContext';
+import toast from 'react-hot-toast';
+import { MdSearch } from 'react-icons/md';
+import QuickViewModal from './QuickViewModal';
 
 interface Product {
     id: string;
@@ -30,92 +32,140 @@ interface Product {
 interface ProductCardProps {
     product: Product;
     variant?: 'default' | 'compact';
+    badge?: string | null;
+    showBadge?: boolean;
 }
 
-const ProductCard = ({ product, variant = 'default' }: ProductCardProps) => {
+const ProductCard = ({ product, variant = 'default', badge, showBadge = true }: ProductCardProps) => {
     const { t, language, dir } = useLanguage();
-    const primaryImage = getPrimaryImage(product.images);
-    const isCompact = variant === 'compact';
     const { formatPrice } = useCurrency();
+    const { addItem } = useCart();
+    const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+    
+    const images = product.images.split(',').map(img => img.trim()).filter(Boolean);
+    const primaryImage = images[0] || '';
+    const secondaryImage = images[1] || primaryImage;
 
-
+    const handleQuickAdd = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        addItem({
+            id: product.id,
+            name: product.name,
+            price: Number(product.discountPrice || product.price),
+            image: primaryImage,
+            slug: product.slug,
+            quantity: 1,
+            description: product.description || undefined
+        });
+        toast.success(language === 'ar' ? `تمت إضافة ${product.name} إلى السلة` : `Added ${product.name} to cart`);
+    };
 
     return (
-        <div className={`group relative flex flex-col gap-2 transition-all duration-300 ${isCompact ? 'w-full' : 'w-full'}`}>
-            {/* Image Container */}
-            <div className={`relative overflow-hidden rounded-2xl bg-[#f8f5f6] dark:bg-white/5 border border-transparent group-hover:border-primary/20 transition-all ${isCompact ? 'aspect-[4/5]' : 'aspect-square'}`}>
-                {/* Wishlist Button */}
+        <>
+        <div 
+            className="group relative flex flex-col bg-[#F7F7F5] dark:bg-surface-dark rounded-2xl overflow-hidden transition-transform duration-300 hover:shadow-sm"
+            style={{ width: '100%', height: '461px' }}
+        >
+            {/* Search Icon */}
+            <button
+                onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsQuickViewOpen(true);
+                }}
+                className="absolute z-20 top-3 left-3 w-8 h-8 bg-white text-black hover:bg-black hover:text-white rounded-full shadow-sm flex items-center justify-center opacity-0 -translate-x-[150%] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                aria-label="Quick View"
+            >
+                <MdSearch size={18} />
+            </button>
+            
+            {/* Badge */}
+            {showBadge && (badge || product.isTrending) && (
+                <div className="absolute top-3 right-3 z-10 bg-[#c20059] text-white px-2.5 py-1 rounded text-[11px] font-bold uppercase tracking-wide leading-none">
+                    {badge || (language === 'ar' ? 'وصل حديثاً' : 'New Arrival')}
+                </div>
+            )}
 
-
-                {/* Trending Badge */}
-                {product.isTrending && (
-                    <span className={`absolute top-3 ${dir === 'rtl' ? 'right-3' : 'left-3'} z-10 rounded-md bg-white px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-black shadow-sm`}>
-                        {t('home.trendingNow')}
-                    </span>
-                )}
-
-                {/* Discount Badge */}
-                {product.discountPrice && (
-                    <span className={`absolute bottom-3 ${dir === 'rtl' ? 'right-3' : 'left-3'} z-10 rounded-md bg-red-500 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white shadow-sm`}>
-                        -{Math.round((1 - Number(product.discountPrice) / Number(product.price)) * 100)}%
-                    </span>
-                )}
-
-                <Link href={`/products/${product.slug}`} className="block w-full h-full">
+            {/* Image Area */}
+            <div className="relative w-full h-[321px] overflow-hidden">
+                <Link href={`/products/${product.slug}`} className="absolute inset-0 block w-full h-full" aria-label={product.name}>
                     <ResilientImage
                         alt={product.name}
-                        className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal transition-transform duration-500 group-hover:scale-110 p-4"
+                        className={`absolute inset-0 w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal transition-opacity duration-500 ${secondaryImage !== primaryImage ? 'group-hover:opacity-0' : ''}`}
                         src={primaryImage}
-                        loading={product.isTrending ? "eager" : "lazy"}
+                        loading="lazy"
                     />
+                    {secondaryImage !== primaryImage && (
+                        <ResilientImage
+                            alt={product.name}
+                            className="absolute inset-0 w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal transition-opacity duration-500 opacity-0 group-hover:opacity-100"
+                            src={secondaryImage}
+                            loading="lazy"
+                        />
+                    )}
                 </Link>
-
-                {/* Quick Add to Cart (Desktop Hover) */}
-                <div className="absolute inset-x-0 bottom-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 hidden md:block">
-                    <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="desktop" />
+                
+                {/* Hover Add to Cart Button */}
+                <div className="absolute inset-x-4 bottom-4 z-20 translate-y-[150%] opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hidden md:block">
+                    <button
+                        onClick={handleQuickAdd}
+                        className="w-full bg-white hover:bg-black text-black hover:text-white py-3 rounded-xl text-sm font-bold shadow-md transition-colors"
+                    >
+                        {language === 'ar' ? 'اضافة للعربة' : t('products.addToCart')}
+                    </button>
                 </div>
             </div>
 
             {/* Product Info */}
-            <div className="flex flex-col gap-1 px-1">
+            <div className={`flex flex-col p-4 md:p-5 pt-0 md:pt-0 ${dir === 'rtl' ? 'text-right' : 'text-right'}`}>
                 {/* Brand */}
                 {product.brand && (
-                    <Link
-                        href={`/brands/${product.brand.slug}`}
-                        className="text-[10px] font-bold uppercase tracking-wider text-primary/70 hover:text-primary transition-colors"
-                    >
+                    <p className="text-[#898989] dark:text-gray-400 text-xs font-bold uppercase tracking-widest mb-1.5">
                         {product.brand.name}
-                    </Link>
+                    </p>
                 )}
-
-                {/* Name */}
-                <Link href={`/products/${product.slug}`}>
-                    <h3 className="text-sm md:text-base font-medium text-text-main-light dark:text-white line-clamp-1 group-hover:text-primary transition-colors">
+                
+                {/* Title */}
+                <h3 className="text-[#003049] dark:text-white text-[15px] font-semibold leading-tight mb-2 line-clamp-2">
+                    <Link 
+                        href={`/products/${product.slug}`} 
+                        className="relative inline-block after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
+                    >
                         {product.name}
-                    </h3>
-                </Link>
-
-                {/* Rating */}
-
-
+                    </Link>
+                </h3>
+                
                 {/* Price */}
-                <div className="flex items-center gap-2">
+                <div className="flex flex-row items-center justify-start gap-2 mt-auto text-[#003049] dark:text-white">
                     {product.discountPrice ? (
                         <>
-                            <span className="text-base font-bold text-primary" dir="ltr">{formatPrice(Number(product.discountPrice))}</span>
-                            <span className="text-xs text-gray-400 line-through" dir="ltr">{formatPrice(Number(product.price))}</span>
+                            <span className="text-[15px] font-bold text-[#c20059]">{formatPrice(Number(product.discountPrice))}</span>
+                            <span className="text-[12px] text-gray-400 line-through font-normal">{formatPrice(Number(product.price))}</span>
                         </>
                     ) : (
-                        <span className="text-base font-bold text-primary" dir="ltr">{formatPrice(Number(product.price))}</span>
+                        <span className="text-[15px] font-bold">{formatPrice(Number(product.price))}</span>
                     )}
                 </div>
-            </div>
-
-            {/* Mobile Add Button */}
-            <div className="md:hidden mt-1">
-                <AddToCartButton product={product} label={t('products.addToCart')} language={language} variant="mobile" />
+                
+                {/* Mobile ATC Button */}
+                <div className="md:hidden mt-3">
+                    <button
+                        onClick={handleQuickAdd}
+                        className="w-full bg-white text-black py-2.5 rounded-xl text-sm font-bold shadow-sm active:scale-95 transition-transform border border-gray-200"
+                    >
+                        {language === 'ar' ? 'اضافة للعربة' : t('products.addToCart')}
+                    </button>
+                </div>
             </div>
         </div>
+        
+        <QuickViewModal 
+            product={product} 
+            isOpen={isQuickViewOpen} 
+            onClose={() => setIsQuickViewOpen(false)} 
+        />
+        </>
     );
 };
 

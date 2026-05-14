@@ -46,7 +46,7 @@ const getTargetScrollLeft = (element: HTMLDivElement, dir: Direction, logical: n
     return clampedLogical;
 };
 
-export const useProductRail = (dir: Direction) => {
+export const useProductRail = (dir: Direction, scrollStep?: number) => {
     const railRef = useRef<HTMLDivElement | null>(null);
     const [scrollState, setScrollState] = useState({
         canScrollForward: false,
@@ -74,7 +74,10 @@ export const useProductRail = (dir: Direction) => {
             if (!rail || isAnimating.current) return;
 
             isAnimating.current = true;
-            const amount = Math.max(rail.clientWidth * 0.85, 300);
+            const firstChild = rail.firstElementChild?.firstElementChild as HTMLElement; // The items are wrapped in a flex container
+            const gap = parseFloat(getComputedStyle(rail.firstElementChild as HTMLElement).gap) || 0;
+            const itemWidth = firstChild ? firstChild.offsetWidth + gap : 320;
+            const amount = scrollStep ?? itemWidth;
             const { logical, max } = getScrollMetrics(rail, dir);
             const delta = direction === "forward" ? amount : -amount;
 

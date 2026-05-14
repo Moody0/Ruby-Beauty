@@ -21,7 +21,7 @@ const OrderItemsSelection = ({ items }: OrderItemsSelectionProps) => {
     const { t } = useLanguage();
 
     return (
-        <div className="bg-[#fcfafa] dark:bg-white/5 p-6 border-t border-[#f4f0f2] dark:border-[#3a2228]">
+        <div className="bg-[#FFFFFF] dark:bg-white/5 p-6 border-t border-[#f4f0f2] dark:border-[#3a2228]">
             <p className="text-[10px] font-bold text-[#89616f] uppercase tracking-widest mb-4 text-center">{t('orderComplete.items')}</p>
             <div className="flex justify-center flex-wrap gap-4">
                 {items.map((item) => (
