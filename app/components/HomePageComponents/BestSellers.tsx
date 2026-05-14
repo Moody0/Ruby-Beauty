@@ -60,9 +60,11 @@ const BestSellers = ({ products }: BestSellersProps) => {
                                     key={product.id}
                                     className="w-[180px] md:w-[calc((100%-60px)/4)] lg:w-[calc((100%-80px)/5)] flex-none snap-start"
                                 >
-                                    <ProductCard product={product} variant="compact" />
+                                    <ProductCard product={product} variant="compact" showBadge={false} />
                                 </div>
                             ))}
+                            {/* Spacer to prevent cutoff of the last item on mobile */}
+                            <div className="w-[1px] shrink-0 sm:hidden"></div>
                         </div>
                     </div>
 

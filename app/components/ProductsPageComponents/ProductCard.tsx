@@ -108,7 +108,7 @@ const ProductCard = ({ product, variant = 'default', badge, showBadge = true }: 
                     {/* Shopping Bag Icon (Mobile/Visible) */}
                     <button
                         onClick={handleQuickAdd}
-                        className="absolute bottom-2 left-2 md:bottom-3 md:left-3 z-20 w-8 h-8 md:w-10 md:h-10 bg-white text-black rounded-full shadow-md flex items-center justify-center transition-transform active:scale-90 md:opacity-0 md:group-hover:opacity-100 md:transition-all"
+                        className="absolute bottom-2 left-2 md:bottom-3 md:left-3 z-20 w-8 h-8 md:w-10 md:h-10 bg-white text-black rounded-full shadow-md flex items-center justify-center transition-transform active:scale-90 md:hidden"
                         aria-label="Add to cart"
                     >
                         <svg className="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

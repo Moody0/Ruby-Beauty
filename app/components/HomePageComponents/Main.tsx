@@ -1,10 +1,11 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import type { HomeBrand } from '@/lib/admin-actions';
-import FeatureBar from './FeatureBar';
+import CategoriesRail from './CategoriesRail';
 import ShopByCategory from './ShopByCategory';
 import FeaturedCollection from './FeaturedCollection';
 import PromoBanner from './PromoBanner';
+import CountdownOffer from './CountdownOffer';
 
 const HeroCarousel = dynamic(() => import('./HeroCarousel'), {
     ssr: true,
@@ -60,21 +61,23 @@ const Main = async ({ banners, mainBrands, featuredNewArrivals, featuredBundles,
             {/* 1. Hero Carousel Section */}
             <HeroCarousel banners={banners} />
 
-            {/* 2. Feature Bar - 4 icons */}
-            <FeatureBar />
+            {/* 2. Categories Rail (Replaces Feature Bar) */}
+            <CategoriesRail />
 
-            {/* 3. Shop by Category - 4 cards (Ruby Beauty, Makeup, Perfumes, Accessories) */}
+            {/* 3. Promo Banner (Moved up) */}
+            <PromoBanner />
+
+            {/* 4. Shop by Category - 4 cards (Ruby Beauty, Makeup, Perfumes, Accessories) */}
             <ShopByCategory mainBrands={mainBrands} />
 
-            {/* 4. Featured Collection - الجديد و المحبوب (New Arrivals, Bundles, Best Sellers) */}
             <FeaturedCollection
                 newArrivals={featuredNewArrivals}
                 bundles={featuredBundles}
                 bestSellers={featuredBestSellers}
             />
 
-            {/* 5. Promo Banner (خصومات تصل إلى 30%) */}
-            <PromoBanner />
+            {/* 6. Countdown Offer Section */}
+            <CountdownOffer />
         </main>
     );
 };

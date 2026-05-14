@@ -63,6 +63,8 @@ const TrendingProducts = ({ products }: TrendingProductsProps) => {
                                 <ProductCard product={product} variant="compact" />
                             </div>
                         ))}
+                        {/* Spacer to prevent cutoff of the last item on mobile */}
+                        <div className="w-[1px] shrink-0 sm:hidden"></div>
                     </div>
                     </div>
 

@@ -32,17 +32,18 @@ interface HeroCarouselProps {
 
 const HeroCarousel = ({ banners }: HeroCarouselProps) => {
     const { t, dir, language } = useLanguage();
+    const wrapperRef = React.useRef<HTMLElement>(null);
     
     const DEFAULT_BANNER: Banner = {
         id: 'default',
-        title: 'Liquid Contour from Ruby Beauty',
-        subtitle: 'Melts seamlessly into the skin to give you natural coverage and a lasting texture all day long.',
-        titleAr: 'كونتور سائل مُجدد ومنحوت من روبي بيوتي',
-        subtitleAr: 'يذوب بانسيابية على البشرة ليمنحك تغطية طبيعية وملمساً يدوم طوال اليوم',
+        title: 'Flash Sale 50% Off',
+        subtitle: 'Pamper yourself with beauty you love. Enjoy discounts up to 50% for a limited time this week.',
+        titleAr: 'خصم حتى ٥٠٪',
+        subtitleAr: 'دلعي نفسك بجمال تحبينه. استمتعي بخصومات تصل إلى ٥٠٪ لفترة محدودة هذا الأسبوع',
         image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB8pRgU38opDPgidWmDRVHh18-R0XsEouLP3xdxsGLZz4BX3nQjc-9PXhgFNDVECMvP80S7ZtFmpA-QwwrnKgOR8B7WY0FlM3qJCAf1J8cxpwvyt6V15oxTZz-uhtroLEp-87KWQzsp-6-2mVURrFG_Q6mWjJ5YGqT0gqwmcLOPMK6pDk77rqmdXEvvM82qGkXdLNmSeXBPXY9j9zwnT_PjJ5YAOzWa2PqrFvo1SOjMCtz71ZHQraBSPlt7TKx00ccpwm4TTWoB6b0y",
-        buttonText: t('home.shopNow'),
+        buttonText: language === 'ar' ? 'وفري' : 'Save',
         link: "/products",
-        badge: 'NEW COLLECTION',
+        badge: language === 'ar' ? 'عرض الويك اند' : 'Weekend Offer',
         isActive: true
     };
 
@@ -57,19 +58,20 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
     const getBannerButtonText = (banner: Banner): string => {
         if (language === 'ar') {
             if (!banner.buttonText || banner.buttonText === 'Shop Now') {
-                return t('home.shopNow');
+                return 'وفري';
             }
             return banner.buttonText;
         }
-        return banner.buttonText || t('home.shopNow');
+        return banner.buttonText || 'Save';
     };
 
     const displayBanners = banners && banners.length > 0 ? banners : [DEFAULT_BANNER];
 
     return (
-        <section className="container-custom pt-4 md:pt-6 pb-4 md:pb-6 group hero-carousel">
+        <section ref={wrapperRef} className="container-custom pt-4 md:pt-6 pb-4 md:pb-6 group hero-carousel">
             <div className="w-full relative">
-                <div className="relative overflow-hidden rounded-[2.5rem] bg-[#f8f3f4] dark:bg-[#1a1a1a] h-[450px] sm:h-[500px] md:h-[600px]">
+                {/* Responsive Height: 776px on mobile, 500-600px on desktop */}
+                <div className="relative overflow-hidden rounded-[10px] bg-[#FAECE8] dark:bg-[#1a1a1a] h-[776px] md:h-[500px] lg:h-[600px]">
                     <Swiper
                         modules={[Autoplay, Navigation, Pagination]}
                         spaceBetween={0}
@@ -80,7 +82,13 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                             delay: 6000,
                             disableOnInteraction: false,
                         }}
+                        onAutoplayTimeLeft={(swiper, time, progress) => {
+                            if (wrapperRef.current) {
+                                wrapperRef.current.style.setProperty('--autoplay-progress', `${(1 - progress) * 100}%`);
+                            }
+                        }}
                         pagination={{
+                            el: '.hero-swiper-pagination',
                             clickable: true,
                             renderBullet: function (index, className) {
                                 return '<span class="' + className + '"></span>';
@@ -93,80 +101,98 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                         className="h-full w-full"
                     >
                         {displayBanners.map((banner, index) => (
-                            <SwiperSlide key={banner.id} className="h-full w-full relative">
-                                {/* Background Image covering the whole container */}
-                                <div className="absolute inset-0 w-full h-full">
-                                    <img
-                                        src={getSafeImageUrl(banner.image)}
-                                        alt={getBannerTitle(banner)}
-                                        className="w-full h-full object-cover object-center"
-                                        loading={index === 0 ? "eager" : "lazy"}
-                                    />
-                                    {/* Exact Gradient Overlay - Physical Left regardless of RTL */}
-                                    {/* Exact Gradient Overlay - Focused more on the physical left */}
-                                    <div className="absolute inset-0 bg-gradient-to-r from-[#f8f3f4] via-[#f8f3f4]/90 via-[40%] to-transparent to-[70%] dark:from-[#1a1a1a] dark:via-[#1a1a1a]/90 dark:via-[40%] dark:to-transparent dark:to-[70%] pointer-events-none" />
-                                </div>
+                            <SwiperSlide key={banner.id} className="h-full w-full">
+                                <div className="flex flex-col md:flex-row rtl:md:flex-row-reverse h-full w-full">
+                                    
+                                    {/* Image Container - Left side on desktop */}
+                                    <div className="w-full h-[55%] md:h-full md:w-1/2 relative shrink-0">
+                                        <img
+                                            src={getSafeImageUrl(banner.image)}
+                                            alt={getBannerTitle(banner)}
+                                            className="w-full h-full object-cover object-center"
+                                            loading={index === 0 ? "eager" : "lazy"}
+                                        />
+                                    </div>
 
-                                {/* Content Overlay - Forced to the Physical Left */}
-                                <div className={`relative z-10 h-full w-full flex items-center px-6 md:px-12 lg:px-20 ${dir === 'rtl' ? 'justify-end' : 'justify-start'}`}>
-                                    {/* Content Block - Forced to the Physical Left with correct items alignment for RTL */}
-                                    <div className={`animate-fadeInUp w-full max-w-[300px] md:max-w-xl flex flex-col ${dir === 'rtl' ? 'items-end' : 'items-start'} text-left`}>
-                                        <span className="inline-block py-1.5 px-4 rounded bg-[#fde8ef] text-primary text-[10px] font-bold uppercase tracking-widest mb-6">
-                                            {banner.badge || 'NEW COLLECTION'}
-                                        </span>
-                                        <h2 className="text-3xl lg:text-5xl font-bold leading-[1.3] mb-6 text-[#1a1a1a] dark:text-white text-left">
-                                            {getBannerTitle(banner)}
-                                        </h2>
-                                        <p className="text-base lg:text-lg text-[#666666] dark:text-white/70 max-w-md mb-10 leading-relaxed font-medium text-left">
-                                            {getBannerSubtitle(banner)}
-                                        </p>
-                                        <Link
-                                            href={banner.link || "/products"}
-                                            className={`px-10 py-4 bg-primary hover:opacity-90 text-white rounded-xl font-bold text-base transition-all flex items-center gap-3 w-fit group/btn shadow-lg active:scale-95`}
-                                        >
-                                            {dir === 'rtl' ? (
-                                                <>
-                                                    <MdArrowForward className="text-xl rotate-180 group-hover/btn:-translate-x-1 transition-transform" />
-                                                    <span>{getBannerButtonText(banner)}</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <span>{getBannerButtonText(banner)}</span>
-                                                    <MdArrowForward className="text-xl group-hover/btn:translate-x-1 transition-transform" />
-                                                </>
-                                            )}
-                                        </Link>
+                                    {/* Content Container - Solid Right side on desktop */}
+                                    <div className="relative z-10 w-full h-[45%] md:h-full md:w-1/2 flex flex-col items-center justify-center text-center px-6 py-6 pb-16 md:px-12 lg:px-20 bg-[#FAECE8] dark:bg-[#1a1a1a]">
+                                        <div className="animate-fadeInUp w-full max-w-[320px] md:max-w-md flex flex-col items-center text-center">
+                                            
+
+                                            
+                                            {/* Title */}
+                                            <h2 className="text-[40px] md:text-[42px] lg:text-5xl font-bold leading-[1.2] mb-3 md:mb-6 text-[#072835] dark:text-[#072835] md:dark:text-white">
+                                                {getBannerTitle(banner)}
+                                            </h2>
+                                            
+                                            {/* Description */}
+                                            <p className="text-[14px] md:text-base lg:text-lg text-[#555] md:text-[#666] md:dark:text-white/70 mb-6 md:mb-10 leading-relaxed font-medium">
+                                                {getBannerSubtitle(banner)}
+                                            </p>
+                                            
+                                            {/* Button */}
+                                            <Link
+                                                href={banner.link || "/products"}
+                                                className="px-8 py-3 bg-black text-white hover:bg-white hover:text-black border border-transparent hover:border-black rounded-full font-bold text-[15px] md:text-base transition-all flex items-center justify-center gap-3 w-fit group/btn shadow-lg active:scale-95"
+                                            >
+                                                <span>{getBannerButtonText(banner)}</span>
+                                            </Link>
+                                        </div>
                                     </div>
                                 </div>
                             </SwiperSlide>
                         ))}
                     </Swiper>
 
-                    {/* Navigation Buttons */}
-                    <button className="swiper-button-prev-hero absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white text-black shadow-lg flex items-center justify-center transition-all hover:scale-110 active:scale-90 opacity-0 group-hover:opacity-100">
-                        <MdChevronLeft className="text-2xl" />
-                    </button>
-                    <button className="swiper-button-next-hero absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white text-black shadow-lg flex items-center justify-center transition-all hover:scale-110 active:scale-90 opacity-0 group-hover:opacity-100">
-                        <MdChevronRight className="text-2xl" />
-                    </button>
+                    {/* Navigation and Pagination Group - Always Bottom Right corner */}
+                    <div className="absolute bottom-6 right-6 z-20 flex items-center pointer-events-none">
+                        
+                        <button className="swiper-button-prev-hero pointer-events-auto flex items-center justify-center text-[#4A4A4A] hover:text-black transition-colors mr-2">
+                            <svg className="w-4 h-4 rtl:scale-x-[-1]" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12.5 16.25L6.25 10L12.5 3.75" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                            </svg>
+                        </button>
+
+                        <div className="hero-swiper-pagination pointer-events-auto flex items-center justify-center" />
+
+                        <button className="swiper-button-next-hero pointer-events-auto flex items-center justify-center text-[#4A4A4A] hover:text-black transition-colors ml-2">
+                            <svg className="w-4 h-4 rtl:scale-x-[-1]" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.5 3.75L13.75 10L7.5 16.25" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <style jsx global>{`
                 .hero-carousel .swiper-pagination-bullet {
-                    width: 10px;
-                    height: 10px;
-                    background: #d1d1d1;
+                    width: 7px;
+                    height: 7px;
+                    background: #A89D9F;
                     opacity: 1;
                     transition: all 0.3s;
-                    border-radius: 5px;
+                    border-radius: 99px;
+                    margin: 0 4px !important;
                 }
                 .hero-carousel .swiper-pagination-bullet-active {
-                    width: 30px;
-                    background: #ee2b6c !important;
+                    width: 48px;
+                    background: #D9CDD1 !important;
+                    position: relative;
+                    overflow: hidden;
                 }
-                .hero-carousel .swiper-pagination {
-                    bottom: 30px !important;
+                .hero-carousel .swiper-pagination-bullet-active::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    width: var(--autoplay-progress, 0%);
+                    background: #333333;
+                    border-radius: 99px;
+                }
+                [dir="rtl"] .hero-carousel .swiper-pagination-bullet-active::after {
+                    left: auto;
+                    right: 0;
                 }
             `}</style>
         </section>

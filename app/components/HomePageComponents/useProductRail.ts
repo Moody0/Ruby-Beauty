@@ -19,8 +19,6 @@ const getScrollMetrics = (element: HTMLDivElement, dir: Direction) => {
     }
 
     if (dir === "rtl") {
-        // In modern browsers, scrollLeft is 0 at the right edge and becomes negative as you scroll left.
-        // Some older browsers might use a different system, but absolute value covers most cases.
         const logical = Math.abs(element.scrollLeft);
         return {
             max,
@@ -39,7 +37,6 @@ const getTargetScrollLeft = (element: HTMLDivElement, dir: Direction, logical: n
     const clampedLogical = clamp(logical, 0, max);
 
     if (dir === "rtl") {
-        // To scroll left, we need negative scrollLeft in modern browsers.
         return -clampedLogical;
     }
 
@@ -63,10 +60,10 @@ export const useProductRail = (dir: Direction, scrollStep?: number) => {
 
         const { max, logical } = getScrollMetrics(rail, dir);
 
+        const canScrollBackward = logical > SCROLL_EPSILON;
+        const canScrollForward = logical < max - SCROLL_EPSILON;
+
         setScrollState((prev) => {
-            const canScrollBackward = logical > SCROLL_EPSILON;
-            const canScrollForward = logical < max - SCROLL_EPSILON;
-            
             if (prev.canScrollBackward !== canScrollBackward || prev.canScrollForward !== canScrollForward) {
                 return { canScrollBackward, canScrollForward };
             }
@@ -75,6 +72,18 @@ export const useProductRail = (dir: Direction, scrollStep?: number) => {
 
         if (progressBarRef.current) {
             const progress = max > 0 ? clamp(logical / max, 0, 1) : 1;
+            progressBarRef.current.style.willChange = "transform";
+            
+            // Apply smoothing transition ONLY on desktop (devices with a mouse).
+            // This fixes jittery mouse-wheel scrolls on desktop, while keeping 
+            // the absolute 1:1 zero-latency sync for touch screens on mobile.
+            if (window.matchMedia("(hover: hover)").matches) {
+                progressBarRef.current.style.transition = "transform 0.1s ease-out";
+            } else {
+                progressBarRef.current.style.transition = "none";
+            }
+            
+            progressBarRef.current.style.transformOrigin = dir === "rtl" ? "right" : "left";
             progressBarRef.current.style.transform = `scaleX(${progress})`;
         }
     }, [dir]);
@@ -118,10 +127,8 @@ export const useProductRail = (dir: Direction, scrollStep?: number) => {
         const resetTarget = getTargetScrollLeft(rail, dir, 0);
         rail.scrollTo({ left: resetTarget, behavior: "auto" });
 
-        let rafId: number;
         const handleScroll = () => {
-            cancelAnimationFrame(rafId);
-            rafId = requestAnimationFrame(syncScrollState);
+            syncScrollState();
         };
 
         const handleResize = () => syncScrollState();
@@ -138,7 +145,6 @@ export const useProductRail = (dir: Direction, scrollStep?: number) => {
             rail.removeEventListener("scroll", handleScroll);
             window.removeEventListener("resize", handleResize);
             resizeObserver.disconnect();
-            cancelAnimationFrame(rafId);
         };
     }, [dir, syncScrollState]);
 

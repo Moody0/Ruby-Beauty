@@ -49,9 +49,8 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
 
     const tabs: TabData[] = useMemo(() => [
         { key: 'new-arrivals', labelKey: 'home.featuredTabNewArrivals', products: newArrivals },
-        { key: 'bundles', labelKey: 'home.featuredTabBundles', products: bundles },
         { key: 'best-sellers', labelKey: 'home.featuredTabBestSellers', products: bestSellers },
-    ], [newArrivals, bundles, bestSellers]);
+    ], [newArrivals, bestSellers]);
 
     const activeProducts = tabs[activeTab]?.products || [];
 
@@ -79,7 +78,7 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
                                 role="tab"
                                 aria-selected={activeTab === index}
                                 onClick={() => setActiveTab(index)}
-                                className={`tabs__btn whitespace-nowrap px-4 py-2 text-[15px] font-medium transition-all border-b-2 ${activeTab === index
+                                className={`tabs__btn whitespace-nowrap px-8 py-3 text-[15px] font-medium transition-all border-b-2 ${activeTab === index
                                     ? 'border-[#2e2e2e] text-[#2e2e2e]'
                                     : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
                                     }`}
@@ -105,11 +104,13 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
                                 <ProductCard
                                     product={product}
                                     variant="compact"
-                                    showBadge={activeTab !== 2}
+                                    showBadge={activeTab === 0}
                                     badge={activeTab === 0 ? t('home.newArrival') : undefined}
                                 />
                             </div>
                         ))}
+                        {/* Spacer to prevent cutoff of the last item on mobile */}
+                        <div className="w-[1px] shrink-0 sm:hidden"></div>
                     </div>
                 </div>
                 

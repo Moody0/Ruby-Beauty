@@ -54,7 +54,7 @@ const CollectionShowcase = ({ sections, t, dir, language }: CollectionShowcasePr
                                             <div className={`flex flex-col gap-3 ${contentStackAlignment}`}>
                                                 <Link
                                                     href={`/categories/${section.category.slug}`}
-                                                    className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-primary/90 sm:px-6 sm:py-3 sm:text-sm"
+                                                    className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-8 py-3 text-xs font-bold text-white transition-all hover:bg-primary/90 text-sm"
                                                 >
                                                     {t("home.shopNow")}
                                                     <MdChevronRight className={dir === "rtl" ? "rotate-180" : ""} />
