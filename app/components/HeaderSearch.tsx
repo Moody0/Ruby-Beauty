@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { useCurrency } from '@/app/context/CurrencyContext';
 import { MdSearch, MdArrowForward, MdSearchOff } from 'react-icons/md';
 import ResilientImage from './ResilientImage';
 import { getPrimaryImage } from '@/lib/image-utils';
@@ -16,6 +17,7 @@ interface HeaderSearchProps {
 
 const HeaderSearch = ({ onSearchSelect, placeholder, autoFocus = false, locale }: HeaderSearchProps) => {
     const { t, dir, language } = useLanguage();
+    const { formatPrice } = useCurrency();
     const currentLocale = locale ?? language;
     const [query, setQuery] = useState("");
     const [results, setResults] = useState<any[]>([]);
@@ -114,11 +116,11 @@ const HeaderSearch = ({ onSearchSelect, placeholder, autoFocus = false, locale }
                                         <div className="flex items-center gap-2 mt-0.5">
                                             {product.discountPrice ? (
                                                 <>
-                                                    <span className="text-xs font-bold text-primary">${product.discountPrice}</span>
-                                                    <span className="text-[10px] text-text-sub line-through decoration-red-400/50">${product.price}</span>
+                                                    <span className="text-xs font-bold text-primary" dir="ltr">{formatPrice(Number(product.discountPrice))}</span>
+                                                    <span className="text-[10px] text-text-sub line-through decoration-red-400/50" dir="ltr">{formatPrice(Number(product.price))}</span>
                                                 </>
                                             ) : (
-                                                <span className="text-xs font-bold text-primary">${product.price}</span>
+                                                <span className="text-xs font-bold text-primary" dir="ltr">{formatPrice(Number(product.price))}</span>
                                             )}
                                         </div>
                                     </div>

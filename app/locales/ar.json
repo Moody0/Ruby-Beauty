@@ -198,7 +198,8 @@
         "serum": "serum",
         "moisturizer": "moisturizer",
         "cleanser": "cleanser",
-        "sunscreen": "sunscreen"
+        "sunscreen": "sunscreen",
+        "toner": "تونر"
     },
     "notFound": {
         "title": "404",

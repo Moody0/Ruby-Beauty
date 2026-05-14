@@ -110,7 +110,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                 {/* Content Overlay - Forced to the Physical Left */}
                                 <div className={`relative z-10 h-full w-full flex items-center px-6 md:px-12 lg:px-20 ${dir === 'rtl' ? 'justify-end' : 'justify-start'}`}>
                                     {/* Content Block - Forced to the Physical Left with correct items alignment for RTL */}
-                                    <div className={`animate-fadeInUp w-full max-w-[400px] md:max-w-xl flex flex-col ${dir === 'rtl' ? 'items-end' : 'items-start'} text-left`}>
+                                    <div className={`animate-fadeInUp w-full max-w-[300px] md:max-w-xl flex flex-col ${dir === 'rtl' ? 'items-end' : 'items-start'} text-left`}>
                                         <span className="inline-block py-1.5 px-4 rounded bg-[#fde8ef] text-primary text-[10px] font-bold uppercase tracking-widest mb-6">
                                             {banner.badge || 'NEW COLLECTION'}
                                         </span>

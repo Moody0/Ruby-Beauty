@@ -20,13 +20,33 @@ interface MobileCategory {
 
 interface MobileMenuProps {
     initialCategories: MobileCategory[];
+    isOpen?: boolean;
+    setIsOpen?: (open: boolean) => void;
+    isSearchOpen?: boolean;
+    setIsSearchOpen?: (open: boolean) => void;
+    hideTriggers?: boolean;
 }
 
-const MobileMenu = ({ initialCategories }: MobileMenuProps) => {
+const MobileMenu = ({ 
+    initialCategories, 
+    isOpen: externalIsOpen, 
+    setIsOpen: externalSetIsOpen,
+    isSearchOpen: externalIsSearchOpen,
+    setIsSearchOpen: externalSetIsSearchOpen,
+    hideTriggers = false
+}: MobileMenuProps) => {
     const { t, dir, language } = useLanguage();
     const pathname = usePathname();
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+    
+    const [internalIsOpen, setInternalIsOpen] = useState(false);
+    const [internalIsSearchOpen, setInternalIsSearchOpen] = useState(false);
+
+    const isMobileMenuOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
+    const setIsMobileMenuOpen = externalSetIsOpen !== undefined ? externalSetIsOpen : setInternalIsOpen;
+    
+    const isMobileSearchOpen = externalIsSearchOpen !== undefined ? externalIsSearchOpen : internalIsSearchOpen;
+    const setIsMobileSearchOpen = externalSetIsSearchOpen !== undefined ? externalSetIsSearchOpen : setInternalIsSearchOpen;
+
     const [categories, setCategories] = useState<MobileCategory[]>(initialCategories);
     const [categorySearch, setCategorySearch] = useState('');
     const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
@@ -66,20 +86,22 @@ const MobileMenu = ({ initialCategories }: MobileMenuProps) => {
 
     return (
         <>
-            <div className="flex items-center gap-2 md:hidden">
-                <button
-                    onClick={() => setIsMobileMenuOpen(true)}
-                    className="p-0 flex items-center justify-center w-10 h-10 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main-light dark:text-text-main-dark"
-                >
-                    <MdMenu className="text-[24px]" />
-                </button>
-                <button
-                    onClick={() => setIsMobileSearchOpen(true)}
-                    className="p-2 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main-light dark:text-text-main-dark"
-                >
-                    <MdSearch className="text-[20px]" />
-                </button>
-            </div>
+            {!hideTriggers && (
+                <div className="flex items-center gap-2 md:hidden">
+                    <button
+                        onClick={() => setIsMobileMenuOpen(true)}
+                        className="p-0 flex items-center justify-center w-10 h-10 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main-light dark:text-text-main-dark"
+                    >
+                        <MdMenu className="text-[24px]" />
+                    </button>
+                    <button
+                        onClick={() => setIsMobileSearchOpen(true)}
+                        className="p-2 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main-light dark:text-text-main-dark"
+                    >
+                        <MdSearch className="text-[20px]" />
+                    </button>
+                </div>
+            )}
 
             {/* Mobile Menu Overlay */}
             <div 

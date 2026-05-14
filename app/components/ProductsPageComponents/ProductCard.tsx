@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import React from 'react';
-import { MdFavoriteBorder, MdStar } from 'react-icons/md';
 import AddToCartButton from './AddToCartButton';
 import ResilientImage from '@/app/components/ResilientImage';
 import { getPrimaryImage } from '@/lib/image-utils';
@@ -39,18 +38,14 @@ const ProductCard = ({ product, variant = 'default' }: ProductCardProps) => {
     const isCompact = variant === 'compact';
     const { formatPrice } = useCurrency();
 
-    // Mock rating for design matching
-    const rating = 4.8;
-    const reviewCount = 120;
+
 
     return (
         <div className={`group relative flex flex-col gap-2 transition-all duration-300 ${isCompact ? 'w-full' : 'w-full'}`}>
             {/* Image Container */}
             <div className={`relative overflow-hidden rounded-2xl bg-[#f8f5f6] dark:bg-white/5 border border-transparent group-hover:border-primary/20 transition-all ${isCompact ? 'aspect-[4/5]' : 'aspect-square'}`}>
                 {/* Wishlist Button */}
-                <button className={`absolute top-3 ${dir === 'rtl' ? 'left-3' : 'right-3'} z-10 p-1.5 rounded-full bg-white/80 hover:bg-white text-gray-400 hover:text-primary transition-all shadow-sm`}>
-                    <MdFavoriteBorder className="text-lg" />
-                </button>
+
 
                 {/* Trending Badge */}
                 {product.isTrending && (
@@ -101,16 +96,10 @@ const ProductCard = ({ product, variant = 'default' }: ProductCardProps) => {
                 </Link>
 
                 {/* Rating */}
-                <div className="flex items-center gap-1">
-                    <div className="flex items-center text-amber-400">
-                        <MdStar className="text-sm" />
-                    </div>
-                    <span className="text-[11px] font-bold text-gray-700 dark:text-gray-300">{rating}</span>
-                    <span className="text-[11px] text-gray-400">({reviewCount})</span>
-                </div>
+
 
                 {/* Price */}
-                <div className={`flex items-center gap-2 ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
+                <div className="flex items-center gap-2">
                     {product.discountPrice ? (
                         <>
                             <span className="text-base font-bold text-primary" dir="ltr">{formatPrice(Number(product.discountPrice))}</span>

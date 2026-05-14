@@ -5,10 +5,12 @@ import Link from 'next/link';
 import { MdClose, MdShoppingBag, MdDelete } from 'react-icons/md';
 import { useCart } from '@/app/context/CartContext';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { useCurrency } from '@/app/context/CurrencyContext';
 
 const CartDrawer = () => {
     const { items, isDrawerOpen, closeDrawer, subtotal, updateQuantity, removeItem } = useCart();
     const { t, dir } = useLanguage();
+    const { formatPrice } = useCurrency();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -95,8 +97,8 @@ const CartDrawer = () => {
                                         >
                                             {item.name}
                                         </Link>
-                                        <p className="text-primary font-bold text-sm mt-1">
-                                            ${item.price.toFixed(2)}
+                                        <p className="text-primary font-bold text-sm mt-1" dir="ltr">
+                                            {formatPrice(item.price)}
                                         </p>
                                     </div>
                                     
@@ -132,11 +134,11 @@ const CartDrawer = () => {
                         <div className="space-y-2 mb-4">
                             <div className="flex items-center justify-between text-sm">
                                 <span className="text-text-sub dark:text-white/60">{t('cart.subtotal') || 'Subtotal'}</span>
-                                <span className="font-bold text-text-main dark:text-white">${subtotal.toFixed(2)}</span>
+                                <span className="font-bold text-text-main dark:text-white" dir="ltr">{formatPrice(subtotal)}</span>
                             </div>
                             <div className="flex items-center justify-between text-lg font-bold">
                                 <span className="text-text-main dark:text-white">{t('cart.total') || 'Total'}</span>
-                                <span className="text-primary">${subtotal.toFixed(2)}</span>
+                                <span className="text-primary" dir="ltr">{formatPrice(subtotal)}</span>
                             </div>
                         </div>
                         <Link
