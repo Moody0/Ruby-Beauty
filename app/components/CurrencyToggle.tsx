@@ -2,9 +2,11 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useCurrency } from '@/app/context/CurrencyContext';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 const CurrencyToggle = () => {
     const { currency, setCurrency } = useCurrency();
+    const { language } = useLanguage();
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -30,7 +32,7 @@ const CurrencyToggle = () => {
                 aria-haspopup="true"
                 aria-expanded={isOpen}
             >
-                <span>{currency === 'USD' ? '$' : 'ل.س'}</span>
+                <span>{currency === 'USD' ? '$' : (language === 'ar' ? 'ل.س' : 'SYP')}</span>
                 <svg className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
@@ -47,7 +49,7 @@ const CurrencyToggle = () => {
                             className={`block w-full text-left px-4 py-2 text-sm ${currency === 'SYP' ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'}`}
                             role="menuitem"
                         >
-                            ل.س
+                            {language === 'ar' ? 'ل.س' : 'SYP'}
                         </button>
                         <button
                             onClick={() => {

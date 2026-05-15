@@ -20,13 +20,14 @@ const ShopByCategory = async ({ mainBrands }: ShopByCategoryProps) => {
     const { t, language } = await getI18n();
 
     // Desired order for the 4 main categories
-    const categoryOrder = ['ruby-beauty', 'makeup', 'perfumes', 'accessories'];
+    const categoryOrder = ['ruby-beauty', 'accessories', 'watches', 'makeup'];
 
     const defaultImages: Record<string, string> = {
         'ruby-beauty': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400',
         'makeup': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400',
         'perfumes': 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=400',
         'accessories': 'https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=400',
+        'watches': 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=400',
     };
 
     const localizedNames: Record<string, { en: string; ar: string }> = {
@@ -34,6 +35,7 @@ const ShopByCategory = async ({ mainBrands }: ShopByCategoryProps) => {
         'makeup': { en: 'Makeup', ar: 'مكياج' },
         'perfumes': { en: 'Perfumes', ar: 'عطور' },
         'accessories': { en: 'Accessories', ar: 'اكسسوارات' },
+        'watches': { en: 'Watches', ar: 'ساعات' },
     };
 
     const getLocalizedName = (slug: string): string => {

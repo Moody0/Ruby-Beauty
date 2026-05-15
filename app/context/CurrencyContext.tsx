@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useLanguage } from './LanguageContext';
 
 type Currency = 'USD' | 'SYP';
 
@@ -16,6 +17,7 @@ const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined
 export function CurrencyProvider({ children, initialExchangeRate }: { children: React.ReactNode, initialExchangeRate: number }) {
     const [currency, setCurrencyState] = useState<Currency>('SYP');
     const [mounted, setMounted] = useState(false);
+    const { language } = useLanguage();
 
     useEffect(() => {
         const savedCurrency = localStorage.getItem('currency') as Currency;
@@ -31,11 +33,19 @@ export function CurrencyProvider({ children, initialExchangeRate }: { children: 
     };
 
     const formatPrice = (usdPrice: number) => {
-        if (!mounted) return `${Math.round(usdPrice * initialExchangeRate).toLocaleString('ar-SY')} ل.س`; // Default SSR to SYP
+        const symbol = language === 'ar' ? 'ل.س' : 'SYP';
+        const locale = language === 'ar' ? 'ar-SY' : 'en-US';
+        
+        if (!mounted) {
+            const price = Math.round(usdPrice * initialExchangeRate);
+            return language === 'ar' ? `${symbol} ${price.toLocaleString(locale)}` : `${price.toLocaleString(locale)} ${symbol}`;
+        }
+
         if (currency === 'USD') {
             return `$${usdPrice.toFixed(2)}`;
         } else {
-            return `${Math.round(usdPrice * initialExchangeRate).toLocaleString('ar-SY')} ل.س`;
+            const price = Math.round(usdPrice * initialExchangeRate);
+            return language === 'ar' ? `${symbol} ${price.toLocaleString(locale)}` : `${price.toLocaleString(locale)} ${symbol}`;
         }
     };
 

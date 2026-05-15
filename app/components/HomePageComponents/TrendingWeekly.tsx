@@ -1,0 +1,175 @@
+'use client';
+
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { MdChevronRight } from 'react-icons/md';
+import { useLanguage } from '@/app/context/LanguageContext';
+import { useCurrency } from '@/app/context/CurrencyContext';
+import ResilientImage from '@/app/components/ResilientImage';
+
+interface Product {
+    id: string;
+    slug: string;
+    name: string;
+    description: string | null;
+    price: number;
+    discountPrice?: number | null;
+    images: string;
+    categoryId: string;
+    stock: number;
+    isTrending: boolean;
+    brand?: {
+        id: string;
+        name: string;
+        slug: string;
+        group?: string;
+    } | null;
+}
+
+interface TrendingWeeklyProps {
+    products: Product[];
+}
+
+const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
+    const { t, dir, language } = useLanguage();
+    const [showAll, setShowAll] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    React.useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < 768);
+        check();
+        window.addEventListener('resize', check);
+        return () => window.removeEventListener('resize', check);
+    }, []);
+
+    if (!products || products.length === 0) {
+        return null;
+    }
+
+    // On mobile, show 5 by default, expand to all on 'More' press
+    const visibleProducts = (isMobile && !showAll) ? products.slice(0, 5) : products;
+
+    const getFirstImage = (images: string) => {
+        try {
+            const parsed = JSON.parse(images);
+            return Array.isArray(parsed) ? parsed[0] : images;
+        } catch {
+            return images.split(',')[0]?.trim() || images;
+        }
+    };
+
+    const { formatPrice } = useCurrency();
+
+    return (
+        <section className="container-custom py-10 md:py-14">
+            {/* Header */}
+            <div className={`flex flex-col md:flex-row md:items-center md:justify-between mb-8 px-2 gap-2 ${dir === 'rtl' ? 'items-start md:items-center' : 'items-start md:items-center'}`}>
+                <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold text-[#072835] dark:text-white ${dir === 'rtl' ? 'text-right w-full' : 'text-left w-full'}`}>
+                    {language === 'ar' ? 'تريندى هذا الاسبوع' : 'Trending This Week'}
+                </h2>
+                <Link
+                    href="/products"
+                    className="flex items-center gap-1 text-sm font-medium text-[#072835] text-opacity-80 dark:text-white transition-colors group whitespace-nowrap"
+                >
+                    <span className="relative inline-block after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 group-hover:after:scale-x-100 after:origin-left group-hover:after:origin-right">
+                        {language === 'ar' ? 'تسوقي كل المنتجات' : 'Shop All Products'}
+                    </span>
+                    <MdChevronRight className={`text-lg transition-transform group-hover:translate-x-0.5 ${dir === 'rtl' ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
+                </Link>
+            </div>
+
+            {/* Product Grid */}
+            <div className="relative">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                    {visibleProducts.map((product) => (
+                        <div
+                            key={product.id}
+                            className="group flex items-center gap-4 bg-[#F7F7F5] dark:bg-[#1e1e1e] rounded-[10px] p-3 md:p-4 h-[112px] transition-all duration-300"
+                        >
+                            {/* Product Image */}
+                            <Link
+                                href={`/products/${product.slug}`}
+                                className="w-[86px] h-[86px] shrink-0 rounded-lg overflow-hidden bg-white"
+                            >
+                                <ResilientImage
+                                    src={getFirstImage(product.images)}
+                                    alt={product.name}
+                                    className="w-full h-full object-cover transition-transform duration-500"
+                                    loading="lazy"
+                                />
+                            </Link>
+
+                            {/* Product Info */}
+                            <div className={`flex-1 min-w-0 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                {/* Brand */}
+                                {product.brand && (
+                                    <p className="text-[11px] md:text-[12px] text-[rgba(7,40,53,0.6)] dark:text-gray-400 mb-0.5 truncate uppercase">
+                                        {product.brand.name.toUpperCase()}
+                                    </p>
+                                )}
+                                {/* Product Name */}
+                                <h3 className="text-[12px] md:text-[15px] font-semibold text-[#072835] dark:text-white truncate leading-tight mb-1">
+                                    <Link
+                                        href={`/products/${product.slug}`}
+                                        className="relative inline-block after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
+                                    >
+                                        {product.name}
+                                    </Link>
+                                </h3>
+                                {/* Price */}
+                                <div className={`flex items-center gap-2 ${dir === 'rtl' ? 'flex-row' : 'flex-row'}`}>
+                                    {product.discountPrice ? (
+                                        <>
+                                            <span className="text-sm md:text-base font-bold text-[#072835] dark:text-white">
+                                                {formatPrice(Number(product.discountPrice))}
+                                            </span>
+                                            <span className="text-xs text-gray-400 line-through">
+                                                {formatPrice(Number(product.price))}
+                                            </span>
+                                        </>
+                                    ) : (
+                                        <span className="text-sm md:text-base font-bold text-[#072835] dark:text-white">
+                                            {formatPrice(Number(product.price))}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Arrow Button */}
+                            <Link
+                                href={`/products/${product.slug}`}
+                                className="shrink-0 w-8 h-8 md:w-9 md:h-9 rounded-full bg-white dark:bg-[#2e2e2e] border border-gray-200 dark:border-gray-700 flex items-center justify-center transition-all group-hover:bg-[#1a1a1a] group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black"
+                            >
+                                <svg className={`w-3.5 h-3.5 ${dir === 'rtl' ? '' : 'rotate-180'}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12.5 16.25L6.25 10L12.5 3.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            </Link>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Fade-out gradient on the last product when collapsed on mobile */}
+                {isMobile && !showAll && products.length > 5 && (
+                    <div className="absolute bottom-0 left-0 right-0 h-[80px] bg-gradient-to-t from-white dark:from-[#0a0a0a] to-transparent pointer-events-none md:hidden" />
+                )}
+            </div>
+
+            {/* Mobile Show More/Less Button */}
+            {products.length > 5 && (
+                <div className="flex justify-center mt-6 md:hidden">
+                    <button
+                        onClick={() => setShowAll(!showAll)}
+                        className="px-8 py-3 bg-black text-white rounded-full font-bold text-sm transition-all active:scale-95"
+                    >
+                        {showAll
+                            ? (language === 'ar' ? 'أقل' : 'Less')
+                            : (language === 'ar' ? 'أكثر' : 'More')
+                        }
+                    </button>
+                </div>
+            )}
+        </section>
+    );
+};
+
+export default TrendingWeekly;
