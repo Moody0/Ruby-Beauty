@@ -32,6 +32,19 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
     const [isSearchOpen, setIsSearchOpen] = React.useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
     const [isMobileSearchOpen, setIsMobileSearchOpen] = React.useState(false);
+    const [isScrolled, setIsScrolled] = React.useState(false);
+    const [manualToggle, setManualToggle] = React.useState(false);
+    const isNavVisible = !isScrolled || manualToggle;
+
+    React.useEffect(() => {
+        const handleScroll = () => {
+            const scrolled = window.scrollY > 80;
+            setIsScrolled(scrolled);
+            if (!scrolled) setManualToggle(false);
+        };
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     return (
         <header className="sticky top-0 z-50 w-full bg-white dark:bg-surface-dark border-b border-[#f4f0f2] dark:border-white/10 transition-all duration-300">
@@ -85,10 +98,20 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                                 <MdSearch />
                             </button>
                             <button
-                                onClick={() => setIsMobileMenuOpen(true)}
-                                className="text-2xl text-text-main-light dark:text-white hover:text-primary transition-colors"
+                                onClick={() => setManualToggle(prev => !prev)}
+                                className={`w-7 h-7 flex flex-col items-center justify-center gap-[4px] text-text-main-light dark:text-white transition-all duration-300 ${
+                                    isScrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                                }`}
                             >
-                                <MdMenu />
+                                <span className={`block w-5 h-0.5 bg-current rounded-full transition-all duration-300 origin-center ${
+                                    isNavVisible && isScrolled ? 'translate-y-[6px] rotate-45' : ''
+                                }`} />
+                                <span className={`block w-5 h-0.5 bg-current rounded-full transition-all duration-300 ${
+                                    isNavVisible && isScrolled ? 'opacity-0 scale-0' : ''
+                                }`} />
+                                <span className={`block w-5 h-0.5 bg-current rounded-full transition-all duration-300 origin-center ${
+                                    isNavVisible && isScrolled ? '-translate-y-[6px] -rotate-45' : ''
+                                }`} />
                             </button>
                         </div>
                     </div>
@@ -147,14 +170,20 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                 </div>
 
                 {/* Navigation Links Row - Desktop only */}
-                <nav className="hidden md:flex items-center justify-center gap-8 py-2 border-t border-gray-50 dark:border-white/5">
-                    <Link href="/" className="text-sm font-bold text-primary border-b-2 border-primary pb-1">{t('common.home')}</Link>
-                    <Link href="/brands/ruby-beauty" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.rubyBeauty')}</Link>
-                    <Link href="/brands/makeup" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.makeup')}</Link>
-                    <Link href="/brands/perfumes" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.perfumes')}</Link>
-                    <Link href="/brands/accessories" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.accessories')}</Link>
-                    <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.offers')}</Link>
-                    <Link href="/products?sort=newest" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.newArrivals')}</Link>
+                <nav className={`hidden md:grid border-t border-gray-50 dark:border-white/5 transition-all duration-300 ease-in-out ${
+                    !isNavVisible ? 'grid-rows-[0fr] opacity-0 border-t-0' : 'grid-rows-[1fr] opacity-100'
+                }`}>
+                    <div className="overflow-hidden">
+                        <div className="flex items-center justify-center gap-8 py-2">
+                            <Link href="/" className="text-sm font-bold text-primary border-b-2 border-primary pb-1">{t('common.home')}</Link>
+                            <Link href="/brands/ruby-beauty" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.rubyBeauty')}</Link>
+                            <Link href="/brands/makeup" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.makeup')}</Link>
+                            <Link href="/brands/perfumes" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.perfumes')}</Link>
+                            <Link href="/brands/accessories" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.accessories')}</Link>
+                            <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.offers')}</Link>
+                            <Link href="/products?sort=newest" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.newArrivals')}</Link>
+                        </div>
+                    </div>
                 </nav>
             </div>
 
