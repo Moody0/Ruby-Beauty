@@ -35,12 +35,18 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
     const [isScrolled, setIsScrolled] = React.useState(false);
     const [manualToggle, setManualToggle] = React.useState(false);
     const isNavVisible = !isScrolled || manualToggle;
+    const isScrolledRef = React.useRef(false);
 
     React.useEffect(() => {
         const handleScroll = () => {
-            const scrolled = window.scrollY > 80;
-            setIsScrolled(scrolled);
-            if (!scrolled) setManualToggle(false);
+            if (window.scrollY > 100 && !isScrolledRef.current) {
+                isScrolledRef.current = true;
+                setIsScrolled(true);
+            } else if (window.scrollY < 60 && isScrolledRef.current) {
+                isScrolledRef.current = false;
+                setIsScrolled(false);
+                setManualToggle(false);
+            }
         };
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
