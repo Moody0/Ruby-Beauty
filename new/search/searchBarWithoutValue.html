@@ -1,0 +1,54 @@
+<div class="header__search flex items-center " bis_skin_checked="1">
+
+    <predictive-search class="block w-full search__form" data-search-recommendation-empty="true"
+        data-results-limit="10">
+        <div class="flex flex-col w-full h-full" bis_skin_checked="1">
+            <form action="/ar/pages/search-results-page" method="get" role="search"
+                id="PredictiveSearch-sections--24970311926047__header">
+                <input type="hidden" name="options[prefix]" value="last">
+                <div class="search__field relative flex items-center" bis_skin_checked="1" style="position: relative;">
+                    <input id="SearchInput-sections--24970311926047__header"
+                        class="search__input form-control snize-input-style" type="search" name="q"
+                        placeholder="بتدوري على ايه؟" role="combobox" aria-expanded="false"
+                        aria-owns="predictive-search-results" aria-haspopup="listbox" aria-autocomplete="list"
+                        autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false">
+
+                    <button type="reset" class="search__reset absolute flex items-center justify-center text-subtext"
+                        aria-label="مسح ">
+                        <span>مسح</span>
+
+
+                        <div class="loading__spinner hidden" bis_skin_checked="1">
+                            <svg aria-hidden="true" focusable="false" class="spinner icon icon--extra-medium"
+                                viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                                <circle class="path" fill="none" stroke-width="4" cx="33" cy="33" r="30"></circle>
+                            </svg>
+                        </div>
+
+                    </button><button type="submit"
+                        class="btn--inherit search__field-icon absolute search__icon-search flex items-center justify-center predictive-search-icon"
+                        aria-label="بحث"><svg xmlns="http://www.w3.org/2000/svg"
+                            class="icon icon-search icon--large icon--thick" viewBox="0 0 24 24" fill="none">
+                            <path
+                                d="M10.875 18.75C15.2242 18.75 18.75 15.2242 18.75 10.875C18.75 6.52576 15.2242 3 10.875 3C6.52576 3 3 6.52576 3 10.875C3 15.2242 6.52576 18.75 10.875 18.75Z"
+                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            </path>
+                            <path d="M16.4434 16.4453L20.9997 21.0016" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </predictive-search>
+    <button class="btn btn--inherit header__search-close inline-flex btn-remove" aria-label="Close search popup"><svg
+            xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"
+            class="icon icon-close icon--medium icon--thick pointer-events-none" fill="none" viewBox="0 0 24 24">
+            <path d="M18.75 5.13496L5.25 18.8544" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            <path d="M18.75 18.8544L5.25 5.13496" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round"></path>
+        </svg>
+    </button>
+</div>

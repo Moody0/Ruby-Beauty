@@ -41,7 +41,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
         titleAr: 'خصم حتى ٥٠٪',
         subtitleAr: 'دلعي نفسك بجمال تحبينه. استمتعي بخصومات تصل إلى ٥٠٪ لفترة محدودة هذا الأسبوع',
         image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB8pRgU38opDPgidWmDRVHh18-R0XsEouLP3xdxsGLZz4BX3nQjc-9PXhgFNDVECMvP80S7ZtFmpA-QwwrnKgOR8B7WY0FlM3qJCAf1J8cxpwvyt6V15oxTZz-uhtroLEp-87KWQzsp-6-2mVURrFG_Q6mWjJ5YGqT0gqwmcLOPMK6pDk77rqmdXEvvM82qGkXdLNmSeXBPXY9j9zwnT_PjJ5YAOzWa2PqrFvo1SOjMCtz71ZHQraBSPlt7TKx00ccpwm4TTWoB6b0y",
-        buttonText: language === 'ar' ? 'وفري' : 'Save',
+        buttonText: language === 'ar' ? 'اكتشفي' : 'Discover',
         link: "/products",
         badge: language === 'ar' ? 'عرض الويك اند' : 'Weekend Offer',
         isActive: true
@@ -58,11 +58,11 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
     const getBannerButtonText = (banner: Banner): string => {
         if (language === 'ar') {
             if (!banner.buttonText || banner.buttonText === 'Shop Now') {
-                return 'وفري';
+                return 'اكتشفي';
             }
             return banner.buttonText;
         }
-        return banner.buttonText || 'Save';
+        return banner.buttonText || 'Discover';
     };
 
     const displayBanners = banners && banners.length > 0 ? banners : [DEFAULT_BANNER];

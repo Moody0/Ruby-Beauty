@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import React from 'react';
-import { MdSearch, MdOutlineShoppingBag, MdFavoriteBorder, MdPersonOutline, MdMenu } from 'react-icons/md';
+import { MdOutlineShoppingBag, MdFavoriteBorder, MdPersonOutline, MdMenu, MdSearch } from 'react-icons/md';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useCart } from '@/app/context/CartContext';
 import HeaderSearch from './HeaderSearch';
@@ -29,7 +29,6 @@ interface HeaderProps {
 const Header = ({ initialCategories = [], dir }: HeaderProps) => {
     const { t } = useLanguage();
     const { totalItems } = useCart();
-    const [isSearchOpen, setIsSearchOpen] = React.useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
     const [isMobileSearchOpen, setIsMobileSearchOpen] = React.useState(false);
     const [isScrolled, setIsScrolled] = React.useState(false);
@@ -58,9 +57,47 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                 {/* Main Header Row */}
                 <div className="py-4 relative">
                     {/* Desktop Version */}
-                    <div className="hidden md:flex items-center justify-between">
-                        {/* Left: Toggles and Cart */}
-                        <div className="flex items-center gap-3 md:gap-5 w-1/3">
+                    <div className="hidden md:flex items-center justify-between gap-6">
+                        {/* Left: Logo and Menu Toggle Group */}
+                        <div className="flex items-center shrink-0">
+                            <button
+                                onClick={() => setManualToggle(prev => !prev)}
+                                className={`flex items-center justify-center transition-all duration-500 ease-in-out h-10 overflow-hidden text-text-main-light dark:text-white ${
+                                    isScrolled ? 'w-10 opacity-100' : 'w-0 opacity-0 pointer-events-none'
+                                }`}
+                            >
+                                <div className="w-5 h-5 flex flex-col items-center justify-center gap-[4px]">
+                                    <span className={`block w-5 h-0.5 bg-current rounded-full transition-all duration-300 origin-center ${
+                                        isNavVisible && isScrolled ? 'translate-y-[6px] rotate-45' : ''
+                                    }`} />
+                                    <span className={`block w-5 h-0.5 bg-current rounded-full transition-all duration-300 ${
+                                        isNavVisible && isScrolled ? 'opacity-0 scale-0' : ''
+                                    }`} />
+                                    <span className={`block w-5 h-0.5 bg-current rounded-full transition-all duration-300 origin-center ${
+                                        isNavVisible && isScrolled ? '-translate-y-[6px] -rotate-45' : ''
+                                    }`} />
+                                </div>
+                            </button>
+
+                            <div className={`transition-all duration-500 ease-in-out ${isScrolled ? 'ms-2' : 'ms-0'}`}>
+                                <Link href="/" className="flex flex-col items-center">
+                                    <span className="text-2xl md:text-3xl font-bold tracking-tight text-text-main-light dark:text-white">
+                                        Ruby Beauty
+                                    </span>
+                                    <span className="text-[10px] text-text-muted-light dark:text-text-muted-dark tracking-[0.2em] font-medium uppercase mt-[-4px]">
+                                        {dir === 'rtl' ? 'جمالك يليق بك' : 'Your beauty deserves it'}
+                                    </span>
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* Center: Search */}
+                        <div className="flex-1 max-w-3xl px-4">
+                            <HeaderSearch />
+                        </div>
+
+                        {/* Right: Icons */}
+                        <div className="flex items-center gap-3 md:gap-5 shrink-0">
                             <div className="flex items-center gap-1">
                                 <LanguageToggle />
                                 <CurrencyToggle />
@@ -75,50 +112,6 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                                     )}
                                 </Link>
                             </div>
-                            <Link href="/products?favorites=true" className="text-2xl text-text-main-light dark:text-white hover:text-primary transition-colors hidden sm:block">
-                                <MdFavoriteBorder />
-                            </Link>
-                        </div>
-
-                        {/* Center: Logo */}
-                        <div className="flex justify-center w-1/3">
-                            <Link href="/" className="flex flex-col items-center">
-                                <span className="text-2xl md:text-3xl font-bold tracking-tight text-text-main-light dark:text-white">
-                                    Ruby Beauty
-                                </span>
-                                <span className="text-[10px] text-text-muted-light dark:text-text-muted-dark tracking-[0.2em] font-medium uppercase mt-[-4px]">
-                                    {dir === 'rtl' ? 'جمالك يليق بك' : 'Your beauty deserves it'}
-                                </span>
-                            </Link>
-                        </div>
-
-                        {/* Right: Search, Profile, Menu */}
-                        <div className="flex items-center justify-end gap-3 md:gap-5 w-1/3">
-                            <Link href="/about-us" className="text-2xl text-text-main-light dark:text-white hover:text-primary transition-colors">
-                                <MdPersonOutline />
-                            </Link>
-                            <button 
-                                onClick={() => setIsSearchOpen(!isSearchOpen)}
-                                className="text-2xl text-text-main-light dark:text-white hover:text-primary transition-colors"
-                            >
-                                <MdSearch />
-                            </button>
-                            <button
-                                onClick={() => setManualToggle(prev => !prev)}
-                                className={`w-7 h-7 flex flex-col items-center justify-center gap-[4px] text-text-main-light dark:text-white transition-all duration-300 ${
-                                    isScrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                                }`}
-                            >
-                                <span className={`block w-5 h-0.5 bg-current rounded-full transition-all duration-300 origin-center ${
-                                    isNavVisible && isScrolled ? 'translate-y-[6px] rotate-45' : ''
-                                }`} />
-                                <span className={`block w-5 h-0.5 bg-current rounded-full transition-all duration-300 ${
-                                    isNavVisible && isScrolled ? 'opacity-0 scale-0' : ''
-                                }`} />
-                                <span className={`block w-5 h-0.5 bg-current rounded-full transition-all duration-300 origin-center ${
-                                    isNavVisible && isScrolled ? '-translate-y-[6px] -rotate-45' : ''
-                                }`} />
-                            </button>
                         </div>
                     </div>
 
@@ -180,27 +173,29 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                     !isNavVisible ? 'grid-rows-[0fr] opacity-0 border-t-0' : 'grid-rows-[1fr] opacity-100'
                 }`}>
                     <div className="overflow-hidden">
-                        <div className="flex items-center justify-center gap-8 py-2">
-                            <Link href="/" className="text-sm font-bold text-primary border-b-2 border-primary pb-1">{t('common.home')}</Link>
-                            <Link href="/brands/ruby-beauty" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.rubyBeauty')}</Link>
-                            <Link href="/brands/makeup" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.makeup')}</Link>
-                            <Link href="/brands/perfumes" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.perfumes')}</Link>
-                            <Link href="/brands/accessories" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.accessories')}</Link>
-                            <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.offers')}</Link>
-                            <Link href="/products?sort=newest" className="text-sm font-medium hover:text-primary transition-colors text-text-main-light dark:text-white">{t('nav.newArrivals')}</Link>
+                        <div className="flex items-center justify-center gap-8 py-3">
+                            {[
+                                { href: '/', label: t('common.home') },
+                                { href: '/brands/ruby-beauty', label: t('nav.rubyBeauty') },
+                                { href: '/brands/makeup', label: t('nav.makeup') },
+                                { href: '/brands/perfumes', label: t('nav.perfumes') },
+                                { href: '/brands/accessories', label: t('nav.accessories') },
+                                { href: '/products', label: t('nav.offers') },
+                                { href: '/products?sort=newest', label: t('nav.newArrivals') },
+                            ].map((link, index) => (
+                                <Link 
+                                    key={index}
+                                    href={link.href} 
+                                    className="text-[15px] font-bold text-[#2E2E2E] dark:text-white/90 relative inline-block after:content-[''] after:absolute after:bottom-[-2px] after:right-0 after:w-full after:h-[1.5px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
+                                >
+                                    {link.label}
+                                </Link>
+                            ))}
                         </div>
                     </div>
                 </nav>
             </div>
 
-            {/* Expandable Search Bar */}
-            {isSearchOpen && (
-                <div className="absolute top-full left-0 w-full bg-white dark:bg-surface-dark border-b border-gray-100 dark:border-white/10 p-4 animate-fadeIn">
-                    <div className="container-custom">
-                        <HeaderSearch />
-                    </div>
-                </div>
-            )}
         </header>
     );
 };
