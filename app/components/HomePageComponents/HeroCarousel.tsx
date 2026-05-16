@@ -71,7 +71,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
         <section ref={wrapperRef} className="container-custom pt-4 md:pt-6 pb-4 md:pb-6 group hero-carousel">
             <div className="w-full relative">
                 {/* Responsive Height: Image only on mobile, sleek banner on desktop */}
-                <div className="relative overflow-hidden rounded-[10px] bg-[#FAECE8] dark:bg-[#1a1a1a] h-[300px] md:h-[400px] lg:h-[480px]">
+                <div className="relative overflow-hidden rounded-[10px] bg-[#FAECE8] dark:bg-[#1a1a1a] h-[150px] md:h-[400px] lg:h-[480px]">
                     <Swiper
                         modules={[Autoplay, Navigation, Pagination]}
                         spaceBetween={0}
