@@ -131,9 +131,12 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                                         <MdMenu className="text-3xl" />
                                     )}
                                 </button>
-                                <Link href="/" className="flex flex-col items-end">
+                                <Link href="/" className="flex flex-col items-center">
                                     <span className="text-lg font-bold tracking-tight text-text-main-light dark:text-white leading-tight uppercase">
                                         Ruby Beauty
+                                    </span>
+                                    <span className="text-[9px] text-text-muted-light dark:text-text-muted-dark tracking-[0.1em] font-medium mt-[-2px]">
+                                        جمالك يليق بك
                                     </span>
                                 </Link>
                             </div>
