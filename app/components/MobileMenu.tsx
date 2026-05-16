@@ -4,16 +4,10 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/app/context/LanguageContext';
-import { useCart } from '@/app/context/CurrencyContext'; // Assuming cart context or similar, using Md icons for now
 import { 
-    MdClose, 
-    MdSearch, 
-    MdOutlineShoppingBag, 
-    MdPersonOutline, 
     MdKeyboardArrowLeft,
     MdKeyboardArrowRight,
-    MdAdd,
-    MdMicNone
+    MdAdd
 } from 'react-icons/md';
 import { FaInstagram, FaFacebook, FaWhatsapp } from 'react-icons/fa';
 

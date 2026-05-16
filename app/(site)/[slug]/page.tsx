@@ -41,14 +41,6 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     return (
         <div className="grow w-full mx-auto px-6 py-8 md:px-20 lg:px-32 xl:px-48 2xl:px-64 lg:py-12">
             
-            {/* Mobile Header (Title & Description above image) - REMOVED per request */}
-            {/* <div className="block lg:hidden mb-6">
-                <ProductHeader
-                    name={product.name}
-                    description={product.description}
-                />
-            </div> */}
-
             <div className="flex flex-col lg:grid lg:grid-cols-5 gap-12 xl:gap-20">
                 {/* Product Gallery (Left) */}
                 <div className="lg:col-span-2 order-1">
@@ -64,7 +56,6 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                     <div className="block">
                         <ProductHeader
                             name={product.name}
-                            description={product.description}
                         />
                         {product.brand && (
                             <Link
@@ -81,13 +72,6 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                         discountPrice={product.discountPrice?.toString()}
                     />
 
-                    {/* Description - REMOVED per request */}
-                    {/* <div className="mb-8">
-                        <p className="text-base leading-relaxed text-text-main dark:text-white/80">
-                            {product.description || 'Unlock your skin&apos;s natural luminosity with our concentrated Vitamin C serum.'}
-                        </p>
-                    </div> */}
-
                     <ProductActions product={{
                         id: product.id,
                         name: product.name,
@@ -96,7 +80,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                         slug: product.slug
                     }} />
 
-                    <ProductAccordions />
+                    <ProductAccordions description={product.description} />
                 </div>
             </div>
 
