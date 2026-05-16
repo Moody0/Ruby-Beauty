@@ -69,7 +69,7 @@ const CategoryPills = () => {
                 <button
                     onClick={scrollBackward}
                     disabled={!canScrollBackward}
-                    className="absolute top-1/2 -translate-y-1/2 -left-4 z-10 hidden md:flex w-10 h-10 shrink-0 rounded-full bg-white items-center justify-center text-[#2e2e2e] shadow-[0_2px_10px_rgba(0,0,0,0.1)] transition-all hover:bg-[#f1f1f1] disabled:opacity-0 disabled:cursor-not-allowed"
+                    className="absolute top-1/2 -translate-y-1/2 -left-4 z-10 hidden md:flex w-10 h-10 shrink-0 rounded-full bg-white items-center justify-center text-[#000000] shadow-[0_2px_10px_rgba(0,0,0,0.1)] transition-all hover:bg-[#f1f1f1] disabled:opacity-0 disabled:cursor-not-allowed"
                     aria-label="Previous categories"
                 >
                     <svg className={`w-5 h-5 ${dir === 'rtl' ? '-scale-x-100' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -86,7 +86,7 @@ const CategoryPills = () => {
                             <Link
                                 key={category.id}
                                 href={`/categories/${category.slug}`}
-                                className="flex-shrink-0 flex items-center gap-3 bg-white border border-gray-200 hover:border-[#f1f1f1] hover:bg-[#f1f1f1] text-[#000000] hover:text-[#2e2e2e] rounded-full px-6 py-3 transition-all duration-300"
+                                className="flex-shrink-0 flex items-center gap-3 bg-white border border-gray-200 hover:border-[#f1f1f1] hover:bg-[#f1f1f1] text-[#000000] hover:text-[#000000] rounded-full px-6 py-3 transition-all duration-300"
                             >
                                 <div className="w-5 h-5 flex items-center justify-center shrink-0">
                                     <img
@@ -107,7 +107,7 @@ const CategoryPills = () => {
                 <button
                     onClick={scrollForward}
                     disabled={!canScrollForward}
-                    className="absolute top-1/2 -translate-y-1/2 -right-4 z-10 hidden md:flex w-10 h-10 shrink-0 rounded-full bg-white items-center justify-center text-[#2e2e2e] shadow-[0_2px_10px_rgba(0,0,0,0.1)] transition-all hover:bg-[#f1f1f1] disabled:opacity-0 disabled:cursor-not-allowed"
+                    className="absolute top-1/2 -translate-y-1/2 -right-4 z-10 hidden md:flex w-10 h-10 shrink-0 rounded-full bg-white items-center justify-center text-[#000000] shadow-[0_2px_10px_rgba(0,0,0,0.1)] transition-all hover:bg-[#f1f1f1] disabled:opacity-0 disabled:cursor-not-allowed"
                     aria-label="Next categories"
                 >
                     <svg className={`w-5 h-5 ${dir === 'rtl' ? '-scale-x-100' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

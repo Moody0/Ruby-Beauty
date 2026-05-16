@@ -138,7 +138,7 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                             {/* Arrow Button */}
                             <Link
                                 href={`/products/${product.slug}`}
-                                className="shrink-0 w-8 h-8 md:w-9 md:h-9 rounded-full bg-white dark:bg-[#2e2e2e] border border-gray-200 dark:border-gray-700 flex items-center justify-center transition-all group-hover:bg-[#1a1a1a] group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black"
+                                className="shrink-0 w-8 h-8 md:w-9 md:h-9 rounded-full bg-white dark:bg-[#000000] border border-gray-200 dark:border-gray-700 flex items-center justify-center transition-all group-hover:bg-[#1a1a1a] group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black"
                             >
                                 <svg className={`w-3.5 h-3.5 ${dir === 'rtl' ? '' : 'rotate-180'}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M12.5 16.25L6.25 10L12.5 3.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

@@ -178,7 +178,7 @@ const TestimonialsMasonry = ({ products }: { products?: Product[] }) => {
                     <div className="flex-1 h-[2px] bg-gray-200 relative overflow-hidden rounded-full">
                         <div 
                             ref={progressBarRef}
-                            className="absolute top-0 bottom-0 bg-[#2e2e2e] rounded-full" 
+                            className="absolute top-0 bottom-0 bg-[#000000] rounded-full" 
                             style={{ 
                                 width: '100%', 
                                 transformOrigin: language === 'ar' ? 'right center' : 'left center', 

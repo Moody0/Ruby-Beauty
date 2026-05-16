@@ -43,7 +43,7 @@ const BestSellers = ({ products }: BestSellersProps) => {
         <section className="container-custom py-8 md:py-10">
             <div className="w-full">
                 <div className="flex items-center justify-between mb-6 px-2">
-                    <h3 className="text-lg sm:text-xl md:text-[32px] font-semibold text-[#2e2e2e] dark:text-text-main-dark">{t('home.bestSellers')}</h3>
+                    <h3 className="text-lg sm:text-xl md:text-[32px] font-semibold text-[#000000] dark:text-text-main-dark">{t('home.bestSellers')}</h3>
                     <Link className="text-primary font-medium text-sm flex items-center gap-1 hover:gap-2 transition-all" href="/products">
                         {t('common.viewAll')} <MdChevronRight className={`text-sm ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                     </Link>
@@ -76,7 +76,7 @@ const BestSellers = ({ products }: BestSellersProps) => {
                     <button
                         onClick={scrollBackward}
                         disabled={!canScrollBackward}
-                        className="hidden md:flex w-10 h-10 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#2e2e2e] transition-colors hover:bg-[#2e2e2e] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed order-2"
+                        className="hidden md:flex w-10 h-10 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#000000] transition-colors hover:bg-[#000000] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed order-2"
                         aria-label="Previous slide"
                     >
                         <svg className={`w-5 h-5 ${dir === 'rtl' ? '-scale-x-100' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -88,7 +88,7 @@ const BestSellers = ({ products }: BestSellersProps) => {
                     <div className="flex-1 h-[2px] bg-gray-200 dark:bg-gray-800 relative overflow-hidden rounded-full order-1">
                         <div 
                             ref={progressBarRef}
-                            className="absolute top-0 bottom-0 bg-[#2e2e2e] dark:bg-gray-300 rounded-full"
+                            className="absolute top-0 bottom-0 bg-[#000000] dark:bg-gray-300 rounded-full"
                             style={{ 
                                 width: '100%',
                                 transformOrigin: dir === 'rtl' ? 'right' : 'left',
@@ -101,7 +101,7 @@ const BestSellers = ({ products }: BestSellersProps) => {
                     <button
                         onClick={scrollForward}
                         disabled={!canScrollForward}
-                        className="hidden md:flex w-10 h-10 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#2e2e2e] transition-colors hover:bg-[#2e2e2e] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed order-3"
+                        className="hidden md:flex w-10 h-10 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#000000] transition-colors hover:bg-[#000000] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed order-3"
                         aria-label="Next slide"
                     >
                         <svg className={`w-5 h-5 ${dir === 'rtl' ? '-scale-x-100' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

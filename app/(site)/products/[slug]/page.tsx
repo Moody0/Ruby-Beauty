@@ -8,7 +8,10 @@ import ProductHeader from '@/app/components/ProductDetailsComponents/ProductHead
 import ProductPrice from '@/app/components/ProductDetailsComponents/ProductPrice';
 import ProductActions from '@/app/components/ProductDetailsComponents/ProductActions';
 import ProductAccordions from '@/app/components/ProductDetailsComponents/ProductAccordions';
+import { FaInstagram, FaFacebook, FaWhatsapp } from 'react-icons/fa';
 import RelatedProducts from '@/app/components/ProductDetailsComponents/RelatedProducts';
+import Breadcrumbs from '@/app/components/ProductDetailsComponents/Breadcrumbs';
+import { cookies } from 'next/headers';
 
 export async function generateMetadata(
     props: { params: Promise<{ slug: string }> }
@@ -62,6 +65,10 @@ export async function generateMetadata(
 
 const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     const params = await props.params;
+    console.log('SERVER: Rendering ProductPage for slug:', params.slug);
+    const cookieStore = await cookies();
+    const language = cookieStore.get('language')?.value || 'ar';
+
     const product = await prisma.product.findFirst({
         where: {
             slug: params.slug,
@@ -69,6 +76,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
         },
         include: {
             brand: true,
+            category: true,
         },
     });
 
@@ -88,64 +96,77 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     });
 
     return (
-        <div className="grow w-full mx-auto px-6 py-8 md:px-20 lg:px-32 xl:px-48 2xl:px-64 lg:py-12">
-            
-            {/* Mobile Header (Title & Description above image) - REMOVED per request */}
-            {/* <div className="block lg:hidden mb-6">
-                <ProductHeader
-                    name={product.name}
-                    description={product.description}
-                />
-            </div> */}
+        <div className="grow w-full mx-auto px-4 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-4 lg:py-8 max-w-[1730px]">
+            <Breadcrumbs
+                productName={product.name}
+                categoryName={product.category?.name}
+                categorySlug={product.category?.slug}
+            />
 
-            <div className="flex flex-col lg:grid lg:grid-cols-5 gap-12 xl:gap-20">
+            <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-12 w-full mt-6">
                 {/* Product Gallery (Left) */}
-                <div className="lg:col-span-2 order-1">
-                    <ProductGallery 
-                        images={product.images} 
-                        isTrending={product.isTrending} 
+                <div className="w-full lg:w-[58.5%] flex-shrink-0 relative">
+                    <ProductGallery
+                        images={product.images}
+                        isTrending={product.isTrending}
                     />
                 </div>
 
                 {/* Product Details (Right) */}
-                <div className="flex flex-col lg:col-span-3 order-2">
-                    {/* Header (Title & Description) - Visible on all screens now */}
+                <div className="w-full lg:w-[41.5%] lg:sticky lg:top-32 flex flex-col gap-1">
                     <div className="block">
                         <ProductHeader
                             name={product.name}
-                            description={product.description}
+                            brandName={product.brand?.name}
+                            categoryName={product.category?.name}
                         />
-                        {product.brand && (
-                            <Link
-                                href={`/brands/${product.brand.slug}`}
-                                className="mb-4 mt-2 inline-flex w-fit rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary transition-colors hover:bg-primary/20"
-                            >
-                                {product.brand.name}
-                            </Link>
-                        )}
                     </div>
-                    
+
                     <ProductPrice
                         price={product.price.toString()}
                         discountPrice={product.discountPrice?.toString()}
                     />
 
-                    {/* Description - REMOVED per request */}
-                    {/* <div className="mb-8">
-                        <p className="text-base leading-relaxed text-text-main dark:text-white/80">
-                            {product.description || 'Unlock your skin&apos;s natural luminosity with our concentrated Vitamin C serum.'}
-                        </p>
-                    </div> */}
+                    <ProductActions
+                        product={{
+                            id: product.id,
+                            name: product.name,
+                            price: Number(product.discountPrice || product.price),
+                            image: (product.images as string).split(',').map((img: string) => img.trim()).filter(Boolean)[0],
+                            slug: product.slug
+                        }}
+                        stock={product.stock}
+                    />
 
-                    <ProductActions product={{
-                        id: product.id,
-                        name: product.name,
-                        price: Number(product.discountPrice || product.price),
-                        image: (product.images as string).split(',').map((img: string) => img.trim()).filter(Boolean)[0],
-                        slug: product.slug
-                    }} />
+                    <ProductAccordions description={product.description} />
 
-                    <ProductAccordions />
+                    <div className="flex items-center justify-start mt-3 gap-3">
+                        <span className="text-[15px] font-bold mr-2">{language === 'ar' ? 'مشاركة:' : 'Share:'}</span>
+                        <a 
+                            href="https://wa.me/963933254796" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="w-11 h-11 flex items-center justify-center rounded-full border border-gray-200 text-black hover:border-black hover:text-black transition-all"
+                        >
+                            <FaWhatsapp className="text-xl" />
+                        </a>
+                        <a 
+                            href="https://www.instagram.com/ruby.beauty.sy" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="w-11 h-11 flex items-center justify-center rounded-full border border-gray-200 text-black hover:border-black hover:text-black transition-all"
+                        >
+                            <FaInstagram className="text-xl" />
+                        </a>
+                        <a 
+                            href="https://www.facebook.com/share/1HzXdo7sLG/?mibextid=wwXIfr" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="w-11 h-11 flex items-center justify-center rounded-full border border-gray-200 text-black hover:border-black hover:text-black transition-all"
+                        >
+                            <FaFacebook className="text-xl" />
+                        </a>
+                    </div>
                 </div>
             </div>
 

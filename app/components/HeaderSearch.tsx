@@ -141,7 +141,7 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                         onFocus={() => {
                             if (query.trim().length > 0) setShowResults(true);
                         }}
-                        className="w-full bg-white dark:bg-surface-dark border border-gray-300 dark:border-white/20 rounded-full text-sm text-[#1a1a1a] dark:text-white placeholder-[#999] dark:placeholder-gray-500 focus:outline-none focus:border-[#003049] dark:focus:border-white transition-colors h-11 [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-webkit-search-results-button]:hidden [&::-webkit-search-results-decoration]:hidden"
+                        className="w-full bg-[#f2f2f2] md:bg-white dark:bg-white/5 border border-transparent md:border-gray-300 dark:md:border-white/20 rounded-full text-sm text-[#1a1a1a] dark:text-white placeholder-[#888] dark:placeholder-gray-500 focus:outline-none focus:border-[#003049] dark:focus:border-white transition-colors h-12 [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-webkit-search-results-button]:hidden [&::-webkit-search-results-decoration]:hidden"
                         style={{
                             padding: isArabic ? '0 16px 0 60px' : '0 60px 0 16px',
                             direction: dir,
@@ -177,7 +177,7 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
             {/* ========== Predictive Search Results Dropdown ========== */}
             {showResults && (
                 <div
-                    className="absolute top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-lg shadow-xl border border-gray-100 dark:border-white/10 z-50 overflow-hidden"
+                    className="absolute top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-lg shadow-xl border border-gray-100 dark:border-white/10 z-50 overflow-y-auto max-h-[70vh] md:max-h-[unset] md:overflow-visible"
                     style={{
                         width: '100%',
                         direction: dir,
@@ -294,7 +294,7 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                                             </span>
                                             
                                             {/* Product Title */}
-                                            <h4 className="text-[13px] font-medium text-[#333] dark:text-gray-200 group-hover:text-[#003049] dark:group-hover:text-primary transition-colors leading-tight mb-1.5 line-clamp-2 px-2">
+                                            <h4 className="text-[13px] font-medium text-[#333] dark:text-gray-200 group-hover:text-[#003049] dark:group-hover:text-white transition-colors leading-tight mb-1.5 line-clamp-2 px-2">
                                                 {product.name}
                                             </h4>
                                             

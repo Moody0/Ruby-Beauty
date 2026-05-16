@@ -62,7 +62,7 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
         <section className="container-custom py-8 md:py-10">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6 px-2">
                 <div className="flex-1">
-                    <h2 className="text-lg sm:text-xl md:text-[32px] font-semibold text-[#2e2e2e] dark:text-text-main-dark">
+                    <h2 className="text-lg sm:text-xl md:text-[32px] font-semibold text-[#000000] dark:text-text-main-dark">
                         {t('home.featuredCollection')}
                     </h2>
                     <p className="text-[15px] text-black mt-1">
@@ -79,7 +79,7 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
                                 aria-selected={activeTab === index}
                                 onClick={() => setActiveTab(index)}
                                 className={`tabs__btn whitespace-nowrap px-8 py-3 text-[15px] font-medium transition-all border-b-2 ${activeTab === index
-                                    ? 'border-[#2e2e2e] text-[#2e2e2e]'
+                                    ? 'border-[#000000] text-[#000000]'
                                     : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
                                     }`}
                             >
@@ -120,7 +120,7 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
                     <button
                         onClick={scrollBackward}
                         disabled={!canScrollBackward}
-                        className="hidden md:flex w-10 h-10 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#2e2e2e] transition-colors hover:bg-[#2e2e2e] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed order-2"
+                        className="hidden md:flex w-10 h-10 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#000000] transition-colors hover:bg-[#000000] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed order-2"
                         aria-label="Previous slide"
                     >
                         <svg className={`w-5 h-5 ${dir === 'rtl' ? '-scale-x-100' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -132,7 +132,7 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
                     <div className="flex-1 h-[2px] bg-gray-200 dark:bg-gray-800 relative overflow-hidden rounded-full order-1">
                         <div 
                             ref={progressBarRef}
-                            className="absolute top-0 bottom-0 bg-[#2e2e2e] dark:bg-gray-300 rounded-full"
+                            className="absolute top-0 bottom-0 bg-[#000000] dark:bg-gray-300 rounded-full"
                             style={{ 
                                 width: '100%',
                                 transformOrigin: dir === 'rtl' ? 'right' : 'left',
@@ -145,7 +145,7 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
                     <button
                         onClick={scrollForward}
                         disabled={!canScrollForward}
-                        className="hidden md:flex w-10 h-10 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#2e2e2e] transition-colors hover:bg-[#2e2e2e] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed order-3"
+                        className="hidden md:flex w-10 h-10 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#000000] transition-colors hover:bg-[#000000] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed order-3"
                         aria-label="Next slide"
                     >
                         <svg className={`w-5 h-5 ${dir === 'rtl' ? '-scale-x-100' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

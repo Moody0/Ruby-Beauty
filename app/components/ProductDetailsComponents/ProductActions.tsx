@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useCart } from "@/app/context/CartContext";
 import { useLanguage } from "@/app/context/LanguageContext";
-import { MdRemove, MdAdd, MdShoppingBag } from "react-icons/md";
+import { MdRemove, MdAdd } from "react-icons/md";
 import toast from "react-hot-toast";
 
 interface ProductActionsProps {
@@ -14,11 +14,12 @@ interface ProductActionsProps {
         image: string;
         slug: string;
     };
+    stock?: number;
 }
 
-const ProductActions = ({ product }: ProductActionsProps) => {
+const ProductActions = ({ product, stock }: ProductActionsProps) => {
     const { addItem } = useCart();
-    const { t, language } = useLanguage();
+    const { language } = useLanguage();
     const [quantity, setQuantity] = useState(1);
 
     const handleIncrement = () => setQuantity(prev => prev + 1);
@@ -39,29 +40,68 @@ const ProductActions = ({ product }: ProductActionsProps) => {
         );
     };
 
+    // Simulated stock for visual parity if not provided
+    const displayStock = stock !== undefined ? stock : 3;
+    const isLowStock = displayStock > 0 && displayStock <= 10;
+
     return (
-        <div className="flex gap-4 max-w-[1200px] mb-8">
-            <div className="flex items-center justify-between border border-[#e6dbdf] dark:border-white/20 rounded-xl h-14 w-32 md:w-40 px-2 bg-white dark:bg-surface-dark shrink-0">
+        <div className="flex flex-col gap-4">
+            {/* Stock Progress Bar - Always show if stock exists */}
+            {displayStock > 0 && (
+                <div className="w-full">
+                    <div className="flex items-center justify-start mb-1">
+                        <div className="flex items-center gap-2 text-[#000000] font-bold text-[14px]">
+                            <span className="relative flex h-3 w-3">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
+                            </span>
+                            <span className="text-[#000000] font-bold text-[14px]">
+                                {language === 'ar'
+                                    ? `items left ${stock || 0}`
+                                    : `items left ${stock || 0}`}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="w-full h-[3px] bg-gray-100 rounded-full overflow-hidden mb-2">
+                        <div
+                            className="h-full bg-[#FF395A] transition-all duration-1000 ease-out"
+                            style={{ width: `${(displayStock / 15) * 100}%` }}
+                        ></div>
+                    </div>
+                </div>
+            )}
+
+            {/* Quantity and Add to Cart Row */}
+            <div className="flex flex-row-reverse md:flex-row items-center gap-4">
                 <button
-                    onClick={handleDecrement}
-                    className="w-8 md:w-10 h-full flex items-center justify-center text-text-muted hover:text-primary active:scale-90 transition-all"
+                    onClick={handleAddToCart}
+                    className="flex-1 h-[48px] bg-[#FF395A] hover:bg-black text-white rounded-full font-bold text-[15px] transition-all duration-300 active:scale-[0.98]"
                 >
-                    <MdRemove className="text-[20px]" />
+                    {language === 'ar' ? 'اضافة للعربة' : 'Add to Cart'}
                 </button>
-                <span className="text-lg font-bold text-text-main dark:text-white">{quantity}</span>
-                <button
-                    onClick={handleIncrement}
-                    className="w-8 md:w-10 h-full flex items-center justify-center text-text-muted hover:text-primary active:scale-90 transition-all"
-                >
-                    <MdAdd className="text-[20px]" />
-                </button>
+
+                <div className="flex items-center h-[48px] border border-gray-200 dark:border-white/10 rounded-full bg-white dark:bg-white/5 px-2 shrink-0">
+                    <button
+                        onClick={handleDecrement}
+                        className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-black transition-colors"
+                    >
+                        <MdRemove size={20} />
+                    </button>
+                    <span className="w-10 text-center text-[16px] font-bold text-[#1C1C1C] dark:text-white">{quantity}</span>
+                    <button
+                        onClick={handleIncrement}
+                        className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-black transition-colors"
+                    >
+                        <MdAdd size={20} />
+                    </button>
+                </div>
             </div>
+
+            {/* Buy Now Button */}
             <button
-                onClick={handleAddToCart}
-                className="flex-1 h-14 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all transform active:scale-95 hover:-translate-y-0.5 active:translate-y-0"
+                className="w-full h-[48px] bg-black text-white rounded-full font-bold text-[15px] active:scale-[0.98]"
             >
-                <MdShoppingBag className="text-[24px]" />
-                {t('products.addToCart')}
+                {language === 'ar' ? 'اشتري الان' : 'Buy it now'}
             </button>
         </div>
     );

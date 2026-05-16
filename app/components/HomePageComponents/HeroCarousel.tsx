@@ -70,8 +70,8 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
     return (
         <section ref={wrapperRef} className="container-custom pt-4 md:pt-6 pb-4 md:pb-6 group hero-carousel">
             <div className="w-full relative">
-                {/* Responsive Height: 776px on mobile, 500-600px on desktop */}
-                <div className="relative overflow-hidden rounded-[10px] bg-[#FAECE8] dark:bg-[#1a1a1a] h-[776px] md:h-[500px] lg:h-[600px]">
+                {/* Responsive Height: Image only on mobile, sleek banner on desktop */}
+                <div className="relative overflow-hidden rounded-[10px] bg-[#FAECE8] dark:bg-[#1a1a1a] h-[300px] md:h-[400px] lg:h-[480px]">
                     <Swiper
                         modules={[Autoplay, Navigation, Pagination]}
                         spaceBetween={0}
@@ -104,8 +104,8 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                             <SwiperSlide key={banner.id} className="h-full w-full">
                                 <div className="flex flex-col md:flex-row rtl:md:flex-row-reverse h-full w-full">
                                     
-                                    {/* Image Container - Left side on desktop */}
-                                    <div className="w-full h-[55%] md:h-full md:w-1/2 relative shrink-0">
+                                    {/* Image Container - Full width/height on mobile, left side on desktop */}
+                                    <div className="w-full h-full md:w-1/2 relative shrink-0">
                                         <img
                                             src={getSafeImageUrl(banner.image)}
                                             alt={getBannerTitle(banner)}
@@ -114,19 +114,19 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                         />
                                     </div>
 
-                                    {/* Content Container - Solid Right side on desktop */}
-                                    <div className="relative z-10 w-full h-[45%] md:h-full md:w-1/2 flex flex-col items-center justify-center text-center px-6 py-6 pb-16 md:px-12 lg:px-20 bg-[#FAECE8] dark:bg-[#1a1a1a]">
+                                    {/* Content Container - Hidden on mobile, Right side on desktop */}
+                                    <div className="relative z-10 hidden md:flex w-full md:h-full md:w-1/2 flex-col items-center justify-center text-center md:px-12 lg:px-20 bg-[#FAECE8] dark:bg-[#1a1a1a]">
                                         <div className="animate-fadeInUp w-full max-w-[320px] md:max-w-md flex flex-col items-center text-center">
                                             
 
                                             
                                             {/* Title */}
-                                            <h2 className="text-[40px] md:text-[42px] lg:text-5xl font-bold leading-[1.2] mb-3 md:mb-6 text-[#072835] dark:text-[#072835] md:dark:text-white">
+                                            <h2 className="text-[32px] md:text-[38px] lg:text-[44px] font-bold leading-[1.2] mb-3 md:mb-5 text-[#072835] dark:text-[#072835] md:dark:text-white">
                                                 {getBannerTitle(banner)}
                                             </h2>
                                             
                                             {/* Description */}
-                                            <p className="text-[14px] md:text-base lg:text-lg text-[#555] md:text-[#666] md:dark:text-white/70 mb-6 md:mb-10 leading-relaxed font-medium">
+                                            <p className="text-[14px] md:text-base lg:text-[17px] text-[#555] md:text-[#666] md:dark:text-white/70 mb-5 md:mb-8 leading-relaxed font-medium">
                                                 {getBannerSubtitle(banner)}
                                             </p>
                                             

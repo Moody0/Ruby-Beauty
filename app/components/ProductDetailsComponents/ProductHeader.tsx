@@ -5,16 +5,34 @@ import { useLanguage } from "@/app/context/LanguageContext";
 
 interface ProductHeaderProps {
     name: string;
-    description: string | null;
+    brandName?: string;
+    categoryName?: string;
 }
 
-const ProductHeader = ({ name, description }: ProductHeaderProps) => {
+const ProductHeader = ({ name, brandName, categoryName }: ProductHeaderProps) => {
     const { language } = useLanguage();
 
     return (
-        <div className="mb-4">
-            <h1 className="text-3xl lg:text-4xl font-extrabold text-text-main dark:text-white tracking-tight mb-2">{name}</h1>
-            <p className="text-lg font-medium text-text-muted dark:text-white/60">{description || (language === 'ar' ? 'منتج تجميل فاخر' : 'Premium beauty product')}</p>
+        <div className="mb-2">
+            <h1 className="text-[#2e2e2e] dark:text-white text-[25px] md:text-[30px] font-semibold leading-[1.2] mb-3 tracking-[-0.06em]">
+                {name}
+            </h1>
+
+            <div className="flex items-center gap-4 text-[15px] font-semibold">
+                {brandName && (
+                    <div className="flex items-center gap-1.5">
+                        <span className="text-[#000000]">{language === 'ar' ? 'البراند:' : 'Brand:'}</span>
+                        <span className="text-[rgb(7,40,53)] border-b border-[rgb(7,40,53)]  transition-colors cursor-pointer">{brandName}</span>
+                    </div>
+                )}
+                <span className="opacity-20">|</span>
+                {categoryName && (
+                    <div className="flex items-center gap-1.5">
+                        <span className="text-[#000000]">{language === 'ar' ? 'النوع:' : 'Type:'}</span>
+                        <span className="text-[rgb(7,40,53)] border-b border-[rgb(7,40,53)] transition-colors cursor-pointer">{categoryName}</span>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

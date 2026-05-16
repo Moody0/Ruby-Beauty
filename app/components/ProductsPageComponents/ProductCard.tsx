@@ -41,10 +41,12 @@ const ProductCard = ({ product, variant = 'default', badge, showBadge = true }: 
     const { formatPrice } = useCurrency();
     const { addItem } = useCart();
     const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+    const [isSecondaryLoaded, setIsSecondaryLoaded] = useState(false);
 
     const images = product.images.split(',').map(img => img.trim()).filter(Boolean);
     const primaryImage = images[0] || '';
-    const secondaryImage = images[1] || primaryImage;
+    const secondaryImage = images.length > 1 && images[1] !== images[0] ? images[1] : null;
+    const hasSecondaryImage = !!secondaryImage;
 
     const handleQuickAdd = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -66,42 +68,52 @@ const ProductCard = ({ product, variant = 'default', badge, showBadge = true }: 
             <div
                 className="group relative flex flex-col bg-[#F7F7F5] dark:bg-surface-dark rounded-[10px] overflow-hidden transition-transform duration-300 hover:shadow-sm w-full h-[309px] md:h-[461px]"
             >
-                {/* Search Icon */}
+                {/* Quick View Search Icon */}
                 <button
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         setIsQuickViewOpen(true);
                     }}
-                    className="absolute z-20 top-3 left-3 w-8 h-8 bg-white text-black hover:bg-black hover:text-white rounded-full shadow-sm flex items-center justify-center opacity-0 -translate-x-[150%] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                    className="absolute z-20 top-4 left-4 w-10 h-10 bg-white text-black hover:bg-black hover:text-white rounded-full shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-90 group-hover:scale-100"
                     aria-label="Quick View"
                 >
-                    <MdSearch size={18} />
+                    <MdSearch size={22} />
                 </button>
 
-                {/* Badge */}
-                {showBadge && (badge || product.isTrending) && (
-                    <div className="absolute top-3 right-3 z-10 bg-[#c20059] text-white px-2.5 py-1 rounded text-[11px] font-bold uppercase tracking-wide leading-none">
-                        {badge || (language === 'ar' ? 'وصل حديثاً' : 'New Arrival')}
+                {/* Trending Badge or Custom Badge */}
+                {showBadge && (product.isTrending || badge) && (
+                    <div className="absolute top-1.5 right-1.5 md:top-4 md:right-4 z-20 pointer-events-none">
+                        <span className="bg-[#E676AE] text-white px-1 py-0 md:px-2.5 md:py-1 rounded-[2px] text-[8px] md:text-[11px] font-bold uppercase tracking-wide leading-none">
+                            {product.isTrending ? (language === 'ar' ? 'Trending' : 'Trending') : badge}
+                        </span>
                     </div>
                 )}
 
                 {/* Image Area */}
                 <div className="relative w-full h-[180px] md:h-[321px] overflow-hidden">
                     <Link href={`/products/${product.slug}`} className="absolute inset-0 block w-full h-full" aria-label={product.name}>
-                        <ResilientImage
-                            alt={product.name}
-                            className={`absolute inset-0 w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal transition-opacity duration-500 ${secondaryImage !== primaryImage ? 'group-hover:opacity-0' : ''}`}
-                            src={primaryImage}
-                            loading="lazy"
-                        />
-                        {secondaryImage !== primaryImage && (
+                        {/* Primary Image Wrapper */}
+                        <div className={`absolute inset-0 transition-opacity duration-500 z-10 ${hasSecondaryImage && isSecondaryLoaded ? 'group-hover:opacity-0' : ''}`}>
                             <ResilientImage
                                 alt={product.name}
-                                className="absolute inset-0 w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal transition-opacity duration-500 opacity-0 group-hover:opacity-100"
-                                src={secondaryImage}
+                                className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal"
+                                src={primaryImage}
                                 loading="lazy"
                             />
+                        </div>
+                        
+                        {/* Secondary Image Wrapper */}
+                        {hasSecondaryImage && (
+                            <div className="absolute inset-0 transition-opacity duration-500 opacity-0 group-hover:opacity-100 z-0">
+                                <ResilientImage
+                                    alt={product.name}
+                                    className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal"
+                                    src={secondaryImage}
+                                    loading="lazy"
+                                    onLoad={() => setIsSecondaryLoaded(true)}
+                                />
+                            </div>
                         )}
                     </Link>
 
@@ -118,19 +130,19 @@ const ProductCard = ({ product, variant = 'default', badge, showBadge = true }: 
                         </svg>
                     </button>
 
-                    {/* Hover Add to Cart Button (Desktop only) */}
-                    <div className="absolute inset-x-4 bottom-4 z-20 translate-y-[150%] opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hidden md:block">
+                    {/* Add to Cart Button */}
+                    <div className="absolute inset-x-4 bottom-6 z-20 translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
                         <button
                             onClick={handleQuickAdd}
-                            className="w-full bg-white hover:bg-black text-black hover:text-white py-3 rounded-xl text-sm font-bold shadow-md transition-colors"
+                            className="w-full bg-white hover:bg-black text-black hover:text-white h-[48px] rounded-full text-sm md:text-[15px] font-bold shadow-lg transition-all duration-300 flex items-center justify-center"
                         >
-                            {language === 'ar' ? 'اضافة للعربة' : t('products.addToCart')}
+                            {language === 'ar' ? 'اضافة للعربة' : 'Add to Cart'}
                         </button>
                     </div>
                 </div>
 
                 {/* Product Info */}
-                <div className={`flex flex-col p-3 md:p-5 mt-1 md:mt-3 pt-0 md:pt-0 ${dir === 'rtl' ? 'text-right' : 'text-right'}`}>
+                <div className={`flex flex-col p-3 md:p-5 mt-1 md:mt-3 pt-0 md:pt-0 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                     {/* Brand */}
                     {product.brand && (
                         <p className="text-[rgba(7,40,53,0.6)] dark:text-gray-400 text-[10px] md:text-xs font-bold uppercase tracking-widest mb-1 md:mb-1.5">
@@ -139,7 +151,7 @@ const ProductCard = ({ product, variant = 'default', badge, showBadge = true }: 
                     )}
 
                     {/* Title */}
-                    <h3 className="text-[#072835] dark:text-white text-[13px] md:text-[15px] font-semibold leading-tight mb-1 md:mb-2 line-clamp-2">
+                    <h3 className="text-[#1C1C1C] dark:text-white text-[13px] md:text-[15px] font-semibold leading-tight mb-1 md:mb-2 line-clamp-2">
                         <Link
                             href={`/products/${product.slug}`}
                             className="relative inline-block after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
@@ -149,14 +161,14 @@ const ProductCard = ({ product, variant = 'default', badge, showBadge = true }: 
                     </h3>
 
                     {/* Price */}
-                    <div className="flex flex-row items-center justify-start gap-2 mt-auto text-[#003049] dark:text-white">
+                    <div className={`flex flex-row items-center gap-2 mt-auto text-[#1C1C1C] dark:text-white ${dir === 'rtl' ? 'justify-start' : 'justify-start'}`}>
                         {product.discountPrice ? (
                             <>
-                                <span className="text-[13px] md:text-[15px] font-bold text-[#c20059]">{formatPrice(Number(product.discountPrice))}</span>
-                                <span className="text-[10px] md:text-[12px] text-gray-400 line-through font-normal">{formatPrice(Number(product.price))}</span>
+                                <span className="text-[14px] md:text-[16px] font-bold text-[#1C1C1C] dark:text-white">{formatPrice(Number(product.discountPrice))}</span>
+                                <span className="text-[11px] md:text-[13px] text-gray-400 line-through font-normal">{formatPrice(Number(product.price))}</span>
                             </>
                         ) : (
-                            <span className="text-[13px] md:text-[15px] font-bold">{formatPrice(Number(product.price))}</span>
+                            <span className="text-[14px] md:text-[16px] font-bold">{formatPrice(Number(product.price))}</span>
                         )}
                     </div>
                 </div>

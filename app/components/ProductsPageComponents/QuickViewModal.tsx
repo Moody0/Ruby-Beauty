@@ -139,14 +139,12 @@ const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
                 </div>
 
                 {/* Right side (Image) */}
-                <div className="flex-1 bg-[#F7F7F5] flex items-center justify-center p-8 min-h-[400px]">
-                    <div className="relative w-full aspect-square max-w-[300px]">
-                        <ResilientImage
-                            src={primaryImage}
-                            alt={product.name}
-                            className="object-contain"
-                        />
-                    </div>
+                <div className="flex-1 bg-[#F7F7F5] relative min-h-[400px]">
+                    <ResilientImage
+                        src={primaryImage}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                    />
                 </div>
             </div>
         </div>

@@ -1,52 +1,107 @@
 "use client";
 
-import React, { useState } from "react";
-import { parseImageList } from '@/lib/image-utils';
-import ResilientImage from '@/app/components/ResilientImage';
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Thumbs, FreeMode } from "swiper/modules";
-import type { Swiper as SwiperType } from "swiper";
-
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/free-mode";
-import "swiper/css/thumbs";
-import "swiper/css/autoplay";
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import type { Swiper as SwiperType } from 'swiper';
+import { FreeMode, Thumbs, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/free-mode';
+import 'swiper/css/thumbs';
+import ResilientImage from '../ResilientImage';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MdClose } from 'react-icons/md';
 
 interface ProductGalleryProps {
-    images: string;
-    isTrending: boolean;
+    images: any;
+    isTrending?: boolean;
 }
 
 const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
-    const allImages = parseImageList(images);
     const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [mounted, setMounted] = useState(false);
 
-    if (allImages.length === 0) return null;
+    useEffect(() => {
+        setMounted(true);
+        if (selectedImage) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [selectedImage]);
+
+    const allImages = typeof images === 'string'
+        ? images.split(',').map(img => img.trim()).filter(Boolean)
+        : Array.isArray(images) ? images : [];
+
+    const lightbox = (
+        <AnimatePresence>
+            {selectedImage && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 md:p-8"
+                    onClick={() => setSelectedImage(null)}
+                >
+                    <button 
+                        className="absolute top-6 right-6 text-white hover:text-gray-300 transition-colors z-[100000] p-2 bg-black/20 rounded-full"
+                        onClick={() => setSelectedImage(null)}
+                    >
+                        <MdClose size={32} />
+                    </button>
+
+                    <motion.div
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.9, opacity: 0 }}
+                        className="relative max-w-6xl w-full h-full flex items-center justify-center"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <img
+                            src={selectedImage}
+                            alt="Expanded product view"
+                            className="max-w-full max-h-full object-contain rounded-lg shadow-2xl pointer-events-none select-none"
+                        />
+                    </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
+    );
 
     return (
         <div className="flex flex-col gap-4 lg:sticky lg:top-28 self-start h-fit w-full">
             {/* Main Image Slider */}
-            <div className="relative w-full aspect-square max-w-[600px] mx-auto overflow-hidden rounded-2xl !bg-white group border border-[#e6dbdf] dark:border-gray-800/50 shadow-sm">
+            <div className="relative w-full aspect-square max-w-[882px] mx-auto overflow-hidden rounded-[10px] !bg-white group border border-[#e6dbdf] dark:border-gray-800/50 shadow-sm cursor-zoom-in">
                 <Swiper
                     spaceBetween={10}
                     thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
                     modules={[FreeMode, Thumbs, Autoplay]}
+                    onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
                     autoplay={{
                         delay: 3000,
                         disableOnInteraction: false,
                         pauseOnMouseEnter: true,
                     }}
-                    loop={true}
+                    loop={allImages.length > 1}
                     className="h-full w-full !bg-white"
                 >
                     {allImages.map((img, index) => (
-                        <SwiperSlide key={`main-${index}`} className="!bg-white">
-                            <div className="relative w-full h-full flex items-center justify-center p-6 md:p-8 !bg-white">
+                        <SwiperSlide 
+                            key={`main-${index}`} 
+                            className="!bg-white"
+                            onClick={() => setSelectedImage(img)}
+                        >
+                            <div className="relative w-full h-full flex items-center justify-center !bg-white">
                                 <ResilientImage
                                     src={img}
                                     alt={`Product image ${index + 1}`}
-                                    className="w-full h-full object-contain transition-all duration-500 group-hover:scale-[1.02]"
+                                    className="w-full h-full object-cover transition-opacity duration-500"
                                     loading={index === 0 ? "eager" : "lazy"}
                                 />
                             </div>
@@ -54,34 +109,41 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                     ))}
                 </Swiper>
 
-                <div className="absolute top-4 left-4 z-10 flex flex-col gap-2 pointer-events-none">
+                {/* Trending Badge */}
+                <div className="absolute top-4 right-4 z-20 pointer-events-none">
                     {isTrending && (
-                        <span className="bg-white/90 dark:bg-black/50 backdrop-blur text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider text-text-main dark:text-white shadow-sm">Trending</span>
+                        <span className="bg-[#E676AE] text-white px-2.5 py-1 rounded-[3px] text-[11px] font-bold uppercase tracking-wide leading-none">
+                            Trending
+                        </span>
                     )}
                 </div>
             </div>
 
-            {/* Thumbnails Slider - Only show if there are sub-images (total > 1) */}
+            {/* Thumbnails */}
             {allImages.length > 1 && (
-                <div className="w-full">
+                <div className="w-full max-w-[882px] mx-auto">
                     <Swiper
                         onSwiper={setThumbsSwiper}
-                        spaceBetween={16}
+                        spaceBetween={12}
                         slidesPerView={4}
                         freeMode={true}
                         watchSlidesProgress={true}
                         modules={[FreeMode, Thumbs]}
-                        className="thumbs-swiper w-full"
+                        className="thumbs-swiper"
+                        breakpoints={{
+                            640: { slidesPerView: 5 },
+                            768: { slidesPerView: 6 },
+                        }}
                     >
                         {allImages.map((img, index) => (
                             <SwiperSlide key={`thumb-${index}`}>
-                                <div
-                                    className="relative aspect-square rounded-xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600 transition-all [&.swiper-slide-thumb-active]:border-primary !bg-white"
-                                >
+                                <div className={`relative aspect-square cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-300 ${
+                                    activeIndex === index ? 'border-[#1C1C1C]' : 'border-transparent hover:border-gray-200'
+                                }`}>
                                     <ResilientImage
                                         src={img}
                                         alt={`Thumbnail ${index + 1}`}
-                                        className="w-full h-full object-contain p-2"
+                                        className="w-full h-full object-cover"
                                         loading="lazy"
                                     />
                                 </div>
@@ -91,16 +153,19 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                 </div>
             )}
 
+            {/* Render Lightbox via Portal to bypass stacking contexts */}
+            {mounted && createPortal(lightbox, document.body)}
+
             <style jsx global>{`
+                .thumbs-swiper {
+                    padding: 4px 0;
+                }
                 .thumbs-swiper .swiper-slide {
-                    opacity: 0.6;
-                    transition: opacity 0.3s;
+                    width: 20%;
+                    height: auto;
                 }
-                .thumbs-swiper .swiper-slide-thumb-active {
-                    opacity: 1;
-                }
-                .thumbs-swiper .swiper-slide-thumb-active > div {
-                    border-color: var(--primary-color, #ee2b6c);
+                .thumbs-swiper .swiper-slide-thumb-active .relative {
+                    border-color: #1C1C1C !important;
                 }
             `}</style>
         </div>
