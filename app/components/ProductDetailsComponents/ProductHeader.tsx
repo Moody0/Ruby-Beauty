@@ -14,7 +14,10 @@ const ProductHeader = ({ name, brandName, categoryName }: ProductHeaderProps) =>
 
     return (
         <div className="mb-2">
-            <h1 className="text-[#2e2e2e] dark:text-white text-[25px] md:text-[30px] font-semibold leading-[1.2] mb-3 tracking-[-0.06em]">
+            <h1 
+                dir="ltr" 
+                className={`text-[#2e2e2e] dark:text-white text-[25px] md:text-[30px] font-semibold leading-[1.2] mb-3 font-sans tracking-normal ${language === 'ar' ? 'text-right' : 'text-left'}`}
+            >
                 {name}
             </h1>
 

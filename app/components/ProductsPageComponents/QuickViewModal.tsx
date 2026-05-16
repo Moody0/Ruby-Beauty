@@ -72,7 +72,7 @@ const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
 
                 {/* Left side (Details) */}
                 <div className="flex-1 p-8 flex flex-col justify-center">
-                    <h2 className="text-2xl font-bold text-[#0A314B] mb-2">{product.name}</h2>
+                    <h2 dir="ltr" className={`text-2xl font-bold text-[#0A314B] mb-2 font-sans tracking-normal ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{product.name}</h2>
                     
                     <div className="flex items-center gap-2 mb-4 text-sm text-gray-600">
                         {product.brand && (

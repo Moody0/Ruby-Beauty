@@ -294,7 +294,7 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                                             </span>
                                             
                                             {/* Product Title */}
-                                            <h4 className="text-[13px] font-medium text-[#333] dark:text-gray-200 group-hover:text-[#003049] dark:group-hover:text-white transition-colors leading-tight mb-1.5 line-clamp-2 px-2">
+                                            <h4 dir="ltr" className="text-[13px] font-medium text-[#333] dark:text-gray-200 group-hover:text-[#003049] dark:group-hover:text-white transition-colors leading-tight mb-1.5 line-clamp-2 px-2 font-sans tracking-normal">
                                                 {product.name}
                                             </h4>
                                             

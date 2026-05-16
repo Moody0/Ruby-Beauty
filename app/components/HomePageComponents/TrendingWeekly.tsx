@@ -108,7 +108,7 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                                     </p>
                                 )}
                                 {/* Product Name */}
-                                <h3 className="text-[12px] md:text-[15px] font-semibold text-[#072835] dark:text-white truncate leading-tight mb-1">
+                                <h3 dir="ltr" className={`text-[12px] md:text-[15px] font-semibold text-[#072835] dark:text-white truncate leading-tight mb-1 font-sans tracking-normal ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                     <Link
                                         href={`/products/${product.slug}`}
                                         className="relative inline-block after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"

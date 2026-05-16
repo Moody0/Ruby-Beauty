@@ -32,7 +32,7 @@ const CartItem = ({ item, removeItem, updateQuantity }: CartItemProps) => {
             <div className="flex flex-col flex-1 justify-between py-1">
                 <div>
                     <div className="flex justify-between items-start">
-                        <h3 className="text-lg font-bold text-[#181113] dark:text-white">
+                        <h3 dir="ltr" className="text-lg font-bold text-[#181113] dark:text-white font-sans tracking-normal text-left rtl:text-right">
                             <Link href={`/${item.slug}`} className="hover:text-primary transition-colors">
                                 {item.name}
                             </Link>

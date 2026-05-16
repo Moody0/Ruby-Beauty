@@ -93,7 +93,8 @@ const CartDrawer = () => {
                                         <Link 
                                             href={`/${item.slug}`} 
                                             onClick={closeDrawer}
-                                            className="font-bold text-sm text-text-main dark:text-white hover:text-primary line-clamp-2 leading-tight"
+                                            dir="ltr"
+                                            className={`font-bold text-sm text-text-main dark:text-white hover:text-primary line-clamp-2 leading-tight font-sans tracking-normal block ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
                                         >
                                             {item.name}
                                         </Link>

@@ -63,7 +63,7 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                                 />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-bold truncate dark:text-white" title={item.name}>{item.name}</p>
+                                <p dir="ltr" className="text-sm font-bold truncate dark:text-white font-sans tracking-normal text-left rtl:text-right" title={item.name}>{item.name}</p>
                                 <p className="text-xs text-[#89616f] dark:text-[#a08590]">{t('cart.quantity')}: {item.quantity} • ${item.price.toFixed(2)}</p>
                             </div>
                         </div>

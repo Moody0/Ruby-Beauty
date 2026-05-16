@@ -151,7 +151,10 @@ const ProductCard = ({ product, variant = 'default', badge, showBadge = true }: 
                     )}
 
                     {/* Title */}
-                    <h3 className="text-[#1C1C1C] dark:text-white text-[13px] md:text-[15px] font-semibold leading-tight mb-1 md:mb-2 line-clamp-2">
+                    <h3 
+                        dir="ltr"
+                        className={`text-[#1C1C1C] dark:text-white text-[13px] md:text-[15px] font-semibold leading-tight mb-1 md:mb-2 line-clamp-2 font-sans tracking-normal ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
+                    >
                         <Link
                             href={`/products/${product.slug}`}
                             className="relative inline-block after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
