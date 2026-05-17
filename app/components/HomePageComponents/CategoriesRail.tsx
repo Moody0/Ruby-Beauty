@@ -25,6 +25,16 @@ const CategoriesRail = () => {
     const { dir, language } = useLanguage();
     const { railRef, canScrollForward, canScrollBackward, scrollForward, scrollBackward } = useProductRail(dir);
 
+    const isRtl = dir === 'rtl';
+
+    // Physically bind Left button (on the left edge) to scroll LEFT:
+    const handleLeftScroll = isRtl ? scrollForward : scrollBackward;
+    const isLeftDisabled = isRtl ? !canScrollForward : !canScrollBackward;
+
+    // Physically bind Right button (on the right edge) to scroll RIGHT:
+    const handleRightScroll = isRtl ? scrollBackward : scrollForward;
+    const isRightDisabled = isRtl ? !canScrollBackward : !canScrollForward;
+
     return (
         <section className="w-full bg-white dark:bg-[#121212] py-4 md:py-6 border-b border-gray-100 dark:border-white/5">
             <div className="container-custom">
@@ -66,19 +76,19 @@ const CategoriesRail = () => {
                         </div>
                     </div>
 
-                    {/* Desktop Navigation Arrows (Floating) */}
+                    {/* Desktop Navigation Arrows (Centred on circular images, top-10) */}
                     <button
-                        onClick={scrollBackward}
-                        disabled={!canScrollBackward}
-                        className={`hidden md:flex absolute top-1/2 -translate-y-1/2 -left-5 z-10 w-12 h-12 bg-white rounded-full shadow-lg items-center justify-center text-gray-800 hover:bg-gray-50 hover:scale-105 transition-all disabled:opacity-0 disabled:pointer-events-none ${dir === 'rtl' ? 'rotate-180' : ''}`}
+                        onClick={handleLeftScroll}
+                        disabled={isLeftDisabled}
+                        className="hidden md:flex absolute top-10 -translate-y-1/2 -left-5 z-10 w-12 h-12 bg-white rounded-full shadow-lg items-center justify-center text-gray-800 hover:bg-gray-50 hover:scale-105 transition-all disabled:opacity-0 disabled:pointer-events-none"
                     >
                         <MdChevronLeft className="w-6 h-6" />
                     </button>
                     
                     <button
-                        onClick={scrollForward}
-                        disabled={!canScrollForward}
-                        className={`hidden md:flex absolute top-1/2 -translate-y-1/2 -right-5 z-10 w-12 h-12 bg-white rounded-full shadow-lg items-center justify-center text-gray-800 hover:bg-gray-50 hover:scale-105 transition-all disabled:opacity-0 disabled:pointer-events-none ${dir === 'rtl' ? 'rotate-180' : ''}`}
+                        onClick={handleRightScroll}
+                        disabled={isRightDisabled}
+                        className="hidden md:flex absolute top-10 -translate-y-1/2 -right-5 z-10 w-12 h-12 bg-white rounded-full shadow-lg items-center justify-center text-gray-800 hover:bg-gray-50 hover:scale-105 transition-all disabled:opacity-0 disabled:pointer-events-none"
                     >
                         <MdChevronRight className="w-6 h-6" />
                     </button>
