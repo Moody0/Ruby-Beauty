@@ -46,7 +46,7 @@ const CountdownOffer = () => {
         <section className="w-full bg-white dark:bg-[#121212]">
             <div className="container-custom">
                 <div className={`w-full rounded-[10px] bg-[#f9dae5] h-auto md:h-[160px] py-8 md:py-0 px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4 ${dir === 'rtl' ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
-                    
+
                     {/* 1. Subheading */}
                     <div className="flex-shrink-0">
                         <span className="text-[#333] text-xs md:text-sm font-medium opacity-70">
@@ -80,7 +80,7 @@ const CountdownOffer = () => {
                     {/* 3. Heading */}
                     <div className="max-w-[300px]">
                         <h2 className="text-xl md:text-2xl font-bold text-[#1a1a1a] leading-tight text-center md:text-right">
-                            {language === 'ar' ? 'أحسن العروض، في مكان واحد' : 'Best Offers, All in One Place'}
+                            {language === 'ar' ? 'أفضل العروض، في مكان واحد' : 'Best Offers, All in One Place'}
                         </h2>
                     </div>
 
