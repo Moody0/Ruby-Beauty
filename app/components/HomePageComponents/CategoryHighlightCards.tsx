@@ -40,7 +40,7 @@ const CARD_DATA = [
     },
     {
         slug: 'perfumes',
-        subheadingAr: 'برفان',
+        subheadingAr: 'عطور',
         subheadingEn: 'Perfume',
         headingAr: 'رائحة الورد الخفيفة',
         headingEn: 'Light Rose Scent',
@@ -48,14 +48,14 @@ const CARD_DATA = [
         productNameEn: 'Woody Musk Perfume',
         priceText: 'ل.س ٤٧٥.٠٠',
         oldPriceText: '',
-        btnAr: 'تسوقي',
+        btnAr: 'تسوق',
         btnEn: 'Shop',
         heroImage: 'https://sourcebeauty.com/cdn/shop/files/Source-beauty-perfumes-product-highlight-Homepage-Section_93e68752-6b29-473b-929f-1fb225fb5705_1.webp?v=1774954702&width=750',
         productThumb: 'https://sourcebeauty.com/cdn/shop/files/Woody-Musk-Perfume-New-Packaging-Source-Beauty-Egypt.png?v=1760867648&width=140',
     },
     {
         slug: 'makeup',
-        subheadingAr: 'كريم للشمس',
+        subheadingAr: 'واقي شمس',
         subheadingEn: 'Sunscreen',
         headingAr: 'حماية من الشمس',
         headingEn: 'Sun Protection',
@@ -63,7 +63,7 @@ const CARD_DATA = [
         productNameEn: 'Super Sheer Sunscreen Gel',
         priceText: 'ل.س ٤٧٥.٠٠',
         oldPriceText: '',
-        btnAr: 'Shop',
+        btnAr: 'تسوق',
         btnEn: 'Shop',
         heroImage: 'https://sourcebeauty.com/cdn/shop/files/Nano-treat-products-highlight.webp?v=1777581882&width=750',
         productThumb: 'https://sourcebeauty.com/cdn/shop/files/NanoTreat-Super-Sheer-SunScreen-Gel-Offer-For-1_1-Free-Source-Beauty-Egypt.png?v=1774880845&width=140',
@@ -76,7 +76,7 @@ const CARD_DATA = [
         headingEn: 'A Touch of Elegance',
         priceText: '',
         oldPriceText: '',
-        btnAr: 'إشتري',
+        btnAr: 'تسوق',
         btnEn: 'Buy',
         heroImage: 'https://sourcebeauty.com/cdn/shop/files/Fino-products-highlight.webp?v=1774954050&width=750',
         productThumb: 'https://sourcebeauty.com/cdn/shop/files/Fino-Premium-Touch-moist-repair-Shampoo-550ml-Moisturizing-source-beauty-egypt_a1309549-dc8b-4a7c-a1e8-9c5b29f7bbb5.png?v=1755009326&width=140',
@@ -89,7 +89,7 @@ const CARD_DATA = [
         headingEn: 'Shine Every Time',
         priceText: '',
         oldPriceText: '',
-        btnAr: 'تسوقي',
+        btnAr: 'تسوق',
         btnEn: 'Shop',
         heroImage: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=800',
         productThumb: 'https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?w=140',
@@ -111,12 +111,19 @@ const CategoryHighlightCards = ({ mainBrands }: CategoryHighlightCardsProps) => 
         'watches': { en: 'Watches', ar: 'ساعات' },
     };
 
-    // Desired exact order matching "Shop By Category" (تسوقي حسب الفئة)
-    const categoryOrder = ['ruby-beauty', 'accessories', 'watches', 'makeup'];
+    // Desired exact order matching user request
+    const categoryOrder = ['accessories', 'perfumes', 'ruby-beauty', 'makeup'];
 
     return (
-        <section className="w-full py-8 md:py-10" style={{ padding: '32px 20px' }}>
-            <div className="flex gap-3 md:gap-1.5 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:overflow-visible">
+        <section className="container-custom">
+            {/* Section Title */}
+            <div className="flex justify-center mb-6 md:mb-8">
+                <h2 className="text-xl md:text-2xl lg:text-[28px] font-bold text-black dark:text-white tracking-tight">
+                    {language === 'ar' ? 'تسوق حسب الفئة' : 'Shop By Category'}
+                </h2>
+            </div>
+
+            <div className="flex gap-4 md:gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 -mx-4 px-4 md:mx-0 md:px-0 md:overflow-visible">
                 {categoryOrder.map((slug) => {
                     const brand = mainBrands.find(b => b.slug === slug);
                     const card = CARD_DATA.find(c => c.slug === slug);
@@ -127,59 +134,38 @@ const CategoryHighlightCards = ({ mainBrands }: CategoryHighlightCardsProps) => 
 
                     const heroImage = brand?.image || card?.heroImage || 'https://images.unsplash.com/photo-1612817288484-6f916006741a?w=800';
 
-                    // Fallbacks for data if not in CARD_DATA
-                    const subheadingAr = card?.subheadingAr || 'فئة';
-                    const subheadingEn = card?.subheadingEn || 'Category';
-                    const headingAr = card?.headingAr || brand?.name || categoryName;
-                    const headingEn = card?.headingEn || brand?.name || categoryName;
-
                     return (
                         <Link
                             key={slug}
                             href={`/brands/${slug}`}
-                            className="group relative flex-none w-[292px] md:w-auto md:flex-1 min-w-0 rounded-[10px] overflow-hidden snap-start"
+                            className="group relative flex-none w-[220px] md:flex-1 min-w-0 bg-[#FDFCF8] dark:bg-[#1a1a1a] rounded-[10px] overflow-hidden snap-start transition-transform duration-300 hover:-translate-y-1 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-10px_rgba(0,0,0,0.1)] border border-black/5 dark:border-white/5"
                         >
-                            {/* Image with 3:4 aspect ratio */}
-                            <div className="relative w-full" style={{ aspectRatio: '3/4' }}>
+                            {/* Image Container */}
+                            <div className="relative w-full aspect-square overflow-hidden bg-[#F7F5F0] dark:bg-[#222]">
                                 <ResilientImage
                                     src={heroImage}
-                                    alt={language === 'ar' ? headingAr : headingEn}
-                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                                    alt={categoryName}
+                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                     loading="lazy"
                                 />
-                                {/* Dark overlay */}
-                                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-500" />
+                            </div>
 
-                                {/* Top content: subheading + heading */}
-                                <div className="absolute top-0 inset-x-0 p-4 md:p-5 z-10">
-                                    <p className="text-[10px] md:text-xs font-medium text-white/90 mb-1 uppercase tracking-wider drop-shadow-sm">
-                                        {language === 'ar' ? subheadingAr : subheadingEn}
-                                    </p>
-                                    <h3 className="text-sm md:text-lg lg:text-xl font-bold text-white leading-snug drop-shadow-md">
-                                        {language === 'ar' ? headingAr : headingEn}
+                            {/* Text Content */}
+                            <div className="p-4 md:p-5 flex items-center justify-between">
+                                <div className="flex flex-col gap-1.5">
+                                    <h3 className="text-[15px] md:text-[17px] font-bold text-[#111] dark:text-white leading-none">
+                                        {categoryName}
                                     </h3>
+                                    <p className="text-[11px] md:text-xs text-gray-500 dark:text-gray-400 font-medium leading-none">
+                                        {language === 'ar' ? 'تسوق الآن' : 'Shop Now'}
+                                    </p>
                                 </div>
-
-                                {/* Bottom category section strip (overlaid on image) */}
-                                <div className="absolute bottom-0 inset-x-0 p-2 md:p-3 z-10">
-                                    <div className="flex items-center justify-between gap-2 bg-white/95 backdrop-blur-sm rounded-[8px] px-3 py-2.5 md:py-3 shadow-sm transition-all duration-300 group-hover:bg-white">
-                                        {/* Category Info */}
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-[11px] md:text-sm font-bold text-[#1a1a1a] truncate leading-tight uppercase tracking-tight">
-                                                {categoryName}
-                                            </p>
-                                        </div>
-
-                                        {/* Explore Link */}
-                                        <div className={`shrink-0 flex items-center gap-1 text-[#1a1a1a] transition-transform duration-300 ${language === 'ar' ? 'group-hover:-translate-x-1' : 'group-hover:translate-x-1'}`}>
-                                            <span className="text-[10px] md:text-xs font-bold whitespace-nowrap">
-                                                {language === 'ar' ? 'اكتشفي الآن' : 'Explore Now'}
-                                            </span>
-                                            <svg className={`w-3.5 h-3.5 md:w-4 md:h-4 ${language === 'ar' ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                            </svg>
-                                        </div>
-                                    </div>
+                                
+                                {/* Outline Icon */}
+                                <div className="shrink-0 w-8 h-8 md:w-9 md:h-9 rounded-full border-[1.5px] border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 transition-all duration-300 group-hover:border-black group-hover:text-black dark:group-hover:border-white dark:group-hover:text-white">
+                                    <svg className={`w-3.5 h-3.5 md:w-4 md:h-4 ${language === 'ar' ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                    </svg>
                                 </div>
                             </div>
                         </Link>

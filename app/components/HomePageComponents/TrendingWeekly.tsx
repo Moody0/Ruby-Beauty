@@ -61,7 +61,7 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
     const { formatPrice } = useCurrency();
 
     return (
-        <section className="container-custom py-10 md:py-14">
+        <section className="container-custom py-4 md:py-6">
             {/* Header */}
             <div className={`flex flex-col md:flex-row md:items-center md:justify-between mb-8 px-2 gap-2 ${dir === 'rtl' ? 'items-start md:items-center' : 'items-start md:items-center'}`}>
                 <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold text-[#072835] dark:text-white ${dir === 'rtl' ? 'text-right w-full' : 'text-left w-full'}`}>
@@ -72,7 +72,7 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                     className="flex items-center gap-1 text-sm font-medium text-[#072835] text-opacity-80 dark:text-white transition-colors group whitespace-nowrap"
                 >
                     <span className="relative inline-block after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 group-hover:after:scale-x-100 after:origin-left group-hover:after:origin-right">
-                        {language === 'ar' ? 'تسوقي كل المنتجات' : 'Shop All Products'}
+                        {language === 'ar' ? 'تسوق كل المنتجات' : 'Shop All Products'}
                     </span>
                     <MdChevronRight className={`text-lg transition-transform group-hover:translate-x-0.5 ${dir === 'rtl' ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
                 </Link>

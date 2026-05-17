@@ -6,7 +6,6 @@ import CategoriesRail from './CategoriesRail';
 import FeaturedCollection from './FeaturedCollection';
 import PromoBanner from './PromoBanner';
 import CountdownOffer from './CountdownOffer';
-import CategoryPills from './CategoryPills';
 import TrendingWeekly from './TrendingWeekly';
 import FeaturedCategoriesGrid from './FeaturedCategoriesGrid';
 import CategoryHighlightCards from './CategoryHighlightCards';
@@ -78,36 +77,29 @@ const Main = async ({ banners, mainBrands, featuredNewArrivals, featuredBundles,
             {/* 1. Hero Carousel Section */}
             <HeroCarousel banners={banners} />
 
-            {/* 2. Categories Rail (Replaces Feature Bar) */}
-            <CategoriesRail />
+            {/* 2. Main Categories (10x Better UI/UX) */}
+            <CategoryHighlightCards mainBrands={mainBrands} />
 
-            {/* 3. Promo Banner (Moved up) */}
+            {/* 3. First Ad */}
             <PromoBanner />
 
-
-
+            {/* 4. الجديد والمحبوب (New Arrivals & Best Sellers) */}
             <FeaturedCollection
                 newArrivals={featuredNewArrivals}
                 bundles={featuredBundles}
                 bestSellers={featuredBestSellers}
             />
 
-            {/* 6. Countdown Offer Section */}
-            <CountdownOffer />
+            {/* 5. Categories Rail (Custom Static List) */}
+            <CategoriesRail />
 
-            {/* 7. Category Pills Section */}
-            <CategoryPills />
-
-            {/* 8. Category Highlight Cards - 4 tall brand cards */}
-            <CategoryHighlightCards mainBrands={mainBrands} />
-
-            {/* 9. Trending This Week - Horizontal Product Cards */}
+            {/* 6. Trending This Week - Horizontal Product Cards */}
             <TrendingWeekly products={trendingWeekly} />
 
-            {/* 10. Featured Categories Grid - Hero + Category Cards */}
-            <FeaturedCategoriesGrid categories={featuredCategories} />
+            {/* 7. Countdown Offer Section */}
+            <CountdownOffer />
 
-            {/* 11. Testimonials Masonry */}
+            {/* 8. Testimonials Masonry */}
             <TestimonialsMasonry products={featuredBestSellers} />
         </main>
     );

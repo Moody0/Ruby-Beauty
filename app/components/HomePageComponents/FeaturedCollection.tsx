@@ -59,7 +59,7 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
     }
 
     return (
-        <section className="container-custom py-8 md:py-10">
+        <section className="container-custom py-4 md:py-6">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6 px-2">
                 <div className="flex-1">
                     <h2 className="text-lg sm:text-xl md:text-[32px] font-semibold text-[#000000] dark:text-text-main-dark">

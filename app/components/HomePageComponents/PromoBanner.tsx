@@ -30,7 +30,7 @@ const PromoBanner = () => {
                             href="/products"
                             className="px-8 py-3 bg-black text-white hover:bg-white hover:text-black border border-transparent hover:border-black rounded-full font-bold text-sm md:text-base transition-all shadow-lg active:scale-95 whitespace-nowrap"
                         >
-                            {dir === 'rtl' ? 'تسوقي الآن' : 'Shop Now'}
+                            {dir === 'rtl' ? 'تسوق الآن' : 'Shop Now'}
                         </Link>
                     </div>
 

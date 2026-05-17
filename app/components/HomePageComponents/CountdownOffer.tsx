@@ -45,7 +45,7 @@ const CountdownOffer = () => {
     return (
         <section className="w-full py-10 md:py-12 bg-white dark:bg-[#121212]">
             <div className="container-custom">
-                <div className={`w-full rounded-[15px] bg-[#f9dae5] h-auto md:h-[160px] py-8 md:py-0 px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4 ${dir === 'rtl' ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+                <div className={`w-full rounded-[10px] bg-[#f9dae5] h-auto md:h-[160px] py-8 md:py-0 px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4 ${dir === 'rtl' ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                     
                     {/* 1. Subheading */}
                     <div className="flex-shrink-0">
