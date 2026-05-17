@@ -61,7 +61,7 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
     const { formatPrice } = useCurrency();
 
     return (
-        <section className="container-custom py-4 md:py-6">
+        <section className="container-custom">
             {/* Header */}
             <div className={`flex flex-col md:flex-row md:items-center md:justify-between mb-8 px-2 gap-2 ${dir === 'rtl' ? 'items-start md:items-center' : 'items-start md:items-center'}`}>
                 <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold text-[#072835] dark:text-white ${dir === 'rtl' ? 'text-right w-full' : 'text-left w-full'}`}>

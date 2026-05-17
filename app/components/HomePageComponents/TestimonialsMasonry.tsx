@@ -105,7 +105,7 @@ const TestimonialsMasonry = ({ products }: { products?: Product[] }) => {
     };
     
     return (
-        <section className="w-full py-10 md:py-16 bg-white overflow-hidden">
+        <section className="w-full bg-white overflow-hidden pb-10 md:pb-16">
             <div className="container-custom">
                 {/* Header */}
                 <div className="text-center max-w-2xl mx-auto mb-10 md:mb-14">

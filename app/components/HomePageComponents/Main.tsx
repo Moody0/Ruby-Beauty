@@ -73,31 +73,34 @@ interface MainProps {
 
 const Main = async ({ banners, mainBrands, featuredNewArrivals, featuredBundles, featuredBestSellers, trendingWeekly, featuredCategories, settings }: MainProps) => {
     return (
-        <main className="w-full flex flex-col pb-12">
-            {/* 1. Hero Carousel Section */}
-            <HeroCarousel banners={banners} />
+        <main className="w-full flex flex-col gap-y-[40px] md:gap-y-[80px] pb-12">
+            {/* Group Hero Carousel and Categories Rail close to each other */}
+            <div className="flex flex-col gap-y-0">
+                {/* 1. Hero Carousel Section */}
+                <HeroCarousel banners={banners} />
 
-            {/* 2. Main Categories (10x Better UI/UX) */}
-            <CategoryHighlightCards mainBrands={mainBrands} />
+                {/* 2. Categories Rail (12 Custom Circular Items) */}
+                <CategoriesRail />
+            </div>
 
-            {/* 3. First Ad */}
+            {/* 3. First Ad - Placed above CategoryHighlightCards */}
             <PromoBanner />
 
-            {/* 4. الجديد والمحبوب (New Arrivals & Best Sellers) */}
+            {/* 4. Main Categories (4 highlight cards - تسوق حسب الفئة) */}
+            <CategoryHighlightCards mainBrands={mainBrands} />
+
+            {/* 5. Countdown Offer Section - Placed directly below CategoryHighlightCards */}
+            <CountdownOffer />
+
+            {/* 6. الجديد والمحبوب (New Arrivals & Best Sellers) */}
             <FeaturedCollection
                 newArrivals={featuredNewArrivals}
                 bundles={featuredBundles}
                 bestSellers={featuredBestSellers}
             />
 
-            {/* 5. Categories Rail (Custom Static List) */}
-            <CategoriesRail />
-
-            {/* 6. Trending This Week - Horizontal Product Cards */}
+            {/* 7. Trending This Week - Horizontal Product Cards */}
             <TrendingWeekly products={trendingWeekly} />
-
-            {/* 7. Countdown Offer Section */}
-            <CountdownOffer />
 
             {/* 8. Testimonials Masonry */}
             <TestimonialsMasonry products={featuredBestSellers} />

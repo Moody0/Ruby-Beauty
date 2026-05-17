@@ -31,7 +31,7 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
     const inputRef = useRef<HTMLInputElement>(null);
 
     const isArabic = currentLocale === 'ar';
-    const searchPlaceholder = placeholder || (isArabic ? "بتدوري على ايه؟" : "What are you looking for?");
+    const searchPlaceholder = placeholder || (isArabic ? "عن ماذا تبحثين؟" : "What are you looking for?");
 
     // Click outside to close
     useEffect(() => {

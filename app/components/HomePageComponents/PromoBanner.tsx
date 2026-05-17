@@ -8,7 +8,7 @@ const PromoBanner = () => {
     const { t, dir } = useLanguage();
 
     return (
-        <section className="container-custom py-8 md:py-12 border-b border-[#E6E9EB] dark:border-white/10">
+        <section className="container-custom">
             <div className="relative w-full rounded-[10px] overflow-hidden h-[108px] md:h-[160px] flex items-center px-6 md:px-16">
                 
                 {/* Background Image */}

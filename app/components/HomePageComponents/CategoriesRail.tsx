@@ -36,7 +36,7 @@ const CategoriesRail = () => {
     const isRightDisabled = isRtl ? !canScrollBackward : !canScrollForward;
 
     return (
-        <section className="w-full bg-white dark:bg-[#121212] py-4 md:py-6 border-b border-gray-100 dark:border-white/5">
+        <section className="w-full bg-white dark:bg-[#121212] pt-2 pb-2 md:pt-3 md:pb-3 border-b border-gray-100 dark:border-white/5">
             <div className="container-custom">
                 <div className="relative group">
                     <div
@@ -50,7 +50,7 @@ const CategoriesRail = () => {
                                     href={`/products?category=${category.slug}`}
                                     className="flex flex-col items-center gap-2 w-[100px] md:w-[120px] flex-none snap-start group/card"
                                 >
-                                    <div className="w-20 h-20 rounded-full overflow-hidden relative bg-gray-100">
+                                    <div className="w-[60px] h-[60px] md:w-20 md:h-20 rounded-full overflow-hidden relative bg-gray-100">
                                         <img
                                             src={category.image}
                                             alt={category.name}
@@ -58,7 +58,7 @@ const CategoriesRail = () => {
                                             loading="lazy"
                                         />
                                     </div>
-                                    <h3 className="text-sm font-bold text-center text-[#000000] dark:text-white flex items-center gap-1">
+                                    <h3 className="text-[15px] font-medium text-center text-[#000000] dark:text-white flex items-center gap-1">
                                         <span>{language === 'ar' ? category.nameAr : category.name}</span>
                                         <svg 
                                             className={`w-3.5 h-3.5 opacity-0 -translate-x-1.5 group-hover/card:opacity-100 group-hover/card:translate-x-0 transition-all duration-500 ease-out ${dir === 'rtl' ? 'rotate-180' : ''}`} 
