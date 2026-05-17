@@ -105,14 +105,27 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                 <div className="flex flex-col md:flex-row rtl:md:flex-row-reverse h-full w-full">
                                     
                                     {/* Image Container - Full width/height on mobile, left side on desktop */}
-                                    <div className="w-full h-full md:w-1/2 relative shrink-0">
+                                    <Link 
+                                        href={banner.link || "/products"} 
+                                        className="w-full h-full md:w-1/2 relative shrink-0 block group/mobile overflow-hidden active:scale-[0.98] md:active:scale-100 transition-transform duration-300"
+                                    >
                                         <img
                                             src={getSafeImageUrl(banner.image)}
                                             alt={getBannerTitle(banner)}
-                                            className="w-full h-full object-cover object-center"
+                                            className="w-full h-full object-cover object-center transition-transform duration-700 md:group-hover/mobile:scale-105"
                                             loading={index === 0 ? "eager" : "lazy"}
                                         />
-                                    </div>
+                                        
+                                        {/* Mobile Click Indicator - Hidden on Desktop */}
+                                        <div className="absolute bottom-2.5 ltr:right-2.5 rtl:left-2.5 md:hidden z-10 pointer-events-none">
+                                            <span className="bg-white/95 backdrop-blur-md text-black text-[10px] font-bold py-1 px-3 rounded-full shadow-lg flex items-center gap-1.5 border border-white/20">
+                                                {getBannerButtonText(banner)}
+                                                <svg className={`w-2.5 h-2.5 ${dir === 'rtl' ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M7.5 3.75L13.75 10L7.5 16.25" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </Link>
 
                                     {/* Content Container - Hidden on mobile, Right side on desktop */}
                                     <div className="relative z-10 hidden md:flex w-full md:h-full md:w-1/2 flex-col items-center justify-center text-center md:px-12 lg:px-20 bg-[#FAECE8] dark:bg-[#1a1a1a]">
@@ -144,10 +157,10 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                         ))}
                     </Swiper>
 
-                    {/* Navigation and Pagination Group - Always Bottom Right corner */}
-                    <div className="absolute bottom-6 right-6 z-20 flex items-center pointer-events-none">
+                    {/* Navigation and Pagination Group - Centered on Mobile, Bottom Right on Desktop */}
+                    <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:bottom-6 md:right-6 z-20 flex items-center pointer-events-none">
                         
-                        <button className="swiper-button-prev-hero pointer-events-auto flex items-center justify-center text-[#4A4A4A] hover:text-black transition-colors mr-2">
+                        <button className="swiper-button-prev-hero pointer-events-auto hidden md:flex items-center justify-center text-[#4A4A4A] hover:text-black transition-colors mr-2">
                             <svg className="w-4 h-4 rtl:scale-x-[-1]" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M12.5 16.25L6.25 10L12.5 3.75" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"></path>
                             </svg>
@@ -155,7 +168,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
 
                         <div className="hero-swiper-pagination pointer-events-auto flex items-center justify-center" />
 
-                        <button className="swiper-button-next-hero pointer-events-auto flex items-center justify-center text-[#4A4A4A] hover:text-black transition-colors ml-2">
+                        <button className="swiper-button-next-hero pointer-events-auto hidden md:flex items-center justify-center text-[#4A4A4A] hover:text-black transition-colors ml-2">
                             <svg className="w-4 h-4 rtl:scale-x-[-1]" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M7.5 3.75L13.75 10L7.5 16.25" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"></path>
                             </svg>
