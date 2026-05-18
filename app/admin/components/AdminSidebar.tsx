@@ -13,7 +13,8 @@ import {
     MdGroup, 
     MdSettings,
     MdClose,
-    MdLogout
+    MdLogout,
+    MdAccountTree
 } from "react-icons/md";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
@@ -48,6 +49,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 
     const navItems: NavItem[] = [
         { href: "/admin/dashboard", icon: MdDashboard, label: t('admin.dashboard') },
+        { href: "/admin/main-categories", icon: MdAccountTree, label: "Main Categories", superAdminOnly: true },
         { href: "/admin/brands", icon: MdStorefront, label: t('admin.brands'), permission: "canManageBrands" },
         { href: "/admin/products", icon: MdShoppingBag, label: t('admin.products'), permission: "canManageProducts" },
         { href: "/admin/categories", icon: MdCategory, label: t('admin.categories'), permission: "canManageCategories" },

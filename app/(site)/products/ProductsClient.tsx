@@ -48,6 +48,7 @@ interface ProductsClientProps {
     initialTotal: number;
     activeCategory?: Category | null;
     activeBrand?: Brand | null;
+    activeMainCategoryId?: string | null;
 }
 
 const ProductsClient = ({
@@ -56,6 +57,7 @@ const ProductsClient = ({
     initialTotal,
     activeCategory = null,
     activeBrand = null,
+    activeMainCategoryId = null,
 }: ProductsClientProps) => {
     const { t, language } = useLanguage();
     const [products, setProducts] = useState<Product[]>(initialProducts);
@@ -73,13 +75,14 @@ const ProductsClient = ({
             const currentPage = reset ? 1 : page;
             const categoryQuery = activeCategory ? `&categoryIds=${activeCategory.id}` : "";
             const brandQuery = activeBrand ? `&brandIds=${activeBrand.id}` : "";
+            const mainCategoryQuery = activeMainCategoryId ? `&mainCategoryId=${activeMainCategoryId}` : "";
 
             let sortQuery = "";
             if (sort === "Price: Low to High") sortQuery = "&sort=price_asc";
             else if (sort === "Price: High to Low") sortQuery = "&sort=price_desc";
             else if (sort === "Newest Arrivals") sortQuery = "&sort=newest";
 
-            const response = await fetch(`/api/products?page=${currentPage}&limit=12${categoryQuery}${brandQuery}${sortQuery}`);
+            const response = await fetch(`/api/products?page=${currentPage}&limit=12${categoryQuery}${brandQuery}${mainCategoryQuery}${sortQuery}`);
 
             if (response.ok) {
                 const data = await response.json();

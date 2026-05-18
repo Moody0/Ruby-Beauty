@@ -14,6 +14,12 @@ interface Brand {
     group: "MAIN" | "DIFFERENT";
     isActive: boolean;
     isFeatured: boolean;
+    mainCategoryId?: string | null;
+}
+
+interface MainCategoryOption {
+    id: string;
+    name: string;
 }
 
 interface BrandModalProps {
@@ -25,6 +31,7 @@ interface BrandModalProps {
 export default function BrandModal({ isOpen, onClose, brand }: BrandModalProps) {
     const { t } = useLanguage();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [mainCategories, setMainCategories] = useState<MainCategoryOption[]>([]);
     const [formData, setFormData] = useState({
         name: "",
         description: "",
@@ -32,7 +39,16 @@ export default function BrandModal({ isOpen, onClose, brand }: BrandModalProps) 
         group: "DIFFERENT" as "MAIN" | "DIFFERENT",
         isActive: true,
         isFeatured: false,
+        mainCategoryId: "",
     });
+
+    useEffect(() => {
+        // Fetch main categories for the dropdown
+        fetch("/api/main-categories")
+            .then((res) => res.json())
+            .then((data) => setMainCategories(data))
+            .catch(() => setMainCategories([]));
+    }, []);
 
     useEffect(() => {
         if (brand) {
@@ -43,6 +59,7 @@ export default function BrandModal({ isOpen, onClose, brand }: BrandModalProps) 
                 group: brand.group,
                 isActive: brand.isActive,
                 isFeatured: brand.isFeatured,
+                mainCategoryId: brand.mainCategoryId || "",
             });
         } else {
             setFormData({
@@ -52,6 +69,7 @@ export default function BrandModal({ isOpen, onClose, brand }: BrandModalProps) 
                 group: "DIFFERENT",
                 isActive: true,
                 isFeatured: false,
+                mainCategoryId: "",
             });
         }
     }, [brand, isOpen]);
@@ -66,6 +84,7 @@ export default function BrandModal({ isOpen, onClose, brand }: BrandModalProps) 
             const payload = {
                 ...formData,
                 isFeatured: formData.group === "MAIN" ? formData.isFeatured : false,
+                mainCategoryId: formData.mainCategoryId || undefined,
             };
             const result = brand ? await updateBrand(brand.id, payload) : await createBrand(payload);
 
@@ -115,6 +134,22 @@ export default function BrandModal({ isOpen, onClose, brand }: BrandModalProps) 
                             placeholder="https://example.com/brand.jpg"
                             className="rounded-xl border border-[#e6dbdf] bg-white px-4 py-3 text-text-main outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
                         />
+                    </label>
+
+                    <label className="flex flex-col gap-2">
+                        <span className="text-sm font-bold text-text-main dark:text-white">Main Category</span>
+                        <select
+                            value={formData.mainCategoryId}
+                            onChange={(event) => setFormData({ ...formData, mainCategoryId: event.target.value })}
+                            className="rounded-xl border border-[#e6dbdf] bg-white px-4 py-3 text-text-main outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+                        >
+                            <option value="">-- No Main Category --</option>
+                            {mainCategories.map((mc) => (
+                                <option key={mc.id} value={mc.id}>
+                                    {mc.name}
+                                </option>
+                            ))}
+                        </select>
                     </label>
 
                     <label className="flex flex-col gap-2">

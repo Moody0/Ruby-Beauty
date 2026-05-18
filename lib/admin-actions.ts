@@ -35,6 +35,7 @@ interface BrandInput {
     group?: BrandGroup | "MAIN" | "DIFFERENT";
     isActive?: boolean;
     isFeatured?: boolean;
+    mainCategoryId?: string;
 }
 
 type ProductImportRow = Record<string, string | number | boolean | null | undefined>;
@@ -223,6 +224,7 @@ export async function createBrand(data: BrandInput) {
                 group,
                 isActive: data.isActive ?? true,
                 isFeatured: group === BrandGroup.MAIN ? (data.isFeatured ?? false) : false,
+                mainCategoryId: data.mainCategoryId || null,
             },
         });
 
@@ -259,6 +261,7 @@ export async function updateBrand(id: string, data: BrandInput) {
                 group,
                 isActive: data.isActive ?? true,
                 isFeatured: group === BrandGroup.MAIN ? (data.isFeatured ?? false) : false,
+                mainCategoryId: data.mainCategoryId || null,
             },
         });
 
@@ -340,6 +343,164 @@ export async function toggleBrandFeatured(id: string, isFeatured: boolean) {
     } catch (error) {
         console.error("Failed to toggle brand featured status:", error);
         return { success: false, error: "Failed to toggle brand featured status" };
+    }
+}
+
+// ==================== MAIN CATEGORY ACTIONS ====================
+
+interface MainCategoryInput {
+    name: string;
+    description?: string;
+    image?: string;
+    isActive?: boolean;
+    isFeatured?: boolean;
+}
+
+export async function getAdminMainCategories() {
+    try {
+        const mainCategories = await prisma.mainCategory.findMany({
+            orderBy: { name: "asc" },
+            include: {
+                _count: {
+                    select: {
+                        brands: true,
+                        categories: true,
+                        products: true,
+                    },
+                },
+            },
+        });
+
+        return mainCategories.map((mc) => ({
+            ...mc,
+            createdAt: mc.createdAt.toISOString(),
+            updatedAt: mc.updatedAt.toISOString(),
+        }));
+    } catch (error) {
+        console.error("Failed to fetch main categories:", error);
+        return [];
+    }
+}
+
+export async function createMainCategory(data: MainCategoryInput) {
+    try {
+        const slug = data.name
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, "-")
+            .replace(/[^\w-]+/g, "");
+
+        const existing = await prisma.mainCategory.findUnique({ where: { slug } });
+        if (existing) {
+            return { success: false, error: "A main category with this name already exists" };
+        }
+
+        const mainCategory = await prisma.mainCategory.create({
+            data: {
+                name: data.name.trim(),
+                slug,
+                description: data.description,
+                image: data.image,
+                isActive: data.isActive ?? true,
+                isFeatured: data.isFeatured ?? false,
+            },
+        });
+
+        revalidatePath("/");
+        revalidatePath("/admin/main-categories");
+        return {
+            success: true,
+            mainCategory: {
+                ...mainCategory,
+                createdAt: mainCategory.createdAt.toISOString(),
+                updatedAt: mainCategory.updatedAt.toISOString(),
+            },
+        };
+    } catch (error) {
+        console.error("Failed to create main category:", error);
+        return { success: false, error: "Failed to create main category" };
+    }
+}
+
+export async function updateMainCategory(id: string, data: MainCategoryInput) {
+    try {
+        const slug = data.name
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, "-")
+            .replace(/[^\w-]+/g, "");
+
+        const conflict = await prisma.mainCategory.findFirst({
+            where: { slug, id: { not: id } },
+        });
+        if (conflict) {
+            return { success: false, error: "A main category with this name already exists" };
+        }
+
+        const mainCategory = await prisma.mainCategory.update({
+            where: { id },
+            data: {
+                name: data.name.trim(),
+                slug,
+                description: data.description,
+                image: data.image,
+                isActive: data.isActive ?? true,
+                isFeatured: data.isFeatured ?? false,
+            },
+        });
+
+        revalidatePath("/");
+        revalidatePath("/admin/main-categories");
+        return {
+            success: true,
+            mainCategory: {
+                ...mainCategory,
+                createdAt: mainCategory.createdAt.toISOString(),
+                updatedAt: mainCategory.updatedAt.toISOString(),
+            },
+        };
+    } catch (error) {
+        console.error("Failed to update main category:", error);
+        return { success: false, error: "Failed to update main category" };
+    }
+}
+
+export async function deleteMainCategory(id: string) {
+    try {
+        const [brandCount, categoryCount, productCount] = await Promise.all([
+            prisma.brand.count({ where: { mainCategoryId: id } }),
+            prisma.category.count({ where: { mainCategoryId: id } }),
+            prisma.product.count({ where: { mainCategoryId: id } }),
+        ]);
+
+        if (brandCount > 0 || categoryCount > 0 || productCount > 0) {
+            return { success: false, error: "Cannot delete a main category that has brands, categories, or products assigned to it. Please reassign them first." };
+        }
+
+        await prisma.mainCategory.delete({ where: { id } });
+
+        revalidatePath("/");
+        revalidatePath("/admin/main-categories");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to delete main category:", error);
+        return { success: false, error: "Failed to delete main category" };
+    }
+}
+
+export async function toggleMainCategoryActive(id: string, isActive: boolean) {
+    try {
+        await prisma.mainCategory.update({
+            where: { id },
+            data: { isActive },
+        });
+
+        revalidatePath("/");
+        revalidatePath("/admin/main-categories");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to toggle main category active status:", error);
+        return { success: false, error: "Failed to toggle active status" };
     }
 }
 

@@ -19,6 +19,7 @@ interface Brand {
     group: "MAIN" | "DIFFERENT";
     isActive: boolean;
     isFeatured: boolean;
+    mainCategoryId?: string | null;
     _count: {
         products: number;
         categories: number;

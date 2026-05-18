@@ -11,6 +11,7 @@ import CartTrigger from './CartTrigger';
 import ThemeToggle from './ThemeToggle';
 import LanguageToggle from './LanguageToggle';
 import CurrencyToggle from './CurrencyToggle';
+import MegaMenu, { type NavMainCategory } from './HeaderComponents/MegaMenu';
 
 interface HeaderCategory {
     id: string;
@@ -36,6 +37,21 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
     const isNavVisible = !isScrolled || manualToggle;
     const isScrolledRef = React.useRef(false);
 
+    // Mega menu state
+    const [navData, setNavData] = React.useState<NavMainCategory[]>([]);
+    const [activeMegaMenu, setActiveMegaMenu] = React.useState<string | null>(null);
+    const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+    // Fetch navigation data on mount
+    React.useEffect(() => {
+        fetch('/api/navigation')
+            .then((res) => res.json())
+            .then((data) => {
+                if (Array.isArray(data)) setNavData(data);
+            })
+            .catch(() => {});
+    }, []);
+
     React.useEffect(() => {
         const handleScroll = () => {
             if (window.scrollY > 100 && !isScrolledRef.current) {
@@ -51,6 +67,26 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    const handleNavEnter = (slug: string) => {
+        if (closeTimeoutRef.current) {
+            clearTimeout(closeTimeoutRef.current);
+            closeTimeoutRef.current = null;
+        }
+        setActiveMegaMenu(slug);
+    };
+
+    const handleNavLeave = () => {
+        closeTimeoutRef.current = setTimeout(() => {
+            setActiveMegaMenu(null);
+        }, 150);
+    };
+
+    const handleMegaMenuClose = () => {
+        setActiveMegaMenu(null);
+    };
+
+    const activeNavData = navData.find((mc) => mc.slug === activeMegaMenu);
+
     return (
         <header className="sticky top-0 z-50 w-full bg-white dark:bg-surface-dark border-b border-[#f4f0f2] dark:border-white/10 transition-all duration-300">
             <div className="container-custom">
@@ -62,30 +98,29 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                         <div className="flex items-center shrink-0">
                             <button
                                 onClick={() => setManualToggle(prev => !prev)}
-                                className={`flex items-center justify-center transition-all duration-500 ease-in-out h-10 overflow-hidden text-text-main-light dark:text-white ${
-                                    isScrolled ? 'w-10 opacity-100' : 'w-0 opacity-0 pointer-events-none'
-                                }`}
+                                className={`flex items-center justify-center transition-all duration-500 ease-in-out h-10 overflow-hidden text-text-main-light dark:text-white ${isScrolled ? 'w-10 opacity-100' : 'w-0 opacity-0 pointer-events-none'
+                                    }`}
                             >
                                 <div className="w-5 h-5 flex flex-col items-center justify-center gap-[4px]">
-                                    <span className={`block w-5 h-0.5 bg-current rounded-full transition-all duration-300 origin-center ${
-                                        isNavVisible && isScrolled ? 'translate-y-[6px] rotate-45' : ''
-                                    }`} />
-                                    <span className={`block w-5 h-0.5 bg-current rounded-full transition-all duration-300 ${
-                                        isNavVisible && isScrolled ? 'opacity-0 scale-0' : ''
-                                    }`} />
-                                    <span className={`block w-5 h-0.5 bg-current rounded-full transition-all duration-300 origin-center ${
-                                        isNavVisible && isScrolled ? '-translate-y-[6px] -rotate-45' : ''
-                                    }`} />
+                                    <span className={`block w-5 h-0.5 bg-current rounded-full transition-all duration-300 origin-center ${isNavVisible && isScrolled ? 'translate-y-[6px] rotate-45' : ''
+                                        }`} />
+                                    <span className={`block w-5 h-0.5 bg-current rounded-full transition-all duration-300 ${isNavVisible && isScrolled ? 'opacity-0 scale-0' : ''
+                                        }`} />
+                                    <span className={`block w-5 h-0.5 bg-current rounded-full transition-all duration-300 origin-center ${isNavVisible && isScrolled ? '-translate-y-[6px] -rotate-45' : ''
+                                        }`} />
                                 </div>
                             </button>
 
                             <div className={`transition-all duration-500 ease-in-out ${isScrolled ? 'ms-2' : 'ms-0'}`}>
                                 <Link href="/" className="flex flex-col items-center">
-                                    <span className="text-2xl md:text-3xl font-bold tracking-tight text-text-main-light dark:text-white">
+                                    <span className="text-[28px] font-semibold tracking-tight text-[rgb(46,46,46)] dark:text-white">
                                         Ruby Beauty
                                     </span>
-                                    <span className="text-[10px] text-text-muted-light dark:text-text-muted-dark tracking-[0.2em] font-medium uppercase mt-[-4px]">
-                                        {dir === 'rtl' ? 'جمالك يليق بك' : 'Your beauty deserves it'}
+                                    <span className={`font-medium transition-all duration-300 ${dir === 'rtl'
+                                        ? 'text-[13px] tracking-normal mt-[-4px] font-semibold text-[rgb(46,46,46)] dark:text-white'
+                                        : 'text-[10px] tracking-[0.2em] uppercase mt-[-4px] text-[rgb(46,46,46)] dark:text-white/70'
+                                        }`}>
+                                        {dir === 'rtl' ? 'جـمــالــك يـلـيــق بــك' : 'Your beauty deserves it'}
                                     </span>
                                 </Link>
                             </div>
@@ -121,7 +156,7 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                         <div className="flex items-center justify-between">
                             {/* Right Group: Logo and Menu (Now on Left) - Internal Order Swapped */}
                             <div className="flex items-center gap-4">
-                                <button 
+                                <button
                                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                                     className="p-1 text-text-main-light dark:text-white"
                                 >
@@ -132,11 +167,14 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                                     )}
                                 </button>
                                 <Link href="/" className="flex flex-col items-center">
-                                    <span className="text-lg font-bold tracking-tight text-text-main-light dark:text-white leading-tight uppercase">
+                                    <span className="text-[19.6px] font-semibold tracking-tight text-[rgb(46,46,46)] dark:text-white leading-tight uppercase">
                                         Ruby Beauty
                                     </span>
-                                    <span className="text-[9px] text-text-muted-light dark:text-text-muted-dark tracking-[0.1em] font-medium mt-[-2px]">
-                                        جمالك يليق بك
+                                    <span className={`font-medium transition-all duration-300 ${dir === 'rtl'
+                                        ? 'text-[11px] tracking-normal mt-[1.5px] font-semibold text-[rgb(46,46,46)] dark:text-white'
+                                        : 'text-[9px] tracking-[0.1em] uppercase mt-[-2px] text-[rgb(46,46,46)] dark:text-white/70'
+                                        }`}>
+                                        {dir === 'rtl' ? 'جـمــالــك يـلـيــق بــك' : 'Your beauty deserves it'}
                                     </span>
                                 </Link>
                             </div>
@@ -165,7 +203,7 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                     </div>
 
                     {/* Mobile Overlays Wrapper */}
-                    <MobileMenu 
+                    <MobileMenu
                         initialCategories={initialCategories}
                         isOpen={isMobileMenuOpen}
                         setIsOpen={setIsMobileMenuOpen}
@@ -178,32 +216,75 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
             </div>
 
             {/* Navigation Links Row - Desktop only - Full Width Background */}
-            <nav className={`hidden md:grid bg-[#F1F1F1] dark:bg-white/5 border-t border-gray-100 dark:border-white/5 transition-all duration-300 ease-in-out ${
-                !isNavVisible ? 'grid-rows-[0fr] opacity-0 border-t-0' : 'grid-rows-[1fr] opacity-100'
-            }`}>
+            <nav
+                className={`hidden md:grid bg-[#F1F1F1] dark:bg-white/5 border-t border-gray-100 dark:border-white/5 transition-all duration-300 ease-in-out relative ${!isNavVisible ? 'grid-rows-[0fr] opacity-0 border-t-0' : 'grid-rows-[1fr] opacity-100'
+                    }`}
+            >
                 <div className="overflow-hidden">
                     <div className="container-custom">
                         <div className="flex items-center justify-center gap-8 py-3">
-                            {[
-                                { href: '/', label: t('common.home') },
-                                { href: '/brands/ruby-beauty', label: t('nav.rubyBeauty') },
-                                { href: '/brands/makeup', label: t('nav.makeup') },
-                                { href: '/brands/perfumes', label: t('nav.perfumes') },
-                                { href: '/brands/accessories', label: t('nav.accessories') },
-                                { href: '/products', label: t('nav.offers') },
-                                { href: '/products?sort=newest', label: t('nav.newArrivals') },
-                            ].map((link, index) => (
-                                <Link 
-                                    key={index}
-                                    href={link.href} 
-                                    className="text-[15px] font-bold text-[#1C1C1C] dark:text-white/90 relative inline-block after:content-[''] after:absolute after:bottom-[-2px] after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
+                            {/* Home link */}
+                            <Link
+                                href="/"
+                                className="text-[15px] font-bold text-[#1C1C1C] dark:text-white/90 relative inline-block after:content-[''] after:absolute after:bottom-[-2px] after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
+                            >
+                                {t('common.home')}
+                            </Link>
+
+                            {/* Dynamic Main Category links with mega menu */}
+                            {navData.map((mc) => (
+                                <div
+                                    key={mc.id}
+                                    className="relative"
+                                    onMouseEnter={() => handleNavEnter(mc.slug)}
+                                    onMouseLeave={handleNavLeave}
                                 >
-                                    {link.label}
-                                </Link>
+                                    <Link
+                                        href={`/department/${mc.slug}`}
+                                        className={`text-[15px] font-bold relative inline-block after:content-[''] after:absolute after:bottom-[-2px] after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:origin-left hover:after:origin-right transition-colors ${
+                                            activeMegaMenu === mc.slug
+                                                ? 'text-black dark:text-white after:scale-x-100'
+                                                : 'text-[#1C1C1C] dark:text-white/90 after:scale-x-0 hover:after:scale-x-100'
+                                        }`}
+                                    >
+                                        {mc.name}
+                                    </Link>
+                                </div>
                             ))}
+
+                            {/* Offers link */}
+                            <Link
+                                href="/products"
+                                className="text-[15px] font-bold text-[#1C1C1C] dark:text-white/90 relative inline-block after:content-[''] after:absolute after:bottom-[-2px] after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
+                            >
+                                {t('nav.offers')}
+                            </Link>
+
+                            {/* New Arrivals link */}
+                            <Link
+                                href="/products?sort=newest"
+                                className="text-[15px] font-bold text-[#1C1C1C] dark:text-white/90 relative inline-block after:content-[''] after:absolute after:bottom-[-2px] after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
+                            >
+                                {t('nav.newArrivals')}
+                            </Link>
                         </div>
                     </div>
                 </div>
+
+                {/* Mega Menu Dropdown */}
+                {activeMegaMenu && activeNavData && (
+                    <MegaMenu
+                        data={activeNavData}
+                        onClose={handleMegaMenuClose}
+                        onMouseEnter={() => {
+                            if (closeTimeoutRef.current) {
+                                clearTimeout(closeTimeoutRef.current);
+                                closeTimeoutRef.current = null;
+                            }
+                        }}
+                        onMouseLeave={handleNavLeave}
+                    />
+                )}
             </nav>
         </header>
     );

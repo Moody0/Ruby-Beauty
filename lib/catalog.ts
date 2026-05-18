@@ -154,11 +154,12 @@ export async function getCategoryBySlug(slug: string) {
     });
 }
 
-export async function getCatalogInitialData(categoryId?: string, brandId?: string) {
+export async function getCatalogInitialData(categoryId?: string, brandId?: string, mainCategoryId?: string) {
     const whereClause: {
         stock: { gt: number };
         categoryId?: string;
         brandId?: string;
+        mainCategoryId?: string;
         brand: { isActive: boolean };
     } = {
         stock: { gt: 0 },
@@ -171,6 +172,10 @@ export async function getCatalogInitialData(categoryId?: string, brandId?: strin
 
     if (brandId) {
         whereClause.brandId = brandId;
+    }
+
+    if (mainCategoryId) {
+        whereClause.mainCategoryId = mainCategoryId;
     }
 
     const [categories, products, totalProducts] = await Promise.all([

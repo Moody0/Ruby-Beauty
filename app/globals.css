@@ -192,6 +192,21 @@ html.app-loading #app-shell {
   }
 }
 
+@keyframes mega-menu-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-mega-menu-enter {
+  animation: mega-menu-enter 0.25s ease-out forwards;
+}
+
 /* Custom scrollbar for better aesthetics */
 ::-webkit-scrollbar {
   width: 8px;

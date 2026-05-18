@@ -13,6 +13,7 @@ export async function GET(request: Request) {
         const sort = searchParams.get("sort");
         const categoryIdsParam = searchParams.get("categoryIds");
         const brandIdsParam = searchParams.get("brandIds");
+        const mainCategoryIdParam = searchParams.get("mainCategoryId");
         const search = searchParams.get("search");
 
         const skip = (page - 1) * limit;
@@ -34,6 +35,10 @@ export async function GET(request: Request) {
             if (ids.length > 0) {
                 where.brandId = { in: ids };
             }
+        }
+
+        if (mainCategoryIdParam) {
+            where.mainCategoryId = mainCategoryIdParam;
         }
 
         if (search) {
