@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ResilientImage from '@/app/components/ResilientImage';
+import { motion } from 'framer-motion';
 
 interface HomeBrand {
     id: string;
@@ -117,17 +118,25 @@ const CategoryHighlightCards = ({ mainBrands }: CategoryHighlightCardsProps) => 
     return (
         <section className="container-custom">
             {/* Section Title */}
-            <div className="flex justify-center mb-6 md:mb-8">
+            <div className="flex justify-center mb-6 md:mb-8 animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
                 <h2 className="text-xl md:text-2xl lg:text-[28px] font-bold text-black dark:text-white tracking-tight">
                     {language === 'ar' ? 'تسوق حسب الفئة' : 'Shop By Category'}
                 </h2>
             </div>
 
-            <div className="flex gap-4 md:gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 -mx-4 px-4 md:mx-0 md:px-0 md:overflow-visible">
+            <motion.div 
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                variants={{
+                    visible: { transition: { staggerChildren: 0.15 } }
+                }}
+                className="flex gap-4 md:gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 -mx-4 px-4 md:mx-0 md:px-0 md:overflow-visible"
+            >
                 {categoryOrder.map((slug) => {
                     const brand = mainBrands.find(b => b.slug === slug);
                     const card = CARD_DATA.find(c => c.slug === slug);
-                    
+
                     const categoryName = language === 'ar'
                         ? localizedNames[slug]?.ar || brand?.name || slug
                         : localizedNames[slug]?.en || brand?.name || slug;
@@ -135,43 +144,53 @@ const CategoryHighlightCards = ({ mainBrands }: CategoryHighlightCardsProps) => 
                     const heroImage = brand?.image || card?.heroImage || 'https://images.unsplash.com/photo-1612817288484-6f916006741a?w=800';
 
                     return (
-                        <Link
+                        <motion.div
                             key={slug}
-                            href={`/brands/${slug}`}
-                            className="group relative flex-none w-[220px] md:flex-1 min-w-0 bg-[#FDFCF8] dark:bg-[#1a1a1a] rounded-[10px] overflow-hidden snap-start transition-transform duration-300 hover:-translate-y-1 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-10px_rgba(0,0,0,0.1)] border border-black/5 dark:border-white/5"
+                            variants={{
+                                hidden: { opacity: 0, y: 40 },
+                                visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
+                            }}
+                            className="flex-none w-[220px] md:flex-1 min-w-0 snap-start"
                         >
-                            {/* Image Container */}
-                            <div className="relative w-full aspect-square overflow-hidden bg-[#F7F5F0] dark:bg-[#222]">
-                                <ResilientImage
-                                    src={heroImage}
-                                    alt={categoryName}
-                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                    loading="lazy"
-                                />
-                            </div>
+                            <Link
+                                href={`/brands/${slug}`}
+                                className="group relative block w-full bg-[#FDFCF8] dark:bg-[#1a1a1a] rounded-[10px] overflow-hidden border border-black/5 dark:border-white/5"
+                            >
+                                {/* Image Container */}
+                                <div className="relative w-full aspect-square overflow-hidden bg-[#F7F5F0] dark:bg-[#222]">
+                                    <ResilientImage
+                                        src={heroImage}
+                                        alt={categoryName}
+                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                                        loading="lazy"
+                                    />
+                                </div>
 
-                            {/* Text Content */}
-                            <div className="p-4 md:p-5 flex items-center justify-between">
-                                <div className="flex flex-col gap-1.5">
-                                    <h3 className="text-[15px] md:text-[17px] font-bold text-[#111] dark:text-white leading-none">
-                                        {categoryName}
-                                    </h3>
-                                    <p className="text-[11px] md:text-xs text-gray-500 dark:text-gray-400 font-medium leading-none">
-                                        {language === 'ar' ? 'تسوق الآن' : 'Shop Now'}
-                                    </p>
+                                {/* Text Content */}
+                                <div className="p-4 md:p-5 flex items-center justify-between">
+                                    <div className="flex flex-col gap-1.5">
+                                        <h3 className="text-[15px] md:text-[17px] font-bold text-[#111] dark:text-white leading-tight">
+                                            <span className="inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_82%] group-hover:bg-[length:100%_1px] transition-[background-size] duration-300">
+                                                {categoryName}
+                                            </span>
+                                        </h3>
+                                        <p className="text-[11px] md:text-xs text-gray-500 dark:text-gray-400 font-medium leading-none">
+                                            {language === 'ar' ? 'تسوق الآن' : 'Shop Now'}
+                                        </p>
+                                    </div>
+
+                                    {/* Outline Icon */}
+                                    <div className="shrink-0 w-8 h-8 md:w-9 md:h-9 rounded-full border-[1.5px] border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 transition-all duration-300 group-hover:border-black group-hover:text-black dark:group-hover:border-white dark:group-hover:text-white">
+                                        <svg className={`w-3.5 h-3.5 md:w-4 md:h-4 ${language === 'ar' ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    </div>
                                 </div>
-                                
-                                {/* Outline Icon */}
-                                <div className="shrink-0 w-8 h-8 md:w-9 md:h-9 rounded-full border-[1.5px] border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 transition-all duration-300 group-hover:border-black group-hover:text-black dark:group-hover:border-white dark:group-hover:text-white">
-                                    <svg className={`w-3.5 h-3.5 md:w-4 md:h-4 ${language === 'ar' ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        </Link>
+                            </Link>
+                        </motion.div>
                     );
                 })}
-            </div>
+            </motion.div>
         </section>
     );
 };

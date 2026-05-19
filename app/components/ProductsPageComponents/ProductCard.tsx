@@ -157,7 +157,7 @@ const ProductCard = ({ product, variant = 'default', badge, showBadge = true }: 
                     >
                         <Link
                             href={`/products/${product.slug}`}
-                            className="relative inline-block after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
+                            className="inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_100%] hover:bg-[length:100%_1px] transition-[background-size] duration-300"
                         >
                             {product.name}
                         </Link>

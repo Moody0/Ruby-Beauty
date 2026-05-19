@@ -91,7 +91,7 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
         <header className="sticky top-0 z-50 w-full bg-white dark:bg-surface-dark border-b border-[#f4f0f2] dark:border-white/10 transition-all duration-300">
             <div className="container-custom">
                 {/* Main Header Row */}
-                <div className="py-4 relative">
+                <div className="py-4 md:py-[11px] relative">
                     {/* Desktop Version */}
                     <div className="hidden md:flex items-center justify-between gap-6">
                         {/* Left: Logo and Menu Toggle Group */}
@@ -226,7 +226,7 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                             {/* Home link */}
                             <Link
                                 href="/"
-                                className="text-[15px] font-bold text-[#1C1C1C] dark:text-white/90 relative inline-block after:content-[''] after:absolute after:bottom-[-2px] after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
+                                className="text-[15px] font-bold text-[rgb(46,46,46)] dark:text-white/90 relative inline-block after:content-[''] after:absolute after:bottom-[-2px] after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
                             >
                                 {t('common.home')}
                             </Link>
@@ -244,7 +244,7 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                                         className={`text-[15px] font-bold relative inline-block after:content-[''] after:absolute after:bottom-[-2px] after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:origin-left hover:after:origin-right transition-colors ${
                                             activeMegaMenu === mc.slug
                                                 ? 'text-black dark:text-white after:scale-x-100'
-                                                : 'text-[#1C1C1C] dark:text-white/90 after:scale-x-0 hover:after:scale-x-100'
+                                                : 'text-[rgb(46,46,46)] dark:text-white/90 after:scale-x-0 hover:after:scale-x-100'
                                         }`}
                                     >
                                         {mc.name}
@@ -255,7 +255,7 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                             {/* Offers link */}
                             <Link
                                 href="/products"
-                                className="text-[15px] font-bold text-[#1C1C1C] dark:text-white/90 relative inline-block after:content-[''] after:absolute after:bottom-[-2px] after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
+                                className="text-[15px] font-bold text-[rgb(46,46,46)] dark:text-white/90 relative inline-block after:content-[''] after:absolute after:bottom-[-2px] after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
                             >
                                 {t('nav.offers')}
                             </Link>
@@ -263,7 +263,7 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                             {/* New Arrivals link */}
                             <Link
                                 href="/products?sort=newest"
-                                className="text-[15px] font-bold text-[#1C1C1C] dark:text-white/90 relative inline-block after:content-[''] after:absolute after:bottom-[-2px] after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
+                                className="text-[15px] font-bold text-[rgb(46,46,46)] dark:text-white/90 relative inline-block after:content-[''] after:absolute after:bottom-[-2px] after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
                             >
                                 {t('nav.newArrivals')}
                             </Link>

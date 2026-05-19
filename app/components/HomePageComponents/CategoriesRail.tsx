@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useProductRail } from './useProductRail';
+import { motion } from 'framer-motion';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 
 const STATIC_CATEGORIES = [
@@ -39,42 +40,59 @@ const CategoriesRail = () => {
         <section className="w-full bg-white dark:bg-[#121212] pt-2 pb-2 md:pt-3 md:pb-3 border-b border-gray-100 dark:border-white/5">
             <div className="container-custom">
                 <div className="relative group">
-                    <div
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: "-20px" }}
+                        variants={{
+                            visible: {
+                                transition: {
+                                    staggerChildren: 0.05,
+                                },
+                            },
+                        }}
                         ref={railRef}
                         className="-mx-4 overflow-x-auto px-4 scrollbar-hide sm:mx-0 sm:px-0"
                     >
                         <div className="flex snap-x snap-mandatory gap-6 md:gap-10 pb-2">
                             {STATIC_CATEGORIES.map((category) => (
-                                <Link
+                                <motion.div
                                     key={category.slug}
-                                    href={`/products?category=${category.slug}`}
-                                    className="flex flex-col items-center gap-2 w-[100px] md:w-[120px] flex-none snap-start group/card"
+                                    variants={{
+                                        hidden: { opacity: 0, scale: 0.8, y: 20 },
+                                        visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
+                                    }}
                                 >
-                                    <div className="w-[60px] h-[60px] md:w-20 md:h-20 rounded-full overflow-hidden relative bg-gray-100">
-                                        <img
-                                            src={category.image}
-                                            alt={category.name}
-                                            className="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105"
-                                            loading="lazy"
-                                        />
-                                    </div>
-                                    <h3 className="text-[15px] font-medium text-center text-[#000000] dark:text-white flex items-center gap-1">
-                                        <span>{language === 'ar' ? category.nameAr : category.name}</span>
-                                        <svg 
-                                            className={`w-3.5 h-3.5 opacity-0 -translate-x-1.5 group-hover/card:opacity-100 group-hover/card:translate-x-0 transition-all duration-500 ease-out ${dir === 'rtl' ? 'rotate-180' : ''}`} 
-                                            viewBox="0 0 20 20" 
-                                            fill="none" 
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <path d="M7.5 3.75L13.75 10L7.5 16.25" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                                        </svg>
-                                    </h3>
-                                </Link>
+                                    <Link
+                                        href={`/products?category=${category.slug}`}
+                                        className="flex flex-col items-center gap-2 w-[100px] md:w-[120px] flex-none snap-start group/card"
+                                    >
+                                        <div className="w-[60px] h-[60px] md:w-20 md:h-20 rounded-full overflow-hidden relative bg-gray-100">
+                                            <img
+                                                src={category.image}
+                                                alt={category.name}
+                                                className="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105"
+                                                loading="lazy"
+                                            />
+                                        </div>
+                                        <h3 className="text-[15px] font-medium text-center text-[#000000] dark:text-white flex items-center gap-1">
+                                            <span>{language === 'ar' ? category.nameAr : category.name}</span>
+                                            <svg 
+                                                className={`w-3.5 h-3.5 opacity-0 -translate-x-1.5 group-hover/card:opacity-100 group-hover/card:translate-x-0 transition-all duration-500 ease-out ${dir === 'rtl' ? 'rotate-180' : ''}`} 
+                                                viewBox="0 0 20 20" 
+                                                fill="none" 
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path d="M7.5 3.75L13.75 10L7.5 16.25" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                                            </svg>
+                                        </h3>
+                                    </Link>
+                                </motion.div>
                             ))}
                             {/* Spacer for mobile */}
                             <div className="w-[1px] shrink-0 sm:hidden"></div>
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* Desktop Navigation Arrows (Centred on circular images, top-10) */}
                     <button

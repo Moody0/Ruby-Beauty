@@ -93,21 +93,6 @@ const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
                         )}
                     </div>
 
-                    <div className="flex items-center gap-4 mb-6 text-sm font-medium text-[#0A314B]">
-                        <div className="flex items-center gap-1">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6L9 17l-5-5"/></svg>
-                            <span>جديد</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6L9 17l-5-5"/></svg>
-                            <span>Eco-certified</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6L9 17l-5-5"/></svg>
-                            <span>الضمان</span>
-                        </div>
-                    </div>
-
                     <div className="flex items-center gap-4 mb-4">
                         <button 
                             onClick={handleAddToCart}

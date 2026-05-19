@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import ProductCard from '../ProductsPageComponents/ProductCard';
 import { MdChevronRight, MdChevronLeft } from 'react-icons/md';
+import { motion } from 'framer-motion';
 
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useProductRail } from './useProductRail';
@@ -60,7 +61,13 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
 
     return (
         <section className="container-custom">
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6 px-2">
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6 px-2"
+            >
                 <div className="flex-1">
                     <h2 className="text-lg sm:text-xl md:text-[32px] font-semibold text-[#000000] dark:text-text-main-dark">
                         {t('home.featuredCollection')}
@@ -88,17 +95,27 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
                         ))}
                     </div>
                 </div>
-            </div>
+            </motion.div>
 
             <div className="relative">
-                <div
+                <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-50px" }}
+                    variants={{
+                        visible: { transition: { staggerChildren: 0.1 } }
+                    }}
                     ref={railRef}
                     className="-mx-4 overflow-x-auto px-4 scrollbar-hide sm:mx-0 sm:px-0"
                 >
                     <div className="flex snap-x snap-mandatory gap-4 pb-2 md:gap-5">
                         {activeProducts.map((product) => (
-                            <div
+                            <motion.div
                                 key={product.id}
+                                variants={{
+                                    hidden: { opacity: 0, scale: 0.85, y: 20 },
+                                    visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
+                                }}
                                 className="w-[180px] md:w-[calc((100%-60px)/4)] lg:w-[calc((100%-80px)/5)] flex-none snap-start"
                             >
                                 <ProductCard
@@ -107,12 +124,12 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
                                     showBadge={activeTab === 0}
                                     badge={activeTab === 0 ? t('home.newArrival') : undefined}
                                 />
-                            </div>
+                            </motion.div>
                         ))}
                         {/* Spacer to prevent cutoff of the last item on mobile */}
                         <div className="w-[1px] shrink-0 sm:hidden"></div>
                     </div>
-                </div>
+                </motion.div>
                 
                 {/* Bottom Navigation and Progress Bar */}
                 <div className="mt-8 flex items-center gap-4 px-2 w-full">

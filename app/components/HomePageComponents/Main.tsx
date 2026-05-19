@@ -10,6 +10,7 @@ import TrendingWeekly from './TrendingWeekly';
 import FeaturedCategoriesGrid from './FeaturedCategoriesGrid';
 import CategoryHighlightCards from './CategoryHighlightCards';
 import TestimonialsMasonry from './TestimonialsMasonry';
+import ScrollReveal from '../ScrollReveal';
 
 const HeroCarousel = dynamic(() => import('./HeroCarousel'), {
     ssr: true,
@@ -80,30 +81,49 @@ const Main = async ({ banners, mainBrands, featuredNewArrivals, featuredBundles,
                 <HeroCarousel banners={banners} />
 
                 {/* 2. Categories Rail (12 Custom Circular Items) */}
-                <CategoriesRail />
+                <ScrollReveal delay={0.1}>
+                    <CategoriesRail />
+                </ScrollReveal>
             </div>
 
             {/* 3. First Ad - Placed above CategoryHighlightCards */}
-            <PromoBanner />
+            <ScrollReveal>
+                <PromoBanner />
+            </ScrollReveal>
 
             {/* 4. Main Categories (4 highlight cards - تسوق حسب الفئة) */}
-            <CategoryHighlightCards mainBrands={mainBrands} />
+            <ScrollReveal>
+                <CategoryHighlightCards mainBrands={mainBrands} />
+            </ScrollReveal>
 
             {/* 5. Countdown Offer Section - Placed directly below CategoryHighlightCards */}
-            <CountdownOffer />
+            <ScrollReveal>
+                <CountdownOffer />
+            </ScrollReveal>
 
             {/* 6. الجديد والمحبوب (New Arrivals & Best Sellers) */}
-            <FeaturedCollection
-                newArrivals={featuredNewArrivals}
-                bundles={featuredBundles}
-                bestSellers={featuredBestSellers}
-            />
+            <ScrollReveal>
+                <FeaturedCollection
+                    newArrivals={featuredNewArrivals}
+                    bundles={featuredBundles}
+                    bestSellers={featuredBestSellers}
+                />
+            </ScrollReveal>
+
+            {/* Featured Categories Grid (Top Categories. Best Sellers) */}
+            <ScrollReveal>
+                <FeaturedCategoriesGrid categories={featuredCategories} />
+            </ScrollReveal>
 
             {/* 7. Trending This Week - Horizontal Product Cards */}
-            <TrendingWeekly products={trendingWeekly} />
+            <ScrollReveal>
+                <TrendingWeekly products={trendingWeekly} />
+            </ScrollReveal>
 
             {/* 8. Testimonials Masonry */}
-            <TestimonialsMasonry products={featuredBestSellers} />
+            <ScrollReveal>
+                <TestimonialsMasonry products={featuredBestSellers} />
+            </ScrollReveal>
         </main>
     );
 };

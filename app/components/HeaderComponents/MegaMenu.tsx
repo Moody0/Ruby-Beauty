@@ -86,7 +86,7 @@ export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: 
                                         <Link
                                             href={`/brands/${brand.slug}`}
                                             onClick={onClose}
-                                            className="text-[14px] text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors leading-relaxed"
+                                            className="text-[14px] text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors leading-relaxed inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] hover:bg-[length:100%_1px] transition-[background-size] duration-300"
                                         >
                                             {brand.name}
                                         </Link>
@@ -110,7 +110,7 @@ export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: 
                                         <Link
                                             href={`/categories/${cat.slug}`}
                                             onClick={onClose}
-                                            className="text-[14px] text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors leading-relaxed"
+                                            className="text-[14px] text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors leading-relaxed inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] hover:bg-[length:100%_1px] transition-[background-size] duration-300"
                                         >
                                             {cat.name}
                                         </Link>
@@ -134,7 +134,7 @@ export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: 
                                         <Link
                                             href={`/products/${product.slug}`}
                                             onClick={onClose}
-                                            className="text-[14px] text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors leading-relaxed line-clamp-1"
+                                            className="text-[14px] text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors leading-relaxed line-clamp-1 inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] hover:bg-[length:100%_1px] transition-[background-size] duration-300"
                                         >
                                             {product.name}
                                         </Link>
@@ -149,7 +149,7 @@ export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: 
                                         <Link
                                             href={`/department/${data.slug}`}
                                             onClick={onClose}
-                                            className="text-[13px] font-semibold text-[#1C1C1C] dark:text-white hover:underline"
+                                            className="text-[13px] font-semibold text-[rgb(46,46,46)] dark:text-white inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] hover:bg-[length:100%_1px] transition-[background-size] duration-300"
                                         >
                                             {language === 'ar' ? 'عرض كل المنتجات' : 'View All Products'}
                                         </Link>
@@ -185,13 +185,15 @@ export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: 
                                                     {product.brand.name}
                                                 </p>
                                             )}
-                                            <p className="text-[13px] font-semibold text-[rgb(46,46,46)] dark:text-white truncate group-hover:text-black dark:group-hover:text-gray-300 transition-colors">
-                                                {product.name}
+                                            <p className="text-[13px] font-semibold text-[rgb(46,46,46)] dark:text-white truncate transition-colors">
+                                                <span className="inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] group-hover:bg-[length:100%_1px] transition-[background-size] duration-300">
+                                                    {product.name}
+                                                </span>
                                             </p>
                                             <div className="flex items-center gap-2 mt-0.5">
                                                 {product.discountPrice ? (
                                                     <>
-                                                        <span className="text-[12px] font-bold text-[#1C1C1C] dark:text-white">
+                                                        <span className="text-[12px] font-bold text-[rgb(46,46,46)] dark:text-white">
                                                             {formatPrice(product.discountPrice)}
                                                         </span>
                                                         <span className="text-[11px] text-gray-400 line-through">

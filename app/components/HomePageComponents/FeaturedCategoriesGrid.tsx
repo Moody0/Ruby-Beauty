@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ResilientImage from '@/app/components/ResilientImage';
+import { motion } from 'framer-motion';
 
 interface Category {
     id: string;
@@ -28,9 +29,23 @@ const FeaturedCategoriesGrid = ({ categories }: FeaturedCategoriesGridProps) => 
 
     return (
         <section className="container-custom py-10 md:py-14">
-            <div className={`flex flex-col md:flex-row gap-2 ${dir === 'rtl' ? '' : 'md:flex-row-reverse'}`}>
+            <motion.div 
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                variants={{
+                    visible: { transition: { staggerChildren: 0.05 } }
+                }}
+                className={`flex flex-col md:flex-row gap-2 ${dir === 'rtl' ? '' : 'md:flex-row-reverse'}`}
+            >
                 {/* Hero Card - Navigation to All Categories */}
-                <div className="w-full md:w-1/2 lg:w-2/5 xl:w-1/3">
+                <motion.div 
+                    variants={{
+                        hidden: { opacity: 0, scale: 0.95 },
+                        visible: { opacity: 1, scale: 1, transition: { duration: 0.6 } }
+                    }}
+                    className="w-full md:w-1/2 lg:w-2/5 xl:w-1/3"
+                >
                     <Link
                         href="/products"
                         className="group relative block w-full h-[280px] md:h-full rounded-[10px] overflow-hidden bg-[#072835]"
@@ -50,43 +65,50 @@ const FeaturedCategoriesGrid = ({ categories }: FeaturedCategoriesGridProps) => 
                             </p>
                         </div>
                     </Link>
-                </div>
+                </motion.div>
 
                 {/* Category Cards Grid - All 12 items */}
                 <div className="flex-1">
                     <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
                         {categories.slice(0, 12).map((category) => (
-                            <Link
+                            <motion.div
                                 key={category.id}
-                                href={`/products?category=${category.slug}`}
-                                className="group relative block aspect-square rounded-[10px] overflow-hidden"
+                                variants={{
+                                    hidden: { opacity: 0, scale: 0.8, y: 20 },
+                                    visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
+                                }}
                             >
-                                {/* Category Image */}
-                                {category.image ? (
-                                    <ResilientImage
-                                        src={category.image}
-                                        alt={category.name}
-                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                        loading="lazy"
-                                    />
-                                ) : (
-                                    <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
-                                )}
+                                <Link
+                                    href={`/products?category=${category.slug}`}
+                                    className="group relative block aspect-square rounded-[10px] overflow-hidden h-full w-full"
+                                >
+                                    {/* Category Image */}
+                                    {category.image ? (
+                                        <ResilientImage
+                                            src={category.image}
+                                            alt={category.name}
+                                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                            loading="lazy"
+                                        />
+                                    ) : (
+                                        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
+                                    )}
 
-                                {/* Bottom gradient overlay */}
-                                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent" />
+                                    {/* Bottom gradient overlay */}
+                                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent" />
 
-                                {/* Category Name */}
-                                <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-3 px-2">
-                                    <span className="text-white text-xs md:text-sm font-semibold text-center leading-tight">
-                                        {category.name}
-                                    </span>
-                                </div>
-                            </Link>
+                                    {/* Category Name */}
+                                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-3 px-2">
+                                        <span className="text-white text-xs md:text-sm font-semibold text-center leading-tight">
+                                            {category.name}
+                                        </span>
+                                    </div>
+                                </Link>
+                            </motion.div>
                         ))}
                     </div>
                 </div>
-            </div>
+            </motion.div>
         </section>
     );
 };

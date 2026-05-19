@@ -6,6 +6,7 @@ import { MdChevronRight } from 'react-icons/md';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useCurrency } from '@/app/context/CurrencyContext';
 import ResilientImage from '@/app/components/ResilientImage';
+import { motion } from 'framer-motion';
 
 interface Product {
     id: string;
@@ -63,7 +64,13 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
     return (
         <section className="container-custom">
             {/* Header */}
-            <div className={`flex flex-col md:flex-row md:items-center md:justify-between mb-8 px-2 gap-2 ${dir === 'rtl' ? 'items-start md:items-center' : 'items-start md:items-center'}`}>
+            <motion.div 
+                initial={{ opacity: 0, x: dir === 'rtl' ? 40 : -40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                className={`flex flex-col md:flex-row md:items-center md:justify-between mb-8 px-2 gap-2 ${dir === 'rtl' ? 'items-start md:items-center' : 'items-start md:items-center'}`}
+            >
                 <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold text-[#072835] dark:text-white ${dir === 'rtl' ? 'text-right w-full' : 'text-left w-full'}`}>
                     {language === 'ar' ? 'تريندات هذا الاسبوع' : 'Trending This Week'}
                 </h2>
@@ -76,14 +83,26 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                     </span>
                     <MdChevronRight className={`text-lg transition-transform group-hover:translate-x-0.5 ${dir === 'rtl' ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
                 </Link>
-            </div>
+            </motion.div>
 
             {/* Product Grid */}
-            <div className="relative">
+            <motion.div 
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                variants={{
+                    visible: { transition: { staggerChildren: 0.08 } }
+                }}
+                className="relative"
+            >
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                     {visibleProducts.map((product) => (
-                        <div
+                        <motion.div
                             key={product.id}
+                            variants={{
+                                hidden: { opacity: 0, scale: 0.9, y: 20 },
+                                visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
+                            }}
                             className="group flex items-center gap-4 bg-[#F7F7F5] dark:bg-[#1e1e1e] rounded-[10px] p-3 md:p-4 h-[112px] transition-all duration-300"
                         >
                             {/* Product Image */}
@@ -144,7 +163,7 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                                     <path d="M12.5 16.25L6.25 10L12.5 3.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                             </Link>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
 
@@ -152,7 +171,7 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                 {isMobile && !showAll && products.length > 5 && (
                     <div className="absolute bottom-0 left-0 right-0 h-[80px] bg-gradient-to-t from-white dark:from-[#0a0a0a] to-transparent pointer-events-none md:hidden" />
                 )}
-            </div>
+            </motion.div>
 
             {/* Mobile Show More/Less Button */}
             {products.length > 5 && (
