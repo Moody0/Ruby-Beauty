@@ -57,7 +57,7 @@ const CategoryPills = () => {
     return (
         <section className="container-custom py-10 md:py-16">
             <div className="flex flex-col items-center text-center mb-8 md:mb-12 max-w-3xl mx-auto px-4">
-                <h2 className="text-2xl md:text-4xl font-bold text-[#1a1a1a] leading-tight">
+                <h2 className="text-2xl md:text-4xl font-bold text-[rgb(46,46,46)] leading-tight">
                     {language === 'ar'
                         ? 'اعطي لجسمك الاهتمام المحتاجه , جربي تجربة الجمال على طريقة روبي بيوتي'
                         : 'Give your body the care it needs, experience beauty the Ruby Beauty way'}
@@ -86,7 +86,7 @@ const CategoryPills = () => {
                             <Link
                                 key={category.id}
                                 href={`/categories/${category.slug}`}
-                                className="flex-shrink-0 flex items-center gap-3 bg-white border border-gray-200 hover:border-[#f1f1f1] hover:bg-[#f1f1f1] text-[#000000] hover:text-[#000000] rounded-full px-6 py-3 transition-all duration-300"
+                                className="flex-shrink-0 flex items-center gap-3 bg-white border border-gray-200 hover:border-[#f1f1f1] hover:bg-[#f1f1f1] text-[rgb(46,46,46)] hover:text-[rgb(46,46,46)] rounded-full px-6 py-3 transition-all duration-300"
                             >
                                 <div className="w-5 h-5 flex items-center justify-center shrink-0">
                                     <img

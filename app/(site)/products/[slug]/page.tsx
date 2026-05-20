@@ -11,6 +11,7 @@ import ProductAccordions from '@/app/components/ProductDetailsComponents/Product
 import { FaInstagram, FaFacebook, FaWhatsapp } from 'react-icons/fa';
 import RelatedProducts from '@/app/components/ProductDetailsComponents/RelatedProducts';
 import Breadcrumbs from '@/app/components/ProductDetailsComponents/Breadcrumbs';
+import ProductReviews from '@/app/components/ProductDetailsComponents/ProductReviews';
 import { cookies } from 'next/headers';
 
 export async function generateMetadata(
@@ -88,7 +89,6 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     const relatedProducts = await prisma.product.findMany({
         where: {
             categoryId: product.categoryId,
-            brandId: product.brandId,
             id: { not: product.id },
             brand: { isActive: true },
         },
@@ -146,7 +146,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                             href="https://wa.me/963933254796" 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="w-11 h-11 flex items-center justify-center rounded-full border border-gray-200 text-black hover:border-black hover:text-black transition-all"
+                            className="w-11 h-11 flex items-center justify-center rounded-full border border-gray-200 bg-white text-black hover:bg-black hover:border-black hover:text-white transition-all duration-300"
                         >
                             <FaWhatsapp className="text-xl" />
                         </a>
@@ -154,7 +154,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                             href="https://www.instagram.com/ruby.beauty.sy" 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="w-11 h-11 flex items-center justify-center rounded-full border border-gray-200 text-black hover:border-black hover:text-black transition-all"
+                            className="w-11 h-11 flex items-center justify-center rounded-full border border-gray-200 bg-white text-black hover:bg-black hover:border-black hover:text-white transition-all duration-300"
                         >
                             <FaInstagram className="text-xl" />
                         </a>
@@ -162,7 +162,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                             href="https://www.facebook.com/share/1HzXdo7sLG/?mibextid=wwXIfr" 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="w-11 h-11 flex items-center justify-center rounded-full border border-gray-200 text-black hover:border-black hover:text-black transition-all"
+                            className="w-11 h-11 flex items-center justify-center rounded-full border border-gray-200 bg-white text-black hover:bg-black hover:border-black hover:text-white transition-all duration-300"
                         >
                             <FaFacebook className="text-xl" />
                         </a>
@@ -179,6 +179,12 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                 createdAt: p.createdAt.toISOString(),
                 updatedAt: p.updatedAt.toISOString(),
             }))} />
+
+            <ProductReviews 
+                productId={product.id}
+                productName={product.name}
+                productImage={(product.images as string).split(',').map((img: string) => img.trim()).filter(Boolean)[0]}
+            />
         </div>
     );
 }

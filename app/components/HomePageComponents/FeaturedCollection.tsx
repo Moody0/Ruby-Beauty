@@ -61,18 +61,14 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
 
     return (
         <section className="container-custom">
-            <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            <div 
                 className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6 px-2"
             >
                 <div className="flex-1">
-                    <h2 className="text-lg sm:text-xl md:text-[32px] font-semibold text-[#000000] dark:text-text-main-dark">
+                    <h2 className="text-lg sm:text-xl md:text-[32px] font-semibold text-[rgb(46,46,46)] dark:text-text-main-dark">
                         {t('home.featuredCollection')}
                     </h2>
-                    <p className="text-[15px] text-black mt-1">
+                    <p className="text-[15px] text-[rgb(46,46,46)] mt-1">
                         {t('home.featuredCollectionSubtitle')}
                     </p>
                 </div>
@@ -86,7 +82,7 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
                                 aria-selected={activeTab === index}
                                 onClick={() => setActiveTab(index)}
                                 className={`tabs__btn whitespace-nowrap px-8 py-3 text-[15px] font-medium transition-all border-b-2 ${activeTab === index
-                                    ? 'border-[#000000] text-[#000000]'
+                                    ? 'border-[rgb(46,46,46)] text-[rgb(46,46,46)]'
                                     : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
                                     }`}
                             >
@@ -95,27 +91,17 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
                         ))}
                     </div>
                 </div>
-            </motion.div>
+            </div>
 
             <div className="relative">
-                <motion.div
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: "-50px" }}
-                    variants={{
-                        visible: { transition: { staggerChildren: 0.1 } }
-                    }}
+                <div
                     ref={railRef}
                     className="-mx-4 overflow-x-auto px-4 scrollbar-hide sm:mx-0 sm:px-0"
                 >
                     <div className="flex snap-x snap-mandatory gap-4 pb-2 md:gap-5">
                         {activeProducts.map((product) => (
-                            <motion.div
+                            <div
                                 key={product.id}
-                                variants={{
-                                    hidden: { opacity: 0, scale: 0.85, y: 20 },
-                                    visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
-                                }}
                                 className="w-[180px] md:w-[calc((100%-60px)/4)] lg:w-[calc((100%-80px)/5)] flex-none snap-start"
                             >
                                 <ProductCard
@@ -124,12 +110,12 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
                                     showBadge={activeTab === 0}
                                     badge={activeTab === 0 ? t('home.newArrival') : undefined}
                                 />
-                            </motion.div>
+                            </div>
                         ))}
                         {/* Spacer to prevent cutoff of the last item on mobile */}
                         <div className="w-[1px] shrink-0 sm:hidden"></div>
                     </div>
-                </motion.div>
+                </div>
                 
                 {/* Bottom Navigation and Progress Bar */}
                 <div className="mt-8 flex items-center gap-4 px-2 w-full">
@@ -137,7 +123,7 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
                     <button
                         onClick={scrollBackward}
                         disabled={!canScrollBackward}
-                        className="hidden md:flex w-10 h-10 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#000000] transition-colors hover:bg-[#000000] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed order-2"
+                        className="hidden md:flex w-12 h-12 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#000000] disabled:opacity-50 disabled:cursor-not-allowed order-2 btn-curved-fill"
                         aria-label="Previous slide"
                     >
                         <svg className={`w-5 h-5 ${dir === 'rtl' ? '-scale-x-100' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -162,7 +148,7 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
                     <button
                         onClick={scrollForward}
                         disabled={!canScrollForward}
-                        className="hidden md:flex w-10 h-10 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#000000] transition-colors hover:bg-[#000000] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed order-3"
+                        className="hidden md:flex w-12 h-12 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#000000] disabled:opacity-50 disabled:cursor-not-allowed order-3 btn-curved-fill"
                         aria-label="Next slide"
                     >
                         <svg className={`w-5 h-5 ${dir === 'rtl' ? '-scale-x-100' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

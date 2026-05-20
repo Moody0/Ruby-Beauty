@@ -53,16 +53,52 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
     }, []);
 
     React.useEffect(() => {
+        let lastScrollY = window.scrollY;
+        let ticking = false;
+
+        const updateScroll = () => {
+            const currentScrollY = window.scrollY;
+            
+            // If we are at the very top, always show navbar
+            if (currentScrollY <= 10) {
+                if (isScrolledRef.current) {
+                    isScrolledRef.current = false;
+                    setIsScrolled(false);
+                    setManualToggle(false);
+                }
+                ticking = false;
+                return;
+            }
+
+            // Only trigger if scrolled down past 50px
+            if (currentScrollY > 50) {
+                if (currentScrollY > lastScrollY) {
+                    // Scrolling down -> hide navbar
+                    if (!isScrolledRef.current) {
+                        isScrolledRef.current = true;
+                        setIsScrolled(true);
+                    }
+                } else if (currentScrollY < lastScrollY - 15) {
+                    // Scrolling up (by at least 15px to prevent micro-jitters) -> show navbar
+                    if (isScrolledRef.current) {
+                        isScrolledRef.current = false;
+                        setIsScrolled(false);
+                        setManualToggle(false);
+                    }
+                }
+            }
+
+            lastScrollY = currentScrollY;
+            ticking = false;
+        };
+
         const handleScroll = () => {
-            if (window.scrollY > 100 && !isScrolledRef.current) {
-                isScrolledRef.current = true;
-                setIsScrolled(true);
-            } else if (window.scrollY < 60 && isScrolledRef.current) {
-                isScrolledRef.current = false;
-                setIsScrolled(false);
-                setManualToggle(false);
+            if (!ticking) {
+                window.requestAnimationFrame(updateScroll);
+                ticking = true;
             }
         };
+
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);

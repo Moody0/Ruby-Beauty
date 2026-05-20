@@ -71,12 +71,12 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                 transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                 className={`flex flex-col md:flex-row md:items-center md:justify-between mb-8 px-2 gap-2 ${dir === 'rtl' ? 'items-start md:items-center' : 'items-start md:items-center'}`}
             >
-                <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold text-[#072835] dark:text-white ${dir === 'rtl' ? 'text-right w-full' : 'text-left w-full'}`}>
+                <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold text-[rgb(46,46,46)] dark:text-white ${dir === 'rtl' ? 'text-right w-full' : 'text-left w-full'}`}>
                     {language === 'ar' ? 'تريندات هذا الاسبوع' : 'Trending This Week'}
                 </h2>
                 <Link
                     href="/products"
-                    className="flex items-center gap-1 text-sm font-medium text-[#072835] text-opacity-80 dark:text-white transition-colors group whitespace-nowrap"
+                    className="flex items-center gap-1 text-sm font-medium text-[rgb(46,46,46)] text-opacity-80 dark:text-white transition-colors group whitespace-nowrap"
                 >
                     <span className="relative inline-block after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 group-hover:after:scale-x-100 after:origin-left group-hover:after:origin-right">
                         {language === 'ar' ? 'تسوق كل المنتجات' : 'Shop All Products'}
@@ -127,7 +127,7 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                                     </p>
                                 )}
                                 {/* Product Name */}
-                                <h3 dir="ltr" className={`text-[12px] md:text-[15px] font-semibold text-[#072835] dark:text-white truncate leading-tight mb-1 font-sans tracking-normal ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                <h3 dir="ltr" className={`text-[12px] md:text-[15px] font-semibold text-[rgb(7,40,53)] dark:text-white truncate leading-tight mb-1 font-sans tracking-normal ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                     <Link
                                         href={`/products/${product.slug}`}
                                         className="relative inline-block after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
@@ -139,7 +139,7 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                                 <div className={`flex items-center gap-2 ${dir === 'rtl' ? 'flex-row' : 'flex-row'}`}>
                                     {product.discountPrice ? (
                                         <>
-                                            <span className="text-sm md:text-base font-bold text-[#072835] dark:text-white">
+                                            <span className="text-sm md:text-base font-bold text-[rgb(7,40,53)] dark:text-white">
                                                 {formatPrice(Number(product.discountPrice))}
                                             </span>
                                             <span className="text-xs text-gray-400 line-through">
@@ -147,7 +147,7 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                                             </span>
                                         </>
                                     ) : (
-                                        <span className="text-sm md:text-base font-bold text-[#072835] dark:text-white">
+                                        <span className="text-sm md:text-base font-bold text-[rgb(7,40,53)] dark:text-white">
                                             {formatPrice(Number(product.price))}
                                         </span>
                                     )}

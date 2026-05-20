@@ -9,6 +9,7 @@ declare module "next-auth" {
             canDeleteBrands: boolean
             canManageProducts: boolean
             canDeleteProducts: boolean
+            canDeleteProducts: boolean
             canManageCategories: boolean
             canDeleteCategories: boolean
             canManageBanners: boolean
@@ -17,6 +18,7 @@ declare module "next-auth" {
             canDeleteOrders: boolean
             canManagePromoCodes: boolean
             canDeletePromoCodes: boolean
+            canManageReviews: boolean
         } & DefaultSession["user"]
     }
 
@@ -35,6 +37,7 @@ declare module "next-auth" {
         canDeleteOrders: boolean
         canManagePromoCodes: boolean
         canDeletePromoCodes: boolean
+        canManageReviews: boolean
     }
 }
 
@@ -54,5 +57,6 @@ declare module "next-auth/jwt" {
         canDeleteOrders: boolean
         canManagePromoCodes: boolean
         canDeletePromoCodes: boolean
+        canManageReviews: boolean
     }
 }

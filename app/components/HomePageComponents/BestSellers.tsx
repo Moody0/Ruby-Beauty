@@ -43,7 +43,7 @@ const BestSellers = ({ products }: BestSellersProps) => {
         <section className="container-custom py-8 md:py-10">
             <div className="w-full">
                 <div className="flex items-center justify-between mb-6 px-2">
-                    <h3 className="text-lg sm:text-xl md:text-[32px] font-semibold text-[#000000] dark:text-text-main-dark">{t('home.bestSellers')}</h3>
+                    <h3 className="text-lg sm:text-xl md:text-[32px] font-semibold text-[rgb(46,46,46)] dark:text-text-main-dark">{t('home.bestSellers')}</h3>
                     <Link className="text-primary font-medium text-sm flex items-center gap-1 hover:gap-2 transition-all" href="/products">
                         {t('common.viewAll')} <MdChevronRight className={`text-sm ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                     </Link>
@@ -76,7 +76,7 @@ const BestSellers = ({ products }: BestSellersProps) => {
                     <button
                         onClick={scrollBackward}
                         disabled={!canScrollBackward}
-                        className="hidden md:flex w-10 h-10 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#000000] transition-colors hover:bg-[#000000] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed order-2"
+                        className="hidden md:flex w-12 h-12 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#000000] disabled:opacity-50 disabled:cursor-not-allowed order-2 btn-curved-fill"
                         aria-label="Previous slide"
                     >
                         <svg className={`w-5 h-5 ${dir === 'rtl' ? '-scale-x-100' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -101,7 +101,7 @@ const BestSellers = ({ products }: BestSellersProps) => {
                     <button
                         onClick={scrollForward}
                         disabled={!canScrollForward}
-                        className="hidden md:flex w-10 h-10 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#000000] transition-colors hover:bg-[#000000] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed order-3"
+                        className="hidden md:flex w-12 h-12 shrink-0 rounded-full border border-gray-200 bg-white items-center justify-center text-[#000000] disabled:opacity-50 disabled:cursor-not-allowed order-3 btn-curved-fill"
                         aria-label="Next slide"
                     >
                         <svg className={`w-5 h-5 ${dir === 'rtl' ? '-scale-x-100' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

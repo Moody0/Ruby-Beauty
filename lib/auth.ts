@@ -53,6 +53,7 @@ export const authOptions: AuthOptions = {
                     canDeleteOrders: user.canDeleteOrders,
                     canManagePromoCodes: user.canManagePromoCodes,
                     canDeletePromoCodes: user.canDeletePromoCodes,
+                    canManageReviews: user.canManageReviews,
                 }
             }
         })
@@ -78,6 +79,7 @@ export const authOptions: AuthOptions = {
                 token.canDeleteOrders = user.canDeleteOrders;
                 token.canManagePromoCodes = user.canManagePromoCodes;
                 token.canDeletePromoCodes = user.canDeletePromoCodes;
+                token.canManageReviews = user.canManageReviews;
                 // Session length: 30 days if "Remember me", else 24 hours
                 const maxAge = (user as { rememberMe?: boolean }).rememberMe
                     ? 30 * 24 * 60 * 60   // 30 days
@@ -102,6 +104,7 @@ export const authOptions: AuthOptions = {
                 session.user.canDeleteOrders = token.canDeleteOrders as boolean;
                 session.user.canManagePromoCodes = token.canManagePromoCodes as boolean;
                 session.user.canDeletePromoCodes = token.canDeletePromoCodes as boolean;
+                session.user.canManageReviews = token.canManageReviews as boolean;
             }
             return session
         }

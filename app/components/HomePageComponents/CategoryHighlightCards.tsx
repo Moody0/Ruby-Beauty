@@ -119,7 +119,7 @@ const CategoryHighlightCards = ({ mainBrands }: CategoryHighlightCardsProps) => 
         <section className="container-custom">
             {/* Section Title */}
             <div className="flex justify-center mb-6 md:mb-8 animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
-                <h2 className="text-xl md:text-2xl lg:text-[28px] font-bold text-black dark:text-white tracking-tight">
+                <h2 className="text-xl md:text-2xl lg:text-[28px] font-bold text-[rgb(46,46,46)] dark:text-white tracking-tight">
                     {language === 'ar' ? 'تسوق حسب الفئة' : 'Shop By Category'}
                 </h2>
             </div>
@@ -169,10 +169,8 @@ const CategoryHighlightCards = ({ mainBrands }: CategoryHighlightCardsProps) => 
                                 {/* Text Content */}
                                 <div className="p-4 md:p-5 flex items-center justify-between">
                                     <div className="flex flex-col gap-1.5">
-                                        <h3 className="text-[15px] md:text-[17px] font-bold text-[#111] dark:text-white leading-tight">
-                                            <span className="inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_82%] group-hover:bg-[length:100%_1px] transition-[background-size] duration-300">
-                                                {categoryName}
-                                            </span>
+                                        <h3 className="text-[15px] md:text-[17px] font-bold text-[rgb(46,46,46)] dark:text-white leading-tight">
+                                            {categoryName}
                                         </h3>
                                         <p className="text-[11px] md:text-xs text-gray-500 dark:text-gray-400 font-medium leading-none">
                                             {language === 'ar' ? 'تسوق الآن' : 'Shop Now'}

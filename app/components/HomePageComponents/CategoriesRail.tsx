@@ -75,7 +75,7 @@ const CategoriesRail = () => {
                                                 loading="lazy"
                                             />
                                         </div>
-                                        <h3 className="text-[15px] font-medium text-center text-[#000000] dark:text-white flex items-center gap-1">
+                                        <h3 className="text-[15px] font-medium text-center text-[rgb(46,46,46)] dark:text-white flex items-center gap-1">
                                             <span>{language === 'ar' ? category.nameAr : category.name}</span>
                                             <svg 
                                                 className={`w-3.5 h-3.5 opacity-0 -translate-x-1.5 group-hover/card:opacity-100 group-hover/card:translate-x-0 transition-all duration-500 ease-out ${dir === 'rtl' ? 'rotate-180' : ''}`} 

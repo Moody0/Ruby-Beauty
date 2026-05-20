@@ -239,3 +239,92 @@ html.app-loading #app-shell {
 ::-webkit-scrollbar-thumb:hover {
   background: #ee2b6c;
 }
+
+/* Premium Curved Sliding Fill Hover Effect */
+.btn-curved-fill {
+  position: relative !important;
+  overflow: hidden !important;
+  isolation: isolate !important; /* Establishes a clean local stacking context */
+  cursor: pointer !important;
+  transition: color 0.5s ease, border-color 0.5s ease !important;
+}
+
+.btn-curved-fill::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -20%;
+  width: 140%;
+  height: 140%;
+  background-color: #000000;
+  border-radius: 50%;
+  transform: translate(-105%, -50%);
+  transition: transform 0.65s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 1 !important; /* Renders above the button's background */
+}
+
+.btn-curved-fill:hover {
+  color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+.btn-curved-fill:hover::before {
+  transform: translate(14%, -50%); /* Mathematically guaranteed to fully cover the circle */
+}
+
+/* Make sure the inner icon is above the ::before bg fill */
+.btn-curved-fill svg,
+.btn-curved-fill span {
+  position: relative !important;
+  z-index: 2 !important; /* Renders above the slide fill */
+}
+
+.btn-curved-fill:disabled {
+  background-color: #ffffff !important;
+  border-color: #e5e7eb !important;
+  color: #9ca3af !important;
+  cursor: not-allowed !important;
+  opacity: 0.5 !important;
+}
+
+/* Enable circular pseudo-element background for disabled state but with gray color */
+.btn-curved-fill:disabled::before {
+  background-color: #9ca3af !important;
+}
+
+/* Animate sliding of the gray circle when hovering over a disabled button */
+.btn-curved-fill:disabled:hover::before {
+  transform: translate(14%, -50%);
+}
+
+.btn-curved-fill:disabled:hover {
+  color: #ffffff !important;
+  border-color: #9ca3af !important;
+  opacity: 1 !important;
+}
+
+/* Dark Mode Compatibility */
+.dark .btn-curved-fill::before {
+  background-color: #ffffff !important;
+}
+.dark .btn-curved-fill:hover {
+  color: #000000 !important;
+  border-color: #ffffff !important;
+}
+
+.dark .btn-curved-fill:disabled {
+  background-color: #2d161e !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  opacity: 0.4 !important;
+}
+
+.dark .btn-curved-fill:disabled::before {
+  background-color: #4b5563 !important;
+}
+
+.dark .btn-curved-fill:disabled:hover {
+  color: #ffffff !important;
+  border-color: #4b5563 !important;
+  opacity: 1 !important;
+}

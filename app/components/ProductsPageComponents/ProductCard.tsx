@@ -66,7 +66,7 @@ const ProductCard = ({ product, variant = 'default', badge, showBadge = true }: 
     return (
         <>
             <div
-                className="group relative flex flex-col bg-[#F7F7F5] dark:bg-surface-dark rounded-[10px] overflow-hidden transition-transform duration-300 hover:shadow-sm w-full h-[309px] md:h-[461px]"
+                className="group relative flex flex-col bg-[#F7F7F5] dark:bg-surface-dark rounded-[10px] overflow-hidden transition-transform duration-300 w-full h-[309px] md:h-[461px]"
             >
                 {/* Quick View Search Icon */}
                 <button
@@ -153,7 +153,7 @@ const ProductCard = ({ product, variant = 'default', badge, showBadge = true }: 
                     {/* Title */}
                     <h3 
                         dir="ltr"
-                        className={`text-[#1C1C1C] dark:text-white text-[13px] md:text-[15px] font-semibold leading-tight mb-1 md:mb-2 line-clamp-2 font-sans tracking-normal ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
+                        className={`text-[rgb(7,40,53)] dark:text-white text-[13px] md:text-[15px] font-semibold leading-tight mb-1 md:mb-2 line-clamp-2 font-sans tracking-normal ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
                     >
                         <Link
                             href={`/products/${product.slug}`}
@@ -164,10 +164,10 @@ const ProductCard = ({ product, variant = 'default', badge, showBadge = true }: 
                     </h3>
 
                     {/* Price */}
-                    <div className={`flex flex-row items-center gap-2 mt-auto text-[#1C1C1C] dark:text-white ${dir === 'rtl' ? 'justify-start' : 'justify-start'}`}>
+                    <div className={`flex flex-row items-center gap-2 mt-auto text-[rgb(7,40,53)] dark:text-white ${dir === 'rtl' ? 'justify-start' : 'justify-start'}`}>
                         {product.discountPrice ? (
                             <>
-                                <span className="text-[14px] md:text-[16px] font-bold text-[#1C1C1C] dark:text-white">{formatPrice(Number(product.discountPrice))}</span>
+                                <span className="text-[14px] md:text-[16px] font-bold text-[rgb(7,40,53)] dark:text-white">{formatPrice(Number(product.discountPrice))}</span>
                                 <span className="text-[11px] md:text-[13px] text-gray-400 line-through font-normal">{formatPrice(Number(product.price))}</span>
                             </>
                         ) : (

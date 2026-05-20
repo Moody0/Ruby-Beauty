@@ -14,7 +14,8 @@ import {
     MdSettings,
     MdClose,
     MdLogout,
-    MdAccountTree
+    MdAccountTree,
+    MdStar
 } from "react-icons/md";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
@@ -31,7 +32,8 @@ type PermissionKey =
     | "canManageCategories"
     | "canManageBanners"
     | "canManageOrders"
-    | "canManagePromoCodes";
+    | "canManagePromoCodes"
+    | "canManageReviews";
 
 interface NavItem {
     href: string;
@@ -56,6 +58,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
         { href: "/admin/banners", icon: MdViewCarousel, label: t('admin.banners'), permission: "canManageBanners" },
         { href: "/admin/orders", icon: MdInventory2, label: t('admin.orders'), permission: "canManageOrders" },
         { href: "/admin/promocodes", icon: MdLocalOffer, label: t('admin.promoCodes'), permission: "canManagePromoCodes" },
+        { href: "/admin/reviews", icon: MdStar, label: t('admin.reviews'), permission: "canManageReviews" },
         { href: "/admin/site-content", icon: MdEditNote, label: t('admin.siteContent'), superAdminOnly: true },
         { href: "/admin/users", icon: MdGroup, label: t('admin.users'), superAdminOnly: true },
         { href: "/admin/settings", icon: MdSettings, label: t('admin.settings'), superAdminOnly: true },

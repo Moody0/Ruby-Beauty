@@ -27,6 +27,7 @@ model User {
   role                Role     @default(ADMIN)
   canDeleteBrands     Boolean  @default(true)
   canManageBrands     Boolean  @default(true)
+  canManageReviews    Boolean  @default(true)
 }
 
 model MainCategory {
@@ -85,6 +86,7 @@ model Product {
   category      Category    @relation(fields: [categoryId], references: [id])
   mainCategoryId String?
   mainCategory   MainCategory? @relation(fields: [mainCategoryId], references: [id])
+  reviews       Review[]
 
   @@index([brandId])
   @@index([categoryId])
@@ -300,4 +302,20 @@ enum Role {
 enum BrandGroup {
   MAIN
   DIFFERENT
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  productId   String
+  rating      Int
+  feedback    String?
+  image       String?
+  name        String
+  email       String?
+  isApproved  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
 }
